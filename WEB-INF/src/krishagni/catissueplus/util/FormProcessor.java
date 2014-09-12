@@ -7,7 +7,7 @@ import java.util.List;
 import org.springframework.context.ApplicationContext;
 
 import com.krishagni.catissueplus.core.biospecimen.events.CollectionProtocolSummary;
-import com.krishagni.catissueplus.core.common.CaTissueAppContext;
+import com.krishagni.catissueplus.core.common.OpenSpecimenAppCtxProvider;
 import com.krishagni.catissueplus.core.common.events.EventStatus;
 import com.krishagni.catissueplus.core.de.events.AddFormContextsEvent;
 import com.krishagni.catissueplus.core.de.events.AllFormsSummaryEvent;
@@ -27,7 +27,7 @@ public class FormProcessor implements FormPostProcessor {
 	@Override
 	public void process(Long containerId, Integer sortOrder) {
 		
-		ApplicationContext caTissueContext = CaTissueAppContext.getInstance();
+		ApplicationContext caTissueContext = OpenSpecimenAppCtxProvider.getAppCtx();
 		FormService formSvc = (FormService) caTissueContext.getBean("formSvc");
 
 		FormContextDetail ctxt = new FormContextDetail();
@@ -51,7 +51,7 @@ public class FormProcessor implements FormPostProcessor {
 
 	@Override
 	public List<Long> getQueryForms() {
-		ApplicationContext caTissueContext = CaTissueAppContext.getInstance();
+		ApplicationContext caTissueContext = OpenSpecimenAppCtxProvider.getAppCtx();
 		FormService formSvc = (FormService) caTissueContext.getBean("formSvc");
 		
 		ReqAllFormsSummaryEvent req = new ReqAllFormsSummaryEvent();
@@ -73,7 +73,7 @@ public class FormProcessor implements FormPostProcessor {
 
 	@Override
 	public void deleteQueryForm(Long formId) {
-		ApplicationContext caTissueContext = CaTissueAppContext.getInstance();
+		ApplicationContext caTissueContext = OpenSpecimenAppCtxProvider.getAppCtx();
 		FormService formSvc = (FormService) caTissueContext.getBean("formSvc");
 		
 		RemoveFormContextEvent req = new RemoveFormContextEvent();

@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -46,9 +48,6 @@ public class AuditReportController {
 	@Autowired
 	private AuditReportService auditReportService;
 
-	@Autowired
-	private HttpServletRequest httpServletRequest;
-
 	@GET
 	@RequestMapping(method = RequestMethod.GET)
 	@ResponseStatus(HttpStatus.OK)
@@ -66,7 +65,8 @@ public class AuditReportController {
 			AuditReportDetail auditReportDetail = gson.fromJson(json, AuditReportDetail.class);
 
 			CreateAuditReportEvent auditReportEvent = new CreateAuditReportEvent();
-			auditReportEvent.setSessionDataBean((SessionDataBean) httpServletRequest.getSession().getAttribute(
+			auditReportEvent.setSessionDataBean((SessionDataBean) ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
+					.getRequest().getSession().getAttribute(
 					Constants.SESSION_DATA));
 			auditReportEvent.setAuditReportDetail(auditReportDetail);
 			AuditReportCreatedEvent createdEvent = auditReportService.getAuditReport(auditReportEvent);

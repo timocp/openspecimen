@@ -18,10 +18,7 @@
            http://www.springframework.org/schema/context/spring-context-3.2.xsd
            http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
-  <mvc:annotation-driven/>
-  <context:component-scan base-package="com.krishagni.catissueplus" />
-  
-  <bean class="com.krishagni.catissueplus.core.common.RestErrorController" />
+
   <!-- Beans for caCORE starts -->
   <bean id="remoteService" class="gov.nih.nci.system.comm.server.ApplicationServiceServerImpl" />
   <!-- Bean added for caCORE ends -->
@@ -392,4 +389,6 @@
        <property name="pvManager" ref="pvMangeerSvc"/>
   </bean>
 
+  <bean id="appCtxProvider" class="com.krishagni.catissueplus.core.common.OpenSpecimenAppCtxProvider">
+  </bean>
  </beans>
