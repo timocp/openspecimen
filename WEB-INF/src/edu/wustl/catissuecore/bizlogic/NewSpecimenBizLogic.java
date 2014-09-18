@@ -28,6 +28,7 @@ import java.util.Set;
 
 import krishagni.catissueplus.mobile.dto.SpecimenDTO;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 
@@ -5029,6 +5030,7 @@ public class NewSpecimenBizLogic extends CatissueDefaultBizLogic
 			{
 				return true;
 			}
+			
 			// Get the base object id against which authorization will take
 			// place
 			if (domainObject != null)
@@ -5043,6 +5045,10 @@ public class NewSpecimenBizLogic extends CatissueDefaultBizLogic
 				}
 				else
 				{
+					if(!hasSiteAccess((Specimen)(domainObject), sessionDataBean.getUserId(), dao)){
+						throw AppUtility.getUserNotAuthorizedException("Specimen processing",
+								protectionElementName, domainObject.getClass().getSimpleName());
+					}
 					protectionElementName = this.getObjectId(dao, domainObject);
 					Site site = null;
 					StorageContainer stCont = null;
@@ -5204,7 +5210,50 @@ public class NewSpecimenBizLogic extends CatissueDefaultBizLogic
 		}
 		return isAuthorized;
 	}
-
+	
+	public boolean hasSiteAccess(Specimen specimen, Long userId, DAO dao) throws BizLogicException {
+		String chkParticipantMrn = "select mrn.site_id from catissue_part_medical_id mrn join catissue_coll_prot_reg cpr"
+				+ " on cpr.participant_id = mrn.participant_id join catissue_specimen_coll_group scg "
+				+ " on scg.collection_protocol_reg_id = cpr.identifier "
+				+ " where scg.identifier = "+specimen.getSpecimenCollectionGroup().getId();
+		JDBCDAO jdbcDao = null; 
+		try {
+			jdbcDao = AppUtility.openJDBCSession();
+		
+		List results = jdbcDao.executeQuery(chkParticipantMrn);
+		if(results != null && !results.isEmpty()){
+	    List mrns = (List)results.get(0);
+	    
+		if(mrns != null && !StringUtils.isBlank(mrns.get(0).toString())){
+		String getsiteCount = "select count(mrn.site_id) from catissue_part_medical_id mrn join catissue_site_users csu "
+				+ " on csu.site_id = mrn.site_id where csu.user_id = "+userId;
+		
+		List result = jdbcDao.executeQuery(getsiteCount);
+		if(result != null && result.get(0)!= null){
+			Object[] obj = (Object[])result.get(0);
+			if(Integer.valueOf(obj[0].toString()) == 0){
+				return false;
+			}
+		}
+		}
+		}
+		}
+		catch (ApplicationException exp) {
+			throw this.getBizLogicException(exp, exp.getErrorKeyName(), exp.getMsgValues());
+		}
+		finally{
+			if(jdbcDao != null){
+				try {
+					AppUtility.closeJDBCSession(jdbcDao);
+				}
+				catch (ApplicationException exp) {
+					throw this.getBizLogicException(exp, exp.getErrorKeyName(), exp.getMsgValues());
+				}
+			}
+		}
+		
+		return true;
+	}
 	/**
 	 * isReadDeniedTobeChecked.
 	 *

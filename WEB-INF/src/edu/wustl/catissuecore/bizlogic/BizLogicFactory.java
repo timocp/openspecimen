@@ -407,6 +407,10 @@ public class BizLogicFactory implements IFactory
 		{
 			bizLogic = new AliquotBizLogic();
 		}
+		else if (className.equals("edu.wustl.catissuecore.domain.ParticipantMedicalIdentifier"))
+		{
+			bizLogic = new ParticipantMedicalIdentifierBizLogic();
+		}
 		else if (className
 				.equals("edu.wustl.catissuecore.domain.deintegration.SpecimenRecordEntry")
 				|| className

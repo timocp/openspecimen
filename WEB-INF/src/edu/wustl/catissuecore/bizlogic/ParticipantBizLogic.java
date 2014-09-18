@@ -29,6 +29,7 @@ import java.util.Set;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 
 import com.krishagni.catissueplus.core.audit.domain.Audit;
 import com.krishagni.catissueplus.core.common.util.ObjectType;
@@ -1277,6 +1278,10 @@ public class ParticipantBizLogic extends CatissueDefaultBizLogic
 			final String protEltName = this.getObjectId(dao, domainObject);
 			final PrivilegeCache privilegeCache = PrivilegeManager.getInstance().getPrivilegeCache(
 					sessionDataBean.getUserName());
+			if(!hasSiteAccess((Participant)domainObject, sessionDataBean.getUserId(), dao)){
+				throw AppUtility.getUserNotAuthorizedException(privilegeName, protEltName,
+						domainObject.getClass().getSimpleName());
+			}
 			if (protEltName.equals(Constants.ADD_GLOBAL_PARTICIPANT))
 			{
 				User user = null;
@@ -1370,6 +1375,38 @@ public class ParticipantBizLogic extends CatissueDefaultBizLogic
 			e1.printStackTrace();
 		}
 		return isAuthorized;
+	}
+	
+	public boolean hasSiteAccess(Participant participant, Long userId, DAO dao) throws BizLogicException {
+		if(participant.getId()!=null){
+		String chkParticipantMrn = "select mrn.site_id from catissue_part_medical_id mrn where mrn.participant_id = "+participant.getId();
+		JDBCDAO jdbcDao;
+		try {
+			jdbcDao = AppUtility.openJDBCSession();
+		
+		List results = jdbcDao.executeQuery(chkParticipantMrn);
+		if(results != null && !results.isEmpty()){
+    List mrns = (List)results.get(0);
+    
+		if(mrns != null && !StringUtils.isBlank(mrns.get(0).toString())){
+		String getsiteCount = "select count(mrn.site_id) from catissue_part_medical_id mrn join catissue_site_users csu "
+				+ " on csu.site_id = mrn.site_id where csu.user_id = "+userId +" and mrn.participant_id="+participant.getId();
+		
+		List result = jdbcDao.executeQuery(getsiteCount);
+		if(result != null && result.get(0)!= null){
+			Object[] obj = (Object[])result.get(0);
+			if(Integer.valueOf(obj[0].toString()) == 0){
+				return false;
+			}
+		}
+		}
+		}
+		}
+		catch (ApplicationException exp) {
+			throw this.getBizLogicException(exp, exp.getErrorKeyName(), exp.getMsgValues());
+		}
+		}
+		return true;
 	}
 
 	@Override

@@ -10,7 +10,7 @@ import com.krishagni.catissueplus.core.common.repository.Dao;
 
 public interface CollectionProtocolRegistrationDao extends Dao<CollectionProtocolRegistration> {
 
-	public List<ParticipantInfo> getParticipants(Long cpId, String searchString);
+	public List<ParticipantInfo> getParticipants(Long cpId, Long userId, String searchString);
 
 	public List<SpecimenCollectionGroupInfo> getScgList(Long cprId);
 
@@ -22,14 +22,16 @@ public interface CollectionProtocolRegistrationDao extends Dao<CollectionProtoco
 
 	boolean isPpidUniqueForProtocol(Long cpId, String protocolParticipantIdentifier);
 	
-	public List<ParticipantInfo> getPhiParticipants(Long cpId, String searchString);
+	public List<ParticipantInfo> getPhiParticipants(Long cpId,Long userId, String searchString);
 
-	public ParticipantInfo getPhiParticipant(Long cpId, Long participantId);
+	public ParticipantInfo getPhiParticipant(Long cpId, Long userId);
 
 	public ParticipantInfo getParticipant(Long cpId, Long participantId);
 
 	public List<CollectionProtocolRegistration> getRegDetailsForParticipant(Long participantId);
 
 	public List<CollectionProtocolRegistration> getSubRegDetailForParticipantAndCp(Long participantId,Long cpId);
+
+	public List<ParticipantInfo> getParticipantsForAdmin(Long cpId, String searchStr);
 
 }

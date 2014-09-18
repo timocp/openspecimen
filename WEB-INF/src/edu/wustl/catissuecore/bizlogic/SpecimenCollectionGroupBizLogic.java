@@ -91,6 +91,7 @@ import edu.wustl.common.util.global.Validator;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.dao.DAO;
 import edu.wustl.dao.HibernateDAO;
+import edu.wustl.dao.JDBCDAO;
 import edu.wustl.dao.QueryWhereClause;
 import edu.wustl.dao.condition.EqualClause;
 import edu.wustl.dao.exception.DAOException;
@@ -3620,6 +3621,11 @@ public class SpecimenCollectionGroupBizLogic extends CatissueDefaultBizLogic
 			{
 				protectionElementName = this.getObjectId(dao, domainObject);
 			}
+			if(!hasSiteAccess((SpecimenCollectionGroup)domainObject, sessionDataBean.getUserId(), dao)){
+				throw AppUtility.getUserNotAuthorizedException("Registration",
+						protectionElementName, domainObject.getClass()
+								.getSimpleName());
+			}
 			// Get the required privilege name which we would like to check for
 			// the logged in user.
 			final String privilegeName = this.getPrivilegeName(domainObject);
@@ -3643,6 +3649,48 @@ public class SpecimenCollectionGroupBizLogic extends CatissueDefaultBizLogic
 		}
 	}
 
+	public boolean hasSiteAccess(SpecimenCollectionGroup scg, Long userId, DAO dao) throws BizLogicException {
+		String chkParticipantMrn = "select mrn.site_id from catissue_part_medical_id mrn join catissue_coll_prot_reg cpr"
+				+ " on cpr.participant_id = mrn.participant_id "
+				+ " where cpr.identifier = "+scg.getCollectionProtocolRegistration().getId();
+		JDBCDAO jdbcDao = null;
+		try {
+			jdbcDao = AppUtility.openJDBCSession();
+		
+		List results = jdbcDao.executeQuery(chkParticipantMrn);
+		if(results != null && !results.isEmpty()){
+	    List mrns = (List)results.get(0);
+	    
+		if(mrns != null && !StringUtils.isBlank(mrns.get(0).toString())){
+		String getsiteCount = "select count(mrn.site_id) from catissue_part_medical_id mrn join catissue_site_users csu "
+				+ " on csu.site_id = mrn.site_id where csu.user_id = "+userId;
+		
+		List result = jdbcDao.executeQuery(getsiteCount);
+		if(result != null && result.get(0)!= null){
+			Object[] obj = (Object[])result.get(0);
+			if(Integer.valueOf(obj[0].toString()) == 0){
+				return false;
+			}
+		}
+		}
+		}
+		}
+		catch (ApplicationException exp) {
+			throw this.getBizLogicException(exp, exp.getErrorKeyName(), exp.getMsgValues());
+		}
+		finally{
+			if(jdbcDao != null){
+				try {
+					AppUtility.closeJDBCSession(jdbcDao);
+				}
+				catch (ApplicationException exp) {
+					throw this.getBizLogicException(exp, exp.getErrorKeyName(), exp.getMsgValues());
+				}
+			}
+		}
+		
+		return true;
+	}
 	/**
 	 * @return boolean
 	 */

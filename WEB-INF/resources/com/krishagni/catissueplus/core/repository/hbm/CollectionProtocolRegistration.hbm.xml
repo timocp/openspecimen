@@ -57,67 +57,115 @@
 			<one-to-many
 				class="com.krishagni.catissueplus.core.biospecimen.domain.SpecimenCollectionGroup" />
 		</set>
-
-		        <query name="getParticipantsByCpId">
-            select cpr.id, participant.id,  
-            cpr.protocolParticipantIdentifier 
-            from CollectionProtocolRegistration cpr inner join 
-            cpr.participant participant 
-            inner join cpr.collectionProtocol cp 
-            where cp.id = :cpId and cpr.activityStatus != 'Disabled' and 
-            participant.activityStatus != 'Disabled'
-        </query>
+		
+		<sql-query name="getParticipantsForAdminByCpId">
+	    	<return-scalar column="cprId" type="long" />
+	    	<return-scalar column="pId" type="long" />
+	    	<return-scalar column="ppId" type="string" />
+	    	<return-scalar column="firstName" type="string" />
+	    	<return-scalar column="lastName" type="string" />
+	    	
+			select cpr.identifier as cprId, p.identifier as pId, cpr.protocol_participant_id as ppId, p.first_name as firstName, p.last_name as lastName
+			 from catissue_participant p inner join catissue_coll_prot_reg cpr on cpr.participant_id = p.identifier
+			inner join catissue_collection_protocol cp on cp.identifier=cpr.collection_protocol_id
+			where cp.identifier = :cpId and cpr.activity_status != 'Disabled'
+			and p.activity_status != 'Disabled'
+        </sql-query>
         
-        <query name="getPhiParticipantsByCpId">
-            select cpr.id, participant.id, cpr.protocolParticipantIdentifier, participant.firstName, participant.lastName 
-            from CollectionProtocolRegistration cpr inner join 
-            cpr.participant participant 
-            inner join cpr.collectionProtocol cp 
-            where cp.id = :cpId and cpr.activityStatus != 'Disabled' and 
-            participant.activityStatus != 'Disabled'
-        </query>
-
-        <query name="getParticipantsByCpIdAndSearchTerm">
-            select
-            cpr.id, participant.id, cpr.protocolParticipantIdentifier 
-            from
-            CollectionProtocolRegistration cpr
-            inner join
-            cpr.participant participant
-            inner join cpr.collectionProtocol cp
-            where
-            cp.id = :cpId
-            and (
-            lower(cpr.protocolParticipantIdentifier) like :searchTerm
+        <sql-query name="getParticipantsForAdminByCpIdAndSeachTerm">
+	    	<return-scalar column="cprId" type="long" />
+	    	<return-scalar column="pId" type="long" />
+	    	<return-scalar column="ppId" type="string" />
+	    	<return-scalar column="firstName" type="string" />
+	    	<return-scalar column="lastName" type="string" />
+	    	
+			select cpr.identifier as cprId, p.identifier as pId, cpr.protocol_participant_id as ppId, p.first_name as firstName, p.last_name as lastName
+			 from catissue_participant p inner join catissue_coll_prot_reg cpr on cpr.participant_id = p.identifier
+			inner join catissue_collection_protocol cp on cp.identifier=cpr.collection_protocol_id
+			where cp.identifier = :cpId and cpr.activity_status != 'Disabled'
+			and p.activity_status != 'Disabled'
+			and (
+            lower(p.first_Name) like :searchTerm or
+            lower(p.last_Name) like :searchTerm or
+            lower(cpr.protocol_Participant_Id) like :searchTerm
             )
-            and
-            cpr.activityStatus != 'Disabled' and participant.activityStatus !=
-            'Disabled'
-        </query>
+        </sql-query>
         
-        <query name="getPhiParticipantsByCpIdAndSearchTerm">
-            select
-            cpr.id, participant.id, cpr.protocolParticipantIdentifier, participant.firstName, participant.lastName 
-            from
-            CollectionProtocolRegistration cpr
-            inner join
-            cpr.participant participant
-            inner join cpr.collectionProtocol cp
-            where
-            cp.id = :cpId
+	    <sql-query name="getParticipantsByCpId">
+	    	<return-scalar column="cprId" type="long" />
+	    	<return-scalar column="pId" type="long" />
+	    	<return-scalar column="ppId" type="string" />
+	    	
+			select distinct cpr.identifier as cprId, p.identifier as pId, cpr.protocol_participant_id as ppId
+			 from catissue_participant p inner join catissue_coll_prot_reg cpr on cpr.participant_id = p.identifier
+			left join catissue_part_medical_id pmi on pmi.participant_id = p.identifier
+			inner join catissue_collection_protocol cp on cp.identifier=cpr.collection_protocol_id
+			left join catissue_site_users su on su.site_id = pmi.site_id 
+			where (pmi.site_id is null or su.user_id = :userId) and cp.identifier = :cpId and cpr.activity_status != 'Disabled'
+			and p.activity_status != 'Disabled'
+        </sql-query>
+        
+        <sql-query name="getPhiParticipantsByCpId">
+        	<return-scalar column="cprId" type="long" />
+	    	<return-scalar column="pId" type="long" />
+	    	<return-scalar column="ppId" type="string" />
+	    	<return-scalar column="firstName" type="string" />
+	    	<return-scalar column="lastName" type="string" />
+	    	
+            select distinct cpr.identifier as cprId, p.identifier as pId, cpr.protocol_participant_id as ppId, p.first_name as firstName, p.last_name as lastName
+			 from catissue_participant p inner join catissue_coll_prot_reg cpr on cpr.participant_id = p.identifier
+			left join catissue_part_medical_id pmi on pmi.participant_id = p.identifier
+			inner join catissue_collection_protocol cp on cp.identifier=cpr.collection_protocol_id
+			left join catissue_site_users su on su.site_id = pmi.site_id 
+			where (pmi.site_id is null or su.user_id = :userId) and cp.identifier = :cpId and cpr.activity_status != 'Disabled'
+			and p.activity_status != 'Disabled'
+        </sql-query>
+
+        <sql-query name="getParticipantsByCpIdAndSearchTerm">
+        	<return-scalar column="cprId" type="long" />
+	    	<return-scalar column="pId" type="long" />
+	    	<return-scalar column="ppId" type="string" />
+	    	
+        	select distinct cpr.identifier as cprId, p.identifier as pId, cpr.protocol_participant_id as ppId
+			 from catissue_participant p inner join catissue_coll_prot_reg cpr on cpr.participant_id = p.identifier
+			left join catissue_part_medical_id pmi on pmi.participant_id = p.identifier
+			inner join catissue_collection_protocol cp on cp.identifier=cpr.collection_protocol_id
+			left join catissue_site_users su on su.site_id = pmi.site_id 
+			where (pmi.site_id is null or su.user_id = :userId) and cp.identifier = :cpId and cpr.activity_status != 'Disabled'
+			and p.activity_status != 'Disabled'
             and (
-            lower(participant.firstName) like :searchTerm or
-            lower(participant.lastName) like :searchTerm or
-            lower(cpr.protocolParticipantIdentifier) like :searchTerm
+            lower(cpr.protocol_Participant_Id) like :searchTerm
             )
-            and
-            cpr.activityStatus != 'Disabled' and participant.activityStatus !=
-            'Disabled'
-        </query>
+        </sql-query>
         
-        <query name="getParticipantByCPAndParticipantId">
+        <sql-query name="getPhiParticipantsByCpIdAndSearchTerm">
+        	<return-scalar column="cprId" type="long" />
+	    	<return-scalar column="pId" type="long" />
+	    	<return-scalar column="ppId" type="string" />
+	    	<return-scalar column="firstName" type="string" />
+	    	<return-scalar column="lastName" type="string" />
+	    	
+            select distinct cpr.identifier cprId, p.identifier as pId, cpr.protocol_participant_id as ppId, p.first_name as firstName, p.last_name as lastName
+			 from catissue_participant p inner join catissue_coll_prot_reg cpr on cpr.participant_id = p.identifier
+			left join catissue_part_medical_id pmi on pmi.participant_id = p.identifier
+			inner join catissue_collection_protocol cp on cp.identifier=cpr.collection_protocol_id
+			left join catissue_site_users su on su.site_id = pmi.site_id 
+			where (pmi.site_id is null or su.user_id = :userId) and cp.identifier = :cpId and cpr.activity_status != 'Disabled'
+			and p.activity_status != 'Disabled'
+            and (
+            lower(p.first_Name) like :searchTerm or
+            lower(p.last_Name) like :searchTerm or
+            lower(cpr.protocol_Participant_Id) like :searchTerm
+            )
+        </sql-query>
+        
+        <sql-query name="getParticipantByCPAndParticipantId">
+        	<return-scalar column="cprId" type="long" />
+	    	<return-scalar column="pId" type="long" />
+	    	<return-scalar column="ppId" type="string" />
+
             select
-            cpr.id, participant.id, cpr.protocolParticipantIdentifier 
+            cpr.id as cprId, participant.id as pId, cpr.protocolParticipantIdentifier as ppId 
             from
             CollectionProtocolRegistration cpr
             inner join
@@ -128,24 +176,21 @@
             and 
             participant.id = :participantId
             and
-            cpr.activityStatus != 'Disabled' and participant.activityStatus !=
-            'Disabled'
-        </query>
-        <query name="getPhiParticipantByCPAndParticipantId">
-            select
-            cpr.id, participant.id, cpr.protocolParticipantIdentifier, participant.lastName, participant.firstName 
-            from
-            CollectionProtocolRegistration cpr
-            inner join
-            cpr.participant participant
-            inner join cpr.collectionProtocol cp
-            where
-            cp.id = :cpId
-            and participant.id = :participantId 
-            and
-            cpr.activityStatus != 'Disabled' and participant.activityStatus !=
-            'Disabled'
-        </query>
+            cpr.activityStatus != 'Disabled' and participant.activityStatus != 'Disabled'
+        </sql-query>
+        <sql-query name="getPhiParticipantByCPAndParticipantId">
+        	<return-scalar column="cprId" type="long" />
+	    	<return-scalar column="pId" type="long" />
+	    	<return-scalar column="ppId" type="string" />
+	    	<return-scalar column="firstName" type="string" />
+	    	<return-scalar column="lastName" type="string" />
+	    	
+        	select distinct cpr.identifier as cprId, p.identifier as pId, cpr.protocol_participant_id as ppId, p.first_name as firstName, p.last_name as lastName
+			 from catissue_participant p inner join catissue_coll_prot_reg cpr on cpr.participant_id = p.identifier
+			inner join catissue_collection_protocol cp on cp.identifier=cpr.collection_protocol_id
+			cp.identifier = :cpId and cpr.activity_status != 'Disabled'
+			and p.activity_status != 'Disabled' participant.id = :participantId
+        </sql-query>
 
 		<query name="getCollectionGroupsByCprId">
 			select scg.id,scg.name,scg.collectionStatus,

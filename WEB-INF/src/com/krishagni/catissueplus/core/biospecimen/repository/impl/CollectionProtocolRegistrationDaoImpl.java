@@ -2,6 +2,7 @@
 package com.krishagni.catissueplus.core.biospecimen.repository.impl;
 
 import edu.wustl.catissuecore.domain.CollectionProtocolEvent;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -31,7 +32,7 @@ public class CollectionProtocolRegistrationDaoImpl extends AbstractDao<Collectio
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<ParticipantInfo> getParticipants(Long cpId, String searchString) {
+	public List<ParticipantInfo> getParticipants(Long cpId, Long userId, String searchString) {
 		boolean isSearchTermSpecified = !StringUtils.isBlank(searchString);
 
 		String queryName = GET_PARTICIPANTS_BY_CP_ID;
@@ -41,6 +42,7 @@ public class CollectionProtocolRegistrationDaoImpl extends AbstractDao<Collectio
 		
 		Query query = sessionFactory.getCurrentSession().getNamedQuery(queryName);
 		query.setLong("cpId", cpId);
+		query.setLong("userId", userId);
 
 		if (isSearchTermSpecified) {
 			query.setString("searchTerm", "%" + searchString.toLowerCase() + "%");
@@ -57,7 +59,7 @@ public class CollectionProtocolRegistrationDaoImpl extends AbstractDao<Collectio
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<ParticipantInfo> getPhiParticipants(Long cpId, String searchString) {
+	public List<ParticipantInfo> getPhiParticipants(Long cpId, Long userId, String searchString) {
 		boolean isSearchTermSpecified = !StringUtils.isBlank(searchString);
 
 		String queryName = GET_PHI_PARTICIPANTS_BY_CP_ID;
@@ -67,6 +69,7 @@ public class CollectionProtocolRegistrationDaoImpl extends AbstractDao<Collectio
 		
 		Query query = sessionFactory.getCurrentSession().getNamedQuery(queryName);
 		query.setLong("cpId", cpId);
+		query.setLong("userId", userId);
 		if (isSearchTermSpecified) {
 			query.setString("searchTerm", "%" + searchString.toLowerCase() + "%");
 		}
@@ -204,6 +207,30 @@ public class CollectionProtocolRegistrationDaoImpl extends AbstractDao<Collectio
 		query.setLong("participantId", participantId);
 		query.setLong("cpId", cpId);
 		return query.list();
+	}
+	
+	@Override
+	public List<ParticipantInfo> getParticipantsForAdmin(Long cpId, String searchStr) {
+		boolean isSearchTermSpecified = !StringUtils.isBlank(searchStr);
+
+		String queryName = FQN + ".getParticipantsForAdminByCpId";
+		if (isSearchTermSpecified) {
+			queryName = FQN + ".getParticipantsForAdminByCpIdAndSeachTerm";
+		}
+		
+		Query query = sessionFactory.getCurrentSession().getNamedQuery(queryName);
+		query.setLong("cpId", cpId);
+		if (isSearchTermSpecified) {
+			query.setString("searchTerm", "%" + searchStr.toLowerCase() + "%");
+		}
+		query.setMaxResults(Utility.getMaxParticipantCnt());
+		List<ParticipantInfo> result = new ArrayList<ParticipantInfo>();
+		List<Object[]> rows = query.list();
+		for (Object[] row : rows) {
+			result.add(preparePhiParticipantInfo(row));
+		}
+
+		return result;
 	}
 	
 	private ParticipantInfo preparePhiParticipantInfo(Object[] row) {

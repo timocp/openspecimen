@@ -64,11 +64,16 @@ public class CollectionProtocolServiceImpl implements CollectionProtocolService 
 			Long cpId = req.getCpId();
 			String searchStr = req.getSearchString();
 			List<ParticipantInfo> participants = new ArrayList<ParticipantInfo>();
-			if(privilegeSvc.hasPrivilege(req.getSessionDataBean().getUserId(), cpId,Permissions.REGISTRATION)){
-					participants = daoFactory.getCprDao().getPhiParticipants(cpId, searchStr);
+			Long userId = req.getSessionDataBean().getUserId();
+			if(req.getSessionDataBean().isAdmin())
+			{
+				participants = daoFactory.getCprDao().getParticipantsForAdmin(cpId, searchStr);
+			}
+			else if(privilegeSvc.hasPrivilege(req.getSessionDataBean().getUserId(), cpId,Permissions.REGISTRATION)){
+					participants = daoFactory.getCprDao().getPhiParticipants(cpId, userId, searchStr);
 			}
 			else{
-				participants = daoFactory.getCprDao().getParticipants(cpId, searchStr);
+				participants = daoFactory.getCprDao().getParticipants(cpId, userId, searchStr);
 			}
 			
 			return ParticipantsSummaryEvent.ok(participants);
@@ -84,6 +89,7 @@ public class CollectionProtocolServiceImpl implements CollectionProtocolService 
 		try {
 			Long cpId = event.getCpId();
 			Long participantId = event.getParticipantId();
+			Long userId = event.getSessionDataBean().getUserId();
 			ParticipantInfo participant;
 			if(privilegeSvc.hasPrivilege(event.getSessionDataBean().getUserId(), cpId,Permissions.REGISTRATION)){
 				participant = daoFactory.getCprDao().getPhiParticipant(cpId, participantId);
