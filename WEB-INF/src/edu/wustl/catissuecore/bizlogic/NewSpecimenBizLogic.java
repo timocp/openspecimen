@@ -170,6 +170,11 @@ public class NewSpecimenBizLogic extends CatissueDefaultBizLogic
 		{
 			final Specimen specimen = (Specimen) obj;
 			this.setParent(dao, specimen);
+			if(!hasSiteAccess((Specimen)(specimen), sessionDataBean.getUserId(), dao)){
+				String protectionElementName = this.getObjectId(dao, specimen);
+			throw AppUtility.getUserNotAuthorizedException("Specimen processing",
+					protectionElementName, specimen.getClass().getSimpleName());
+			}
 			//bug 15392 start
 			Integer pos1 = null;
 			Integer pos2 = null;
@@ -1187,10 +1192,10 @@ public class NewSpecimenBizLogic extends CatissueDefaultBizLogic
 	 */
 	private void setSCGToSpecimen(Specimen specimen, DAO dao) throws BizLogicException
 	{
-		Collection<ConsentTierStatus> consentTierStatusCollection = null;
+//		Collection<ConsentTierStatus> consentTierStatusCollection = null;
 		SpecimenCollectionGroup scg = specimen.getSpecimenCollectionGroup();
-		scg = new SpecimenCollectionGroupBizLogic().retrieveSCG(dao, scg);
-		this.setConsentTierStatus(specimen, consentTierStatusCollection);
+		scg = new SpecimenCollectionGroupBizLogic().retrieveSCG(dao, scg,specimen);
+//		this.setConsentTierStatus(specimen, consentTierStatusCollection);
 		specimen.setSpecimenCollectionGroup(scg);
 	}
 
@@ -3250,14 +3255,14 @@ public class NewSpecimenBizLogic extends CatissueDefaultBizLogic
 	{
 		final SpecimenCollectionGroup scg = specimen.getSpecimenCollectionGroup();
 
-		if (specimen.getParentSpecimen() == null
-				&& (scg == null || ((scg.getId() == null || scg.getId().equals("-1")) && (scg
-						.getGroupName() == null || scg.getGroupName().equals("")))))
-		{
-			final String message = ApplicationProperties
-					.getValue("specimen.specimenCollectionGroup");
-			throw this.getBizLogicException(null, "errors.item.required", message);
-		}
+//		if (specimen.getParentSpecimen() == null
+//				&& (scg == null || ((scg.getId() == null || scg.getId().equals("-1")) && (scg
+//						.getGroupName() == null || scg.getGroupName().equals("")))))
+//		{
+//			final String message = ApplicationProperties
+//					.getValue("specimen.specimenCollectionGroup");
+//			throw this.getBizLogicException(null, "errors.item.required", message);
+//		}
 		/*
 		 * if (!Variables.isSpecimenLabelGeneratorAvl) { if
 		 * (specimen.getParentSpecimen() != null && ((Specimen)
@@ -5045,10 +5050,10 @@ public class NewSpecimenBizLogic extends CatissueDefaultBizLogic
 				}
 				else
 				{
-					if(!hasSiteAccess((Specimen)(domainObject), sessionDataBean.getUserId(), dao)){
-						throw AppUtility.getUserNotAuthorizedException("Specimen processing",
-								protectionElementName, domainObject.getClass().getSimpleName());
-					}
+//					if(!hasSiteAccess((Specimen)(domainObject), sessionDataBean.getUserId(), dao)){
+//						throw AppUtility.getUserNotAuthorizedException("Specimen processing",
+//								protectionElementName, domainObject.getClass().getSimpleName());
+//					}
 					protectionElementName = this.getObjectId(dao, domainObject);
 					Site site = null;
 					StorageContainer stCont = null;

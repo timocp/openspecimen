@@ -29,6 +29,7 @@ import java.util.TreeMap;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.Criteria;
 import org.hibernate.LazyInitializationException;
 import org.json.JSONException;
 
@@ -3229,35 +3230,110 @@ public class SpecimenCollectionGroupBizLogic extends CatissueDefaultBizLogic
 	 */
 	//bug 13776 start
 	public SpecimenCollectionGroup retrieveSCG(DAO dao,
-			AbstractSpecimenCollectionGroup scg) throws BizLogicException
+			SpecimenCollectionGroup scg, Specimen specimen) throws BizLogicException
 	{
+		
 		try
-		{
+		{ 
+			String retrieveScgHql = "from "+SpecimenCollectionGroup.class.getName()+ " scg where scg.collectionTimestamp = ? and"
+					+ " scg.collectionProtocolRegistration.protocolParticipantIdentifier=? ";//'"+scg.getCollectionTimestamp()+"'";
 			SpecimenCollectionGroup absScg = null;
-			final String sourceObjectName = SpecimenCollectionGroup.class
-					.getName();
-			final QueryWhereClause queryWhereClause = new QueryWhereClause(
-					sourceObjectName);
-			if (scg.getId() != null)
-			{
-				queryWhereClause
-						.addCondition(new EqualClause("id", scg.getId()));
+			ColumnValueBean scgCollTime = new ColumnValueBean(scg.getCollectionTimestamp());
+			ColumnValueBean ppId = new ColumnValueBean(scg.getCollectionProtocolRegistration().getProtocolParticipantIdentifier());
+			List<ColumnValueBean> scgHqlParams = new ArrayList<ColumnValueBean>();
+			
+			scgHqlParams.add(scgCollTime);
+			scgHqlParams.add(ppId);
+			List scgList = dao.executeQuery(retrieveScgHql, scgHqlParams);
+			if(scgList.size() > 0){
+				absScg = (SpecimenCollectionGroup)scgList.get(0);
 			}
-			else if (scg.getGroupName() != null)
-			{
-				queryWhereClause.addCondition(new EqualClause("name", scg
-						.getGroupName()));
+			else{
+				String retrieveCPR = "from "+CollectionProtocolRegistration.class.getName()+" cpr where cpr.protocolParticipantIdentifier='"
+						+scg.getCollectionProtocolRegistration().getProtocolParticipantIdentifier()
+						+ "' and cpr.collectionProtocol.shortTitle='"+scg.getCollectionProtocolRegistration().getCollectionProtocol().getShortTitle()+"'";
+				List result = dao.executeQuery(retrieveCPR);
+				if(result.isEmpty()){
+					String message = ApplicationProperties
+							.getValue("specimenCollectionGroup.studyCalenderEventPointAndPPID");
+					throw this
+							.getBizLogicException(new Exception(message), "", message);
+				}
+				CollectionProtocolRegistration cpr = (CollectionProtocolRegistration)result.get(0);
+				scg.setCollectionProtocolRegistration(cpr);
+				if(cpr.getCollectionProtocol().getCollectionProtocolEventCollection() != null && !cpr.getCollectionProtocol().getCollectionProtocolEventCollection().isEmpty()){
+				  CollectionProtocolEvent cpe = (CollectionProtocolEvent)cpr.getCollectionProtocol().getCollectionProtocolEventCollection().iterator().next();
+				  scg.setCollectionProtocolEvent(cpe);
+				}
+				String retrieveSite = "from "+Site.class.getName()+" site where name='"+scg.getSpecimenCollectionSite().getName()+"'";
+				List siteResult = dao.executeQuery(retrieveSite);
+				if(siteResult.isEmpty()){
+					String message = ApplicationProperties
+							.getValue("specimenCollectionGroup.site");
+					throw this.getBizLogicException(null,
+							"errors.item.invalid", message);
+				}
+				Site site = (Site)siteResult.get(0);
+				scg.setSpecimenCollectionSite(site);
+				
+				String retrieveCollector = "from "+User.class.getName()+" user where user.loginName = '"+scg.getCollector().getLoginName()+"'";
+				List collResult = dao.executeQuery(retrieveCollector);
+				if(collResult.isEmpty()){
+					String message = ApplicationProperties
+							.getValue("specimenCollectionGroup.site");
+					throw this.getBizLogicException(null,
+							"errors.item.invalid", message);
+				}
+				User collector = (User)collResult.get(0);
+				scg.setCollector(collector);
+								
+				String retrieveReciever = "from "+User.class.getName()+" user where user.loginName = '"+scg.getReceiver().getLoginName()+"'";
+				List recResult = dao.executeQuery(retrieveReciever);
+				if(recResult.isEmpty()){
+					String message = ApplicationProperties
+							.getValue("specimenCollectionGroup.site");
+					throw this.getBizLogicException(null,
+							"errors.item.invalid", message);
+				}
+				User reciever = (User)recResult.get(0);
+				scg.setReceiver(reciever);
+				
+				if(validate(scg, dao, Constants.ADD)){
+					dao.insert(scg);
+				}
+				else{
+					String message = ApplicationProperties
+							.getValue("specimenCollectionGroup.studyCalenderEventPointAndPPID");
+					throw this
+							.getBizLogicException(new Exception(message), "", message);
+				}
+				absScg = scg;
 			}
-			final List dataList = this.getSCGFromDB(queryWhereClause, dao);
-			if (dataList != null
-					&& !dataList.isEmpty()
-					&& Status.ACTIVITY_STATUS_DISABLED.toString().equals(
-							((Object[]) dataList.get(0))[1]))
-			{
-				throw this.getBizLogicException(null, "error.object.disabled",
-						"Specimen Collection Group");
-			}
-			absScg = this.initSCG(dataList, dao, scg);
+			
+//			final String sourceObjectName = SpecimenCollectionGroup.class
+//					.getName();
+//			final QueryWhereClause queryWhereClause = new QueryWhereClause(
+//					sourceObjectName);
+//			if (scg.getId() != null)
+//			{
+//				queryWhereClause
+//						.addCondition(new EqualClause("id", scg.getId()));
+//			}
+//			else if (scg.getGroupName() != null)
+//			{
+//				queryWhereClause.addCondition(new EqualClause("name", scg
+//						.getGroupName()));
+//			}
+//			final List dataList = this.getSCGFromDB(queryWhereClause, dao);
+//			if (dataList != null
+//					&& !dataList.isEmpty()
+//					&& Status.ACTIVITY_STATUS_DISABLED.toString().equals(
+//							((Object[]) dataList.get(0))[1]))
+//			{
+//				throw this.getBizLogicException(null, "error.object.disabled",
+//						"Specimen Collection Group");
+//			}
+//			absScg = this.initSCG(dataList, dao, scg);
 			return absScg;
 		}
 		catch (final DAOException daoExp)
