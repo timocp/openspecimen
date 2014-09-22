@@ -1,25 +1,19 @@
 var typeCombo;
-var classNameCombo;
+
 var collectionStatusCombo;
 function initCombo()
 {
-	    classNameCombo = dhtmlXComboFromSelect("className");
-		//classNameCombo.setOptionWidth(203);
-		classNameCombo.setSize(203);
-		classNameCombo.attachEvent("onChange", function(){onSpecimenTypeChange(this);validateAndProcessDeriveComboData(this);});
-		classNameCombo.attachEvent("onOpen",onComboClick);
-		classNameCombo.attachEvent("onKeyPressed",onComboKeyPress);
-	//	classNameCombo.attachEvent("onChange", function(){validateAndProcessComboData(this);});
-
-		
+	    
 		typeCombo = dhtmlXComboFromSelect("type");
 		//typeCombo.setOptionWidth(203);
 		typeCombo.setSize(203);
-		typeCombo.attachEvent("onChange", function(){validateAndProcessDeriveComboData(this);});
+		typeCombo.attachEvent("onChange", function(){validateAndProcessDeriveComboData(this);
+			
+		});
 		typeCombo.attachEvent("onOpen",onComboClick);
 		typeCombo.attachEvent("onKeyPressed",onComboKeyPress);
-		setDefaultText("extIdName",defaultTextForExtIdName);
-	    setDefaultText("extIdValue",defaultTextForExtIdValue);
+		/*setDefaultText("extIdName",defaultTextForExtIdName);
+	    setDefaultText("extIdValue",defaultTextForExtIdValue);*/
 
 	//	typeCombo.attachEvent("onChange", function(){validateAndProcessComboData(this);});
 }
@@ -28,28 +22,15 @@ var tissueSiteCombo;
 var tissueSideCombo;
 function initSpecimenCombo()
 {
-		tissueSiteCombo = dhtmlXComboFromSelect("tissueSite");
-		tissueSiteCombo.setOptionWidth(202);
-		tissueSiteCombo.setSize(202);
-		tissueSiteCombo.attachEvent("onChange", function(){validateAndProcessComboData(this);});
-//		tissueSiteCombo.enableFilteringMode(true);
-		tissueSiteCombo.attachEvent("onOpen",onComboClick);
-		tissueSiteCombo.attachEvent("onKeyPressed",onComboKeyPress);
+		
 
-		tissueSideCombo = dhtmlXComboFromSelect("tissueSide");
-		tissueSideCombo.setOptionWidth(203);
-		tissueSideCombo.setSize(203);
-		tissueSideCombo.attachEvent("onChange", function(){validateAndProcessComboData(this);});
-		tissueSideCombo.attachEvent("onOpen",onComboClick);
-		tissueSideCombo.attachEvent("onKeyPressed",onComboKeyPress);
-
-		pathologicalStatusCombo = dhtmlXComboFromSelect("pathologicalStatus");
+	/*	pathologicalStatusCombo = dhtmlXComboFromSelect("pathologicalStatus");
 		pathologicalStatusCombo.setOptionWidth(203);
 		pathologicalStatusCombo.setSize(203);
 		pathologicalStatusCombo.attachEvent("onChange", function(){validateAndProcessComboData(this);});
 		pathologicalStatusCombo.attachEvent("onOpen",onComboClick);
 		pathologicalStatusCombo.attachEvent("onKeyPressed",onComboKeyPress);
-
+*/
 		collectionStatusCombo = dhtmlXComboFromSelect("collectionStatus");
 		collectionStatusCombo.setOptionWidth(203);
 		collectionStatusCombo.setSize(203);
@@ -57,13 +38,6 @@ function initSpecimenCombo()
 		collectionStatusCombo.attachEvent("onOpen",onComboClick);
 		collectionStatusCombo.attachEvent("onKeyPressed",onComboKeyPress);
 		
-		classNameCombo = dhtmlXComboFromSelect("className");
-		classNameCombo.setOptionWidth(203);
-		classNameCombo.setSize(203);
-		classNameCombo.attachEvent("onChange", function(){onSpecimenTypeChange(this); validateAndProcessComboData(this);});
-		classNameCombo.attachEvent("onOpen",onComboClick);
-		classNameCombo.attachEvent("onKeyPressed",onComboKeyPress);
-
 		typeCombo = dhtmlXComboFromSelect("type");
 		typeCombo.setOptionWidth(203);
 		typeCombo.setSize(203);
@@ -129,14 +103,14 @@ function addEditExtIdTag(buttonElement)
 				
 				ul.appendChild(li);
 				
-				setDefaultText("extIdName",defaultTextForExtIdName);
-				setDefaultText("extIdValue",defaultTextForExtIdValue);
+				/*setDefaultText("extIdName",defaultTextForExtIdName);
+				setDefaultText("extIdValue",defaultTextForExtIdValue);*/
 			
 		}else{
 				editElement.firstChild.nodeValue=nameObj.value+" - "+valueObj.value;
 				document.getElementById('addEditExtIdButton').value="Add";
-				setDefaultText("extIdName",defaultTextForExtIdName);
-				setDefaultText("extIdValue",defaultTextForExtIdValue);
+				/*setDefaultText("extIdName",defaultTextForExtIdName);
+				setDefaultText("extIdValue",defaultTextForExtIdValue);*/
 				
 				var hidden = document.getElementById(editElement.id+"Status");
 				if(hidden.value!="ADD")
@@ -348,8 +322,8 @@ function initializeSpecimenPage(biohazardNameJSON)
 {
 	onSpecimenSubTypeChange();
 	biohazardNameListJSON=biohazardNameJSON;
-	setDefaultText("extIdName",defaultTextForExtIdName);
-	setDefaultText("extIdValue",defaultTextForExtIdValue);
+	/*setDefaultText("extIdName",defaultTextForExtIdName);
+	setDefaultText("extIdValue",defaultTextForExtIdValue);*/
 	biohazardCombo=new dhtmlXCombo("biohazardSelect","biohazardSelectBox",165);
 	biohazardCombo.setComboText(defaultTextForBioName);
 	biohazardTypeCombo=new dhtmlXCombo({
@@ -452,7 +426,7 @@ function forwardToChildSpecimen(operation) {
 			break;
 			
 		
-		case '3' :	action = 'CPQueryCreateSpecimen.do?operation=add&pageOf=pageOfCreateSpecimenCPQuery&menuSelected=15&virtualLocated=true&forwardFromPage=editSpecimenPage&parentLabel='+specimenLabel+'&parentSpecimenId='+specimenId+'&specClassName='+classNameCombo.getSelectedText()+'&specType='+typeCombo.getSelectedText();
+		case '3' :	action = 'CPQueryCreateSpecimen.do?operation=add&pageOf=pageOfCreateSpecimenCPQuery&menuSelected=15&virtualLocated=true&forwardFromPage=editSpecimenPage&parentLabel='+specimenLabel+'&parentSpecimenId='+specimenId+'&specClassName='+getClassName+'&specType='+typeCombo.getSelectedText();
 					
 					if(document.getElementById("numberOfSpecimens").value>1)
 					{
@@ -529,7 +503,7 @@ function onSpecimenSubTypeChange()
 	var subTypeData5 = "Microdissected";
 	var subTypeData6 = "Fixed Tissue Slide";
 	
-	var className = classNameCombo.getComboText();
+	var className = getClassName();
 	var selectedOption = typeCombo.getComboText();
 	
 	
@@ -758,9 +732,9 @@ function submitTabData(operation)
 	
 	if(labelSubmit && submitCombo && quantitySubmit && availableQuantitySubmit && createdDateSubmit && concentrationSubmit)
 	{
-		var extidJSON = createExtIdJSON();
+		/*var extidJSON = createExtIdJSON();
 		var biohazardJSON = createBioHazardJSON();
-		
+		*/
 		
 		var isVirtual = document.getElementById("isVirtual").value;
 		
@@ -786,12 +760,12 @@ function submitTabData(operation)
 		}
 		if(operation = "add")
 		{
-			tabDataJSON['className']=classNameCombo.getSelectedText();
+			tabDataJSON['className']=getClassName();
 			tabDataJSON['type']=typeCombo.getComboText();
 		}
 		//var loader = dhtmlxAjax.postSync("SpecimenAjaxAction.do","type=updateSpecimen&dataJSON="+JSON.stringify(tabDataJSON)+"&extidJSON="+JSON.stringify(extidJSON)+"&biohazardJSON="+JSON.stringify(biohazardJSON)+"&printLabel="+printFlag);
-		tabDataJSON["externalIdentifiers"]=extidJSON;
-		tabDataJSON["bioHazards"]=biohazardJSON;
+		tabDataJSON["externalIdentifiers"]=[];//extidJSON;
+		tabDataJSON["bioHazards"]=[];//biohazardJSON;
 		tabDataJSON["isToPrintLabel"]=printFlag;
 		tabDataJSON["lineage"]=document.getElementById("lineage").value;
 		tabDataJSON["collectionStatus"]=collectionStatusCombo.getSelectedText();
@@ -839,6 +813,14 @@ function submitTabData(operation)
 	{
 		showErrorMessage("Unable to submit. Please resolve higlighted issue(s).");
 		scrollToTop();
+	}
+}
+
+function getClassName(){
+	if(typeCombo.getComboText()=="DNA"){
+		return "Molecular";
+	}else{
+		return "Fluid";
 	}
 }
 
@@ -929,9 +911,9 @@ req.onreadystatechange = function() {
 		}
 		else if(operation == 'add')
 		{
-			specimenData['tissueSite']=tissueSiteCombo.getSelectedText();
-			specimenData['tissueSide']=tissueSideCombo.getSelectedText();
-			specimenData['pathologicalStatus']=pathologicalStatusCombo.getSelectedText();
+			specimenData['tissueSite']="Not Specified";
+			specimenData['tissueSide']="Not Specified";
+			specimenData['pathologicalStatus']="Not Specified";
 			req.open("POST", "rest/specimens/", false);
 		}
 req.setRequestHeader("Content-Type",
@@ -1172,11 +1154,11 @@ function setLabelBarcodeVisibility(isSpecimenLabelGeneratorAvl,isSpecimenBarcode
 	if(isSpecimenLabelGeneratorAvl=='true' && isSpecimenBarcodeGeneratorAvl=='true' && (collectionStatus!='Collected'||operation=='add'))
 	{
 		document.getElementById('label').setAttribute('disabled',true);
-		document.getElementById('barcode').setAttribute('disabled',true);
+		//document.getElementById('barcode').setAttribute('disabled',true);
 	}
 	else if(isSpecimenLabelGeneratorAvl=='false' && isSpecimenBarcodeGeneratorAvl=='true' && (collectionStatus!='Collected'||operation=='add'))
 	{
-		document.getElementById('barcode').setAttribute('disabled',true);
+		//document.getElementById('barcode').setAttribute('disabled',true);
 	}
 	else if(isSpecimenLabelGeneratorAvl=='true' && isSpecimenBarcodeGeneratorAvl=='false' && (collectionStatus!='Collected'||operation=='add'))
 	{
@@ -1306,11 +1288,11 @@ function submitDeriveData()
 			deriveDataJSON["pos2"]= document.getElementById("pos2").value;
 			deriveDataJSON["containerId"]= document.getElementById("containerId").value;
 		}
-		deriveDataJSON["className"]= classNameCombo.getSelectedText();
+		deriveDataJSON["className"]=getClassName();
 		deriveDataJSON["type"]= typeCombo.getSelectedText();
 		deriveDataJSON["createdOn"]= document.getElementById('createdOn').value;
 		deriveDataJSON["initialQuantity"]= document.getElementById('initialQuantity').value;
-		deriveDataJSON["externalIdentifiers"] = deriveExtidJSON;
+		deriveDataJSON["externalIdentifiers"] = [];// deriveExtidJSON;
 		
 //		var loader1 =""; dhtmlxAjax.postSync("rest/specimen/createDerive/",JSON.stringify(deriveDataJSON));
 		var loader = testREST(deriveDataJSON);
@@ -1562,7 +1544,7 @@ var x = (screen.width / 3) - (w / 2);
 var y = 0;
 dhxWins = new dhtmlXWindows(); 
 dhxWins.createWindow("containerPositionPopUp", x, y, w, h);
-var className = classNameCombo.getSelectedText();
+var className = getClassName();
 var type = typeCombo.getSelectedText();
 var url = "ShowStoragePositionGridView.do?pageOf=pageOfderivative&forwardTo=gridView&holdSpecimenClass="+className+"&holdSpecimenType="+type+"&collectionProtocolId="+selectedCPID+"&pos1=&pos2=";
 dhxWins.window("containerPositionPopUp").attachURL(url);                     

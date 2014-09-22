@@ -177,45 +177,15 @@
                             </label>
                           </td>
                     </tr>
-                        <tr class="tr_alternate_color_white">
+					<tr class="tr_alternate_color_white">
                             <td width="20%" class="black_ar align_right_style">
                                 <img src="images/uIEnhancementImages/star.gif" alt="Mandatory" width="6" height="6" hspace="0" vspace="0" />
                                 <label for="label">
-                                    <bean:message key="specimen.label"/>
+                                    ASIG ID
                                 </label>
                             </td>
-                            <td align="left" width="30%">
-                                <html:text styleClass="black_ar" size="30" maxlength="255"  styleId="label" name="specimenDTO" property="label" onmouseover="showTip(this.id)" onmouseout="hideTip(this.id)" onblur="processData(this)" disabled="false" />
-                            </td>
-
-                            <td width="20%" class="black_ar align_right_style">
-                                <label for="barcode">
-                                    <bean:message key="specimen.barcode"/>
-                                </label>
-                            </td>
-                        
-                            <td width="30%" align="left" class="black_ar">
-                                <label for="barcode">
-                                    <html:text name="specimenDTO" 
-                                               styleClass="black_ar" maxlength="255" size="30"
-                                               styleId="barcode" property="barcode" onblur="processData(this)" disabled="false"/>
-                                </label>
-                            </td>
-                        </tr>
-                        <tr class="tr_alternate_color_lightGrey">
-                            <td  width="20%" class="black_ar align_right_style">
-                                <img src="images/uIEnhancementImages/star.gif" alt="Mandatory" width="6" height="6" hspace="0" vspace="0" />    
-                                <label for="className">
-                                    <bean:message key="specimen.type"/>
-                                </label>
-                            </td>
-                            <td width="30%" align="left" class="black_new">
-                            <html:select property="className" name="specimenDTO" 
-                                         styleClass="formFieldSized19" styleId="className" size="1"
-                                         onmouseover="showTip(this.id)" onmouseout="hideTip(this.id)">
-                                <html:options collection="specimenClassList"
-                                    labelProperty="name" property="value" />
-                           </html:select>
+                            <td align="left" width="30%"  class="black_new">
+                               <bean:write name="specimenDTO" property="asigID" scope="request"/>
                             </td>
 
                             <td width="20%" class="black_ar align_right_style">
@@ -233,67 +203,25 @@
                             </html:select>
                         
                               </td>
-                            </tr>
-                            
-                            <tr class="tr_alternate_color_white">
-                                <td width="20%" class="black_ar align_right_style">
-                                    <img src="images/uIEnhancementImages/star.gif" alt="Mandatory" width="6" height="6" hspace="0" vspace="0" />    
-                                    <label for="tissueSite">
-                                        <bean:message key="specimen.tissueSite"/>
-                                    </label>
-                                </td>
+                        </tr>
+						
+						
+						
+						
+                        <tr class="tr_alternate_color_lightGrey">
+                            <td width="20%" class="black_ar align_right_style">
+                                <img src="images/uIEnhancementImages/star.gif" alt="Mandatory" width="6" height="6" hspace="0" vspace="0" />
+                                <label for="label">
+                                    <bean:message key="specimen.label"/>
+                                </label>
+                            </td>
+                            <td align="left" width="30%">
+                                <html:text styleClass="black_ar" size="30" maxlength="255"  styleId="label" name="specimenDTO" property="label" onmouseover="showTip(this.id)" onmouseout="hideTip(this.id)" onblur="processData(this)" disabled="false" />
+                            </td>
 
-                                <td>
-                                <table style="border-collapse: collapse;">
-                                    <tr>
-                                    <td>    
-                                    <html:select property="tissueSite" name="specimenDTO" 
-                                    styleClass="formFieldSized19" styleId="tissueSite" size="1"
-                                    onmouseover="showTip(this.id)" onmouseout="hideTip(this.id)">
-                                    <html:options collection="tissueSiteList"
-                                        labelProperty="name" property="value" />
-                                    </html:select> 
-                                    </td>
-                                    </tr>
-                                    </table>
-                                </td>
-
-                                <td width="20%" class="black_ar align_right_style">
-                                    <img src="images/uIEnhancementImages/star.gif" alt="Mandatory" width="6" height="6" hspace="0" vspace="0" />    
-                                    <label for="tissueSide">
-                                        <bean:message key="specimen.tissueSide"/>
-                                    </label>
-                                </td>
-                                <td width="30%" align="left" class="black_new">
-                                <html:select property="tissueSide" name="specimenDTO" 
-                            styleClass="formFieldSized19" styleId="tissueSide" size="1"
-                            onmouseover="showTip(this.id)" onmouseout="hideTip(this.id)" >
-                            <html:options collection="tissueSideList"
-                                labelProperty="name" property="value" />
-                        </html:select>
-                                </td>
-                            </tr>
-                            
-                            <tr class="tr_alternate_color_lightGrey">
-                                <td width="20%" class="black_ar align_right_style">
-                                    <img src="images/uIEnhancementImages/star.gif" alt="Mandatory" width="6" height="6" hspace="0" vspace="0" />    
-                                    <label for="pathologicalStatus">
-                                        <bean:message key="specimen.pathologicalStatus"/>
-                                    </label>
-                                </td>
-                            
-                                <td width="30%" align="left" class="black_new">
-                                <html:select property="pathologicalStatus" name="specimenDTO" 
-                            styleClass="formFieldSized19" styleId="pathologicalStatus" size="1"
-                            onmouseover="showTip(this.id)" onmouseout="hideTip(this.id)" >
-                            <html:options collection="pathologicalStatusList"
-                                labelProperty="name" property="value" />
-                        </html:select>
-                                </td>
-                            
-                                <td width="20%" class="black_ar align_right_style">
+                             <td width="20%" class="black_ar align_right_style">
                                     <label for="createdDate">
-                                        <bean:message key="specimen.createdDate"/>
+                                        Sample Date
                                     </label>
                                 </td>
                                 <td width="30%" class="black_ar" >
@@ -301,9 +229,33 @@
                                    id="createdDate" size="10" onblur="processData(this)" value='<fmt:formatDate value="${specimenDTO.createdDate}" pattern="${datePattern}" />'/>
                                 <span id="dateId" class="grey_ar_s capitalized">[${datePattern}]</span>&nbsp;
                                 </td>
+                        </tr>
+						
+						<tr class="tr_alternate_color_white">
+								<td width="20%" class="black_ar align_right_style">
+                                    <label for="createdDate">
+									Lab Number
+                                    </label>
+                                </td>
+                             
+								<td width="30%" class="black_ar" >
+									<bean:write name="specimenDTO" property="labNumber" scope="request"/>
+                                </td>
+								
+                                <td width="20%" class="black_ar align_right_style">
+                                 
+                                    <label for="tissueSite">
+                                        Site
+                                    </label>
+                                </td>
+							  <td  class="black_ar" >
+                               		<bean:write name="specimenDTO" property="siteName" scope="request"/>
+                              
+                                </td>
+
                             </tr>
-                            
-                            <tr class="tr_alternate_color_white">
+						
+						    <tr class="tr_alternate_color_lightGrey">
                                 <td width="20%" class="black_ar align_right_style">
                                     <img src="images/uIEnhancementImages/star.gif" alt="Mandatory" width="6" height="6" hspace="0" vspace="0" />    
                                     <label for="quantity">
@@ -313,118 +265,20 @@
                                 <td width="30%" align="left" class="black_ar">
                                     <html:text styleClass="black_ar" size="10" maxlength="10"  styleId="quantity" property="quantity" name="specimenDTO"  style="text-align:right" onblur="processData(this)"/>
                                      <span id="unitSpan">
-                
+										
                                      </span>
                                      <html:hidden property="unit"/>
                                      <div id="quantityErrorMsg" style="display:none; color:red;">
                                      </div>
-                                </td>
-                                <td width="20%" class="black_ar align_right_style">
-                                    <label for="concentration">
-                                        <bean:message key="specimen.concentration"/>
-                                    </label>
-                                </td>
-                                <td  width="30%" align="left" class="black_ar">
-                                        <html:text styleClass="black_ar" maxlength="10"  size="10" styleId="concentration" property="concentration" style="text-align:right" name="specimenDTO" onblur="chkeEmptyNumber(this);processData(this)"
+									 <div style="display:none;">
+										<html:text styleClass="black_ar" maxlength="10"  size="10" styleId="concentration" property="concentration" style="text-align:right" name="specimenDTO" onblur="chkeEmptyNumber(this);processData(this)"
                                          disabled="false"/>
-                                        <bean:message key="specimen.concentrationUnit"/>
-                                        <div id="concentrationErrorMsg" style="display:none; color:red;">
-                                     </div>
+									 </div>
                                 </td>
-                            </tr>
-            
-                            <tr class="tr_alternate_color_lightGrey">
-                                 <td width="20% class="black_ar">&nbsp;
-                                 </td>
-                                 <td width="30%" align="left" valign="top" >
-                                 <logic:equal name="operation" value="add">
-                                    <input type="checkbox" name="available" id="available" onblur="processData(this)" disabled checked="checked"/>
-                                </logic:equal>
-                                <logic:equal name="operation" value="edit">
-                                        <html:checkbox property="available" styleId="available" onclick="processData(this)" >
-                                    </html:checkbox>
-                                </logic:equal>
-                                    
-                                    <span class="black_ar" style="padding-bottom:7px">
-                                        <label for="available">
-                                            <bean:message key="specimen.available" />
-                                        </label>
-                                    </span>
-                                </td>
-                                <td width="20%" class="black_ar align_right_style">
-                                    <label for="availableQuantity">
-                                            <bean:message key="specimen.availableQuantity" />
-                                    </label>
-                                </td>
-                                <td width="30%" align="left" class="black_ar">
-                                <logic:equal name="operation" value="add">
-                                    <html:text styleClass="black_ar" maxlength="10"  size="10" styleId="availableQuantity" readonly="true" property="availableQuantity"     name="specimenDTO" style="text-align:right" onblur="processData(this)"/>
-                                </logic:equal>
-                                <logic:equal name="operation" value="edit">
-                                    <html:text styleClass="black_ar" maxlength="10"  size="10" styleId="availableQuantity" property="availableQuantity"     name="specimenDTO" style="text-align:right" onblur="processData(this)"/>
-                                </logic:equal>
-                                    <span id="unitSpan1"></span>
-                                    <div id="avlQuantityErrorMsg" style="display:none; color:red;">
-                                     </div>
-                                </td>
-                            </tr>
-                        
-                            <tr class="tr_alternate_color_white">
-                                <td width="20%" class="black_ar align_right_style">
-                                    <img src="images/uIEnhancementImages/star.gif" alt="Mandatory" width="6" height="6" hspace="0" vspace="0" />    
-                                    <label for="collectionStatus">
-                                    <bean:message key="specimenCollectionGroup.collectionStatus" />
-
-                                    </label>
-                                </td>
-                                <td width="30%" class="black_new">
-                                <logic:equal name="operation" value="edit">
-                                <div id="" style="display:block"/>
-                                </logic:equal>
-                                <logic:equal name="operation" value="add">
-                                
-                                    <bean:write name="specimenDTO" property="collectionStatus"/>                                                
-                                    <div id="" style="display:none"/>
-                                </logic:equal>
-                                <html:select property="collectionStatus" name="specimenDTO" 
-                                             styleClass="formFieldSized19" styleId="collectionStatus" size="1"
-                                             onmouseover="showTip(this.id)" onmouseout="hideTip(this.id)">
-                                <html:options collection="collectionStatusList"
-                                              labelProperty="name" property="value" />
-                                </html:select>
-                                </div>
-                                
-                                </td>
-
-                                <td width="20%" class="black_ar align_right_style">
-                                    <label for="activityStatus">
-                                        <bean:message key="participant.activityStatus" />
-                                    </label>
-                                </td>
-                                <td width="30%" align="left" class="black_ar">
-                                    <c:choose>
-                                        <c:when test="${specimenDTO.activityStatus == 'Active'}">
-                                            <label for="activityStatus">
-                                                <bean:write name="specimenDTO" property="activityStatus" scope="request"/>
-                                            </label>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <html:select property="activityStatus" name="specimenDTO" 
-                                                     styleClass="formFieldSized19" styleId="activityStatus" size="1"
-                                                     onmouseover="showTip(this.id)" onmouseout="hideTip(this.id)">
-                                            <html:options collection="activityStatusList"
-                                                      labelProperty="name" property="value" />
-                                            </html:select>
-                                        </c:otherwise>
-                                    </c:choose>
-                                </td>
-                            </tr>
-                        
-                            <tr class="tr_alternate_color_lightGrey">
-                                <td width="20%" class="black_ar align_right_style">
+								  <td width="20%" class="black_ar align_right_style">
                                     <img src="images/uIEnhancementImages/star.gif" alt="Mandatory" width="6" height="6" hspace="0" vspace="0" />    
                                     <label for="className">
-                                        <bean:message key="specimen.positionInStorageContainer"/>
+                                        Sample Box Name
                                     </label>
                                 </td>
                                                                 
@@ -455,106 +309,146 @@
                                 <html:hidden name="specimenDTO" property="containerId" styleId="containerId" />
                                 </td>
                             </tr>
-
+            
                             <tr class="tr_alternate_color_white">
+                                 <td width="20% class="black_ar">&nbsp;
+                                 </td>
+                                 <td width="30%" align="left" valign="top" >
+                                 <logic:equal name="operation" value="add">
+                                    <input type="checkbox" name="available" id="available" onblur="processData(this)" disabled checked="checked"/>
+                                </logic:equal>
+                                <logic:equal name="operation" value="edit">
+                                        <html:checkbox property="available" styleId="available" onclick="processData(this)" >
+                                    </html:checkbox>
+                                </logic:equal>
+                                    
+                                    <span class="black_ar" style="padding-bottom:7px">
+                                        <label for="available">
+                                            <bean:message key="specimen.available" />
+                                        </label>
+                                    </span>
+                                </td>
+								 <td width="20%" class="black_ar align_right_style">
+                                    <label for="availableQuantity">
+                                     Shelf
+                                    </label>
+                                </td>
+                                <td width="30%" align="left" class="black_ar">
+									<bean:write name="specimenDTO" property="shelf" scope="request"/>
+                                </td>
+                            </tr>
+							<tr class="tr_alternate_color_lightGrey">
+							  <td width="20%" class="black_ar align_right_style">
+                                    <label for="availableQuantity">
+                                            <bean:message key="specimen.availableQuantity" />
+                                    </label>
+                                </td>
+                                <td width="30%" align="left" class="black_ar">
+                                <logic:equal name="operation" value="add">
+                                    <html:text styleClass="black_ar" maxlength="10"  size="10" styleId="availableQuantity" readonly="true" property="availableQuantity"     name="specimenDTO" style="text-align:right" onblur="processData(this)"/>
+                                </logic:equal>
+                                <logic:equal name="operation" value="edit">
+                                    <html:text styleClass="black_ar" maxlength="10"  size="10" styleId="availableQuantity" property="availableQuantity"     name="specimenDTO" style="text-align:right" onblur="processData(this)"/>
+                                </logic:equal>
+                                    <span id="unitSpan1"></span>
+                                    <div id="avlQuantityErrorMsg" style="display:none; color:red;">
+                                     </div>
+                                </td>
+								<td width="20%" class="black_ar align_right_style">
+                                    <label for="availableQuantity">
+                                     Drawer
+                                    </label>
+                                </td>
+                                <td width="30%" align="left" class="black_ar">
+									<bean:write name="specimenDTO" property="drawer" scope="request"/>
+                                </td>
+							</tr>
+                            <tr class="tr_alternate_color_white">
+                                <td width="20%" class="black_ar align_right_style">
+                                    <img src="images/uIEnhancementImages/star.gif" alt="Mandatory" width="6" height="6" hspace="0" vspace="0" />    
+                                    <label for="collectionStatus">
+                                    <bean:message key="specimenCollectionGroup.collectionStatus" />
+
+                                    </label>
+                                </td>
+                                <td width="30%" class="black_new">
+                                <logic:equal name="operation" value="edit">
+                                <div id="" style="display:block"/>
+                                </logic:equal>
+                                <logic:equal name="operation" value="add">
+                                <div id="" style="display:none">
+                                    <bean:write name="specimenDTO" property="collectionStatus"/>                        </div>                        
+                                    
+                                </logic:equal>
+                                <html:select property="collectionStatus" name="specimenDTO" 
+                                             styleClass="formFieldSized19" styleId="collectionStatus" size="1"
+                                             onmouseover="showTip(this.id)" onmouseout="hideTip(this.id)">
+                                <html:options collection="collectionStatusList"
+                                              labelProperty="name" property="value" />
+                                </html:select>
+                                
+                                </td>
+
+								<td width="20%" class="black_ar align_right_style">
+								    <label for="comments">
+										Consent To Use Of blood
+                                    </label>
+                                
+                                </td>
+                                <td width="30%" align="left" class="black_ar">
+									<bean:write name="specimenDTO" property="consentBlood" scope="request"/>
+                                </td>
+								
+                              
+                            </tr>
+                        
+								<tr class="tr_alternate_color_lightGrey">
+                                 <td width="20%" class="black_ar align_right_style">
+                                    <label for="activityStatus">
+                                        <bean:message key="participant.activityStatus" />
+                                    </label>
+                                </td>
+                                <td width="30%" align="left" class="black_ar">
+                                    <c:choose>
+                                        <c:when test="${specimenDTO.activityStatus == 'Active'}">
+                                            <label for="activityStatus">
+                                                <bean:write name="specimenDTO" property="activityStatus" scope="request"/>
+                                            </label>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <html:select property="activityStatus" name="specimenDTO" 
+                                                     styleClass="formFieldSized19" styleId="activityStatus" size="1"
+                                                     onmouseover="showTip(this.id)" onmouseout="hideTip(this.id)">
+                                            <html:options collection="activityStatusList"
+                                                      labelProperty="name" property="value" />
+                                            </html:select>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </td>
+								<td width="20%" class="black_ar align_right_style">
+								    <label for="comments">
+										Freeze Thaw Cycles
+                                    </label>
+                                </td>
+                                <td width="30%" align="left" class="black_ar">
+                                </td>
+                            </tr>
+						   
+						   
+						   
+                            <tr class="">
                                 <td width="20%" valign="top" class="black_ar align_right_style">
                                     <label for="comments">
                                         <bean:message key="specimen.comments"/>
                                     </label>
                                 </td>
-                                <td align="left" valign="top" colspan="3">
-                                    <html:textarea styleClass="black_ar_s"  rows="2" cols="90" name="specimenDTO" styleId="comments" property="comments" onblur="processData(this)"/>
+                                <td align="left" valign="top">
+                                    <html:textarea styleClass="black_ar_s"  rows="3" cols="60" name="specimenDTO" styleId="comments" property="comments" onblur="processData(this)"/>
                                 </td>
-                            </tr>
-                                
-                            <tr class="tr_alternate_color_lightGrey">
-                                <td width="20%"  class="black_ar align_right_style">
-                                    <bean:message key="specimen.externalIdentifier"/>
-                                </td>
-                                <td width="30%">
-                                    <a id="addExternalId" title="Add New External Identifier" class="link" onclick="showAddExternalIdDiv()">Add New</a>
-                                </td>
-                                <td  width="50%" class="black_ar" colspan="2">
-                                    <div id="addExternalIdDiv" style="display:none;">
-                                        <table width="100%" border="0" cellpadding="0" cellspacing="0">
-                                            <tr valign="bottom">
-                                                <td width="44%"> 
-                                                    <input id="extIdName" name="extIdName" type="text" class="black_ar" size="20" maxlength="255" class="black_ar" />
-                                                </td>
-                                                <td width="44%">
-                                                    <input id="extIdValue" type="text" class="black_ar" size="20" maxlength="255" style="text-align:right;" class="black_ar" />
-                                                </td>
-                                                <td width="44%">
-                                                    <input id="addEditExtIdButton" name="addEditExtIdButton" type="button" value="Add" class="black_ar" onclick="addEditExtIdTag(this)" />
-                                                </td>
-                                            </tr>
-                                          </table>
-                                    </div>
-                                </td>
+								 
                             </tr>
                             
-                            <tr class="tr_alternate_color_lightGrey">
-                                <td width="20%" > &nbsp;    </td>
-                                <td colspan="3" align="left"  valign="middle">
-                                    <ul id="externalIDList" class="tagEditor">
-                                            <c:if test="${not empty specimenDTO.externalIdentifiers}">
-                                                    <c:forEach var="externalId" items="${specimenDTO.externalIdentifiers}">
-                                                        <c:if test="${not empty externalId.name}">
-                                                        <li id="li${externalId.id}" title="Edit">
-                                                            <span id="Ext_${externalId.id}" name="ExtIds" onclick="editTag(this)">${externalId.name} - ${externalId.value}</span>
-                                                            <a title="Delete" onclick="deleteTag(this)">X</a>
-                                                            <input type="hidden" name="Ext_${externalId.id}Status" id="Ext_${externalId.id}Status" value=${externalId.status}>
-                                                        </li>
-                                                        </c:if>
-                                                    </c:forEach>        
-                                            </c:if>
-                                    </ul>
-                                 </td>
-                            </tr>
-                                
-                                <tr class="tr_alternate_color_white">
-                                    <td width="20%" class="black_ar align_right_style">
-                                        <bean:message key="specimen.biohazards"/>
-                                    </td>
-
-                                    <td width="30%">
-                                        <a id="addBioHazard" title="Add New BioHazard" class="link" onclick="showAddBioHazardDiv()">Add New</a>
-                                    </td>
-                                    <td  width="50%" class="black_ar" colspan="2">
-                                        <div id="addBioHazardDiv" style="display:none;">
-                                            <table width="100%" border="0" cellpadding="0" cellspacing="0">
-                                            <tr valign="bottom">
-                                                <td width="44%"> 
-                                                    <div id="biohazardTypeSelect"></div>
-                                                </td>
-                                                <td width="44%">
-                                                    <div id="biohazardSelect"></div>
-                                                </td>
-                                                <td width="44%">
-                                                    <input id="addEditBioHazButton" name="addEditBioHazButton" type="button" value="Add" class="black_ar" onclick="addEditBioHazTag(this)" />
-                                                </td>
-                                            </tr>
-                                            </table>
-                                        </div>
-                                    </td>
-                                </tr>
-                                
-                                <tr class="tr_alternate_color_white">
-                                    <td width="20%"> &nbsp;</td>    
-                                    <td align="left" colspan="3" valign="middle">
-                                        <ul id="bioHazardList" class="tagEditor">
-                                            <c:if test="${not empty specimenDTO.bioHazards}">
-                                                    <c:forEach var="biohazard" items="${specimenDTO.bioHazards}">
-                                                        <li id="li${biohazard.id}" title="Edit">
-                                                            <span id="Bio_${biohazard.id}" name="Biohazards" onclick="editBiohazardTag(this)">${biohazard.type} - ${biohazard.name}</span>
-                                                            <a title="Delete" onclick="deleteTag(this)">X</a>
-                                                            <input type="hidden" name="Bio_${biohazard.id}Status" id="Bio_${biohazard.id}Status" value=${biohazard.status}>
-                                                        </li>
-                                                    </c:forEach>        
-                                            </c:if>
-                                        </ul>
-                                    </td>
-                                </tr>
+							
                         <tr>
                           <td colspan="4" valign="middle" class="tr_bg_blue1">
                             <span class="blue_ar_b">&nbsp;<bean:message key="childSpecimen.label" /></span>
@@ -796,10 +690,10 @@ function chkeEmptyNumber(obj)
 }
 function openViewMap()
 {
-var className=classNameCombo.getSelectedText();
+//var className=classNameCombo.getSelectedText();
     var sptype=typeCombo.getSelectedText();
     var frameUrl="ShowFramedPage.do?pageOf=pageOfEditSpecimen&selectedContainerName=containerName&pos1=pos1&pos2=pos2&containerId=containerId"
-                        + "&holdSpecimenClass="+className+ "&holdSpecimenType="+sptype  + "&holdCollectionProtocol=${requestScope.cpId}&collStatus=<bean:write name='specimenDTO' property='collectionStatus' scope='request'/>";
+                        + "&holdSpecimenClass="+getClassName()+"&holdSpecimenType="+sptype  + "&holdCollectionProtocol=${requestScope.cpId}&collStatus=<bean:write name='specimenDTO' property='collectionStatus' scope='request'/>";
         mapButtonClickedOnSpecimen(frameUrl,'SpecimenPage',"containerName");
 }
 
