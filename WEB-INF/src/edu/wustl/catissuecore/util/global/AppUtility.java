@@ -4943,4 +4943,16 @@ public class AppUtility
 			}
 		}
 	}
+	
+	public static List<NameValueBean> getSpecTypes()
+    {
+        final Map<String, List<NameValueBean>> specimenTypeMap = getSpecimenTypeMap();
+        Iterator<String> itr = specimenTypeMap.keySet().iterator();
+        List<NameValueBean> typeList = new ArrayList<NameValueBean>(); 
+        while(itr.hasNext()){
+            typeList.addAll(specimenTypeMap.get(itr.next()));
+        }
+    
+        return typeList;
+    }
 }

@@ -90,7 +90,7 @@ public class AddSpecimenFromRequirementAction extends CatissueBaseAction {
 
 			request.setAttribute("isSpecimenBarcodeGeneratorAvl", Variables.isSpecimenBarcodeGeneratorAvl);
 
-			request.setAttribute(Constants.SPECIMEN_TYPE_LIST, AppUtility.getSpecimenTypes(requirement.getSpecimenClass()));
+			request.setAttribute(Constants.SPECIMEN_TYPE_LIST, AppUtility.getSpecTypes());
 
 			request.setAttribute(Constants.TISSUE_TYPE_LIST_JSON, gson.toJson(AppUtility.getSpecimenTypes(Constants.TISSUE)));
 

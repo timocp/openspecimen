@@ -72,6 +72,10 @@ public class ParticipantViewAction  extends CatissueBaseAction
 		       	ParticipantBizLogic bizLogic=new ParticipantBizLogic();
 				ParticipantDTO participantDTO=bizLogic.getParticipantDTO(hibernateDao,new Long(participantId), 
 						new Long(cpId));
+				if(!participantDTO.getMrns().isEmpty()){
+				    participantDTO.setSiteName(participantDTO.getMrns().get(0).getSiteName());
+				    participantDTO.setUrNumber(participantDTO.getMrns().get(0).getMrn());
+				}
 				if(! AppUtility.hasPrivilegeToView(CollectionProtocol.class.getName(), new Long(cpId), sessionData, Permissions.REGISTRATION)){
 				    participantDTO.setFirstName("");
 				    participantDTO.setLastName("");

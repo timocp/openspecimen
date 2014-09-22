@@ -1843,7 +1843,7 @@ public class ParticipantBizLogic extends CatissueDefaultBizLogic
 
 			String hql = "select participant.lastName,participant.firstName,participant.middleName,"
 					+ "participant.birthDate,participant.gender,participant.socialSecurityNumber,"
-					+ "participant.ethnicity from "
+					+ "participant.ethnicity,participant.deathDate,participant.vitalStatus from "
 					+ Participant.class.getName()
 					+ " as participant where participant.id = ?";
 			List participants = dao.executeQuery(hql, columnValueBeans);
@@ -1860,7 +1860,8 @@ public class ParticipantBizLogic extends CatissueDefaultBizLogic
 			participantDTO.setEthnicity((String) participantInfo[6]);
 			participantDTO.setParticipantId(pId);
 			participantDTO.setCpId(cpId);
-
+			participantDTO.setDethOfDate(participantInfo[7]!=null? (Date) participantInfo[7]:null);
+			participantDTO.setVitalStatus((String)participantInfo[8]);
 			String mrnhql = "select pmi.medicalRecordNumber ,site.name from "
 					+ ParticipantMedicalIdentifier.class.getName() + " as pmi, "
 					+ Site.class.getName()
@@ -1925,6 +1926,11 @@ public class ParticipantBizLogic extends CatissueDefaultBizLogic
 						break;
 					}
 				}
+			}
+			if(consentResponses != null  && ! consentResponses.isEmpty() ){
+			    participantDTO.setConsentBlood(((ConsentTierResponse) consentResponses.get(0)).getResponse());
+			}else{
+			    participantDTO.setConsentBlood("Not Specified");
 			}
 		}
 		catch (DAOException e)

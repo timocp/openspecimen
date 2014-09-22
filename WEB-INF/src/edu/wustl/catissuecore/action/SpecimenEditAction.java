@@ -99,7 +99,7 @@ public class SpecimenEditAction extends CatissueBaseAction
 				specimenClassList.clear();
 				specimenClassList.addAll(AppUtility.getSpecimenTypes(specimenDTO.getClassName()));
 			}
-			request.setAttribute(Constants.SPECIMEN_TYPE_LIST, specimenClassList);
+			request.setAttribute(Constants.SPECIMEN_TYPE_LIST, AppUtility.getSpecTypes());
 
 			request.setAttribute(Constants.TISSUE_TYPE_LIST_JSON,
 					gson.toJson(AppUtility.getSpecimenTypes(Constants.TISSUE)));
@@ -163,5 +163,6 @@ public class SpecimenEditAction extends CatissueBaseAction
 
 		return mapping.findForward(Constants.PAGE_OF_NEW_SPECIMEN);
 	}
-
+	
+	
 }

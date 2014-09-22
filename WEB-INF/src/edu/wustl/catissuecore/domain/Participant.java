@@ -137,6 +137,7 @@ public class Participant extends AbstractDomainObject
 	 * 'Unknown'.
 	 */
 	protected String vitalStatus;
+	
 
 	protected String empiIdStatus = null;
 
@@ -159,14 +160,26 @@ public class Participant extends AbstractDomainObject
 
 	private String empiId = "";
 
-	
+	protected String labNumber;
 	
 	// /**
 	// * empiId : EMPI id of the participant.
 	// */
 	// protected String empiId = "";
 
-	public String getMetaPhoneCode()
+	
+    public String getLabNumber()
+    {
+        return labNumber;
+    }
+
+    
+    public void setLabNumber(String labNumber)
+    {
+        this.labNumber = labNumber;
+    }
+
+    public String getMetaPhoneCode()
 	{
 		return metaPhoneCode;
 	}

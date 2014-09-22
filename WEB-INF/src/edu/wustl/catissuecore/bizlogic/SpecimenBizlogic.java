@@ -6,13 +6,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import edu.wustl.catissuecore.domain.Biohazard;
 import edu.wustl.catissuecore.domain.CollectionProtocolRegistration;
+import edu.wustl.catissuecore.domain.ConsentTierResponse;
+import edu.wustl.catissuecore.domain.ContainerPosition;
 import edu.wustl.catissuecore.domain.ExternalIdentifier;
+import edu.wustl.catissuecore.domain.ParticipantMedicalIdentifier;
 import edu.wustl.catissuecore.domain.Specimen;
 import edu.wustl.catissuecore.domain.SpecimenEventParameters;
 import edu.wustl.catissuecore.domain.SpecimenPosition;
@@ -705,7 +709,32 @@ public class SpecimenBizlogic
 		specimenDTO.setConcentration(specimen.getConcentrationInMicrogramPerMicroliter());
 		specimenDTO.setExternalIdentifiers(getExternalIdentifierDTOCollection(specimen));
 		specimenDTO.setBioHazards(getBiohazardDTOCollection(specimen));
-
+		specimenDTO.setAsigID(specimen.getSpecimenCollectionGroup().getCollectionProtocolRegistration().getProtocolParticipantIdentifier());
+		if(specimen.getSpecimenPosition()!=null){
+		specimenDTO.setPositionX(specimen.getSpecimenPosition().getPositionDimensionOneString());
+		specimenDTO.setPositionY(specimen.getSpecimenPosition().getPositionDimensionTwoString());
+		if(specimen.getSpecimenPosition().getStorageContainer()!=null){
+		    ContainerPosition drawer = specimen.getSpecimenPosition().getStorageContainer().getLocatedAtPosition();
+	        specimenDTO.setDrawer(drawer.getParentContainer().getName());
+	        specimenDTO.setShelf(drawer.getParentContainer().getLocatedAtPosition().getParentContainer().getName());
+		}
+		}
+		specimenDTO.setLabNumber(specimen.getSpecimenCollectionGroup().getCollectionProtocolRegistration().getParticipant().getLabNumber());
+		
+		Collection<ConsentTierResponse> ctr = specimen.getSpecimenCollectionGroup().getCollectionProtocolRegistration().getConsentTierResponseCollection();
+		if(ctr!=null && ctr.size()>0){
+		    Iterator<ConsentTierResponse> itr = ctr.iterator();
+		    ConsentTierResponse response = itr.next();
+		    specimenDTO.setConsentBlood(response.getResponse());
+		}else{
+		    specimenDTO.setConsentBlood("Not Specified");
+		}
+		Collection<ParticipantMedicalIdentifier> mrnColl = specimen.getSpecimenCollectionGroup().getCollectionProtocolRegistration().getParticipant().getParticipantMedicalIdentifierCollection();
+		if(mrnColl!=null && mrnColl.size()>0){
+		    Iterator<ParticipantMedicalIdentifier> itr = mrnColl.iterator();
+		    ParticipantMedicalIdentifier mrn = itr.next();
+            specimenDTO.setSiteName(mrn.getSite().getName());
+		}
 		return specimenDTO;
 	}
 

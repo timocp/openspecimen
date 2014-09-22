@@ -39,9 +39,134 @@ public class SpecimenDTO
 	private Collection<BiohazardDTO> bioHazards;
 	private String biohazardType;
 private boolean isToPrintLabel;
+
+private String asigID;
+private String shelf;
+private String drawer;
+private String positionX;
+private String positionY;
+private String consentBlood;
+private String labNumber;
+private String siteName;
+
+
 	
 	
 	
+
+public String getAsigID()
+{
+    return asigID;
+}
+
+
+
+public void setAsigID(String asigID)
+{
+    this.asigID = asigID;
+}
+
+
+
+public String getShelf()
+{
+    return shelf;
+}
+
+
+
+public void setShelf(String shelf)
+{
+    this.shelf = shelf;
+}
+
+
+
+public String getDrawer()
+{
+    return drawer;
+}
+
+
+
+public void setDrawer(String drawer)
+{
+    this.drawer = drawer;
+}
+
+
+
+public String getPositionX()
+{
+    return positionX;
+}
+
+
+
+public void setPositionX(String positionX)
+{
+    this.positionX = positionX;
+}
+
+
+
+public String getPositionY()
+{
+    return positionY;
+}
+
+
+
+public void setPositionY(String positionY)
+{
+    this.positionY = positionY;
+}
+
+
+
+public String getConsentBlood()
+{
+    return consentBlood;
+}
+
+
+
+public void setConsentBlood(String consentBlood)
+{
+    this.consentBlood = consentBlood;
+}
+
+
+
+public String getLabNumber()
+{
+    return labNumber;
+}
+
+
+
+public void setLabNumber(String labNumber)
+{
+    this.labNumber = labNumber;
+}
+
+
+
+public String getSiteName()
+{
+    return siteName;
+}
+
+
+
+public void setSiteName(String siteName)
+{
+    this.siteName = siteName;
+}
+
+
+
+
 public String getParentSpecimenBarcode()
 {
 	return parentSpecimenBarcode;

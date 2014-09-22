@@ -35,6 +35,14 @@
             length="255"
         />
 
+ <property
+            name="labNumber"
+            type="string"
+            update="true"
+            insert="true"
+            column="LAB_NUMBER"
+            length="255"
+        />
         <property
             name="firstName"
             type="string"
