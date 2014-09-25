@@ -396,7 +396,9 @@ angular.module('plus.cpview', [])
       "&refresh=false& " + "cpSearchCpId=" + $scope.selectedCp.id;
 		if(data.instance=='requirement')
 		{
-		url="QueryCreateSpecimenFromRequirement.do?scgId="+data.scgId+"&parentId="+data.parentId+"&requirementId="+data.requirementId;
+		var participantId = $scope.selectedParticipant.id.split(',')[0];
+		var cprId = $scope.selectedParticipant.id.split(',')[1];
+		url="QueryCreateSpecimenFromRequirement.do?scgId="+data.scgId+"&parentId="+data.parentId+"&requirementId="+data.requirementId + "&cpSearchCpId=" + $scope.selectedCp.id+"&pId="+participantId+"&cprId="+cprId;
 		}		
       $('#cpFrameNew').attr('src',url);
     } 

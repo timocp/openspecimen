@@ -20,6 +20,7 @@ import edu.wustl.catissuecore.util.global.AppUtility;
 import edu.wustl.catissuecore.util.global.Constants;
 import edu.wustl.catissuecore.util.global.Variables;
 import edu.wustl.common.beans.SessionDataBean;
+import edu.wustl.common.cde.CDEManager;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.util.global.Validator;
 import edu.wustl.dao.HibernateDAO;
@@ -96,14 +97,18 @@ public class DisplayDeriveAction extends CatissueBaseAction
 
 		request.setAttribute(Constants.CELL_TYPE_LIST_JSON,
 				gson.toJson(AppUtility.getSpecimenTypes(Constants.CELL)));
-
 		request.setAttribute(Constants.MOLECULAR_TYPE_LIST_JSON,
 				gson.toJson(AppUtility.getSpecimenTypes(Constants.MOLECULAR)));
 		String className = request.getParameter("specClassName");
 		request.setAttribute("cellType", AppUtility
-				.getSpecimenTypes(className == null
+				.getSpecTypes());/*(className == null
 						? Constants.CELL
-						: className));
+						: className));*/
+
+        request.setAttribute("DNAMethodList",
+                CDEManager.getCDEManager().getPermissibleValueList(
+                        "DNA Method", null));
+
 		request.setAttribute("isSpecimenBarcodeGeneratorAvl",
 				Variables.isSpecimenBarcodeGeneratorAvl);
 		request.setAttribute(Constants.SPECIMEN_CLASS_LIST,

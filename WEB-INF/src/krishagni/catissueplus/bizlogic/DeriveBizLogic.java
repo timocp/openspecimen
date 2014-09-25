@@ -42,6 +42,8 @@ public class DeriveBizLogic
 		specimenDTO.setAvailableQuantity(derivedDTO.getInitialQuantity());
 		specimenDTO.setType(derivedDTO.getType());
 		specimenDTO.setSpecimenCollectionGroupId(derivedDTO.getSpecimenCollGroupId());
+		specimenDTO.setDna260(derivedDTO.getDna260());
+		specimenDTO.setDnaMethod(derivedDTO.getDnaMethod());
 		return specimenDTO;
 	}
 

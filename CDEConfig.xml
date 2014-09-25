@@ -32,6 +32,16 @@
 			<depthOfHierarchyTree>6</depthOfHierarchyTree> 
 		</XMLPermissibleValues>
 	</XMLCDE>
+		<XMLCDE cache="true" lazyLoading="false">
+		<name>DNA Method</name>
+		<publicId>Dna_Method</publicId>
+		<XMLPermissibleValues>
+			<evsTerminology>NCI-THESAURAUS</evsTerminology>
+			<conceptCode>PV</conceptCode> 
+			<parentConceptCode></parentConceptCode>
+			<depthOfHierarchyTree>6</depthOfHierarchyTree> 
+		</XMLPermissibleValues>
+	</XMLCDE>
 	
 	<XMLCDE cache="true" lazyLoading="false">
 		<name>Gender</name>

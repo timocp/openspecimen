@@ -28,9 +28,44 @@ public class DerivedDTO
 	private String barcode;
 	private Long specimenCollGroupId;
 
+	   private String dnaMethod;
+	    private Double dna260;
+	    
 	
 	
-	public Long getSpecimenCollGroupId()
+	
+        public String getDnaMethod()
+        {
+            return dnaMethod;
+        }
+
+
+
+        
+        public void setDnaMethod(String dnaMethod)
+        {
+            this.dnaMethod = dnaMethod;
+        }
+
+
+
+        
+        public Double getDna260()
+        {
+            return dna260;
+        }
+
+
+
+        
+        public void setDna260(Double dna260)
+        {
+            this.dna260 = dna260;
+        }
+
+
+
+    public Long getSpecimenCollGroupId()
 	{
 		return specimenCollGroupId;
 	}

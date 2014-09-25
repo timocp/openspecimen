@@ -25,7 +25,7 @@
 
 <script type="text/javascript" src="dhtmlxSuite_v35/dhtmlxGrid/codebase/dhtmlxcommon.js"></script>
 <script type="text/javascript" src="dhtmlxSuite_v35/dhtmlxCalendar/codebase/dhtmlxcalendar.js"></script>
-
+<script language="JavaScript" type="text/javascript" src="dhtmlxSuite_v35/dhtmlxTabbar/codebase/dhtmlxcontainer.js"></script>
 <link href="css/catissue_suite.css" type="text/css" rel="stylesheet"/>
 <link rel="stylesheet" type="text/css" href="css/styleSheet.css" />
 <link rel="stylesheet" type="text/css" href="css/alretmessages.css"/>
@@ -46,7 +46,7 @@
 <script language="JavaScript"  type="text/javascript" src="dhtmlxSuite_v35/dhtmlxGrid/codebase/dhtmlxgridcell.js"></script>
 <script language="JavaScript"  type="text/javascript" src="dhtmlxSuite_v35/dhtmlxCombo/codebase/dhtmlxcombo.js"></script>
 <script language="JavaScript" type="text/javascript" src="dhtmlxSuite_v35/dhtmlxCombo/codebase/ext/dhtmlxcombo_whp.js"></script>
-<script language="JavaScript" type="text/javascript" src="dhtmlxSuite_v35/dhtmlxAccordion/codebase/dhtmlxcontainer.js"></script>
+
 <script language="JavaScript" type="text/javascript" src="dhtmlxSuite_v35/dhtmlxWindows/codebase/dhtmlxwindows.js"></script>
 <script language="JavaScript" type="text/javascript" src="dhtmlxSuite_v35/dhtmlxTree/codebase/ext/dhtmlxtree_li.js"></script>
 <script language="JavaScript" type="text/javascript" src="dhtmlxSuite_v35/dhtmlxGrid/codebase/dhtmlxgrid.js"></script>
@@ -67,11 +67,8 @@
 <script language="JavaScript" type="text/javascript" src="jss/specimen.js"></script>
 <script language="JavaScript" type="text/javascript" src="jss/dhtmlDropDown.js"></script>
 
-<script language="JavaScript" type="text/javascript" src="dhtmlxSuite_v35/dhtmlxTabbar/codebase/dhtmlxcontainer.js"></script>
 
-<script language="JavaScript" type="text/javascript" src="dhtmlxSuite_v35/dhtmlxLayout/codebase/dhtmlxcontainer.js"></script>
 
-<script language="JavaScript" type="text/javascript" src="dhtmlxSuite_v35/dhtmlxWindows/codebase/dhtmlxcontainer.js"></script>
 
 
 <style>
@@ -221,7 +218,15 @@
 
                              <td width="20%" class="black_ar align_right_style">
                                     <label for="createdDate">
-                                        Sample Date
+									 <c:choose>
+									 	 <c:when test="${specimenDTO.lineage=='Aliquot'}">
+											 Sample Date
+										 </c:when>
+										 <c:otherwise>
+											 Created On
+										 </c:otherwise>
+									 </c:choose>
+                                        
                                     </label>
                                 </td>
                                 <td width="30%" class="black_ar" >
@@ -254,6 +259,73 @@
                                 </td>
 
                             </tr>
+							
+							<c:if test="${specimenDTO.lineage=='Derived' and specimenDTO.type=='DNA'}">
+								<tr class="tr_alternate_color_lightGrey">
+									<td width="20%" class="black_ar align_right_style">
+										<label for="createdDate">
+										Method
+										</label>
+									</td>
+								 
+									<td width="30%" class="black_ar" >
+										<select id="dnaMethod">
+										
+										
+										
+											<logic:iterate id="DNAMethodList" name="DNAMethodList">
+												
+													<logic:notEqual name="DNAMethodList"  property='name' value="${specimenDTO.dnaMethod}">
+											<option value="<bean:write name='DNAMethodList' property='value'/>"><bean:write name="DNAMethodList" property="name"/></option>
+										</logic:notEqual>
+										<logic:equal name="DNAMethodList"  property='name' value="${specimenDTO.dnaMethod}">
+											<option value="<bean:write name='DNAMethodList' property='value'/>"  selected><bean:write name="DNAMethodList" property="name"/></option>
+										</logic:equal>
+											</logic:iterate>
+												
+										</select>
+									</td>
+									
+									<td width="20%" class="black_ar align_right_style">
+									 
+										<label for="tissueSite">
+											260/280
+										</label>
+									</td>
+									<td  class="black_ar" >
+										<input id="260-280" onblur="chkeEmptyNumber(this);processData(this)" value="${specimenDTO.dna260}" class="black_ar" type="text" onblur="processData(this)" onmouseout="hideTip(this.id)" onmouseover="showTip(this.id)" size="30" maxlength="255"/>
+										<div id="dna260ErrMsg" style="display:none; color:red;">
+									</td>
+
+								</tr>
+								
+								<tr class="tr_alternate_color_white">
+							 <td width="20%" class="black_ar align_right_style">
+                                    <label for="concentration">
+                                        <bean:message key="specimen.concentration"/>
+                                    </label>
+                                </td>
+                                <td  width="30%" align="left" class="black_ar">
+                                        <html:text styleClass="black_ar" maxlength="10"  size="10" styleId="concentration" property="concentration" style="text-align:right" name="specimenDTO" onblur="chkeEmptyNumber(this);processData(this)"
+                                         disabled="false"/>
+                                        <bean:message key="specimen.concentrationUnit"/>
+                                        <div id="concentrationErrorMsg" style="display:none; color:red;">
+                                     </div>
+                                </td>
+									
+									<td width="20%" class="black_ar align_right_style">
+									 
+										
+									</td>
+									<td  class="black_ar" >
+										
+									</td>
+
+								</tr>
+							
+							</c:if>
+							
+							
 						
 						    <tr class="tr_alternate_color_lightGrey">
                                 <td width="20%" class="black_ar align_right_style">
@@ -583,6 +655,14 @@ var specimenId='${specimenDTO.id}';
 var reportId='${identifiedReportId}';
 var entityId='${specimenRecordEntryEntityId}';
 var staticEntityName='${entityName}';
+var participantId = '${specimenDTO.participantID}';
+var cprId = '${specimenDTO.cprID}';
+var cpId = '${specimenDTO.cpId}';
+var userName = '${specimenDTO.userName}';
+var selectedDNAMethod = '${specimenDTO.dnaMethod}';
+var value_260 = '${specimenDTO.dna260}';
+
+
 <logic:equal name="operation" value="edit">
 var hasConsents = ${hasConsents};
 </logic:equal>
@@ -621,8 +701,14 @@ if(spId != null && spId != "")
     tabDataJSON["id"] = document.getElementById("id").value; 
 }
 
-tabDataJSON["specimenCollectionGroupId"] = document.getElementById("scgId").value; 
+tabDataJSON["participantID"] =participantId;
+tabDataJSON["cprID"] =cprId;
+tabDataJSON["cpId"] =cpId;
+tabDataJSON["userName"] = userName;
 
+if(document.getElementById("scgId").value!=null && document.getElementById("scgId").value!= ""){
+tabDataJSON["specimenCollectionGroupId"] = document.getElementById("scgId").value; 
+}
 
 //initialization of clinicalstudytab page
 function initialize(startDateObj,endDateObj)
@@ -651,7 +737,7 @@ dhxWins = new dhtmlXWindows();
 dhxWins.createWindow("containerPositionPopUp", x, y, w, h);
 var pos1 = document.getElementById('pos1').value;
 var pos2 = document.getElementById('pos2').value;
-var className = classNameCombo.getSelectedText();
+var className = getClassName();
 var type = typeCombo.getSelectedText();
 
 

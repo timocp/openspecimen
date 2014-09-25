@@ -713,11 +713,15 @@ public class SpecimenBizlogic
 		if(specimen.getSpecimenPosition()!=null){
 		specimenDTO.setPositionX(specimen.getSpecimenPosition().getPositionDimensionOneString());
 		specimenDTO.setPositionY(specimen.getSpecimenPosition().getPositionDimensionTwoString());
-		if(specimen.getSpecimenPosition().getStorageContainer()!=null){
-		    ContainerPosition drawer = specimen.getSpecimenPosition().getStorageContainer().getLocatedAtPosition();
-	        specimenDTO.setDrawer(drawer.getParentContainer().getName());
-	        specimenDTO.setShelf(drawer.getParentContainer().getLocatedAtPosition().getParentContainer().getName());
-		}
+            if (specimen.getSpecimenPosition().getStorageContainer() != null)
+            {
+                ContainerPosition drawer = specimen.getSpecimenPosition().getStorageContainer().getLocatedAtPosition();
+                specimenDTO.setDrawer(drawer != null && drawer.getParentContainer() != null ? drawer
+                        .getParentContainer().getName() : "");
+                specimenDTO.setShelf(drawer != null && drawer.getParentContainer() != null
+                        && drawer.getParentContainer().getLocatedAtPosition().getParentContainer() != null ? drawer
+                        .getParentContainer().getLocatedAtPosition().getParentContainer().getName() : "");
+            }
 		}
 		specimenDTO.setLabNumber(specimen.getSpecimenCollectionGroup().getCollectionProtocolRegistration().getParticipant().getLabNumber());
 		
@@ -734,6 +738,13 @@ public class SpecimenBizlogic
 		    Iterator<ParticipantMedicalIdentifier> itr = mrnColl.iterator();
 		    ParticipantMedicalIdentifier mrn = itr.next();
             specimenDTO.setSiteName(mrn.getSite().getName());
+		}
+		specimenDTO.setCpId( specimen.getSpecimenCollectionGroup().getCollectionProtocolRegistration().getCollectionProtocol().getId());
+		specimenDTO.setCprID(specimen.getSpecimenCollectionGroup().getCollectionProtocolRegistration().getId());
+		specimenDTO.setParticipantID(specimen.getSpecimenCollectionGroup().getCollectionProtocolRegistration().getParticipant().getId());
+		if(specimen.getSpecimenType().equals("DNA")&&specimen.getLineage().equals("Derived")){
+		    specimenDTO.setDnaMethod(specimen.getDnaMethod());
+		    specimenDTO.setDna260(specimen.getDna260());
 		}
 		return specimenDTO;
 	}

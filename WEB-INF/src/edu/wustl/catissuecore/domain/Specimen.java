@@ -165,12 +165,40 @@ public class Specimen extends AbstractSpecimen implements Serializable, IActivit
 	 * Default Apply none to allow normal flow.
 	 */
 	private String applyChangesTo = Constants.APPLY_NONE;
-
 	
+	
+	private String dnaMethod;
+	private Double dna260;
+	
+		
 
 	//protected Collection<SpecimenRecordEntry> specimenRecordEntryCollection = new HashSet<SpecimenRecordEntry>();
 
-	/**
+	
+    public String getDnaMethod()
+    {
+        return dnaMethod;
+    }
+
+    
+    public void setDnaMethod(String dnaMethod)
+    {
+        this.dnaMethod = dnaMethod;
+    }
+
+    
+    public Double getDna260()
+    {
+        return dna260;
+    }
+
+    
+    public void setDna260(Double dna260)
+    {
+        this.dna260 = dna260;
+    }
+
+    /**
 	 * Default Specimen.
 	 */
 	public Specimen()

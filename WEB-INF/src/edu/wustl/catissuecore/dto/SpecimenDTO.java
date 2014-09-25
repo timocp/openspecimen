@@ -48,6 +48,71 @@ public class SpecimenDTO
 	private String labNumber;
 	private String siteName;
 	
+	private Long participantID;
+	private Long cprID;
+	private Long cpId;
+	private String userName;
+	private String dnaMethod;
+	private Double dna260;
+	
+	public String getDnaMethod()
+    {
+        return dnaMethod;
+    }
+
+    
+    public void setDnaMethod(String dnaMethod)
+    {
+        this.dnaMethod = dnaMethod;
+    }
+
+    
+    public Double getDna260()
+    {
+        return dna260;
+    }
+
+    
+    public void setDna260(Double dna260)
+    {
+        this.dna260 = dna260;
+    }
+
+    public String getUserName()
+	{
+	    return userName;
+	}
+
+	public void setUserName(String userName)
+	{
+	    this.userName = userName;
+	}
+	
+	public Long getParticipantID()
+	{
+	    return participantID;
+	}
+	public void setParticipantID(Long participantID)
+	{
+	    this.participantID = participantID;
+	}
+	public Long getCprID()
+	{
+	    return cprID;
+	}
+	public void setCprID(Long cprID)
+	{
+	    this.cprID = cprID;
+	}
+	public Long getCpId()
+	{
+	    return cpId;
+	}
+	public void setCpId(Long cpId)
+	{
+	    this.cpId = cpId;
+	}
+
 	    
     
     

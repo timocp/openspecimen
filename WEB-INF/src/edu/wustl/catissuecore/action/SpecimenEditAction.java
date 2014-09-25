@@ -26,6 +26,7 @@ import edu.wustl.catissuecore.util.global.Constants;
 import edu.wustl.catissuecore.util.global.Variables;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.beans.SessionDataBean;
+import edu.wustl.common.cde.CDEManager;
 import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.global.Validator;
 import edu.wustl.dao.HibernateDAO;
@@ -112,6 +113,10 @@ public class SpecimenEditAction extends CatissueBaseAction
 
 			request.setAttribute(Constants.MOLECULAR_TYPE_LIST_JSON,
 					gson.toJson(AppUtility.getSpecimenTypes(Constants.MOLECULAR)));
+			
+			request.setAttribute("DNAMethodList",
+                    CDEManager.getCDEManager().getPermissibleValueList(
+                            "DNA Method", null));
 
 			request.setAttribute(Constants.PATHOLOGICAL_STATUS_LIST,
 					AppUtility.getListFromCDE(Constants.CDE_NAME_PATHOLOGICAL_STATUS));

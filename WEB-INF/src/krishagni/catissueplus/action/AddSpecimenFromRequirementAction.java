@@ -2,6 +2,8 @@
 package krishagni.catissueplus.action;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,7 +21,10 @@ import org.apache.struts.action.ActionMapping;
 import com.google.gson.Gson;
 
 import edu.wustl.catissuecore.action.CatissueBaseAction;
+import edu.wustl.catissuecore.dao.CPRDAO;
 import edu.wustl.catissuecore.domain.Biohazard;
+import edu.wustl.catissuecore.domain.CollectionProtocolRegistration;
+import edu.wustl.catissuecore.domain.ParticipantMedicalIdentifier;
 import edu.wustl.catissuecore.domain.Specimen;
 import edu.wustl.catissuecore.domain.SpecimenCollectionGroup;
 import edu.wustl.catissuecore.domain.SpecimenRequirement;
@@ -27,6 +32,7 @@ import edu.wustl.catissuecore.util.global.AppUtility;
 import edu.wustl.catissuecore.util.global.Constants;
 import edu.wustl.catissuecore.util.global.Variables;
 import edu.wustl.common.beans.NameValueBean;
+import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.dao.HibernateDAO;
 
 public class AddSpecimenFromRequirementAction extends CatissueBaseAction {
@@ -52,11 +58,11 @@ public class AddSpecimenFromRequirementAction extends CatissueBaseAction {
 				Long scgId = Long.valueOf(request.getParameter("scgId"));
 				scg = (SpecimenCollectionGroup) hibernateDao.retrieveById(SpecimenCollectionGroup.class.getName(), scgId);
 			}
-			else {
+		/*	else {
 				specimenDTO.setCollectionStatus(Constants.COLLECTION_STATUS_PENDING);
 				request.setAttribute("hideButton", true); 
 				request.setAttribute("showScgErr", true);
-			}
+			}*/
 			if (!StringUtils.isBlank(request.getParameter("parentId")) && !"null".equals(request.getParameter("parentId"))) {
 				Long parentId = Long.valueOf(request.getParameter("parentId"));
 				parentSpecimen = (Specimen) hibernateDao.retrieveById(Specimen.class.getName(), parentId);
@@ -73,6 +79,13 @@ public class AddSpecimenFromRequirementAction extends CatissueBaseAction {
 				request.setAttribute("isSpecimenLabelGeneratorAvl",
 						SpecimenUtil.isSpecimenLabelGeneratorAvl(scg.getId(), hibernateDao));
 			}
+			specimenDTO.setParticipantID(request.getParameter("pId")!=null?Long.parseLong(request.getParameter("pId")):null);
+			specimenDTO.setCprID(request.getParameter("cprId")!=null?Long.parseLong(request.getParameter("cprId")):null);
+			specimenDTO.setCpId(request.getParameter("cpSearchCpId")!=null?Long.parseLong(request.getParameter("cpSearchCpId")):null);
+			final SessionDataBean sessionDataBean = (SessionDataBean) request.getSession().getAttribute(
+                    Constants.SESSION_DATA);
+			specimenDTO.setUserName(sessionDataBean.getUserName());
+			
 			specimenDTO.setRequirementId(requirementId);
 			specimenDTO.setLineage(requirement.getLineage());
 			specimenDTO.setActivityStatus(Constants.ACTIVITY_STATUS_ACTIVE);
@@ -86,6 +99,16 @@ public class AddSpecimenFromRequirementAction extends CatissueBaseAction {
 			specimenDTO.setTissueSite(requirement.getTissueSite());
 			specimenDTO.setClassName(requirement.getSpecimenClass());
 			specimenDTO.setType(requirement.getSpecimenType());
+			CPRDAO cprDao = new CPRDAO();
+			CollectionProtocolRegistration cpr = cprDao.getCPRByCPAndParticipantId(hibernateDao,specimenDTO.getParticipantID() , specimenDTO.getCpId());
+			specimenDTO.setAsigID(cpr.getProtocolParticipantIdentifier());
+			Collection<ParticipantMedicalIdentifier> mrnColl = cpr.getParticipant().getParticipantMedicalIdentifierCollection();
+	        if(mrnColl!=null && mrnColl.size()>0){
+	            Iterator<ParticipantMedicalIdentifier> itr = mrnColl.iterator();
+	            ParticipantMedicalIdentifier mrn = itr.next();
+	            specimenDTO.setSiteName(mrn.getSite().getName());
+	        }
+	        
 			request.setAttribute("specimenDTO", specimenDTO);
 
 			request.setAttribute("isSpecimenBarcodeGeneratorAvl", Variables.isSpecimenBarcodeGeneratorAvl);
@@ -137,6 +160,7 @@ public class AddSpecimenFromRequirementAction extends CatissueBaseAction {
 			String biohazardTypeNameListJSON = gson.toJson(biohazardTypeNameList);
 			request.setAttribute(Constants.BIOHAZARD_TYPE_NAME_LIST_JSON, biohazardTypeNameListJSON);
 			request.setAttribute(Constants.OPERATION, Constants.ADD);
+			
 		}
 		finally {
 			AppUtility.closeDAOSession(hibernateDao);

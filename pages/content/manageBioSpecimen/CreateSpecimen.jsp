@@ -122,8 +122,8 @@ function initPrepareSpecimenType()
                                 <table width="55%" border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse;">
                                     <tr>
                                         <td valign="middle" nowrap>
-                                            <input type="radio" class="" id="checkedButton" name="radioButton" value="1"
-                                                        onclick="onRadioButtonClick(this)"/>
+                                            <!--input type="radio" class="" id="checkedButton" name="radioButton" value="1"
+                                                        onclick="onRadioButtonClick(this)"/-->
                                             
                                             <span class="black_ar">
                                                 <bean:message key="specimen.label"/>&nbsp;
@@ -133,6 +133,7 @@ function initPrepareSpecimenType()
                                             </span>
                                         </td>
                                         <td align="left" valign="middle" nowrap="nowrap">
+											<div style="display:none;">
                                             <input type="radio" class="" id="checkedButton" name="radioButton" value="2"        onclick="onRadioButtonClick(this)"/>
                                             
                                             <span class="black_ar">
@@ -140,6 +141,7 @@ function initPrepareSpecimenType()
                                             <html:text name="deriveDTO" styleClass="black_ar"  maxlength="50"  size="20" styleId="parentSpecimenBarcode"
                                                        property="parentSpecimenBarcode" disabled="false" onblur="validateLabelBarcode(this,'barcode')"/>
                                             </span>
+											</div>
                                         </td>
                                     </tr>
                                 </table>
@@ -148,18 +150,16 @@ function initPrepareSpecimenType()
                         
                         <tr>
                             <td align="left" class="black_ar align_right_style">
-                                <span class="blue_ar_b">
+                      		<span class="blue_ar_b">
                                     <img src="images/uIEnhancementImages/star.gif" alt="Mandatory Field" width="6" height="6" hspace="0" vspace="0" />
                                 </span>
-                                    <bean:message key="specimen.type"/>
+                                <bean:message key="specimen.label"/>
+                            
                             </td>
                                         
                             <td class="black_ar" align="left">
-                                <html:select name="deriveDTO" property="className"  
-                                             styleClass="formFieldSized19" styleId="className" size="1">
-                                             <html:options collection="specimenClassList"
-                                                      labelProperty="name" property="value" />
-                                </html:select>
+								<html:text styleClass="black_ar" size="30" disabled="false" name="deriveDTO" styleId="derLabel" property="label" onblur="processDeriveData(this)"/>
+                            
                             </td>
                             
                             <td class="black_ar align_right_style">
@@ -176,33 +176,14 @@ function initPrepareSpecimenType()
                                 </html:select>
                             </td>
                         </tr>
-                      <tr class="tr_alternate_color_lightGrey">                                     
-                            <td align="left" class="black_ar align_right_style">
-                            <span class="blue_ar_b">
-                                    <img src="images/uIEnhancementImages/star.gif" alt="Mandatory Field" width="6" height="6" hspace="0" vspace="0" />
-                                </span>
-                                <bean:message key="specimen.label"/>
-                            </td>
-                            
-                            <td align="left">
-                                
-                                <html:text styleClass="black_ar" size="30" disabled="false" name="deriveDTO" styleId="derLabel" property="label" onblur="processDeriveData(this)"/>
-                            </td>
-                            <td align="left" class="align_right_style">
-                                <span class="black_ar"><bean:message key="specimen.barcode"/></span>
-                            </td>
-                            <td align="left">
-                                <html:text styleClass="black_ar" size="30" disabled="false" name="deriveDTO" styleId="derBarcode" property="barcode" onblur="processDeriveData(this)"/>
-                            </td>
-                      </tr>
-                     <tr>                                       
-                            <td align="left" class="black_ar align_right_style">
+                      <tr>                                       
+                             <td align="left" class="black_ar align_right_style">
                                 <bean:message key="specimen.concentration"/>
                             </td>
                             <td align="left">
                                 <span class="grey_ar">
                                 <html:text styleClass="black_ar" size="10" maxlength="10"  name="deriveDTO" styleId="concentration"
-                                           property="concentration" style="text-align:right" disabled="true" onblur="processDeriveData(this)"/>
+                                           property="concentration" style="text-align:right" onblur="processDeriveData(this)"/>
                                            <bean:message key="specimen.concentrationUnit"/>
                                            <div id="concentrationErrorMsg" style="display:none; color:red;">
                                      </div>
@@ -234,8 +215,47 @@ function initPrepareSpecimenType()
                                        id="createdOn" size="10" onclick="doInitCalendar('createdOn',false,'${uiDatePattern}');" onblur="processDeriveData(this)" value='<fmt:formatDate value="${deriveDTO.createdOn}" pattern="${datePattern}" />'/>
                                      <span id="dateId" class="grey_ar_s capitalized"> [${datePattern}]</span>&nbsp;
                             </td>
-                            <td colspan="2"align="left">&nbsp;</td>
+							<logic:notEqual name="deriveDTO"  property='type' value="DNA">
+							<td width="20%" class="black_ar align_right_style" colspan =2>
+										</logic:notEqual>
+										<logic:equal name="deriveDTO"  property='type' value="DNA">
+										
+							
+                            <td width="20%" class="black_ar align_right_style">
+										<label for="createdDate">
+										Method
+										</label>
+									</td>
+								 
+									<td width="30%" class="black_ar" >
+										<select id="dnaMethod">
+											<logic:iterate id="DNAMethodList" name="DNAMethodList">
+													<option value="<bean:write name='DNAMethodList' property='value'/>"><bean:write name="DNAMethodList" property="name"/></option>
+											</logic:iterate>
+												
+										</select>
+									</td>
+									
+									</logic:equal>
                     </tr>
+					<logic:equal name="deriveDTO"  property='type' value="DNA">
+					<tr>
+									
+									<td width="20%" class="black_ar align_right_style">
+									 
+										<label for="tissueSite">
+											260/280
+										</label>
+									</td>
+									<td  class="black_ar" >
+										<input id="260-280" name="dna260" onblur="processDeriveData(this)" class="black_ar" type="text" onblur="processData(this)" onmouseout="hideTip(this.id)" onmouseover="showTip(this.id)" size="30" maxlength="255"/>
+										 <div id="dna260ErrMsg" style="display:none; color:red;">
+                                     </div>
+									</td>
+													<td  class="black_ar" colspan='2'/>
+					</tr>
+								</logic:equal>	
+								
                     
                     <tr>
                         <td align="left" class="black_ar align_right_style">
@@ -414,6 +434,7 @@ var deriveBarcodeSubmit=false;
 var deriveCreatedOnSubmit=true;
 var deriveQtySubmit=true;
 var deriveConcentration=true;
+var deriveDna260=true;
 var derLabelSubmit=true;
 var cpId=0;
 var submitDeriveCombo = true;
@@ -431,10 +452,7 @@ document.getElementById('checkedButton').checked=true;
 document.getElementById('derLabel').disabled = true;
 document.getElementById('derLabel').value="AutoGenerated";
 </logic:equal>
-<logic:equal name="isBarcodeGeneratorAvl" value="true">
-document.getElementById('derBarcode').disabled = true;
-document.getElementById('derBarcode').value="AutoGenerated";
-</logic:equal>
+
 
 function onCheckboxButtonClick(chkbox)
 {

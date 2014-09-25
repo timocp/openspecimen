@@ -20,15 +20,21 @@ import krishagni.catissueplus.dao.StorageContainerDAO;
 import krishagni.catissueplus.dto.BiohazardDTO;
 import krishagni.catissueplus.dto.ExternalIdentifierDTO;
 import krishagni.catissueplus.dto.SpecimenDTO;
+import edu.wustl.catissuecore.bizlogic.CollectionProtocolRegistrationBizLogic;
+import edu.wustl.catissuecore.bizlogic.ParticipantBizLogic;
 import edu.wustl.catissuecore.bizlogic.SiteBizLogic;
+import edu.wustl.catissuecore.bizlogic.SpecimenCollectionGroupBizLogic;
+import edu.wustl.catissuecore.dao.CPRDAO;
 import edu.wustl.catissuecore.dao.CollectionProtocolDAO;
 import edu.wustl.catissuecore.dao.UserDAO;
 import edu.wustl.catissuecore.domain.AbstractSpecimen;
 import edu.wustl.catissuecore.domain.Biohazard;
 import edu.wustl.catissuecore.domain.CollectionProtocol;
+import edu.wustl.catissuecore.domain.CollectionProtocolRegistration;
 import edu.wustl.catissuecore.domain.ConsentTierStatus;
 import edu.wustl.catissuecore.domain.DisposalEventParameters;
 import edu.wustl.catissuecore.domain.ExternalIdentifier;
+import edu.wustl.catissuecore.domain.ParticipantMedicalIdentifier;
 import edu.wustl.catissuecore.domain.Specimen;
 import edu.wustl.catissuecore.domain.SpecimenCollectionGroup;
 import edu.wustl.catissuecore.domain.SpecimenEventParameters;
@@ -336,6 +342,11 @@ public class SpecimenBizLogic
 		}
 		oldSpecimenObj.setExternalIdentifierCollection(getExternalIdentifiers(oldSpecimenObj, specimenDTO));
 		oldSpecimenObj.setBiohazardCollection(getBiohazards(oldSpecimenObj, specimenDTO));
+		if("Derived".equals(specimenDTO.getLineage())&&"DNA".equals(specimenDTO.getType())){
+		    oldSpecimenObj.setDnaMethod(specimenDTO.getDnaMethod());
+		    oldSpecimenObj.setDna260(specimenDTO.getDna260());
+		}
+		oldSpecimenObj.setSpecimenClass(AppUtility.getClassNameFromType(oldSpecimenObj.getSpecimenType()));
 	}
 
 	/**
@@ -952,14 +963,12 @@ public class SpecimenBizLogic
 		else
 		{
 			specimen.setLineage(Constants.NEW_SPECIMEN);
-			SCGDAO scgdao = new SCGDAO();
-			SpecimenCollectionGroup collectionGroup = scgdao.getSCG(specimenDTO.getSpecimenCollectionGroupId(),
-					hibernateDao);
+			SpecimenCollectionGroupBizLogic scgBizLogic = new SpecimenCollectionGroupBizLogic(); 
+	        SpecimenCollectionGroup collectionGroup = scgBizLogic.retrieveSCG(hibernateDao,getSCG(hibernateDao,specimenDTO), specimen);
 			specimen.setSpecimenCollectionGroup(collectionGroup);
 			specimen.setPathologicalStatus(specimenDTO.getPathologicalStatus());
 			specimen.setTissueSide(specimenDTO.getTissueSide());
 			specimen.setTissueSite(specimenDTO.getTissueSite());
-			
 			specimen.setBiohazardCollection(getBiohazardCollection(specimenDTO.getBioHazards()));
 		//	specimen.setConsentTierStatusCollectionFromSCG(collectionGroup);
 		}
@@ -1043,11 +1052,43 @@ public class SpecimenBizLogic
 			specimenPosition.setStorageContainer(container);
 			specimenPosition.setSpecimen(specimen);
 			specimen.setSpecimenPosition(specimenPosition);
+			
 		}
+		specimen.setDnaMethod(specimenDTO.getDnaMethod());
+        specimen.setDna260(specimenDTO.getDna260());
+        specimen.setSpecimenClass(AppUtility.getClassNameFromType(specimenDTO.getType()));
 		setSpecimenEvents(specimen, sessionDataBean);
 		return specimen;
 	}
 
+	private SpecimenCollectionGroup getSCG(HibernateDAO hibernateDAO,SpecimenDTO specimenDTO) throws DAOException, BizLogicException{
+	    SpecimenCollectionGroupBizLogic scgBizLogic = new SpecimenCollectionGroupBizLogic();
+        CPRDAO cprDAO = new CPRDAO();
+        CollectionProtocolRegistration cpr = cprDAO.getCPRByCPAndParticipantId(hibernateDAO,specimenDTO.getParticipantID() ,specimenDTO.getCpId());
+        SpecimenCollectionGroup scg = new SpecimenCollectionGroup();
+        scg.setCollectionProtocolRegistration(cpr);
+        Collection<ParticipantMedicalIdentifier> mrnColl = cpr.getParticipant().getParticipantMedicalIdentifierCollection();
+        if(mrnColl!=null && mrnColl.size()>0){
+            Iterator<ParticipantMedicalIdentifier> itr = mrnColl.iterator();
+            ParticipantMedicalIdentifier mrn = itr.next();
+             scg.setSpecimenCollectionSite(mrn.getSite());
+        }
+        User user = new User();
+        user.setLoginName(specimenDTO.getUserName());
+        scg.setCollector(user);
+        scg.setReceiver(user);
+        scg.setCollectionStatus("Complete");
+        scg.setClinicalDiagnosis("Not Specified");
+        scg.setClinicalStatus("Not Specified");
+        scg.setActivityStatus(Status.ACTIVITY_STATUS_ACTIVE.toString());
+        scg.setReceivedQuality("Not Specified");
+        scg.setCollectionProcedure("Not Specified");
+        scg.setCollectionContainer("Not Specified");
+        scg.setCollectionTimestamp(new Date());
+        scg.setReceivedTimestamp(new Date());
+        return scg;
+	    
+	}
 	private Collection<ExternalIdentifier> getExterIdentifierColl(Collection<ExternalIdentifierDTO> externalIdentifiers, Specimen specimen)
 	{
 		Collection<ExternalIdentifier> externalIdentifierColl = new HashSet<ExternalIdentifier>();

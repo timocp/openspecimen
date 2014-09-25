@@ -1,17 +1,27 @@
 var typeCombo;
 
 var collectionStatusCombo;
+var dnaMethodCombo;
 function initCombo()
 {
 	    
 		typeCombo = dhtmlXComboFromSelect("type");
 		//typeCombo.setOptionWidth(203);
 		typeCombo.setSize(203);
-		typeCombo.attachEvent("onChange", function(){validateAndProcessDeriveComboData(this);
+		/*typeCombo.attachEvent("onChange", function(){validateAndProcessDeriveComboData(this);
 			
-		});
+		});*/
 		typeCombo.attachEvent("onOpen",onComboClick);
 		typeCombo.attachEvent("onKeyPressed",onComboKeyPress);
+		if(document.getElementById("dnaMethod")!=undefined){
+			dnaMethodCombo = dhtmlXComboFromSelect("dnaMethod");
+			dnaMethodCombo.setOptionWidth(203);
+			dnaMethodCombo.setSize(203);
+		//	dnaMethodCombo.attachEvent("onChange", function(){validateAndProcessComboData(this);});
+			dnaMethodCombo.attachEvent("onOpen",onComboClick);
+			dnaMethodCombo.attachEvent("onKeyPressed",onComboKeyPress);
+		}
+		
 		/*setDefaultText("extIdName",defaultTextForExtIdName);
 	    setDefaultText("extIdValue",defaultTextForExtIdValue);*/
 
@@ -20,6 +30,7 @@ function initCombo()
 var pathologicalStatusCombo;
 var tissueSiteCombo;
 var tissueSideCombo;
+
 function initSpecimenCombo()
 {
 		
@@ -44,6 +55,15 @@ function initSpecimenCombo()
 		typeCombo.attachEvent("onChange", function(){onSpecimenSubTypeChange(); validateAndProcessComboData(this);});
 		typeCombo.attachEvent("onOpen",onComboClick);
 		typeCombo.attachEvent("onKeyPressed",onComboKeyPress);
+		
+		if(document.getElementById("dnaMethod")!=undefined){
+			dnaMethodCombo = dhtmlXComboFromSelect("dnaMethod");
+			dnaMethodCombo.setOptionWidth(203);
+			dnaMethodCombo.setSize(203);
+			dnaMethodCombo.attachEvent("onChange", function(){});
+			dnaMethodCombo.attachEvent("onOpen",onComboClick);
+			dnaMethodCombo.attachEvent("onKeyPressed",onComboKeyPress);
+		}
 
 		if(document.getElementById('activityStatus')!=null)
 		{
@@ -426,7 +446,7 @@ function forwardToChildSpecimen(operation) {
 			break;
 			
 		
-		case '3' :	action = 'CPQueryCreateSpecimen.do?operation=add&pageOf=pageOfCreateSpecimenCPQuery&menuSelected=15&virtualLocated=true&forwardFromPage=editSpecimenPage&parentLabel='+specimenLabel+'&parentSpecimenId='+specimenId+'&specClassName='+getClassName+'&specType='+typeCombo.getSelectedText();
+		case '3' :	action = 'CPQueryCreateSpecimen.do?operation=add&pageOf=pageOfCreateSpecimenCPQuery&menuSelected=15&virtualLocated=true&forwardFromPage=editSpecimenPage&parentLabel='+specimenLabel+'&parentSpecimenId='+specimenId+'&specClassName='+getClassName()+'&specType='+typeCombo.getSelectedText();
 					
 					if(document.getElementById("numberOfSpecimens").value>1)
 					{
@@ -564,6 +584,7 @@ var quantitySubmit = true;
 var availableQuantitySubmit = true;
 var concentrationSubmit = true;
 var createdDateSubmit = true;
+var deriveDna260 = true;
 //creates json string for the changed fields and will validate the fields too
 function processData(obj)
 {
@@ -625,6 +646,14 @@ function processData(obj)
 		concentrationSubmit=false;
 		obj.className += " errorStyleOn";
 		var errorDiv = document.getElementById('concentrationErrorMsg');
+		errorDiv.style.display ="block";
+		if(!isNumeric(obj.value))
+			errorDiv.innerHTML = "(Enter a valid number)";
+	}else if(obj.name=='dna260' && !isNumeric(obj.value.trim()))
+	{
+		deriveDna260=false;
+		obj.className += " errorStyleOn";
+		var errorDiv = document.getElementById('dna260ErrMsg');
 		errorDiv.style.display ="block";
 		if(!isNumeric(obj.value))
 			errorDiv.innerHTML = "(Enter a valid number)";
@@ -769,6 +798,15 @@ function submitTabData(operation)
 		tabDataJSON["isToPrintLabel"]=printFlag;
 		tabDataJSON["lineage"]=document.getElementById("lineage").value;
 		tabDataJSON["collectionStatus"]=collectionStatusCombo.getSelectedText();
+		if("Derived"==tabDataJSON["lineage"] && tabDataJSON['type']=="DNA"){
+			tabDataJSON["dnaMethod"] = dnaMethodCombo.getSelectedText();
+			var dna260val = document.getElementById("260-280").value;
+			if(dna260val != null && dna260val != "")
+		{
+			tabDataJSON["dna260"] = document.getElementById("260-280").value;
+		}
+			
+		}
 		var spId = document.getElementById("id").value;
 		if(spId != null && spId != "")
 		{
@@ -805,7 +843,7 @@ function submitTabData(operation)
 		{
 			tabDataJSON["concentration"] = document.getElementById("concentration").value; 
 		}
-	
+		
 		createRESTSpec(tabDataJSON,printFlag,operation);
 		
 	}
@@ -1195,6 +1233,14 @@ function processDeriveData(obj)
 		errorDiv.style.display ="block";
 		if(!isNumeric(obj.value))
 			errorDiv.innerHTML = "(Enter a valid number)";
+	}else if(obj.name=='dna260' && !isNumeric(obj.value.trim()))
+	{
+		deriveDna260=false;
+		obj.className += " errorStyleOn";
+		var errorDiv = document.getElementById('dna260ErrMsg');
+		errorDiv.style.display ="block";
+		if(!isNumeric(obj.value))
+			errorDiv.innerHTML = "(Enter a valid number)";
 	}
 	else if(obj.name=='createdOn' && !validateDateDerive(obj))
 	{
@@ -1217,7 +1263,9 @@ function processDeriveData(obj)
 			if(obj.value==""){obj.value=0;}
 			document.getElementById('quantityErrorMsg').style.display="none";
 		}
+		if(deriveDataJSON!=null){
 		deriveDataJSON[obj.name] = obj.value; //after rendering struts html tag the 'property' attribute becomes 'name' attribute.
+		}
 		obj.className = obj.className.replace(/errorStyleOn/g,"");
 		if(obj.name=='initialQuantity')
 		{
@@ -1234,6 +1282,8 @@ function processDeriveData(obj)
 		else if(obj.name=='initialQuantity'){deriveQtySubmit = true;}
 		else if(obj.name=='createdOn'){deriveCreatedOnSubmit = true;}
 		else if(obj.name=='concentration'){deriveConcentration = true;document.getElementById('concentrationErrorMsg').style.display="none";}
+		else if(obj.name=='dna260'){deriveDna260 = true;document.getElementById('dna260ErrMsg').style.display="none";}
+
 	}
 }
 function onRadioButtonClick(element)
@@ -1273,7 +1323,7 @@ function submitDeriveData()
 		derLabel.className += " errorStyleOn";
 	}
 	
-	if(submitDeriveCombo && deriveLabelSubmit && deriveBarcodeSubmit && deriveCreatedOnSubmit && deriveQtySubmit && derLabelSubmit)
+	if(deriveDna260 && deriveConcentration && submitDeriveCombo && deriveLabelSubmit && deriveBarcodeSubmit && deriveCreatedOnSubmit && deriveQtySubmit && derLabelSubmit)
 	{
 		var deriveExtidJSON = createExtIdJSON();
 		//alert(deriveExtidJSON);
@@ -1293,7 +1343,16 @@ function submitDeriveData()
 		deriveDataJSON["createdOn"]= document.getElementById('createdOn').value;
 		deriveDataJSON["initialQuantity"]= document.getElementById('initialQuantity').value;
 		deriveDataJSON["externalIdentifiers"] = [];// deriveExtidJSON;
-		
+		if(deriveDataJSON['type']=="DNA"){
+			deriveDataJSON["dnaMethod"] = dnaMethodCombo.getSelectedText();
+			var dna260val = document.getElementById("260-280").value;
+		if(dna260val != null && dna260val != "")
+		{
+			deriveDataJSON["dna260"] = document.getElementById("260-280").value;
+		}
+			
+		}
+	
 //		var loader1 =""; dhtmlxAjax.postSync("rest/specimen/createDerive/",JSON.stringify(deriveDataJSON));
 		var loader = testREST(deriveDataJSON);
 		

@@ -238,6 +238,22 @@
             length="255"
             unique="true"
         />
+          <property
+            name="dnaMethod"
+            type="string"
+            update="true"
+            insert="true"
+            column="DNA_METHOD"
+            length="255"
+        />
+            <property
+            name="dna260"
+            type="double"
+            update="true"
+            insert="true"
+            column="DNA_260"
+            length="50"
+        />
 
         <property
             name="createdOn"
