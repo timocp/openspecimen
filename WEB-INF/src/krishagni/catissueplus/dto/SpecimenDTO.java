@@ -49,194 +49,162 @@ private String consentBlood;
 private String labNumber;
 private String siteName;
 
-private Long participantID;
-private Long cprID;
-private Long cpId;
-private String userName;
-private String dnaMethod;
-private Double dna260;
+  private Long participantID;
+  private Long cprID;
+  private Long cpId;
+  private String userName;
+  private String dnaMethod;
+  private Double dna260;
 
-public String getDnaMethod()
-{
+  public String getDnaMethod()
+  {
     return dnaMethod;
-}
+  }
 
-
-public void setDnaMethod(String dnaMethod)
-{
+  public void setDnaMethod(String dnaMethod)
+  {
     this.dnaMethod = dnaMethod;
-}
+  }
 
-
-public Double getDna260()
-{
+  public Double getDna260()
+  {
     return dna260;
-}
+  }
 
-
-public void setDna260(Double dna260)
-{
+  public void setDna260(Double dna260)
+  {
     this.dna260 = dna260;
-}
+  }
 
-
-public String getUserName()
-{
+  public String getUserName()
+  {
     return userName;
-}
+  }
 
-public void setUserName(String userName)
-{
+  public void setUserName(String userName)
+  {
     this.userName = userName;
-}
-public Long getParticipantID()
-{
+  }
+
+  public Long getParticipantID()
+  {
     return participantID;
-}
-public void setParticipantID(Long participantID)
-{
+  }
+
+  public void setParticipantID(Long participantID)
+  {
     this.participantID = participantID;
-}
-public Long getCprID()
-{
+  }
+
+  public Long getCprID()
+  {
     return cprID;
-}
-public void setCprID(Long cprID)
-{
+  }
+
+  public void setCprID(Long cprID)
+  {
     this.cprID = cprID;
-}
-public Long getCpId()
-{
+  }
+
+  public Long getCpId()
+  {
     return cpId;
-}
-public void setCpId(Long cpId)
-{
+  }
+
+  public void setCpId(Long cpId)
+  {
     this.cpId = cpId;
-}
+  }
 
-public String getAsigID()
-{
+  public String getAsigID()
+  {
     return asigID;
-}
+  }
 
-
-
-public void setAsigID(String asigID)
-{
+  public void setAsigID(String asigID)
+  {
     this.asigID = asigID;
-}
+  }
 
-
-
-public String getShelf()
-{
+  public String getShelf()
+  {
     return shelf;
-}
+  }
 
-
-
-public void setShelf(String shelf)
-{
+  public void setShelf(String shelf)
+  {
     this.shelf = shelf;
-}
+  }
 
-
-
-public String getDrawer()
-{
+  public String getDrawer()
+  {
     return drawer;
-}
+  }
 
-
-
-public void setDrawer(String drawer)
-{
+  public void setDrawer(String drawer)
+  {
     this.drawer = drawer;
-}
+  }
 
-
-
-public String getPositionX()
-{
+  public String getPositionX()
+  {
     return positionX;
-}
+  }
 
-
-
-public void setPositionX(String positionX)
-{
+  public void setPositionX(String positionX)
+  {
     this.positionX = positionX;
-}
+  }
 
-
-
-public String getPositionY()
-{
+  public String getPositionY()
+  {
     return positionY;
-}
+  }
 
-
-
-public void setPositionY(String positionY)
-{
+  public void setPositionY(String positionY)
+  {
     this.positionY = positionY;
-}
+  }
 
-
-
-public String getConsentBlood()
-{
+  public String getConsentBlood()
+  {
     return consentBlood;
-}
+  }
 
-
-
-public void setConsentBlood(String consentBlood)
-{
+  public void setConsentBlood(String consentBlood)
+  {
     this.consentBlood = consentBlood;
-}
+  }
 
-
-
-public String getLabNumber()
-{
+  public String getLabNumber()
+  {
     return labNumber;
-}
+  }
 
-
-
-public void setLabNumber(String labNumber)
-{
+  public void setLabNumber(String labNumber)
+  {
     this.labNumber = labNumber;
-}
+  }
 
-
-
-public String getSiteName()
-{
+  public String getSiteName()
+  {
     return siteName;
-}
+  }
 
-
-
-public void setSiteName(String siteName)
-{
+  public void setSiteName(String siteName)
+  {
     this.siteName = siteName;
-}
+  }
 
+  public String getParentSpecimenBarcode()
+  {
+    return parentSpecimenBarcode;
+  }
 
-
-
-public String getParentSpecimenBarcode()
-{
-	return parentSpecimenBarcode;
-}
-
-
-public void setParentSpecimenBarcode(String parentSpecimenBarcode)
-{
-	this.parentSpecimenBarcode = parentSpecimenBarcode;
-}
+  public void setParentSpecimenBarcode(String parentSpecimenBarcode)
+  {
+    this.parentSpecimenBarcode = parentSpecimenBarcode;
+  }
 
 	public boolean isToPrintLabel()
 	{

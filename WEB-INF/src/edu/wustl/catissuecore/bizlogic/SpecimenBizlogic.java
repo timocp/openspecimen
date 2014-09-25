@@ -659,95 +659,103 @@ public class SpecimenBizlogic
 		}
 	}
 
-	public edu.wustl.catissuecore.dto.SpecimenDTO getDTO(Specimen specimen)
-			throws BizLogicException
-	{
-		edu.wustl.catissuecore.dto.SpecimenDTO specimenDTO = new edu.wustl.catissuecore.dto.SpecimenDTO();
-		//Specimen specimen = (Specimen) dao.retrieveById(Specimen.class.getName(), identifier);
-		specimenDTO.setId(specimen.getId());
-		specimenDTO.setLabel(specimen.getLabel());
-		specimenDTO.setActivityStatus(specimen.getActivityStatus());
-		specimenDTO.setAvailable(specimen.getIsAvailable());
-		specimenDTO.setAvailableQuantity(specimen.getAvailableQuantity());
-		specimenDTO.setBarcode(specimen.getBarcode());
-		specimenDTO.setClassName(specimen.getClassName());
-		specimenDTO.setCollectionStatus(specimen.getCollectionStatus());
-		specimenDTO.setComments(specimen.getComment());
-		//				specimenDTO.setConcentration(specimen.getc)
-		specimenDTO.setCreatedDate(specimen.getCreatedOn());
-		specimenDTO.setLineage(specimen.getLineage());
-		if (specimen.getParentSpecimen() != null)
-		{
-			specimenDTO.setParentSpecimenId(specimen.getParentSpecimen().getId());
-			specimenDTO.setParentSpecimenName(specimen.getParentSpecimen().getLabel());
-		}
-		specimenDTO.setPathologicalStatus(specimen.getPathologicalStatus());
-		specimenDTO.setQuantity(specimen.getInitialQuantity());
-		if (specimen.getSpecimenCollectionGroup() != null)
-		{
-			specimenDTO.setSpecimenCollectionGroupId(specimen.getSpecimenCollectionGroup().getId());
-			specimenDTO.setSpecimenCollectionGroupName(specimen.getSpecimenCollectionGroup()
-					.getName());
-		}
-		specimenDTO.setTissueSide(specimen.getTissueSide());
-		specimenDTO.setTissueSite(specimen.getTissueSite());
-		specimenDTO.setType(specimen.getSpecimenType());
-		if (specimen.getSpecimenPosition() != null)
-		{
-			specimenDTO.setPos1(specimen.getSpecimenPosition().getPositionDimensionOneString());
-			specimenDTO.setPos2(specimen.getSpecimenPosition().getPositionDimensionTwoString());
-			specimenDTO
-					.setContainerId(specimen.getSpecimenPosition().getStorageContainer().getId());
-			specimenDTO.setContainerName(specimen.getSpecimenPosition().getStorageContainer()
-					.getName());
-			specimenDTO.setIsVirtual(Boolean.FALSE);
-		}
-		else
-		{
-			specimenDTO.setIsVirtual(Boolean.TRUE);
-		}
-		specimenDTO.setConcentration(specimen.getConcentrationInMicrogramPerMicroliter());
-		specimenDTO.setExternalIdentifiers(getExternalIdentifierDTOCollection(specimen));
-		specimenDTO.setBioHazards(getBiohazardDTOCollection(specimen));
-		specimenDTO.setAsigID(specimen.getSpecimenCollectionGroup().getCollectionProtocolRegistration().getProtocolParticipantIdentifier());
-		if(specimen.getSpecimenPosition()!=null){
-		specimenDTO.setPositionX(specimen.getSpecimenPosition().getPositionDimensionOneString());
-		specimenDTO.setPositionY(specimen.getSpecimenPosition().getPositionDimensionTwoString());
-            if (specimen.getSpecimenPosition().getStorageContainer() != null)
-            {
-                ContainerPosition drawer = specimen.getSpecimenPosition().getStorageContainer().getLocatedAtPosition();
-                specimenDTO.setDrawer(drawer != null && drawer.getParentContainer() != null ? drawer
-                        .getParentContainer().getName() : "");
-                specimenDTO.setShelf(drawer != null && drawer.getParentContainer() != null
-                        && drawer.getParentContainer().getLocatedAtPosition().getParentContainer() != null ? drawer
-                        .getParentContainer().getLocatedAtPosition().getParentContainer().getName() : "");
-            }
-		}
-		specimenDTO.setLabNumber(specimen.getSpecimenCollectionGroup().getCollectionProtocolRegistration().getParticipant().getLabNumber());
-		
-		Collection<ConsentTierResponse> ctr = specimen.getSpecimenCollectionGroup().getCollectionProtocolRegistration().getConsentTierResponseCollection();
-		if(ctr!=null && ctr.size()>0){
-		    Iterator<ConsentTierResponse> itr = ctr.iterator();
-		    ConsentTierResponse response = itr.next();
-		    specimenDTO.setConsentBlood(response.getResponse());
-		}else{
-		    specimenDTO.setConsentBlood("Not Specified");
-		}
-		Collection<ParticipantMedicalIdentifier> mrnColl = specimen.getSpecimenCollectionGroup().getCollectionProtocolRegistration().getParticipant().getParticipantMedicalIdentifierCollection();
-		if(mrnColl!=null && mrnColl.size()>0){
-		    Iterator<ParticipantMedicalIdentifier> itr = mrnColl.iterator();
-		    ParticipantMedicalIdentifier mrn = itr.next();
-            specimenDTO.setSiteName(mrn.getSite().getName());
-		}
-		specimenDTO.setCpId( specimen.getSpecimenCollectionGroup().getCollectionProtocolRegistration().getCollectionProtocol().getId());
-		specimenDTO.setCprID(specimen.getSpecimenCollectionGroup().getCollectionProtocolRegistration().getId());
-		specimenDTO.setParticipantID(specimen.getSpecimenCollectionGroup().getCollectionProtocolRegistration().getParticipant().getId());
-		if(specimen.getSpecimenType().equals("DNA")&&specimen.getLineage().equals("Derived")){
-		    specimenDTO.setDnaMethod(specimen.getDnaMethod());
-		    specimenDTO.setDna260(specimen.getDna260());
-		}
-		return specimenDTO;
-	}
+  public edu.wustl.catissuecore.dto.SpecimenDTO getDTO(Specimen specimen) throws BizLogicException
+  {
+    edu.wustl.catissuecore.dto.SpecimenDTO specimenDTO = new edu.wustl.catissuecore.dto.SpecimenDTO();
+    //Specimen specimen = (Specimen) dao.retrieveById(Specimen.class.getName(), identifier);
+    specimenDTO.setId(specimen.getId());
+    specimenDTO.setLabel(specimen.getLabel());
+    specimenDTO.setActivityStatus(specimen.getActivityStatus());
+    specimenDTO.setAvailable(specimen.getIsAvailable());
+    specimenDTO.setAvailableQuantity(specimen.getAvailableQuantity());
+    specimenDTO.setBarcode(specimen.getBarcode());
+    specimenDTO.setClassName(specimen.getClassName());
+    specimenDTO.setCollectionStatus(specimen.getCollectionStatus());
+    specimenDTO.setComments(specimen.getComment());
+    //				specimenDTO.setConcentration(specimen.getc)
+    specimenDTO.setCreatedDate(specimen.getCreatedOn());
+    specimenDTO.setLineage(specimen.getLineage());
+    if (specimen.getParentSpecimen() != null)
+    {
+      specimenDTO.setParentSpecimenId(specimen.getParentSpecimen().getId());
+      specimenDTO.setParentSpecimenName(specimen.getParentSpecimen().getLabel());
+    }
+    specimenDTO.setPathologicalStatus(specimen.getPathologicalStatus());
+    specimenDTO.setQuantity(specimen.getInitialQuantity());
+    if (specimen.getSpecimenCollectionGroup() != null)
+    {
+      specimenDTO.setSpecimenCollectionGroupId(specimen.getSpecimenCollectionGroup().getId());
+      specimenDTO.setSpecimenCollectionGroupName(specimen.getSpecimenCollectionGroup().getName());
+    }
+    specimenDTO.setTissueSide(specimen.getTissueSide());
+    specimenDTO.setTissueSite(specimen.getTissueSite());
+    specimenDTO.setType(specimen.getSpecimenType());
+    if (specimen.getSpecimenPosition() != null)
+    {
+      specimenDTO.setPos1(specimen.getSpecimenPosition().getPositionDimensionOneString());
+      specimenDTO.setPos2(specimen.getSpecimenPosition().getPositionDimensionTwoString());
+      specimenDTO.setContainerId(specimen.getSpecimenPosition().getStorageContainer().getId());
+      specimenDTO.setContainerName(specimen.getSpecimenPosition().getStorageContainer().getName());
+      specimenDTO.setIsVirtual(Boolean.FALSE);
+    }
+    else
+    {
+      specimenDTO.setIsVirtual(Boolean.TRUE);
+    }
+    specimenDTO.setConcentration(specimen.getConcentrationInMicrogramPerMicroliter());
+    specimenDTO.setExternalIdentifiers(getExternalIdentifierDTOCollection(specimen));
+    specimenDTO.setBioHazards(getBiohazardDTOCollection(specimen));
+    specimenDTO.setAsigID(specimen.getSpecimenCollectionGroup().getCollectionProtocolRegistration()
+        .getProtocolParticipantIdentifier());
+    if (specimen.getSpecimenPosition() != null)
+    {
+      specimenDTO.setPositionX(specimen.getSpecimenPosition().getPositionDimensionOneString());
+      specimenDTO.setPositionY(specimen.getSpecimenPosition().getPositionDimensionTwoString());
+      if (specimen.getSpecimenPosition().getStorageContainer() != null)
+      {
+        ContainerPosition drawer = specimen.getSpecimenPosition().getStorageContainer().getLocatedAtPosition();
+        specimenDTO.setDrawer(drawer != null && drawer.getParentContainer() != null ? drawer.getParentContainer()
+            .getName() : "");
+        specimenDTO.setShelf(drawer != null && drawer.getParentContainer() != null
+            && drawer.getParentContainer().getLocatedAtPosition().getParentContainer() != null ? drawer
+            .getParentContainer().getLocatedAtPosition().getParentContainer().getName() : "");
+      }
+    }
+    specimenDTO.setLabNumber(specimen.getSpecimenCollectionGroup().getCollectionProtocolRegistration().getParticipant()
+        .getLabNumber());
+
+    Collection<ConsentTierResponse> ctr = specimen.getSpecimenCollectionGroup().getCollectionProtocolRegistration()
+        .getConsentTierResponseCollection();
+    if (ctr != null && ctr.size() > 0)
+    {
+      Iterator<ConsentTierResponse> itr = ctr.iterator();
+      ConsentTierResponse response = itr.next();
+      specimenDTO.setConsentBlood(response.getResponse());
+    }
+    else
+    {
+      specimenDTO.setConsentBlood("Not Specified");
+    }
+    Collection<ParticipantMedicalIdentifier> mrnColl = specimen.getSpecimenCollectionGroup()
+        .getCollectionProtocolRegistration().getParticipant().getParticipantMedicalIdentifierCollection();
+    if (mrnColl != null && mrnColl.size() > 0)
+    {
+      Iterator<ParticipantMedicalIdentifier> itr = mrnColl.iterator();
+      ParticipantMedicalIdentifier mrn = itr.next();
+      specimenDTO.setSiteName(mrn.getSite().getName());
+    }
+    specimenDTO.setCpId(specimen.getSpecimenCollectionGroup().getCollectionProtocolRegistration()
+        .getCollectionProtocol().getId());
+    specimenDTO.setCprID(specimen.getSpecimenCollectionGroup().getCollectionProtocolRegistration().getId());
+    specimenDTO.setParticipantID(specimen.getSpecimenCollectionGroup().getCollectionProtocolRegistration()
+        .getParticipant().getId());
+    if (specimen.getSpecimenType().equals("DNA") && specimen.getLineage().equals("Derived"))
+    {
+      specimenDTO.setDnaMethod(specimen.getDnaMethod());
+      specimenDTO.setDna260(specimen.getDna260());
+    }
+    return specimenDTO;
+  }
 
 	/**
 	 * Populate ExternalIdentifierDTOCollection from Specimen.

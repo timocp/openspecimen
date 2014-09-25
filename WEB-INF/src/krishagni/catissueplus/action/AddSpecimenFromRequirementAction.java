@@ -103,11 +103,12 @@ public class AddSpecimenFromRequirementAction extends CatissueBaseAction {
 			CollectionProtocolRegistration cpr = cprDao.getCPRByCPAndParticipantId(hibernateDao,specimenDTO.getParticipantID() , specimenDTO.getCpId());
 			specimenDTO.setAsigID(cpr.getProtocolParticipantIdentifier());
 			Collection<ParticipantMedicalIdentifier> mrnColl = cpr.getParticipant().getParticipantMedicalIdentifierCollection();
-	        if(mrnColl!=null && mrnColl.size()>0){
-	            Iterator<ParticipantMedicalIdentifier> itr = mrnColl.iterator();
-	            ParticipantMedicalIdentifier mrn = itr.next();
-	            specimenDTO.setSiteName(mrn.getSite().getName());
-	        }
+      if (mrnColl != null && mrnColl.size() > 0)
+      {
+        Iterator<ParticipantMedicalIdentifier> itr = mrnColl.iterator();
+        ParticipantMedicalIdentifier mrn = itr.next();
+        specimenDTO.setSiteName(mrn.getSite().getName());
+      }
 	        
 			request.setAttribute("specimenDTO", specimenDTO);
 

@@ -4944,34 +4944,39 @@ public class AppUtility
 		}
 	}
 	
-	public static String getClassNameFromType(String type){
-	    String className = "";
-	    final Map<String, List<NameValueBean>> specimenTypeMap = getSpecimenTypeMap();
-        Iterator<String> itr = specimenTypeMap.keySet().iterator();
-        while(itr.hasNext()){
-            className = itr.next();
-            List<NameValueBean> list = specimenTypeMap.get(className);
-            for(NameValueBean typeNameValue : list){
-                if(typeNameValue.getName().equals(type)){
-                    return className;
-                }
-            }
-        }
-	    return className;
-	}
-	
-	public static List<NameValueBean> getSpecTypes()
+  public static String getClassNameFromType(String type)
+  {
+    String className = "";
+    final Map<String, List<NameValueBean>> specimenTypeMap = getSpecimenTypeMap();
+    Iterator<String> itr = specimenTypeMap.keySet().iterator();
+    while (itr.hasNext())
     {
-        final Map<String, List<NameValueBean>> specimenTypeMap = getSpecimenTypeMap();
-        Iterator<String> itr = specimenTypeMap.keySet().iterator();
-        List<NameValueBean> typeList = new ArrayList<NameValueBean>(); 
-        typeList.add(new NameValueBean("-- Select --","-1"));
-        while(itr.hasNext()){
-            List<NameValueBean> list = specimenTypeMap.get(itr.next());
-            list.remove(0);
-            typeList.addAll(list);
+      className = itr.next();
+      List<NameValueBean> list = specimenTypeMap.get(className);
+      for (NameValueBean typeNameValue : list)
+      {
+        if (typeNameValue.getName().equals(type))
+        {
+          return className;
         }
-    
-        return typeList;
+      }
     }
+    return className;
+  }
+
+  public static List<NameValueBean> getSpecTypes()
+  {
+    final Map<String, List<NameValueBean>> specimenTypeMap = getSpecimenTypeMap();
+    Iterator<String> itr = specimenTypeMap.keySet().iterator();
+    List<NameValueBean> typeList = new ArrayList<NameValueBean>();
+    typeList.add(new NameValueBean("-- Select --", "-1"));
+    while (itr.hasNext())
+    {
+      List<NameValueBean> list = specimenTypeMap.get(itr.next());
+      list.remove(0);
+      typeList.addAll(list);
+    }
+
+    return typeList;
+  }
 }

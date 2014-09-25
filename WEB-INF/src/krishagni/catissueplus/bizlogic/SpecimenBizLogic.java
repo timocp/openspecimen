@@ -205,149 +205,150 @@ public class SpecimenBizLogic
 	 * @throws ParseException 
 	 * @throws ApplicationException 
 	 */
-	private void getUpdatedSpecimen(Specimen oldSpecimenObj, SpecimenDTO specimenDTO, SessionDataBean sessionDataBean,
-			HibernateDAO hibernateDao) throws ParseException, ApplicationException
-	{
-		if (!Validator.isEmpty(specimenDTO.getActivityStatus()))
-		{
-			oldSpecimenObj.setActivityStatus(specimenDTO.getActivityStatus());
-		}
-		if (specimenDTO.getCreatedDate() != null)
-		{
-			oldSpecimenObj.setCreatedOn(specimenDTO.getCreatedDate());
-		}
-		if (!Validator.isEmpty(specimenDTO.getLabel()))
-		{
-			oldSpecimenObj.setLabel(specimenDTO.getLabel());
-		}
-		Double quantityDiff = 0.0;
-		if (specimenDTO.getQuantity() != null)
-		{
-			if(specimenDTO.getQuantity() > oldSpecimenObj.getInitialQuantity())
-			{
-				quantityDiff = specimenDTO.getQuantity() - oldSpecimenObj.getInitialQuantity();
-			}
-			oldSpecimenObj.setInitialQuantity(specimenDTO.getQuantity());
-		}
-		if (isSpecimenStatusCollected(specimenDTO.getCollectionStatus())
-				&& !oldSpecimenObj.getCollectionStatus().equalsIgnoreCase(Constants.COLLECTION_STATUS_COLLECTED))
-		{
-			oldSpecimenObj.setCollectionStatus(specimenDTO.getCollectionStatus());
-			oldSpecimenObj.setIsAvailable(true);
-			if (specimenDTO.getQuantity() != null)
-			{
-				oldSpecimenObj.setAvailableQuantity(specimenDTO.getQuantity());
-			}
-			else
-			{
-				oldSpecimenObj.setAvailableQuantity(oldSpecimenObj.getInitialQuantity());
-			}
-			this.setSpecimenEvents(oldSpecimenObj, sessionDataBean);
-		}
-		else
-		{
-			if (!Validator.isEmpty(specimenDTO.getCollectionStatus()))
-			{
-				oldSpecimenObj.setCollectionStatus(specimenDTO.getCollectionStatus());
-			}
-			if(quantityDiff > 0.0)
-			{
-				oldSpecimenObj.setAvailableQuantity(oldSpecimenObj.getAvailableQuantity() + quantityDiff);
-				oldSpecimenObj.setIsAvailable(Boolean.TRUE);
-			}
-			if (specimenDTO.getAvailableQuantity() != null)
-			{
-				oldSpecimenObj.setAvailableQuantity(specimenDTO.getAvailableQuantity());
-			}
-			if (specimenDTO.isAvailable() != null)
-			{
-				oldSpecimenObj.setIsAvailable(specimenDTO.isAvailable());
-			}
-		}
-		if(oldSpecimenObj.getAvailableQuantity() == 0)
-		{
-			oldSpecimenObj.setIsAvailable(Boolean.FALSE);
-		}
-		if (!Validator.isEmpty(specimenDTO.getBarcode()))
-		{
-			oldSpecimenObj.setBarcode(specimenDTO.getBarcode());
-		}
+  private void getUpdatedSpecimen(Specimen oldSpecimenObj, SpecimenDTO specimenDTO, SessionDataBean sessionDataBean,
+      HibernateDAO hibernateDao) throws ParseException, ApplicationException
+  {
+    if (!Validator.isEmpty(specimenDTO.getActivityStatus()))
+    {
+      oldSpecimenObj.setActivityStatus(specimenDTO.getActivityStatus());
+    }
+    if (specimenDTO.getCreatedDate() != null)
+    {
+      oldSpecimenObj.setCreatedOn(specimenDTO.getCreatedDate());
+    }
+    if (!Validator.isEmpty(specimenDTO.getLabel()))
+    {
+      oldSpecimenObj.setLabel(specimenDTO.getLabel());
+    }
+    Double quantityDiff = 0.0;
+    if (specimenDTO.getQuantity() != null)
+    {
+      if (specimenDTO.getQuantity() > oldSpecimenObj.getInitialQuantity())
+      {
+        quantityDiff = specimenDTO.getQuantity() - oldSpecimenObj.getInitialQuantity();
+      }
+      oldSpecimenObj.setInitialQuantity(specimenDTO.getQuantity());
+    }
+    if (isSpecimenStatusCollected(specimenDTO.getCollectionStatus())
+        && !oldSpecimenObj.getCollectionStatus().equalsIgnoreCase(Constants.COLLECTION_STATUS_COLLECTED))
+    {
+      oldSpecimenObj.setCollectionStatus(specimenDTO.getCollectionStatus());
+      oldSpecimenObj.setIsAvailable(true);
+      if (specimenDTO.getQuantity() != null)
+      {
+        oldSpecimenObj.setAvailableQuantity(specimenDTO.getQuantity());
+      }
+      else
+      {
+        oldSpecimenObj.setAvailableQuantity(oldSpecimenObj.getInitialQuantity());
+      }
+      this.setSpecimenEvents(oldSpecimenObj, sessionDataBean);
+    }
+    else
+    {
+      if (!Validator.isEmpty(specimenDTO.getCollectionStatus()))
+      {
+        oldSpecimenObj.setCollectionStatus(specimenDTO.getCollectionStatus());
+      }
+      if (quantityDiff > 0.0)
+      {
+        oldSpecimenObj.setAvailableQuantity(oldSpecimenObj.getAvailableQuantity() + quantityDiff);
+        oldSpecimenObj.setIsAvailable(Boolean.TRUE);
+      }
+      if (specimenDTO.getAvailableQuantity() != null)
+      {
+        oldSpecimenObj.setAvailableQuantity(specimenDTO.getAvailableQuantity());
+      }
+      if (specimenDTO.isAvailable() != null)
+      {
+        oldSpecimenObj.setIsAvailable(specimenDTO.isAvailable());
+      }
+    }
+    if (oldSpecimenObj.getAvailableQuantity() == 0)
+    {
+      oldSpecimenObj.setIsAvailable(Boolean.FALSE);
+    }
+    if (!Validator.isEmpty(specimenDTO.getBarcode()))
+    {
+      oldSpecimenObj.setBarcode(specimenDTO.getBarcode());
+    }
 
-		if (!Validator.isEmpty(specimenDTO.getClassName()))
-		{
-			oldSpecimenObj.setSpecimenClass(specimenDTO.getClassName());
-		}
-		if (!Validator.isEmpty(specimenDTO.getType()))
-		{
-			oldSpecimenObj.setSpecimenType(specimenDTO.getType());
-		}
-		if (!Validator.isEmpty(specimenDTO.getPathologicalStatus()))
-		{
-			oldSpecimenObj.setPathologicalStatus(specimenDTO.getPathologicalStatus());
-		}
-		if (!Validator.isEmpty(specimenDTO.getTissueSide()))
-		{
-			oldSpecimenObj.setTissueSide(specimenDTO.getTissueSide());
-		}
-		if (!Validator.isEmpty(specimenDTO.getTissueSite()))
-		{
-			oldSpecimenObj.setTissueSite(specimenDTO.getTissueSite());
-		}
-		if (!Validator.isEmpty(specimenDTO.getComments()))
-		{
-			oldSpecimenObj.setComment(specimenDTO.getComments());
-		}
-		SpecimenPosition position = new SpecimenPosition();
-		if (specimenDTO.getIsVirtual() == null || specimenDTO.getIsVirtual())
-		{
-			position = null;
-		}
-		else if (oldSpecimenObj.getSpecimenPosition() == null
-				&& isSpecimenStatusCollected(oldSpecimenObj.getCollectionStatus()))
-		{
-			if (specimenDTO.getPos1() != null && !"".equals(specimenDTO.getPos1().trim())
-					&& specimenDTO.getPos2() != null && !"".equals(specimenDTO.getPos2().trim()))
-			{
-				int toPos1Int = StorageContainerUtil.convertSpecimenPositionsToInteger(specimenDTO.getContainerName(),
-						1, specimenDTO.getPos1());
-				int toPos2Int = StorageContainerUtil.convertSpecimenPositionsToInteger(specimenDTO.getContainerName(),
-						2, specimenDTO.getPos2());
-				position.setPositionDimensionOne(toPos1Int);
-				position.setPositionDimensionTwo(toPos2Int);
-				position.setPositionDimensionOneString(specimenDTO.getPos1());
-				position.setPositionDimensionTwoString(specimenDTO.getPos2());
-				StorageContainer container = new StorageContainer();
-				Map<String, NamedQueryParam> substParams = new HashMap<String, NamedQueryParam>();
-				substParams.put("0", new NamedQueryParam(DBTypes.STRING, specimenDTO.getContainerName()));
-				final List containerIds = ((HibernateDAO) hibernateDao).executeNamedQuery("getStorageContainerIdByContainerName",
-						substParams);
-				if (!containerIds.isEmpty())
-				{
-					container.setId((Long) containerIds.get(0));
-				}
-				else
-				{
-					throw this.getBizLogicException(null, "errors.invalid",
-							ApplicationProperties.getValue("array.positionInStorageContainer"));
-				}
-				container.setName(specimenDTO.getContainerName());
-				position.setStorageContainer(container);
-				position.setSpecimen(oldSpecimenObj);
-				oldSpecimenObj.setSpecimenPosition(position);
-			}
-		}
-		if (Constants.MOLECULAR.equals(oldSpecimenObj.getClassName()) && specimenDTO.getConcentration() != null)
-		{
-			oldSpecimenObj.setConcentrationInMicrogramPerMicroliter(specimenDTO.getConcentration());
-		}
-		oldSpecimenObj.setExternalIdentifierCollection(getExternalIdentifiers(oldSpecimenObj, specimenDTO));
-		oldSpecimenObj.setBiohazardCollection(getBiohazards(oldSpecimenObj, specimenDTO));
-		if("Derived".equals(specimenDTO.getLineage())&&"DNA".equals(specimenDTO.getType())){
-		    oldSpecimenObj.setDnaMethod(specimenDTO.getDnaMethod());
-		    oldSpecimenObj.setDna260(specimenDTO.getDna260());
-		}
-		oldSpecimenObj.setSpecimenClass(AppUtility.getClassNameFromType(oldSpecimenObj.getSpecimenType()));
-	}
+    if (!Validator.isEmpty(specimenDTO.getClassName()))
+    {
+      oldSpecimenObj.setSpecimenClass(specimenDTO.getClassName());
+    }
+    if (!Validator.isEmpty(specimenDTO.getType()))
+    {
+      oldSpecimenObj.setSpecimenType(specimenDTO.getType());
+    }
+    if (!Validator.isEmpty(specimenDTO.getPathologicalStatus()))
+    {
+      oldSpecimenObj.setPathologicalStatus(specimenDTO.getPathologicalStatus());
+    }
+    if (!Validator.isEmpty(specimenDTO.getTissueSide()))
+    {
+      oldSpecimenObj.setTissueSide(specimenDTO.getTissueSide());
+    }
+    if (!Validator.isEmpty(specimenDTO.getTissueSite()))
+    {
+      oldSpecimenObj.setTissueSite(specimenDTO.getTissueSite());
+    }
+    if (!Validator.isEmpty(specimenDTO.getComments()))
+    {
+      oldSpecimenObj.setComment(specimenDTO.getComments());
+    }
+    SpecimenPosition position = new SpecimenPosition();
+    if (specimenDTO.getIsVirtual() == null || specimenDTO.getIsVirtual())
+    {
+      position = null;
+    }
+    else if (oldSpecimenObj.getSpecimenPosition() == null
+        && isSpecimenStatusCollected(oldSpecimenObj.getCollectionStatus()))
+    {
+      if (specimenDTO.getPos1() != null && !"".equals(specimenDTO.getPos1().trim()) && specimenDTO.getPos2() != null
+          && !"".equals(specimenDTO.getPos2().trim()))
+      {
+        int toPos1Int = StorageContainerUtil.convertSpecimenPositionsToInteger(specimenDTO.getContainerName(), 1,
+            specimenDTO.getPos1());
+        int toPos2Int = StorageContainerUtil.convertSpecimenPositionsToInteger(specimenDTO.getContainerName(), 2,
+            specimenDTO.getPos2());
+        position.setPositionDimensionOne(toPos1Int);
+        position.setPositionDimensionTwo(toPos2Int);
+        position.setPositionDimensionOneString(specimenDTO.getPos1());
+        position.setPositionDimensionTwoString(specimenDTO.getPos2());
+        StorageContainer container = new StorageContainer();
+        Map<String, NamedQueryParam> substParams = new HashMap<String, NamedQueryParam>();
+        substParams.put("0", new NamedQueryParam(DBTypes.STRING, specimenDTO.getContainerName()));
+        final List containerIds = ((HibernateDAO) hibernateDao).executeNamedQuery(
+            "getStorageContainerIdByContainerName", substParams);
+        if (!containerIds.isEmpty())
+        {
+          container.setId((Long) containerIds.get(0));
+        }
+        else
+        {
+          throw this.getBizLogicException(null, "errors.invalid",
+              ApplicationProperties.getValue("array.positionInStorageContainer"));
+        }
+        container.setName(specimenDTO.getContainerName());
+        position.setStorageContainer(container);
+        position.setSpecimen(oldSpecimenObj);
+        oldSpecimenObj.setSpecimenPosition(position);
+      }
+    }
+    if (Constants.MOLECULAR.equals(oldSpecimenObj.getClassName()) && specimenDTO.getConcentration() != null)
+    {
+      oldSpecimenObj.setConcentrationInMicrogramPerMicroliter(specimenDTO.getConcentration());
+    }
+    oldSpecimenObj.setExternalIdentifierCollection(getExternalIdentifiers(oldSpecimenObj, specimenDTO));
+    oldSpecimenObj.setBiohazardCollection(getBiohazards(oldSpecimenObj, specimenDTO));
+    if ("Derived".equals(specimenDTO.getLineage()) && "DNA".equals(specimenDTO.getType()))
+    {
+      oldSpecimenObj.setDnaMethod(specimenDTO.getDnaMethod());
+      oldSpecimenObj.setDna260(specimenDTO.getDna260());
+    }
+    oldSpecimenObj.setSpecimenClass(AppUtility.getClassNameFromType(oldSpecimenObj.getSpecimenType()));
+  }
 
 	/**
 	 * Returns ExternalIdentifier Collection to be set in old specimen object.

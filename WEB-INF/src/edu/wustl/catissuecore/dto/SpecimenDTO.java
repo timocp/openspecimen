@@ -48,195 +48,158 @@ public class SpecimenDTO
 	private String labNumber;
 	private String siteName;
 	
-	private Long participantID;
-	private Long cprID;
-	private Long cpId;
-	private String userName;
-	private String dnaMethod;
-	private Double dna260;
-	
-	public String getDnaMethod()
-    {
-        return dnaMethod;
-    }
+  private Long participantID;
+  private Long cprID;
+  private Long cpId;
+  private String userName;
+  private String dnaMethod;
+  private Double dna260;
 
-    
-    public void setDnaMethod(String dnaMethod)
-    {
-        this.dnaMethod = dnaMethod;
-    }
+  public String getDnaMethod()
+  {
+    return dnaMethod;
+  }
 
-    
-    public Double getDna260()
-    {
-        return dna260;
-    }
+  public void setDnaMethod(String dnaMethod)
+  {
+    this.dnaMethod = dnaMethod;
+  }
 
-    
-    public void setDna260(Double dna260)
-    {
-        this.dna260 = dna260;
-    }
+  public Double getDna260()
+  {
+    return dna260;
+  }
 
-    public String getUserName()
-	{
-	    return userName;
-	}
+  public void setDna260(Double dna260)
+  {
+    this.dna260 = dna260;
+  }
 
-	public void setUserName(String userName)
-	{
-	    this.userName = userName;
-	}
-	
-	public Long getParticipantID()
-	{
-	    return participantID;
-	}
-	public void setParticipantID(Long participantID)
-	{
-	    this.participantID = participantID;
-	}
-	public Long getCprID()
-	{
-	    return cprID;
-	}
-	public void setCprID(Long cprID)
-	{
-	    this.cprID = cprID;
-	}
-	public Long getCpId()
-	{
-	    return cpId;
-	}
-	public void setCpId(Long cpId)
-	{
-	    this.cpId = cpId;
-	}
+  public String getUserName()
+  {
+    return userName;
+  }
 
-	    
-    
-    
-    public String getLabNumber()
-    {
-        return labNumber;
-    }
+  public void setUserName(String userName)
+  {
+    this.userName = userName;
+  }
 
+  public Long getParticipantID()
+  {
+    return participantID;
+  }
 
+  public void setParticipantID(Long participantID)
+  {
+    this.participantID = participantID;
+  }
 
+  public Long getCprID()
+  {
+    return cprID;
+  }
 
-    
-    public void setLabNumber(String labNumber)
-    {
-        this.labNumber = labNumber;
-    }
+  public void setCprID(Long cprID)
+  {
+    this.cprID = cprID;
+  }
 
+  public Long getCpId()
+  {
+    return cpId;
+  }
 
+  public void setCpId(Long cpId)
+  {
+    this.cpId = cpId;
+  }
 
+  public String getLabNumber()
+  {
+    return labNumber;
+  }
 
-    
-    public String getSiteName()
-    {
-        return siteName;
-    }
+  public void setLabNumber(String labNumber)
+  {
+    this.labNumber = labNumber;
+  }
 
+  public String getSiteName()
+  {
+    return siteName;
+  }
 
+  public void setSiteName(String siteName)
+  {
+    this.siteName = siteName;
+  }
 
+  public String getConsentBlood()
+  {
+    return consentBlood;
+  }
 
-    
-    public void setSiteName(String siteName)
-    {
-        this.siteName = siteName;
-    }
+  public void setConsentBlood(String consentBlood)
+  {
+    this.consentBlood = consentBlood;
+  }
 
+  public String getShelf()
+  {
+    return shelf;
+  }
 
+  public void setShelf(String shelf)
+  {
+    this.shelf = shelf;
+  }
 
+  public String getDrawer()
+  {
+    return drawer;
+  }
 
-    public String getConsentBlood()
-    {
-        return consentBlood;
-    }
+  public void setDrawer(String drawer)
+  {
+    this.drawer = drawer;
+  }
 
+  public String getPositionX()
+  {
+    return positionX;
+  }
 
+  public void setPositionX(String positionX)
+  {
+    this.positionX = positionX;
+  }
 
-    
-    public void setConsentBlood(String consentBlood)
-    {
-        this.consentBlood = consentBlood;
-    }
+  public String getPositionY()
+  {
+    return positionY;
+  }
 
+  public void setPositionY(String positionY)
+  {
+    this.positionY = positionY;
+  }
 
+  public String getAsigID()
+  {
+    return asigID;
+  }
 
-    public String getShelf()
-    {
-        return shelf;
-    }
+  public void setAsigID(String asigID)
+  {
+    this.asigID = asigID;
+  }
 
+  public boolean isToPrintLabel()
+  {
+    return isToPrintLabel;
+  }
 
-    
-    public void setShelf(String shelf)
-    {
-        this.shelf = shelf;
-    }
-
-
-    
-    public String getDrawer()
-    {
-        return drawer;
-    }
-
-
-    
-    public void setDrawer(String drawer)
-    {
-        this.drawer = drawer;
-    }
-
-
-    
-    public String getPositionX()
-    {
-        return positionX;
-    }
-
-
-    
-    public void setPositionX(String positionX)
-    {
-        this.positionX = positionX;
-    }
-
-
-    
-    public String getPositionY()
-    {
-        return positionY;
-    }
-
-
-    
-    public void setPositionY(String positionY)
-    {
-        this.positionY = positionY;
-    }
-
-
-    public String getAsigID()
-    {
-        return asigID;
-    }
-
-    
-    public void setAsigID(String asigID)
-    {
-        this.asigID = asigID;
-    }
-
-    public boolean isToPrintLabel()
-	{
-		return isToPrintLabel;
-	}
-	
 	public void setToPrintLabel(boolean isToPrintLabel)
 	{
 		this.isToPrintLabel = isToPrintLabel;
