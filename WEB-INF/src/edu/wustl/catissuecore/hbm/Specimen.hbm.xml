@@ -272,6 +272,15 @@
             length="50"
         />
         
+        <property
+            name="thawCycle"
+            type="long"
+            update="true"
+            insert="true"
+            column="THAW_CYCLE"
+            length="50"
+        />
+        
         <!--  set
             name="specimenRecordEntryCollection"
             table="CATISSUE_SPECIMEN_REC_NTRY"

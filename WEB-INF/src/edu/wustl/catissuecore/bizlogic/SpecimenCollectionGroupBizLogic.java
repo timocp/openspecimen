@@ -3297,7 +3297,6 @@ public class SpecimenCollectionGroupBizLogic extends CatissueDefaultBizLogic
 				}
 				User reciever = (User)recResult.get(0);
 				scg.setReceiver(reciever);
-				
 				if(validate(scg, dao, Constants.ADD)){
 					dao.insert(scg);
 				}

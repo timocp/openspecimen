@@ -348,6 +348,14 @@ public class SpecimenBizLogic
       oldSpecimenObj.setDna260(specimenDTO.getDna260());
     }
     oldSpecimenObj.setSpecimenClass(AppUtility.getClassNameFromType(oldSpecimenObj.getSpecimenType()));
+    if(specimenDTO.getThawCycle()!=null && specimenDTO.getThawCycle()>0){
+      oldSpecimenObj.setThawCycle(specimenDTO.getThawCycle());
+    }else if("Aliquot".equals(specimenDTO.getLineage())){
+      oldSpecimenObj.setThawCycle(oldSpecimenObj.getParentSpecimen().getThawCycle()+1);
+    }else{
+      oldSpecimenObj.setThawCycle(0l);
+    }
+
   }
 
 	/**
@@ -665,6 +673,7 @@ public class SpecimenBizLogic
 		specimenDTO.setConcentration(specimen.getConcentrationInMicrogramPerMicroliter());
 		specimenDTO.setExternalIdentifiers(getExternalIdentifierDTOCollection(specimen));
 		specimenDTO.setBioHazards(getBiohazardDTOCollection(specimen));
+		specimenDTO.setThawCycle(specimen.getThawCycle());
 		return specimenDTO;
 	}
 
@@ -1059,6 +1068,14 @@ public class SpecimenBizLogic
         specimen.setDna260(specimenDTO.getDna260());
         specimen.setSpecimenClass(AppUtility.getClassNameFromType(specimenDTO.getType()));
 		setSpecimenEvents(specimen, sessionDataBean);
+		if(specimenDTO.getThawCycle()!=null && specimenDTO.getThawCycle()>0){
+		  specimen.setThawCycle(specimenDTO.getThawCycle());
+		}else if("Aliquot".equals(specimenDTO.getLineage())){
+		  specimen.setThawCycle(specimen.getParentSpecimen().getThawCycle()+1);
+		}else{
+		  specimen.setThawCycle(0l);
+		}
+		
 		return specimen;
 	}
 

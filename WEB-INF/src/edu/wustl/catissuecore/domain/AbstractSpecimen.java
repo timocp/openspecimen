@@ -92,6 +92,22 @@ public abstract class AbstractSpecimen extends AbstractDomainObject
 	 * specimenType - Type of specimen. e.g. Serum, Plasma, Blood, Fresh Tissue etc.
 	 */
 	protected String specimenType;
+	protected Long thawCycle;
+	  
+	  
+
+	  //protected Collection<SpecimenRecordEntry> specimenRecordEntryCollection = new HashSet<SpecimenRecordEntry>();
+
+	  public Long getThawCycle()
+	  {
+	    return thawCycle;
+	  }
+
+	  public void setThawCycle(Long thawCycle)
+	  {
+	    this.thawCycle = thawCycle;
+	  }
+
 
 	/**
 	 * Overidden from AbstractDomainObject class.

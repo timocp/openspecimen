@@ -754,6 +754,7 @@ public class SpecimenBizlogic
       specimenDTO.setDnaMethod(specimen.getDnaMethod());
       specimenDTO.setDna260(specimen.getDna260());
     }
+    specimenDTO.setThawCycle(specimen.getThawCycle()==null?0:specimen.getThawCycle());
     return specimenDTO;
   }
 

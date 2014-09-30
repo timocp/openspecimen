@@ -130,8 +130,8 @@
                     <table width="100%" border="0" cellpadding="3" cellspacing="0" >
                         <!-- NEW SPECIMEN REGISTRATION BEGINS-->
                         <tr class="tr_alternate_color_lightGrey">
-                <logic:empty name="specimenDTO" property="parentSpecimenName">
-                <logic:notEmpty name="specimenDTO" property="specimenCollectionGroupName">
+						<logic:equal name="specimenDTO"  property='lineage' value="New">
+										
                          <td width="20%" class="black_ar align_right_style">
                             <label for="specimenCollectionGroupName">
                                 <bean:message key="newSpecimen.groupName"/>
@@ -139,14 +139,14 @@
                          </td>
                          <td width="30%" align="left" class="black_ar">
                             <html:hidden name="specimenDTO" property="specimenCollectionGroupName" styleId="specimenCollectionGroupName"/>
-                                <label for="specimenCollectionGroupName">
+                                <label id ="specimenCollectionGroupNameLable" for="specimenCollectionGroupName">
                                     <bean:write name="specimenDTO" property="specimenCollectionGroupName" scope="request"/>
                                 </label>
                          </td>
-                </logic:notEmpty>
-                </logic:empty>
+                </logic:equal>
                 
-                <logic:notEmpty name="specimenDTO" property="parentSpecimenName">
+				<logic:notEqual name="specimenDTO"  property='lineage' value="New">
+						
                           <td width="20%" class="black_ar align_right_style">
                                 <label for="parentSpecimenId">
                                     <bean:message key="newSpecimen.parentLabel"/>
@@ -160,7 +160,7 @@
                                 </label>
 
                           </td>
-                </logic:notEmpty>
+                </logic:notEqual>
 
                           <td width="20%"  class="black_ar align_right_style">
                                 <label for="lineage">
@@ -176,7 +176,7 @@
                     </tr>
 					<tr class="tr_alternate_color_white">
                             <td width="20%" class="black_ar align_right_style">
-                                <img src="images/uIEnhancementImages/star.gif" alt="Mandatory" width="6" height="6" hspace="0" vspace="0" />
+                               
                                 <label for="label">
                                     ASIG ID
                                 </label>
@@ -207,7 +207,6 @@
 						
                         <tr class="tr_alternate_color_lightGrey">
                             <td width="20%" class="black_ar align_right_style">
-                                <img src="images/uIEnhancementImages/star.gif" alt="Mandatory" width="6" height="6" hspace="0" vspace="0" />
                                 <label for="label">
                                     <bean:message key="specimen.label"/>
                                 </label>
@@ -219,8 +218,8 @@
                              <td width="20%" class="black_ar align_right_style">
                                     <label for="createdDate">
 									 <c:choose>
-									 	 <c:when test="${specimenDTO.lineage=='Aliquot'}">
-											 Sample Date
+									 	 <c:when test="${specimenDTO.lineage=='New'}">
+											Sample Date 
 										 </c:when>
 										 <c:otherwise>
 											 Created On
@@ -348,7 +347,6 @@
 									 </div>
                                 </td>
 								  <td width="20%" class="black_ar align_right_style">
-                                    <img src="images/uIEnhancementImages/star.gif" alt="Mandatory" width="6" height="6" hspace="0" vspace="0" />    
                                     <label for="className">
                                         Sample Box Name
                                     </label>
@@ -503,6 +501,7 @@
                                     </label>
                                 </td>
                                 <td width="30%" align="left" class="black_ar">
+										<input id="thawCycle" onblur="chkeEmptyNumber(this);processData(this)" value="${specimenDTO.thawCycle}" class="black_ar" type="text" onblur="processData(this)" onmouseout="hideTip(this.id)" onmouseover="showTip(this.id)" size="30" maxlength="255"/>
                                 </td>
                             </tr>
 						   

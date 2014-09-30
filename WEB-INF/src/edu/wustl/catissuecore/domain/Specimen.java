@@ -168,9 +168,7 @@ public class Specimen extends AbstractSpecimen implements Serializable, IActivit
 
   private String dnaMethod;
   private Double dna260;
-
-  //protected Collection<SpecimenRecordEntry> specimenRecordEntryCollection = new HashSet<SpecimenRecordEntry>();
-
+ 
   public String getDnaMethod()
   {
     return dnaMethod;

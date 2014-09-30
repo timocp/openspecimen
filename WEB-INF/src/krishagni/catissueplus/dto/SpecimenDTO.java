@@ -55,6 +55,17 @@ private String siteName;
   private String userName;
   private String dnaMethod;
   private Double dna260;
+  private Long thawCycle;
+  
+  public Long getThawCycle()
+  {
+    return thawCycle;
+  }
+
+  public void setThawCycle(Long thawCycle)
+  {
+    this.thawCycle = thawCycle;
+  }
 
   public String getDnaMethod()
   {

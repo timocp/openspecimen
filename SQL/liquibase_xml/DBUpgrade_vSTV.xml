@@ -46,5 +46,11 @@
 		<sql>INSERT INTO CATISSUE_PERMISSIBLE_VALUE (VALUE, PARENT_IDENTIFIER, PUBLIC_ID) VALUES('Not Specified',NULL,'Dna_Method')</sql>
 		
 			</changeSet>
-
+			
+	<changeSet id="4" author="catissue" failOnError="false"  dbms="mysql" >
+		<sql>delete from catissue_permissible_value where parent_identifier in (3) and value not in ('Serum','Whole Blood','Buffy Coat')</sql>
+		<sql>delete from catissue_permissible_value where parent_identifier in (1) and value not in ('DNA')</sql>
+		<sql>delete from catissue_permissible_value where parent_identifier in (2,4)</sql>
+		<sql>delete from catissue_permissible_value where identifier in (2,4)</sql>
+	</changeSet>
 </databaseChangeLog>         

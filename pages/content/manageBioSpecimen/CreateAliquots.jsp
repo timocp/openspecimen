@@ -143,6 +143,7 @@ ul li ul li a span {
             aliquotGrid.setInitWidths("100,100,70,250,70,70,100");
             aliquotGrid.setColTypes("ed,ed,ed,ed,ed,ed,ro,ro");
             aliquotGrid.setColumnHidden(7,true);
+			 aliquotGrid.setColumnHidden(1,true);
             
             if(isLabelGenerationOn=="true"){
                 aliquotGrid.setColumnExcellType(0,"ro");
@@ -657,6 +658,10 @@ function giveCall(url,msg,msg1,id)
                 <div  class="aliquot_details">
                     <span  class="black_ar_b"><bean:message key="specimen.subType"/></span>
                 </div>
+				  <div  class="aliquot_details">
+                    <span  class="black_ar_b"><bean:message key="aliquots.currentAvailableQuantity"/></span>
+                </div>
+                
                 
             </div>
             <div class="black_ar" style="float:left;width:25%;">
@@ -664,6 +669,11 @@ function giveCall(url,msg,msg1,id)
                 <div  class="black_ar aliquot_details aliquot_details_spacing">
                 <span class="black_ar" id="ali_type">
                 ${aliquotDetailsDTO.type}
+                </span>
+                </div>
+				<div  class="black_ar aliquot_details aliquot_details_spacing">
+                <span class="black_ar" id="ali_currentAvailableQuantity">
+                ${aliquotDetailsDTO.currentAvailableQuantity}
                 </span>
                 </div>
 				
@@ -689,10 +699,7 @@ function giveCall(url,msg,msg1,id)
                 </div>
             </div>
             <div style="float:left;text-align:right;width:25%;">
-                <div  class="aliquot_details">
-                    <span  class="black_ar_b"><bean:message key="aliquots.currentAvailableQuantity"/></span>
-                </div>
-                
+              
                 
             </div>
             <div style="float:left;width:23%;">
@@ -706,11 +713,7 @@ function giveCall(url,msg,msg1,id)
                 ${aliquotDetailsDTO.concentration}
                 </span>
                 </div>
-                <div  class="black_ar aliquot_details aliquot_details_spacing">
-                <span class="black_ar" id="ali_currentAvailableQuantity">
-                ${aliquotDetailsDTO.currentAvailableQuantity}
-                </span>
-                </div>
+             
                 
             </div>
             <div style="clear: both" ></div>

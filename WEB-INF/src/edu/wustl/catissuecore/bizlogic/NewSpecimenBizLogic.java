@@ -2804,6 +2804,7 @@ public class NewSpecimenBizLogic extends CatissueDefaultBizLogic
 			}
 			else
 			{
+			  ((Specimen)obj).setSpecimenClass(AppUtility.getClassNameFromType( ((Specimen)obj).getSpecimenType()));
 				result = this.validateSingleSpecimen((Specimen) obj, dao, operation, false);
 			}
 		}
@@ -3271,11 +3272,11 @@ public class NewSpecimenBizLogic extends CatissueDefaultBizLogic
 		 * ApplicationProperties.getValue("createSpecimen.parent"); throw
 		 * getBizLogicException(null, "errors.item.required", message); } }
 		 */
-		if (validator.isEmpty(specimen.getSpecimenClass()))
+		/*if (validator.isEmpty(specimen.getSpecimenClass()))
 		{
 			final String message = ApplicationProperties.getValue("specimen.type");
 			throw this.getBizLogicException(null, "errors.item.required", message);
-		}
+		}*/
 		if (validator.isEmpty(specimen.getSpecimenType()))
 		{
 			final String message = ApplicationProperties.getValue("specimen.subType");

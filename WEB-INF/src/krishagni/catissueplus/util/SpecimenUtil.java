@@ -36,6 +36,30 @@ public class SpecimenUtil
 		}
 		return generateLabel;
 	}
+	
+	public static boolean isSpecimenLabelGeneratorAvlFromCPRId(Long cprId, HibernateDAO hibernateDao) throws DAOException
+  {
+    boolean generateLabel = Variables.isSpecimenLabelGeneratorAvl;
+
+    if (Variables.isTemplateBasedLblGeneratorAvl)
+    {
+      
+        final CollectionProtocolRegistration collectionProtocolRegistration =  (CollectionProtocolRegistration) hibernateDao.retrieveById(CollectionProtocolRegistration.class.getName(), cprId);
+
+        String parentLabelFormat = collectionProtocolRegistration.getCollectionProtocol()
+            .getSpecimenLabelFormat();
+
+        String derivativeLabelFormat = collectionProtocolRegistration.getCollectionProtocol()
+            .getDerivativeLabelFormat();
+
+        String aliquotLabelFormat = collectionProtocolRegistration.getCollectionProtocol()
+            .getAliquotLabelFormat();
+
+        generateLabel = SpecimenUtil.isLblGenOnForCP(parentLabelFormat, derivativeLabelFormat,
+            aliquotLabelFormat, Constants.NEW_SPECIMEN);
+    }
+    return generateLabel;
+  }
 
 	public static boolean isLblGenOnForCP(String parentLabelformat, String deriveLabelFormat,
 			String aliquotLabelFormat, String lineage)

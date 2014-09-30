@@ -2711,7 +2711,7 @@ public final class StorageContainerUtil
 			while (iterator.hasNext())
 			{
 				final String specimenType = iterator.next();
-				if(Constants.NOT_SPECIFIED.equals(specimenType))
+				/*if(Constants.NOT_SPECIFIED.equals(specimenType))
 				{
 					final Iterator<String> itera = specimenClassTypeCollection.iterator();
 					while (itera.hasNext())
@@ -2739,7 +2739,7 @@ public final class StorageContainerUtil
 						}
 					}
 				}
-				else if(tissurList.contains(specimenType))
+				else*/ if(tissurList.contains(specimenType))
 				{
 					holdsTissueSpType[tissueCount] = specimenType;
 					tissueCount++;

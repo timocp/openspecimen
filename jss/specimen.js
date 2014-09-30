@@ -805,8 +805,13 @@ function submitTabData(operation)
 		{
 			tabDataJSON["dna260"] = document.getElementById("260-280").value;
 		}
-			
+		
 		}
+		var thawCycleVal = document.getElementById("thawCycle").value;
+			if(thawCycleVal != null && thawCycleVal != "")
+		{
+			tabDataJSON["thawCycle"] = document.getElementById("thawCycle").value;
+			}
 		var spId = document.getElementById("id").value;
 		if(spId != null && spId != "")
 		{
@@ -893,7 +898,10 @@ req.onreadystatechange = function() {
 					labelElement.value = updatedSpecimenDTO.label;
 					document.getElementById('label').disabled = false;
 				}
-				
+				if(document.getElementById('specimenCollectionGroupName')!=null && document.getElementById('specimenCollectionGroupNameLable')!=null){
+				document.getElementById('specimenCollectionGroupName').value = updatedSpecimenDTO.specimenCollectionGroupName;
+				document.getElementById('specimenCollectionGroupNameLable').innerHTML = updatedSpecimenDTO.specimenCollectionGroupName;
+				}
 				var barcodeElement = document.getElementById('barcode');
 				if(barcodeElement!=null && updatedSpecimenDTO.barcode!=null && updatedSpecimenDTO.barcode!='undefined')
 				{

@@ -33,6 +33,7 @@ import edu.wustl.catissuecore.util.global.Constants;
 import edu.wustl.catissuecore.util.global.Variables;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.beans.SessionDataBean;
+import edu.wustl.common.cde.CDEManager;
 import edu.wustl.dao.HibernateDAO;
 
 public class AddSpecimenFromRequirementAction extends CatissueBaseAction {
@@ -76,9 +77,10 @@ public class AddSpecimenFromRequirementAction extends CatissueBaseAction {
 				specimenDTO.setSpecimenCollectionGroupId(scg.getId());
 				specimenDTO.setSpecimenCollectionGroupName(scg.getName());
 				request.setAttribute("cpId", scg.getCollectionProtocolRegistration().getCollectionProtocol().getId());
-				request.setAttribute("isSpecimenLabelGeneratorAvl",
-						SpecimenUtil.isSpecimenLabelGeneratorAvl(scg.getId(), hibernateDao));
+				
 			}
+			request.setAttribute("isSpecimenLabelGeneratorAvl",
+          SpecimenUtil.isSpecimenLabelGeneratorAvlFromCPRId(Long.parseLong(request.getParameter("cprId")), hibernateDao));
 			specimenDTO.setParticipantID(request.getParameter("pId")!=null?Long.parseLong(request.getParameter("pId")):null);
 			specimenDTO.setCprID(request.getParameter("cprId")!=null?Long.parseLong(request.getParameter("cprId")):null);
 			specimenDTO.setCpId(request.getParameter("cpSearchCpId")!=null?Long.parseLong(request.getParameter("cpSearchCpId")):null);
@@ -109,7 +111,8 @@ public class AddSpecimenFromRequirementAction extends CatissueBaseAction {
         ParticipantMedicalIdentifier mrn = itr.next();
         specimenDTO.setSiteName(mrn.getSite().getName());
       }
-	        
+      request.setAttribute("DNAMethodList", CDEManager.getCDEManager().getPermissibleValueList("DNA Method", null));
+
 			request.setAttribute("specimenDTO", specimenDTO);
 
 			request.setAttribute("isSpecimenBarcodeGeneratorAvl", Variables.isSpecimenBarcodeGeneratorAvl);
