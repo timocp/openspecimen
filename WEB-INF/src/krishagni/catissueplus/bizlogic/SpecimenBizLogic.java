@@ -12,6 +12,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import com.krishagni.catissueplus.core.biospecimen.services.impl.FormRecordSaveServiceImpl;
+
 import krishagni.catissueplus.Exception.CatissueException;
 import krishagni.catissueplus.Exception.SpecimenErrorCodeEnum;
 import krishagni.catissueplus.dao.SCGDAO;
@@ -20,6 +25,7 @@ import krishagni.catissueplus.dao.StorageContainerDAO;
 import krishagni.catissueplus.dto.BiohazardDTO;
 import krishagni.catissueplus.dto.ExternalIdentifierDTO;
 import krishagni.catissueplus.dto.SpecimenDTO;
+import krishagni.catissueplus.util.CatissuePlusCommonUtil;
 import edu.wustl.catissuecore.bizlogic.CollectionProtocolRegistrationBizLogic;
 import edu.wustl.catissuecore.bizlogic.ParticipantBizLogic;
 import edu.wustl.catissuecore.bizlogic.SiteBizLogic;
@@ -58,6 +64,7 @@ import edu.wustl.common.domain.AbstractDomainObject;
 import edu.wustl.common.exception.ApplicationException;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.exception.ErrorKey;
+import edu.wustl.common.util.XMLPropertyHandler;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.global.Status;
 import edu.wustl.common.util.global.Validator;
@@ -735,6 +742,19 @@ public class SpecimenBizLogic
 			{
 				specimenDTO = insert(specimenDTO, hibernateDao, sessionDataBean);
 				specimenDTOs.add(specimenDTO);
+			}
+			
+			String formId = XMLPropertyHandler.getValue("aliquotFormIdentifier");
+			String formContextId = XMLPropertyHandler.getValue("aliquotEventFormContextId");
+
+			if (formId != null || !formId.isEmpty() && formContextId != null || !formContextId.isEmpty()) {
+				ApplicationContext applicationContext = new ClassPathXmlApplicationContext("../applicationContext.xml");
+				FormRecordSaveServiceImpl formRecSvc = (FormRecordSaveServiceImpl) applicationContext.getBean("formRecordSvc");
+
+				String aliquotEventJsonString = CatissuePlusCommonUtil.getAliquotEventJsonString(specimenDTOList.get(0),
+						sessionDataBean.getUserId(), specimenDTOList.size(), Long.parseLong(formContextId));
+
+				formRecSvc.saveOrUpdateFormRecords(Long.parseLong(formId), aliquotEventJsonString, sessionDataBean);
 			}
 		}
 		catch (ApplicationException e)

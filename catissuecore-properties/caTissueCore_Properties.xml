@@ -98,63 +98,63 @@
 
     <property>
         <name>email.administrative.emailAddress</name>
-        <value>@@ADMIN-EMAILADDRESS@@</value>
+        <value></value>
     </property>
 
     <property>
         <name>email.sendEmailFrom.emailAddress</name>
-        <value>@@SENDEMAILFROM-EMAILADDRESS@@</value>
+        <value></value>
     </property>
 
     <property>
         <name>email.sendEmailFrom.emailPassword</name>
-        <value>@@SENDEMAILFROM-EMAILPASSWORD@@</value>
+        <value></value>
     </property>
     
     <property>
         <name>email.mailServer</name>
-        <value>@@MAILSERVER-EMAILADDRESS@@</value>
+        <value>smtp.gmail.com</value>
     </property>
 
     <property>
         <name>email.mailServer.port</name>
-        <value>@@MAILSERVER-PORT@@</value>
+        <value>587</value>
     </property>
     
     <property>
         <name>email.smtp.auth.enabled</name>
-        <value>@@MAILSERVER-AUTHENTICATON@@</value>
+        <value>true</value>
     </property>
     
     <property>
         <name>email.smtp.starttls.enabled</name>
-        <value>@@MAILSERVER-TLS-ENABLED@@</value>
+        <value>true</value>
     </property>
 
     <!--  Properties needed for Common Package Error Email  -->
     <property>
         <name>use.email.commonpackage.config</name>
-        <value>@@use.email.commonpackage.config@@</value>
+        <value>false</value>
     </property>
 
     <property>
         <name>email.sendEmailTo.emailAddress</name>
-        <value>@@email.sendEmailTo.emailAddress@@</value>
+        <value></value>
     </property>
 
     <property>
         <name>email.admin.support.emailAddress</name>
-        <value>@@email.admin.support.emailAddress@@</value>
+        <value></value>
     </property>
 
     <property>
         <name>email.sendEmailFrom.name</name>
-        <value>@@email.sendEmailFrom.name@@</value>
+        <value></value>
     </property>
 
     <property>
         <name>email.exception.subject</name>
-        <value>@@email.exception.subject@@</value>
+        <value>System Exception Occured.</value>
     </property>
 
      <!-- Constants for LookUp algo start -->
@@ -344,39 +344,39 @@
 
     <property>
         <name>spr.dir.location</name>
-        <value>@@spr.dir.location@@</value>
+        <value></value>
     </property>
 	<property>
 		<name>participant.consent.dir.location</name>
-		<value>@@participant.consent.dir.location@@</value>
+		<value></value>
 	</property>
 	<property>
 	    <name>spr.dwd.terms.condiition.url</name>
-	    <value>@@spr.dwd.terms.condiition.url@@</value>
+	    <value>https://catissueplus.atlassian.net/wiki/x/IwBUAQ</value>
 	</property>
 	<property>
 		<name>theam.css.path</name>
-		<value>@@theam.css.path@@</value>
+		<value></value>
 	</property>
 	<property>
 		<name>institute.logo.hyperlink</name>
-		<value>@@institute.logo.hyperlink@@</value>
+		<value>https://catissueplus.atlassian.net/wiki/x/AwA7</value>
 	</property>
 	<property>
 		<name>data.at.glance.visible</name>
-		<value>@@data.at.glance.visible@@</value>
+		<value>true</value>
 	</property>
 	<property>
 		<name>user.manual</name>
-		<value>@@user.manual@@</value>
+		<value>http://help.catissueplus.org</value>
 	</property>
 	<property>
 		<name>contact.number</name>
-		<value>@@contact.number@@</value>
+		<value></value>
 	</property>
 	<property>
 		<name>whats.new</name>
-		<value>@@whats.new@@</value>
+		<value>https://catissueplus.atlassian.net/wiki/x/EwDGAQ</value>
 	</property>
 	
 	
@@ -575,7 +575,7 @@
     <!--  property for the help page links/icons -->
     <property>
         <name>userguide.link</name>
-        <value>@@usermanual@@</value>
+        <value>http://help.catissueplus.org</value>
     </property>
 
 	<property>
@@ -644,11 +644,11 @@
     </property>
     <property>
         <name>session.time.out</name>
-        <value>@@SESSION-TIME-OUT@@</value>
+        <value>30</value>
     </property>
     <property>
         <name>app.additional.info</name>
-        <value>@@APP-ADDITIONAL-INFO@@</value>
+        <value></value>
     </property>
     <!-- Property to specify whether barcode field is editable or not-->
     <property>
@@ -694,27 +694,27 @@
 <!--  Added for EMPI integration -->
     <property>
         <name>empi.Enabled</name>
-        <value>@@empiEnabled@@</value>
+        <value>false</value>
     </property>
     <property>
         <name>empi.DBURL</name>
-        <value>@@empiDBURL@@</value>
+        <value>jdbc:db2://${empi.database.host}:${empi.database.port}/${empi.database.name}</value>
     </property>
     <property>
         <name>empi.DBDriverName</name>
-        <value>@@empiDBDriverName@@</value>
+        <value>com.ibm.db2.jcc.DB2Driver</value>
     </property>
     <property>
         <name>empi.DBUserName</name>
-        <value>@@empiDBUserName@@</value>
+        <value>${empi.database.username}</value>
     </property>
     <property>
         <name>empi.DBUserPassword</name>
-        <value>@@empiDBUserPassword@@</value>
+        <value>${empi.database.password}</value>
     </property>
     <property>
         <name>empi.DBSchema</name>
-        <value>@@empiDBSchema@@</value>
+        <value>${empi.database.schema}</value>
     </property>
     <property>
         <name>empi.MaxNoOfPatients</name>
@@ -726,38 +726,38 @@
     </property>
     <property>
         <name>WMQServerName</name>
-        <value>@@WMQServerName@@</value>
+        <value>${wmq.server.name}</value>
     </property>
     <property>
         <name>WMQMGRName</name>
-        <value>@@WMQMGRName@@</value>
+        <value>${wmq.mgr.name}</value>
     </property>
     <property>
         <name>WMQChannel</name>
-        <value>@@WMQChannel@@</value>
+        <value>${wmq.channel}</value>
     </property>
     <property>
         <name>WMQPort</name>
-        <value>@@WMQPort@@</value>
+        <value>${wmq.port}</value>
     </property>
     <property>
         <name>InBoundQueue</name>
-        <value>@@InBoundQueue@@</value>
+        <value>${empi.inBoundQueue}</value>
     </property>
     <property>
         <name>OutBoundQueue</name>
-        <value>@@OutBoundQueue@@</value>
+        <value>${empi.outBoundQueue}</value>
     </property>
 
     <property>
         <name>MergeMessageQueue</name>
-        <value>@@MergeMessageQueue@@</value>
+        <value>${empi.mergeMessageQueue}</value>
     </property>
 
 
     <property>
         <name>HL7ListenerAdminUser</name>
-        <value>@@HL7ListenerAdminUser@@</value>
+        <value>${hl7.listener.admin.user}</value>
     </property>
 
     <property>
@@ -768,27 +768,27 @@
     <!--CDMS-caTissue Integration-->
     <property>
         <name>idp.enabled</name>
-        <value>@@IDP-ENABLED@@</value>
+        <value>${idp.enabled}</value>
     </property>
     
     <property>
         <name>cdms.integrationEnabled</name>
-        <value>@@integrationEnabled@@</value>
+        <value>${clinportal.integrationEnabled}</value>
     </property>
 
     <property>
         <name>cdms.keyStorePath</name>
-        <value>@@CdmsKeyStorePath@@</value>
+        <value></value>
     </property>
 
     <property>
         <name>cdms.url</name>
-        <value>@@CdmsURL@@</value>
+        <value>${clinportal.url}</value>
     </property>
 
     <property>
         <name>CdmsServiceURL</name>
-        <value>@@CdmsURL@@/http/remoteService</value>
+        <value>${clinportal.url}/http/remoteService</value>
     </property>
 
     <property>
@@ -799,29 +799,29 @@
     
     <property>
         <name>CiderWmqEnabled</name>
-        <value>@@CiderWMQEnabled@@</value>
+        <value>${cider.integration.enabled}</value>
     </property>
     
     <property>
         <name>CiderWMQServerName</name>
-        <value>@@CiderWMQServerName@@</value>
+        <value>${cider.wmq.server.name}</value>
     </property>
     <!--  properties for cider integration for specimen queue -->
     <property>
         <name>CiderWMQMGRName</name>
-        <value>@@CiderWMQMGRName@@</value>
+        <value>${cider.wmq.mgr.name}</value>
     </property>
     <property>
         <name>CiderWMQChannel</name>
-        <value>@@CiderWMQChannel@@</value>
+        <value>${cider.wmq.channel}</value>
     </property>
     <property>
         <name>CiderWMQPort</name>
-        <value>@@CiderWMQPort@@</value>
+        <value>${cider.wmq.port}</value>
     </property>
     <property>
         <name>CiderOutBoundQueue</name>
-        <value>@@CiderOutBoundQueue@@</value>
+        <value>${cider.outbound.queue}</value>
     </property>
     <property>
         <name>BulkEmpiSleepTime</name>
@@ -832,22 +832,22 @@
         <!-- Forgot Password Configuration -->
     <property>
         <name>forgot.password.enabled</name>
-        <value>@@Forgot-Password-Enabled@@</value>
+        <value>true</value>
     </property>
 
     <!-- Forgot Password Configuration -->
     <property>
         <name>forgot.password.enabled</name>
-        <value>@@Forgot-Password-Enabled@@</value>
+        <value>true</value>
     </property>
     
     <property>
         <name>forgot.password.enabled</name>
-        <value>@@Forgot-Password-Enabled@@</value>
+        <value>true</value>
     </property>
     <property>
         <name>load.balancer.url</name>
-        <value>@@Load-Balancer-URL@@</value>
+        <value>http://192.168.2.145:8080/openspecimen</value>
     </property>
     <property>
         <name>logout.mapping</name>
@@ -873,15 +873,15 @@ Please note that the report(s) will be available for download until ? after whic
 
 Thank You,
 OpenSpecimen Team, 
-Helpdesk Phone : @@contact.number@@</value>
+Helpdesk Phone : </value>
     </property>
     <property>
         <name>host.mail.alias</name>
-        <value>@@mail.alias@@</value>
+        <value></value>
     </property>
     <property>
         <name>scheduler.cleanUp.timeInterval.days</name>
-        <value>@@timeInterval@@</value>
+        <value>2</value>
     </property>
     
      <property>
@@ -898,54 +898,54 @@ Helpdesk Phone : @@contact.number@@</value>
     </property>
     <property>
         <name>scheduler.threadPool.size</name>
-        <value>@@threadPool@@</value>
+        <value>2</value>
     </property>
     <property>
         <name>scheduler.execution.time.hrs</name>
-        <value>@@time.hrs@@</value>
+        <value>6</value>
     </property>
     <property>
         <name>scheduler.execution.time.min</name>
-        <value>@@time.min@@</value>
+        <value>50</value>
     </property>
     
      <!-- End of Scheduler properties  -->
      
      <property>
         <name>database.type</name>
-        <value>@@database.type@@</value>
+        <value>mysql</value>
     </property>
     <property>
         <name>database.host</name>
-        <value>@@database.host@@</value>
+        <value>localhost</value>
     </property>
     <property>
         <name>database.port</name>
-        <value>@@database.port@@</value>
+        <value>3306</value>
     </property>
     <property>
         <name>database.name</name>
-        <value>@@database.name@@</value>
+        <value>nextgen_new</value>
     </property>
      <property>
         <name>database.userName</name>
-        <value>@@database.userName@@</value>
+        <value>root</value>
     </property>
     <property>
         <name>database.password</name>
-        <value>@@database.password@@</value>
+        <value>root</value>
     </property>
     <property>
         <name>dashboard.items.file</name>
-        <value>@@dashboard.items.file@@</value>
+        <value>./Default_cp_And_System_dashboard.csv</value>
     </property>
     <property>
         <name>nightly.cron.job.execution.time.hrs</name>
-        <value>@@nightly.cron.job.execution.time.hrs@@</value>
+        <value></value>
     </property>
     <property>
         <name>nightly.cron.job.execution.time.min</name>
-        <value>@@nightly.cron.job.execution.time.min@@</value>
+        <value></value>
     </property>
     <property>
         <name>loginFailureAttemptsLimit</name>
@@ -1016,6 +1016,27 @@ Helpdesk Phone : @@contact.number@@</value>
 
     <property>
       <name>appserver.home.dir</name>
-      <value>@@appserver.home.dir@@</value>
+      <value>/home/krishagni/jboss-5.1.0.GA</value>
     </property>
+    
+    <property>
+        <name>aliquotEventFormContextId</name>
+        <value>13</value>
+    </property>
+    
+    <property>
+        <name>derivativeEventFormContextId</name>
+        <value>10</value>
+    </property>
+    
+    <property>
+        <name>aliquotFormIdentifier</name>
+        <value>176</value>
+    </property>
+    
+    <property>
+        <name>derivativeFormIdentifier</name>
+        <value>127</value>
+    </property>
+    
 </properties>
