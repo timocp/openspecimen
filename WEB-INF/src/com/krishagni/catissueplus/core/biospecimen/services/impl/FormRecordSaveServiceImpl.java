@@ -1,8 +1,6 @@
 
 package com.krishagni.catissueplus.core.biospecimen.services.impl;
 
-import java.io.UnsupportedEncodingException;
-
 import com.krishagni.catissueplus.core.common.events.EventStatus;
 import com.krishagni.catissueplus.core.de.events.FormDataEvent;
 import com.krishagni.catissueplus.core.de.events.SaveFormDataEvent;
@@ -10,7 +8,7 @@ import com.krishagni.catissueplus.core.de.services.FormService;
 
 import edu.common.dynamicextensions.napi.FormData;
 import edu.wustl.common.beans.SessionDataBean;
-import flex.messaging.util.URLDecoder;
+import edu.wustl.common.exception.BizLogicException;
 
 public class FormRecordSaveServiceImpl {
 
@@ -20,18 +18,8 @@ public class FormRecordSaveServiceImpl {
 		this.formSvc = formSvc;
 	}
 
-	public String saveOrUpdateFormRecords(Long formId, String jsonValue, SessionDataBean sessionDataBean) {
-
-		try {
-			jsonValue = URLDecoder.decode(jsonValue, "UTF-8");
-		}
-		catch (UnsupportedEncodingException e) {
-			throw new RuntimeException("Error parsing input JSON", e);
-		}
-
-		if (jsonValue.endsWith("=")) {
-			jsonValue = jsonValue.substring(0, jsonValue.length() - 1);
-		}
+	public void saveOrUpdateFormRecords(Long formId, String jsonValue, SessionDataBean sessionDataBean)
+			throws BizLogicException {
 
 		FormData formData = FormData.fromJson(jsonValue, formId);
 
@@ -43,8 +31,8 @@ public class FormRecordSaveServiceImpl {
 
 		FormDataEvent resp = formSvc.saveFormData(req);
 		if (resp.getStatus() == EventStatus.OK) {
-			return "Saved successfully !!!";
+			return;
 		}
-		return null;
+		throw new BizLogicException(null, null, resp.getMessage());
 	}
 }

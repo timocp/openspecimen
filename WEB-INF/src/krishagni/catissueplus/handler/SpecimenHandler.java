@@ -12,12 +12,13 @@ import krishagni.catissueplus.util.CatissuePlusCommonUtil;
 import krishagni.catissueplus.util.CommonUtil;
 import krishagni.catissueplus.util.DAOUtil;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.krishagni.catissueplus.core.biospecimen.services.impl.FormRecordSaveServiceImpl;
+import com.krishagni.catissueplus.core.common.OpenSpecimenAppCtxProvider;
 
 import edu.wustl.catissuecore.domain.Specimen;
 import edu.wustl.catissuecore.util.PrintUtil;
@@ -95,12 +96,12 @@ public class SpecimenHandler {
 			String formId = XMLPropertyHandler.getValue("derivativeFormIdentifier");
 			String formContextId = XMLPropertyHandler.getValue("derivativeEventFormContextId");
 
-			if (formId != null || !formId.isEmpty() && formContextId != null || !formId.isEmpty()) {
-				ApplicationContext applicationContext = new ClassPathXmlApplicationContext("../applicationContext.xml");
+			if (!StringUtils.isBlank(formId) && !StringUtils.isBlank(formContextId)) {
+				ApplicationContext applicationContext = OpenSpecimenAppCtxProvider.getAppCtx();
 				FormRecordSaveServiceImpl formRecSvc = (FormRecordSaveServiceImpl) applicationContext.getBean("formRecordSvc");
 
 				String derivativeEventJsonString = CatissuePlusCommonUtil.getDerivativeEventJsonString(specimenDTO,
-						Long.parseLong(formContextId), sessionDataBean.getUserId());
+						sessionDataBean.getUserId(), Long.parseLong(formContextId));
 
 				formRecSvc.saveOrUpdateFormRecords(Long.parseLong(formId), derivativeEventJsonString, sessionDataBean);
 
