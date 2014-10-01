@@ -11,6 +11,11 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.context.ApplicationContext;
+
+import com.krishagni.catissueplus.core.biospecimen.services.impl.FormRecordSaveServiceImpl;
+import com.krishagni.catissueplus.core.common.OpenSpecimenAppCtxProvider;
+
 import krishagni.catissueplus.bizlogic.StorageContainerBizlogic;
 import krishagni.catissueplus.mobile.dto.AliquotsDetailsDTO;
 import krishagni.catissueplus.mobile.dto.SpecimenDTO;
@@ -99,6 +104,13 @@ public class AliquotBizLogic extends CatissueDefaultBizLogic
 					newSpecimenBizLogic.insert(specimen, dao, sessionDataBean);
 				}
 			}
+			
+			ApplicationContext applicationContext = OpenSpecimenAppCtxProvider.getAppCtx();
+			FormRecordSaveServiceImpl formRecSvc = (FormRecordSaveServiceImpl) applicationContext.getBean("formRecordSvc");
+			krishagni.catissueplus.dto.SpecimenDTO specimenDTO = new krishagni.catissueplus.dto.SpecimenDTO();
+			specimenDTO.setParentSpecimenId(aliquot.getSpecimen().getId());
+			formRecSvc.saveAliquotEvent(specimenDTO, aliquotCount, sessionDataBean);
+			
 			Double totalAliquotQty = calculateAvailableQuantityForParent(aliquot, parentSpecimenAvailQty);
 			updateParentSpecimen(aliquot.getSpecimen(), totalAliquotQty, dao);
 		}

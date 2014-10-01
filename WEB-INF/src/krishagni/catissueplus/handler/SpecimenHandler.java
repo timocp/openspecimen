@@ -8,11 +8,9 @@ import krishagni.catissueplus.bizlogic.SpecimenBizLogic;
 import krishagni.catissueplus.dao.SpecimenDAO;
 import krishagni.catissueplus.dto.DerivedDTO;
 import krishagni.catissueplus.dto.SpecimenDTO;
-import krishagni.catissueplus.util.CatissuePlusCommonUtil;
 import krishagni.catissueplus.util.CommonUtil;
 import krishagni.catissueplus.util.DAOUtil;
 
-import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.context.ApplicationContext;
@@ -26,7 +24,6 @@ import edu.wustl.catissuecore.util.global.Variables;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.exception.ApplicationException;
 import edu.wustl.common.exception.BizLogicException;
-import edu.wustl.common.util.XMLPropertyHandler;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.dao.HibernateDAO;
 
@@ -93,19 +90,9 @@ public class SpecimenHandler {
 			DeriveBizLogic deriveBizlogic = new DeriveBizLogic();
 			specimenDTO = deriveBizlogic.insertDeriveSpecimen(hibernateDao, derivedDTO, sessionDataBean);
 
-			String formId = XMLPropertyHandler.getValue("derivativeFormIdentifier");
-			String formContextId = XMLPropertyHandler.getValue("derivativeEventFormContextId");
-
-			if (!StringUtils.isBlank(formId) && !StringUtils.isBlank(formContextId)) {
-				ApplicationContext applicationContext = OpenSpecimenAppCtxProvider.getAppCtx();
-				FormRecordSaveServiceImpl formRecSvc = (FormRecordSaveServiceImpl) applicationContext.getBean("formRecordSvc");
-
-				String derivativeEventJsonString = CatissuePlusCommonUtil.getDerivativeEventJsonString(specimenDTO,
-						sessionDataBean.getUserId(), Long.parseLong(formContextId));
-
-				formRecSvc.saveOrUpdateFormRecords(Long.parseLong(formId), derivativeEventJsonString, sessionDataBean);
-
-			}
+			ApplicationContext applicationContext = OpenSpecimenAppCtxProvider.getAppCtx();
+			FormRecordSaveServiceImpl formRecSvc = (FormRecordSaveServiceImpl) applicationContext.getBean("formRecordSvc");
+			formRecSvc.saveDerivativeEvent(specimenDTO, sessionDataBean);
 
 			hibernateDao.commit();
 			if (derivedDTO.getIsToPrintLabel()) {

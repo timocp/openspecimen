@@ -12,13 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import com.krishagni.catissueplus.core.biospecimen.services.impl.FormRecordSaveServiceImpl;
-import com.krishagni.catissueplus.core.common.OpenSpecimenAppCtxProvider;
-
 import krishagni.catissueplus.Exception.CatissueException;
 import krishagni.catissueplus.Exception.SpecimenErrorCodeEnum;
 import krishagni.catissueplus.dao.SCGDAO;
@@ -27,9 +20,12 @@ import krishagni.catissueplus.dao.StorageContainerDAO;
 import krishagni.catissueplus.dto.BiohazardDTO;
 import krishagni.catissueplus.dto.ExternalIdentifierDTO;
 import krishagni.catissueplus.dto.SpecimenDTO;
-import krishagni.catissueplus.util.CatissuePlusCommonUtil;
-import edu.wustl.catissuecore.bizlogic.CollectionProtocolRegistrationBizLogic;
-import edu.wustl.catissuecore.bizlogic.ParticipantBizLogic;
+
+import org.springframework.context.ApplicationContext;
+
+import com.krishagni.catissueplus.core.biospecimen.services.impl.FormRecordSaveServiceImpl;
+import com.krishagni.catissueplus.core.common.OpenSpecimenAppCtxProvider;
+
 import edu.wustl.catissuecore.bizlogic.SiteBizLogic;
 import edu.wustl.catissuecore.bizlogic.SpecimenCollectionGroupBizLogic;
 import edu.wustl.catissuecore.dao.CPRDAO;
@@ -62,16 +58,13 @@ import edu.wustl.catissuecore.util.global.AppUtility;
 import edu.wustl.catissuecore.util.global.Constants;
 import edu.wustl.catissuecore.util.global.Variables;
 import edu.wustl.common.beans.SessionDataBean;
-import edu.wustl.common.domain.AbstractDomainObject;
 import edu.wustl.common.exception.ApplicationException;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.exception.ErrorKey;
-import edu.wustl.common.util.XMLPropertyHandler;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.global.Status;
 import edu.wustl.common.util.global.Validator;
 import edu.wustl.common.util.logger.Logger;
-import edu.wustl.dao.DAO;
 import edu.wustl.dao.HibernateDAO;
 import edu.wustl.dao.exception.DAOException;
 import edu.wustl.dao.query.generator.DBTypes;
@@ -659,18 +652,10 @@ public class SpecimenBizLogic {
 				specimenDTOs.add(specimenDTO);
 			}
 
-			String formId = XMLPropertyHandler.getValue("aliquotFormIdentifier");
-			String formContextId = XMLPropertyHandler.getValue("aliquotEventFormContextId");
+			ApplicationContext applicationContext = OpenSpecimenAppCtxProvider.getAppCtx();
+			FormRecordSaveServiceImpl formRecSvc = (FormRecordSaveServiceImpl) applicationContext.getBean("formRecordSvc");
+			formRecSvc.saveAliquotEvent(specimenDTOList.get(0), specimenDTOList.size(), sessionDataBean);
 
-			if (!StringUtils.isBlank(formId) && !StringUtils.isBlank(formContextId)) {
-				ApplicationContext applicationContext = OpenSpecimenAppCtxProvider.getAppCtx();
-				FormRecordSaveServiceImpl formRecSvc = (FormRecordSaveServiceImpl) applicationContext.getBean("formRecordSvc");
-
-				String aliquotEventJsonString = CatissuePlusCommonUtil.getAliquotEventJsonString(specimenDTOList.get(0),
-						sessionDataBean.getUserId(), specimenDTOList.size(), Long.parseLong(formContextId));
-
-				formRecSvc.saveOrUpdateFormRecords(Long.parseLong(formId), aliquotEventJsonString, sessionDataBean);
-			}
 		}
 		catch (ApplicationException e) {
 			LOGGER.error(e.getMessage(), e);
