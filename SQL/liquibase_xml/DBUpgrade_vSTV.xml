@@ -5,52 +5,54 @@
         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
 
-    <property name="text.type" value="varchar" dbms="mysql" />
-    <property name="text.type" value="varchar2" dbms="oracle" />
-	<property name="int.type" value="bigint(20)" dbms="mysql" />
-	<property name="int.type" value="number(19,0)" dbms="oracle" />
+  <property name="text.type" value="varchar" dbms="mysql" />
+  <property name="text.type" value="varchar2" dbms="oracle" />
+  <property name="int.type" value="bigint(20)" dbms="mysql" />
+  <property name="int.type" value="number(19,0)" dbms="oracle" />
 	
-    <property name="double.type" value="double" dbms="mysql" />
-    <property name="double.type" value="double" dbms="oracle" />
+  <property name="double.type" value="double" dbms="mysql" />
+  <property name="double.type" value="double" dbms="oracle" />
 	
-	<property name="date.type" value="date" dbms="mysql" />
-	<property name="date.type" value="date" dbms="oracle" />
-
+  <property name="date.type" value="date" dbms="mysql" />
+  <property name="date.type" value="date" dbms="oracle" />
  
- 	<changeSet id="1" author="mosin" failOnError="false">
-		<addColumn tableName="CATISSUE_PARTICIPANT">
-			<column name="LAB_NUMBER" type="${text.type}(255)" />
-		</addColumn>
-	</changeSet>
-	<changeSet id="2" author="mosin" failOnError="false">
-		<addColumn tableName="CATISSUE_SPECIMEN">
-			<column name="DNA_METHOD" type="${text.type}(255)" />
-		</addColumn>
-		<addColumn tableName="CATISSUE_SPECIMEN">
-			<column name="DNA_260" type="${double.type}" />
-		</addColumn>
-	</changeSet>
+  <changeSet id="1" author="mosin" failOnError="false">
+    <addColumn tableName="CATISSUE_PARTICIPANT">
+      <column name="LAB_NUMBER" type="${text.type}(255)" />
+    </addColumn>
+  </changeSet>
 	
-	<changeSet id="3" author="catissue" failOnError="false"  dbms="oracle" >
-			<sql>INSERT INTO CATISSUE_CDE VALUES ( 'Dna_Method','DNA Method','DNA Method',1.0,null)</sql>
-		<sql>INSERT INTO CATISSUE_PERMISSIBLE_VALUE (IDENTIFIER,VALUE, PARENT_IDENTIFIER, PUBLIC_ID) VALUES((select max(IDENTIFIER)+1 from CATISSUE_PERMISSIBLE_VALUE),'Myomethod',NULL,'Dna_Method')</sql>
-		<sql>INSERT INTO CATISSUE_PERMISSIBLE_VALUE (IDENTIFIER,VALUE, PARENT_IDENTIFIER, PUBLIC_ID) VALUES((select max(IDENTIFIER)+1 from CATISSUE_PERMISSIBLE_VALUE),'OiaGen Salt Precipitation',NULL,'Dna_Method')</sql>
-		<sql>INSERT INTO CATISSUE_PERMISSIBLE_VALUE (IDENTIFIER,VALUE, PARENT_IDENTIFIER, PUBLIC_ID) VALUES((select max(IDENTIFIER)+1 from CATISSUE_PERMISSIBLE_VALUE),'Not Specified',NULL,'Dna_Method')</sql>
+  <changeSet id="2" author="mosin" failOnError="false">
+    <addColumn tableName="CATISSUE_SPECIMEN">
+      <column name="DNA_METHOD" type="${text.type}(255)" />
+    </addColumn>
+    <addColumn tableName="CATISSUE_SPECIMEN">
+      <column name="DNA_260" type="${double.type}" />
+    </addColumn>
+    <addColumn tableName="CATISSUE_SPECIMEN">
+      <column name="THAW_CYCLE" type="${double.type}" />
+    </addColumn>
+  </changeSet>
 	
-			</changeSet>
+  <changeSet id="3" author="catissue" failOnError="false"  dbms="oracle" >
+    <sql>INSERT INTO CATISSUE_CDE VALUES ( 'Dna_Method','DNA Method','DNA Method',1.0,null)</sql>
+    <sql>INSERT INTO CATISSUE_PERMISSIBLE_VALUE (IDENTIFIER,VALUE, PARENT_IDENTIFIER, PUBLIC_ID) VALUES((select max(IDENTIFIER)+1 from CATISSUE_PERMISSIBLE_VALUE),'Myomethod',NULL,'Dna_Method')</sql>
+    <sql>INSERT INTO CATISSUE_PERMISSIBLE_VALUE (IDENTIFIER,VALUE, PARENT_IDENTIFIER, PUBLIC_ID) VALUES((select max(IDENTIFIER)+1 from CATISSUE_PERMISSIBLE_VALUE),'OiaGen Salt Precipitation',NULL,'Dna_Method')</sql>
+    <sql>INSERT INTO CATISSUE_PERMISSIBLE_VALUE (IDENTIFIER,VALUE, PARENT_IDENTIFIER, PUBLIC_ID) VALUES((select max(IDENTIFIER)+1 from CATISSUE_PERMISSIBLE_VALUE),'Not Specified',NULL,'Dna_Method')</sql>
+  </changeSet>
 
-	<changeSet id="3" author="catissue" failOnError="false"  dbms="mysql" >
-	<sql>INSERT INTO CATISSUE_CDE VALUES ( 'Dna_Method','DNA Method','DNA Method',1.0,null)</sql>
-		<sql>INSERT INTO CATISSUE_PERMISSIBLE_VALUE (VALUE, PARENT_IDENTIFIER, PUBLIC_ID) VALUES('Myomethod',NULL,'Dna_Method')</sql>
-		<sql>INSERT INTO CATISSUE_PERMISSIBLE_VALUE (VALUE, PARENT_IDENTIFIER, PUBLIC_ID) VALUES('OiaGen Salt Precipitation',NULL,'Dna_Method')</sql>
-		<sql>INSERT INTO CATISSUE_PERMISSIBLE_VALUE (VALUE, PARENT_IDENTIFIER, PUBLIC_ID) VALUES('Not Specified',NULL,'Dna_Method')</sql>
+  <changeSet id="3" author="catissue" failOnError="false"  dbms="mysql" >
+    <sql>INSERT INTO CATISSUE_CDE VALUES ( 'Dna_Method','DNA Method','DNA Method',1.0,null)</sql>
+    <sql>INSERT INTO CATISSUE_PERMISSIBLE_VALUE (VALUE, PARENT_IDENTIFIER, PUBLIC_ID) VALUES('Myomethod',NULL,'Dna_Method')</sql>
+    <sql>INSERT INTO CATISSUE_PERMISSIBLE_VALUE (VALUE, PARENT_IDENTIFIER, PUBLIC_ID) VALUES('OiaGen Salt Precipitation',NULL,'Dna_Method')</sql>
+    <sql>INSERT INTO CATISSUE_PERMISSIBLE_VALUE (VALUE, PARENT_IDENTIFIER, PUBLIC_ID) VALUES('Not Specified',NULL,'Dna_Method')</sql>
 		
-			</changeSet>
+  </changeSet>
 			
-	<changeSet id="4" author="catissue" failOnError="false"  dbms="mysql" >
-		<sql>delete from catissue_permissible_value where parent_identifier in (3) and value not in ('Serum','Whole Blood','Buffy Coat')</sql>
-		<sql>delete from catissue_permissible_value where parent_identifier in (1) and value not in ('DNA')</sql>
-		<sql>delete from catissue_permissible_value where parent_identifier in (2,4)</sql>
-		<sql>delete from catissue_permissible_value where identifier in (2,4)</sql>
-	</changeSet>
+  <changeSet id="4" author="catissue" failOnError="false"  dbms="mysql" >
+    <sql>delete from catissue_permissible_value where parent_identifier in (3) and value not in ('Serum','Whole Blood','Buffy Coat')</sql>
+    <sql>delete from catissue_permissible_value where parent_identifier in (1) and value not in ('DNA')</sql>
+    <sql>delete from catissue_permissible_value where parent_identifier in (2,4)</sql>
+    <sql>delete from catissue_permissible_value where identifier in (2,4)</sql>
+  </changeSet>
 </databaseChangeLog>         
