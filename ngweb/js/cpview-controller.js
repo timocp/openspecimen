@@ -325,18 +325,18 @@ angular.module('plus.cpview', [])
   };
 
   $scope.getScgLabel = function(scg) {
-    var date = scg.receivedDate ? scg.receivedDate : scg.registrationDate;
+    var date = scg.collectionDate ? scg.collectionDate : scg.registrationDate;
     var dateStr = $filter('date')(date, $scope.datePattern);
     return "T" + scg.eventPoint + ": " + scg.collectionPointLabel + ": " + dateStr;
   }
 
   $scope.getScgTooltip = function(scg) {
-    var date = scg.receivedDate ? scg.receivedDate : scg.registrationDate;
+    var date = scg.collectionDate ? scg.collectionDate : scg.registrationDate;
     var dateStr = $filter('date')(date, $scope.datePattern);
     var htmlToolTip = 
     	"<table style=\"font-size: 12px\"><tbody>" +
     	  "<tr><td><b><i class=\"pull-right\">Event Point : </i></b></td><td class=\"pull-left\">"+ scg.eventPoint + " (" + scg.collectionPointLabel  + ") "+ "</td><tr/>" +
-    	  "<tr><td><b><i class=\"pull-right\">Received date: </i></b></td><td class=\"pull-left\">"+ dateStr + "</td><tr/>" +
+    	  "<tr><td><b><i class=\"pull-right\">Collection date: </i></b></td><td class=\"pull-left\">"+ dateStr + "</td><tr/>" +
     	"</tbody></table>";
 
     return htmlToolTip;
