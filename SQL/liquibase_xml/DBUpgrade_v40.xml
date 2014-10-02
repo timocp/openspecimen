@@ -3803,7 +3803,7 @@ PROCEDURE DEL_DUP_SCG_REC_EVENTS
    
     <changeSet author="ajaysamgir" id="alter table catissue_biohazard" failOnError="true">
  		<addColumn tableName="CATISSUE_BIOHAZARD">
-			<column name="ACTIVITY_STATUS" type="${text.type}(20)" />
+			<column name="ACTIVITY_STATUS" type="${text.type}(20)"  defaultValue="Active"/>
 		</addColumn>
    </changeSet> 
 
