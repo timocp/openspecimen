@@ -404,13 +404,12 @@ function switchToOlderView()
 		</tr>
 		
  <tr>
-          <td class="buttonbg" colspan="2">
-					<input type="button" class="blue_ar_b" value="Next >>" onclick="goToConsentTabFromNext()" accesskey="Enter">
-					<input type="button" class="blue_ar_b" value="Export Order" onclick="exportOrder('${requestScope.id}')" accesskey="Enter">
-				
-					
-			</td>
-		</tr>
+  <td class="buttonbg" colspan="2">
+    <input type="button" class="blue_ar_b" value="Next >>" onclick="goToConsentTabFromNext()" accesskey="Enter">
+    <input type="button" class="blue_ar_b" value="Export Order" onclick="exportOrder('${requestScope.id}')" accesskey="Enter">
+    <input type="button" class="blue_ar_b" value="Return Specimens" onclick="createReturnEvent()" accesskey="Enter">			
+ </td>
+</tr>
 </table>
 
 			</div>
@@ -553,5 +552,23 @@ function exportOrder(orderId){
 	var dwdIframe = document.getElementById("orderExportFrame");
 	dwdIframe.src = "ExportAction.do?type=exportOrder&orderId="+orderId;
 }
+
+function createReturnEvent()
+{
+  var specimenLabels = new Array();
+  var rowIdList = [];
+  var rowIds = mygrid.getSelectedRowId();
+	  
+  for(var i=0;i<=rowIds.length;i++)
+  {
+    if(rowIds[i] != "," && rowIds[i] != undefined)
+    {
+      var specimenLabel = mygrid.cellById(rowIds[i],0).getValue();
+      specimenLabels.push(specimenLabel);
+    }
+  }				
+  window.location.href = "http://localhost:8080/openspecimen/specimenEventsBulkDataEntry.do?specimenLabels="+specimenLabels;
+}
 </script>
+
 <!----------------------------------------------->	
