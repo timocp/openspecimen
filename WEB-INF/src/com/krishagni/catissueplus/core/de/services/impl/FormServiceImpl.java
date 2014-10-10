@@ -60,6 +60,7 @@ import edu.common.dynamicextensions.domain.nui.Control;
 import edu.common.dynamicextensions.domain.nui.DataType;
 import edu.common.dynamicextensions.domain.nui.FileUploadControl;
 import edu.common.dynamicextensions.domain.nui.Label;
+import edu.common.dynamicextensions.domain.nui.LookupControl;
 import edu.common.dynamicextensions.domain.nui.PageBreak;
 import edu.common.dynamicextensions.domain.nui.PermissibleValue;
 import edu.common.dynamicextensions.domain.nui.SelectControl;
@@ -74,13 +75,20 @@ import edu.wustl.catissuecore.action.bulkOperations.BOTemplateGeneratorUtil;
 import edu.wustl.common.beans.SessionDataBean;
 
 public class FormServiceImpl implements FormService {
-	private static final String SPECIMEN_EVENT = "SpecimenEvent";
+	private static final String PARTICIPANT_FORM = "Participant";
+	
+	private static final String SCG_FORM = "SpecimenCollectionGroup";
+	
+	private static final String SPECIMEN_FORM = "Specimen";
+	
+	private static final String SPECIMEN_EVENT_FORM = "SpecimenEvent";
+	
 	private static Set<String> staticExtendedForms = new HashSet<String>();
 	
 	static {
-		staticExtendedForms.add("Participant");
-		staticExtendedForms.add("SpecimenCollectionGroup");
-		staticExtendedForms.add("Specimen");
+		staticExtendedForms.add(PARTICIPANT_FORM);
+		staticExtendedForms.add(SCG_FORM);
+		staticExtendedForms.add(SPECIMEN_FORM);
 	}
 	
 	private FormDao formDao;
@@ -140,30 +148,35 @@ public class FormServiceImpl implements FormService {
 		}
 		
 		String formName = form.getName();
-		if (staticExtendedForms.contains(formName)) {				
-			List<Long> extendedFormIds = formDao.getFormIds(cpId, formName);
-
-			FormFieldSummary field = new FormFieldSummary();
-			field.setName("extensions");
-			field.setCaption("Extensions");
-			field.setType("SUBFORM");
-			
-			List<FormFieldSummary> extensionFields = new ArrayList<FormFieldSummary>();
-			for (Long extendedFormId : extendedFormIds) {				
-				form = Container.getContainer(extendedFormId);
-				
-				FormFieldSummary extensionField = new FormFieldSummary();
-				extensionField.setName(form.getName());
-				extensionField.setCaption(form.getCaption());
-				extensionField.setType("SUBFORM");
-				extensionField.setSubFields(getFormFields(form));
-				
-				extensionFields.add(extensionField);				
-			}
-			
-			field.setSubFields(extensionFields);
-			fields.add(field);
+		if (!staticExtendedForms.contains(formName)) {
+			return FormFieldsEvent.ok(formId, fields);
 		}
+		
+		List<Long> extendedFormIds = formDao.getFormIds(cpId, formName);
+		if (formName.equals(SPECIMEN_FORM)) {
+			extendedFormIds.addAll(formDao.getFormIds(cpId, SPECIMEN_EVENT_FORM));
+		}
+
+		FormFieldSummary field = new FormFieldSummary();
+		field.setName("extensions");
+		field.setCaption("Extensions");
+		field.setType("SUBFORM");
+
+		List<FormFieldSummary> extensionFields = new ArrayList<FormFieldSummary>();
+		for (Long extendedFormId : extendedFormIds) {
+			form = Container.getContainer(extendedFormId);
+
+			FormFieldSummary extensionField = new FormFieldSummary();
+			extensionField.setName(form.getName());
+			extensionField.setCaption(form.getCaption());
+			extensionField.setType("SUBFORM");
+			extensionField.setSubFields(getFormFields(form));
+
+			extensionFields.add(extensionField);
+		}
+
+		field.setSubFields(extensionFields);
+		fields.add(field);
 
 		return FormFieldsEvent.ok(formId, fields);
 	}
@@ -188,7 +201,7 @@ public class FormServiceImpl implements FormService {
 			if (formCtxt == null) {
 				formCtxt = new FormContextBean();
 				formCtxt.setContainerId(formId);
-				formCtxt.setCpId(entity == SPECIMEN_EVENT ? -1 : cpId);
+				formCtxt.setCpId(entity == SPECIMEN_EVENT_FORM ? -1 : cpId);
 				formCtxt.setEntityType(entity);
 				formCtxt.setMultiRecord(isMultiRecord);
 			}
@@ -218,6 +231,7 @@ public class FormServiceImpl implements FormService {
 		    case SPECIMEN_COLLECTION_GROUP:
 		    	forms = formDao.getScgForms(req.getEntityId());
 		    	break;
+		    	
 		    case SPECIMEN_EVENT :
 		    	forms = formDao.getSpecimenEventForms(req.getEntityId());
 		    	break;	
@@ -453,10 +467,9 @@ public class FormServiceImpl implements FormService {
                 	fields.add(field);            		
             	}
             } else if (!(control instanceof Label || control instanceof PageBreak)) {
-            	DataType dataType = (control instanceof FileUploadControl) ? DataType.STRING : control.getDataType();
+            	DataType dataType = getType(control);
             	field.setType(dataType.name());
-            	
-                
+            	                
             	if (control instanceof SelectControl) {
             		SelectControl selectCtrl = (SelectControl)control;
             		List<String> pvs = new ArrayList<String>();
@@ -465,6 +478,9 @@ public class FormServiceImpl implements FormService {
             		}
             		
             		field.setPvs(pvs);
+            	} else if (control instanceof LookupControl) {
+            		LookupControl luCtrl = (LookupControl)control;
+            		field.setLookupProps(luCtrl.getPvSourceProps());
             	}
             	
             	fields.add(field);
@@ -472,5 +488,15 @@ public class FormServiceImpl implements FormService {
         }
 
         return fields;		
+	}
+	
+	private DataType getType(Control ctrl) {
+		if (ctrl instanceof FileUploadControl) {
+			return DataType.STRING;
+		} else if (ctrl instanceof LookupControl) {
+			return ((LookupControl)ctrl).getValueType();
+		} else {
+			return ctrl.getDataType();
+		}
 	}
 }

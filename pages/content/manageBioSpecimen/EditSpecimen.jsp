@@ -15,6 +15,7 @@
 .errorStyleOn{
     border: 1px solid #FF0000;
 }
+.textarea { height: auto; }
 </style>
 <style type="text/css">
     #myoutercontainer { text-align: center;display:block;float: left; }
@@ -80,6 +81,177 @@
 <script>
     var imgsrc="images/";
     window.dhx_globalImgPath = "dhtmlxSuite_v35/dhtmlxWindows/codebase/imgs/";
+		var activityStatusCombo={};
+        var aliquotDateErr = false;
+        var aliquotGrid;
+        var aliquotPopUpParam = {};
+        var aliquotNameSpace = {};
+		var userListCombo;
+        function showDisableSpecimenWindow(){
+            if(aliquotNameSpace.dhxWins == undefined){
+                aliquotNameSpace.dhxWins = new dhtmlXWindows();
+                aliquotNameSpace.dhxWins.setSkin("dhx_skyblue");
+                aliquotNameSpace.dhxWins.enableAutoViewport(true);
+            }
+        //    aliquotNameSpace.dhxWins.setImagePath("");
+            if(aliquotNameSpace.dhxWins.window("containerPositionPopUp")==null){
+                var w =500;
+                var h =360;
+                var x = (screen.width / 3) - (w / 2);
+                var y = 150;
+                aliquotNameSpace.dhxWins.createWindow("containerPositionPopUp", x, y, w, h);
+                //aliquotNameSpace.dhxWins.setPosition(x, y);
+                //aliquotNameSpace.dhxWins.window("containerPositionPopUp").center();
+                aliquotNameSpace.dhxWins.window("containerPositionPopUp").allowResize();
+                aliquotNameSpace.dhxWins.window("containerPositionPopUp").setModal(true);
+                aliquotNameSpace.dhxWins.window("containerPositionPopUp").setText("Dispose Specimen");
+                aliquotNameSpace.dhxWins.window("containerPositionPopUp").button("minmax1").hide();
+                aliquotNameSpace.dhxWins.window("containerPositionPopUp").button("park").hide();
+                aliquotNameSpace.dhxWins.window("containerPositionPopUp").button("close").hide();
+                aliquotNameSpace.dhxWins.window("containerPositionPopUp").setIcon("images/terms-conditions.png", "images/terms-conditions.png");
+             
+			 if(document.getElementById("disposalPop")==null){
+				  var div = document.createElement("div");
+            
+                div.id="disposalPop";
+				div.innerHTML = windowDivStr;
+				  document.body.appendChild(div);
+              
+			 }else{
+				windowDivStr = document.getElementById("disposalPop").innerHTML;
+			 }
+			 doInitCal('disposalDate',false,'${uiDatePattern}');
+			 userListCombo = dhtmlXComboFromSelect("userId");
+		//classNameCombo.setOptionWidth(203);
+	    userListCombo.setSize(203);
+	    userListCombo.attachEvent("onOpen",onComboClick);
+	    userListCombo.attachEvent("onKeyPressed",onComboKeyPress);
+				aliquotNameSpace.dhxWins.window("containerPositionPopUp").attachObject("disposalPop");
+            }
+			  
+        }
+		var windowDivStr;
+		function submitEvent(){
+            var specimenStatus = getCheckedRadioId("aliquotRadio");
+			var reason = document.getElementById('reason').value;
+			var spId = document.getElementById("id").value;
+			var userId = userListCombo.getSelectedValue();
+			var disposalDate = document.getElementById("disposalDate").value;
+			var disposalHours = document.getElementById("disposalHours").value;
+			var disposalMins = document.getElementById("disposalMins").value;
+			
+			tabDataJSON["comments"]= reason;
+			tabDataJSON["activityStatus"]= specimenStatus;
+			tabDataJSON["id"] = spId;
+			tabDataJSON["userId"]= userId;
+			tabDataJSON["disposalDate"]= disposalDate;
+			tabDataJSON["disposalHours"]= disposalHours;
+			tabDataJSON["disposalMins"]= disposalMins;
+            createRestCall(tabDataJSON,spId);
+        }
+		function createRestCall(specimenData ,spId){
+			var req = createRequest(); // defined above
+// Create the callback:
+document.getElementById("specimenSubmitButton").disabled = true;
+req.onreadystatechange = function() {
+  if (req.readyState != 4) return; // Not there yet
+  if (req.status != 201) {
+    // Handle request failure here...
+	var errorMsg=req.getResponseHeader("errorMsg");
+	
+	document.getElementById('pop-error').innerHTML = errorMsg;
+	document.getElementById('pop-error').style.display='block';
+	//showErrorMessage(errorMsg);
+	document.getElementById("specimenSubmitButton").disabled = false;
+    return;
+  }
+  document.getElementById("specimenSubmitButton").disabled = false;
+  // Request successful, read the response
+  var resp = req.responseText;
+  var updatedSpecimenDTO = eval('('+resp+')')
+  var contSpan = document.getElementById('containerSpan');
+	  var contPopSpan = document.getElementById('containerPopSpan');
+	  if(contPopSpan){
+	    document.getElementById('containerPopSpan').innerHTML = ''; 
+	  }
+	  if(contSpan){
+	    document.getElementById('containerSpan').innerHTML = 'Virtually Located'; 
+	  }
+	if(updatedSpecimenDTO.activityStatus == 'Disabled'){
+	closeTermWindow();
+	  parent.handleCpView(null, updatedSpecimenDTO.specimenCollectionGroupId, null);
+	  
+	  document.getElementById('error').style.display='none';
+	  document.getElementById('success').style.display='block';
+	  var divStyle = document.getElementById('specListDiv').style.display;
+	  divStyle='block';
+	  document.getElementById('specListDiv').style.display='none';
+	  document.getElementById('deleteButtonDiv').style.display='none';
+	  document.getElementById('specimenSubmitButton').style.display='none';
+	  document.getElementById('available').disabled = false;
+	  document.getElementById('available').checked = updatedSpecimenDTO.available;
+	  
+	  var activeSpan = document.getElementById('activitySpan');
+	  if(activeSpan){
+		document.getElementById('activitySpan').innerHTML = updatedSpecimenDTO.activityStatus;
+		}else{
+	  
+	  
+	  activityStatusCombo.setComboValue("Disabled");
+			activityStatusCombo.setComboText("Disabled");
+			}
+			tabDataJSON={};
+		
+			scrollToTop();
+	  return;
+	  
+	}
+	
+		parent.handleCpView(null, updatedSpecimenDTO.specimenCollectionGroupId, updatedSpecimenDTO.id);
+	
+				document.getElementById('available').disabled = false;
+				document.getElementById('available').checked = updatedSpecimenDTO.available;
+				var actSpan = document.getElementById('activitySpan');
+				if(actSpan){
+				document.getElementById('activitySpan').innerHTML = updatedSpecimenDTO.activityStatus;
+				}
+				document.getElementById('error').style.display='none';
+				document.getElementById('success').style.display='block';
+				//forwardToChildSpecimen(operation);
+			
+			var divStyle = document.getElementById('specListDiv').style.display;
+			
+			if(divStyle == 'none')
+			{
+				divStyle='block';
+				document.getElementById('specListDiv').style.display='block';
+			}
+			tabDataJSON={};
+		/*	if(operation == 'add')
+			{
+				LoadSCGTabBar('edit');
+			}*/
+			scrollToTop();
+			closeTermWindow();
+		}
+		
+		
+		
+			req.open("PUT", "rest/specimens/"+spId+"/updateStatus", false);
+		
+		req.setRequestHeader("Content-Type",
+							 "application/json");
+		req.send(JSON.stringify(specimenData));
+
+		}
+        function getCheckedRadioId(name) {
+            var elements = document.getElementsByName(name);
+            for (var i=0, len=elements.length; i<len; ++i)
+                if (elements[i].checked) return elements[i].value;
+        }
+        function closeTermWindow(){
+            aliquotNameSpace.dhxWins.window("containerPositionPopUp").close();
+        }
 </script>
 <!----------------------------------------------------------------------->
 <body onload="LoadSCGTabBar('${requestScope.operation}');"> 
@@ -481,8 +653,9 @@
                                 <td width="30%" align="left" class="black_ar">
                                     <c:choose>
                                         <c:when test="${specimenDTO.activityStatus == 'Active'}">
-                                            <label for="activityStatus">
+                                            <label for="activityStatus"><span id="activitySpan">
                                                 <bean:write name="specimenDTO" property="activityStatus" scope="request"/>
+												</span>
                                             </label>
                                         </c:when>
                                         <c:otherwise>
@@ -623,9 +796,15 @@
                                     <div id="specListDiv" style="display:none">
                                     | <input type="button" value="Add To Specimen List"
                                             onclick="organizeTarget()" class="blue_ar_b" />
+    
+                                    </div>
+                                    </td><td>
+										<div id="deleteButtonDiv" style="display:none">
+          									| <input type="button" value="Dispose"
+                                            onclick="showDisableSpecimenWindow()" class="blue_ar_b" />
                                     
                                     </div>
-                                    </td></tr></table>
+									</td></tr></table>
                                     <input type="checkbox" name="objCheckbox"  id="objCheckbox" style="display:none" value="${specimenDTO.id}" checked/>
                                 </td>
                             </tr>
@@ -647,6 +826,47 @@
      </td>
    </tr>
 </table>
+<div id="disposalPop" style="display:none">
+	<table width='100%' border='0' cellpadding='5' cellspacing='3'>
+		<tr><td colspan="2">
+			<div id="pop-error" class="alert alert-error" style="display:none">
+                            <strong>Error!</strong> <span id="errorMsg">Change a few things up and try submitting again.</span>
+                        </div>
+		</td></tr>
+		
+		<tr><td class='black_ar_b' width='120px'>User</td><td class='black_ar'><html:select property='userId' name='specimenDTO' styleClass='black_ar' styleId='userId' size='1'><html:options collection='userList' labelProperty='name' property='value' /></html:select></td></tr>
+				
+		<tr><td class='black_ar_b'>Disposal Date</td><td class='black_ar'>   
+			<table style='border-collapse:collapse;'><tr><td><input type="text" name="disposalDate" class="black_ar"
+                              id="disposalDate" size="10" value='<fmt:formatDate value="${specimenDTO.disposalDate}" pattern="${datePattern}" />'/>
+				</td><td  style='padding-left:4px'><html:select property='disposalHours' name='specimenDTO' styleClass='black_ar' styleId='disposalHours' size='1'>
+				<logic:iterate name='hourList' id='listhoursId'>
+				<html:option  value='${listhoursId}'> ${listhoursId} </html:option>
+				</logic:iterate>
+				</html:select> 
+				</td>
+				<td  style='padding-left:4px'>
+				<html:select property='disposalMins' name='specimenDTO' styleClass='black_ar' styleId='disposalMins' size='1'>
+				<logic:iterate name='minutesList' id='listminutesId'>
+				<html:option  value="${listminutesId}"> ${listminutesId} </html:option>
+				</logic:iterate>
+				</html:select> 
+				</td>
+				</tr>
+				</table>
+		</td></tr>
+				
+		<tr><td class='black_ar_b' width='120px'>Activity Status</td><td class='black_ar aliquot_details aliquot_form_label'><input type='radio' name='aliquotRadio' value='Disabled' style='vertical-align: middle;' checked onclick="activityStatusChange(this)"><span class='black_ar' style='vertical-align: middle;margin-left:2px;'>Disabled</span> &nbsp;
+         <input type='radio' name='aliquotRadio' value='Closed' style='vertical-align: middle;' onclick="activityStatusChange(this)"><span class='black_ar' style='vertical-align: middle;margin-left:2px;'>Closed</span></td></tr>
+		 
+		 <tr><td></td><td class="black_ar" style="color:#FF0000"><div id="disbDiv" style="display:block">Disabling a specimen will delete the specimen forever. Are you sure?</div>
+		 
+		 </td></tr>
+				
+				<tr><td class='black_ar_b'>Reason</td><td class='black_ar'><textarea style='height:50px;' class='black_ar' cols='30' rows='10' id='reason' name='reason' ></textarea></td></tr>
+				<tr><td></td><td class='black_ar'><input type='button' name='Ok' onClick='submitEvent()' value='Ok' ><input type='button'  value='Cancel' name='Cancel' onClick='closeTermWindow()'style='margin-left:6px'></td></tr>
+	</table>
+</div>
 </html:form>
 
 <script>
@@ -680,7 +900,7 @@ var showViewSPRTab="ViewSurgicalPathologyReport.do?operation=viewSPR&pageOf=page
 
 var showAnnotationTab="LoadAnnotationDataEntryPage.do?entityId="+entityId+"&entityRecordId="+specimenId+"&pageOf=pageOfNewSpecimenCPQuery&operation=viewAnnotations&staticEntityName="+staticEntityName+"&id="+specimenId;
 
-var showSpecimenEventTab="LoadAnnotationDataEntryPage.do?entityId="+entityId+"&entityRecordId="+specimenId+"&pageOf=pageOfNewSpecimenCPQuery&operation=viewAnnotations&staticEntityName=SpecimenEvent&id="+specimenId;
+var showDESpecimenEventsTab="LoadAnnotationDataEntryPage.do?entityId="+entityId+"&entityRecordId="+specimenId+"&pageOf=pageOfNewSpecimenCPQuery&operation=viewAnnotations&staticEntityName=SpecimenEvent&id="+specimenId;
 
 var showConsentsTab="FetchConsents.do?consentLevelId="+specimenId+"&consentLevel=specimen&reportId="+reportId+"&pageof=pageOfNewSpecimenCPQuery&entityId="+entityId+"&staticEntityName="+staticEntityName;
 
@@ -766,6 +986,12 @@ prepareSpecimenTypeOptions('${cellTypeListJSON}','${molecularTypeListJSON}','${t
     document.getElementById('specListDiv').style.display='block';
 }
 </c:if>
+<c:if test="${operation=='edit'}">
+{
+    document.getElementById('deleteButtonDiv').style.display='block';
+}
+</c:if>
+
 function chkeEmptyNumber(obj)
 {
     if(obj.value.trim()=="" || obj.value == null)
@@ -800,6 +1026,15 @@ function updateHelpURL()
 		}
 		
 	return URL;
+}
+
+function activityStatusChange(radio){
+if(radio.value == 'Closed'){
+document.getElementById('disbDiv').style.display ="none";
+}else{
+document.getElementById('disbDiv').style.display ="block";
+}
+
 }
 </script>
 </body>

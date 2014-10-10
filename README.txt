@@ -1,54 +1,59 @@
-caTissue Suite v1.2
-======================================
-Deployment, User and Technical Guide available at
-http://gforge.nci.nih.gov/docman/index.php?group_id=689&selected_doc_group_id=6035&language_id=1
-For more information, visit the Tissue/Biospecimen Banking and Technology 
-Tools Knowledge Center website: https://cabig-kc.nci.nih.gov/Biospecimen/KC/index.php/Main_Page
+OpenSpecimen - Open Source Biobanking Informatics Platform 
+Developed by Krishagni Solutions (India)
+-----------------------------------------------------------
 
-Prerequisites:
-=======================================
-Certified Server OS: Windows Microsoft Windows XP Professional Version 2002 Service Pack 2,
-Linux Red Hat 9 or Red Hat Enterprise ES/AS 2.1 or higher
-Certified Databases: Oracle 10.2.0.2.0, MySQL 5.0.45
-Note: The Oracle client is required on the machine hosting the JBoss server.
-Build tool: Ant 1.7
-Application server: JBoss 4.2.2 GA
-Java: JDK 1.5
-Web browsers: Internet Explorer 8.0, Mozilla Firefox 3.6.3, Safari (Mac) 5.0
-If deploying caTIES:
-a. Download MMTx from http://catissuecore.wustl.edu/caties_datafiles/
-b. Download Metathesaurus from http://catissuecore.wustl.edu/caties_datafiles/
+Introduction
+------------
+OpenSpecimen (formerly known as caTissue Plus) is a Free & Open Source biobank/biospecimen management software. At the heart of OpenSpecimen is that “biospecimens without high quality data is of no value”. OpenSpecimen is used across the globe in some of the most respected biobanks of various sizes and diseases. OpenSpecimen streamlines management of biospecimens across collection, consent, QC, request and distribution. Finally, OpenSpecimen is highly configurable and customizable. E.g., adding a custom field or form can be done in minutes by a non-IT person. 
 
-Directories
-========================================
-modules: This folder contains files related to various caTissue modules
-SQL: This folder has all the database creation SQL scripts in it
+Krishagni Solutions (India) actively develops newer versions of OpenSpecimen as well provides professional support. Support includes phone/email, data migration, customizations, integrations, training, and so forth. 
 
-Files
-========================================
-build.xml: This is the main deploy process that manages all of the project to project dependencies,
-and has a call-through ability to deploy any subproject.
+For more details visit: www.openspecimen.org
 
-caTissueInstall.properties: Before installing the application, all parameters required for the 
-deployment process are expected to be defined by the user in this file.
+Features
+---------
+ * Planned and unplanned biospecimen collections
+ * Storage and Inventory management
+ * Role based user authentication and authorization
+ * Participants and informed consents
+ * Path reports
+ * Clinical and pathology annotations
+ * Specimen request and distribution 
+ * Shipping and tracking
+ * Track specimen lifecycle events
+ * Reports: Data query, Pivot table, Export as CSV, Scheduled reports
+ * Custom fields and forms
+ * Complete audit trial
+ * Bulk Operation to upload CSV data
+ * Token based specimen label generation
+ * Barcode printing
+ * REST APIs
+ * Integration with clinical databases
+ * Integration with instruments
+ * Real time notifications
+ 
+ Upcoming features
+ ------------------
+ * Patient family relationships (family pedigree)
+ * Invoicing
+ * Tissue Microarray
+ * Highly configurable user interface
+ * Mobile and tablet apps
+ 
 
-Executing
-========================================
-To deploy: ant deploy_all
-To upgrade: ant upgrade_all
+Online Resources
+----------------
+Website: http://www.openspecimen.org
+Forums: http://forums.openspecimen.org
+Help: http://help.openspecimen.org
+Email: mailto:contact@openspecimen.org
 
-Support (caBIG(tm) TBPT Knowledge Center)
-========================================
-Main Page: https://cabig-kc.nci.nih.gov/Biospecimen/KC/index.php/Main_Page
-Discussion Forum: https://cabig-kc.nci.nih.gov/Biospecimen/forums/
-Contact: tbpt_kc_support@mga.wustl.edu
+License
+--------
+OpenSpecimen is released under BSD 3 Style license. 
+https://github.com/krishagni/openspecimen/blob/trunk/LICENSE.md
 
-Release Notes:
-======================================
-Link: http://gforge.nci.nih.gov/docman/index.php?group_id=689&selected_doc_group_id=6154&language_id=1
-
-SVN Tags
-========================================
-https://ncisvn.nci.nih.gov/svn/catissue_persistent/catissuecore/tags/caTissue_v1.2_RC6_TAG
-
-Thank you for using caTissue Suite.
+Contact Information
+-------------------
+Project Lead: Srikanth Adiga
+Email: srikanth.adiga@openspecimen.org

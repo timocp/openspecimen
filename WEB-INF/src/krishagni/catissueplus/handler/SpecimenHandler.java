@@ -1,6 +1,8 @@
 
 package krishagni.catissueplus.handler;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import krishagni.catissueplus.bizlogic.DeriveBizLogic;
@@ -10,15 +12,20 @@ import krishagni.catissueplus.dto.DerivedDTO;
 import krishagni.catissueplus.dto.SpecimenDTO;
 import krishagni.catissueplus.util.CommonUtil;
 import krishagni.catissueplus.util.DAOUtil;
+import krishagni.catissueplus.util.SpecimenUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.context.ApplicationContext;
 
+import edu.wustl.catissuecore.bizlogic.NewSpecimenBizLogic;
+import edu.wustl.catissuecore.domain.AbstractSpecimen;
+import edu.wustl.catissuecore.domain.DisposalEventParameters;
 import com.krishagni.catissueplus.core.biospecimen.services.impl.FormRecordSaveServiceImpl;
 import com.krishagni.catissueplus.core.common.OpenSpecimenAppCtxProvider;
 
 import edu.wustl.catissuecore.domain.Specimen;
+import edu.wustl.catissuecore.domain.User;
 import edu.wustl.catissuecore.util.PrintUtil;
 import edu.wustl.catissuecore.util.global.Variables;
 import edu.wustl.common.beans.SessionDataBean;
@@ -197,4 +204,49 @@ public class SpecimenHandler {
 
 	}
 
+
+	public edu.wustl.catissuecore.dto.SpecimenDTO updateSpecimenStatus(edu.wustl.catissuecore.dto.SpecimenDTO specimenDTO, SessionDataBean sessionDataBean) throws BizLogicException {
+		NewSpecimenBizLogic sbizlogic = new NewSpecimenBizLogic();
+		HibernateDAO hibernateDao = null;
+		try
+    {
+			  String reason = specimenDTO.getComments();
+			
+        hibernateDao = DAOUtil.openDAOSession(sessionDataBean);
+        Specimen  specimen = sbizlogic.getSpecimenObj(specimenDTO.getId(), hibernateDao);
+        specimen.setActivityStatus(specimenDTO.getActivityStatus());
+        SpecimenBizLogic specimenBizLogic = new SpecimenBizLogic();
+        DisposalEventParameters disposalEvent = SpecimenUtil.createDisposeEvent(sessionDataBean, specimen,
+        		reason);
+        if(specimenDTO.getUserId() != null){
+        	disposalEvent.getUser().setId(specimenDTO.getUserId());;
+        }
+        if(specimenDTO.getDisposalDate() != null){
+        	Calendar cal = Calendar.getInstance();
+        	cal.setTime(specimenDTO.getDisposalDate());
+        	cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(specimenDTO.getDisposalHours()));
+  				cal.set(Calendar.MINUTE, Integer.parseInt(specimenDTO.getDisposalMins()));
+        }
+        
+        specimenBizLogic.disposeSpecimen(hibernateDao, sessionDataBean, specimen, disposalEvent);
+        specimenDTO.setPos1("");
+        specimenDTO.setPos2("");
+        specimenDTO.setContainerId(null);
+        specimenDTO.setContainerName("");
+        specimenDTO.setAvailable(false);
+        hibernateDao.commit();
+    }catch (ApplicationException exception)
+    {
+      String errMssg = CommonUtil.getErrorMessage(exception,new Specimen(),"Inserting");
+      LOGGER.error(errMssg, exception);
+      throw new BizLogicException(exception.getErrorKey(),
+              exception,exception.getMsgValues(),errMssg);
+  }
+  finally
+  {
+      DAOUtil.closeDAOSession(hibernateDao);
+  }
+		return specimenDTO;
+	}
+	
 }

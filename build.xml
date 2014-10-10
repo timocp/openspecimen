@@ -451,18 +451,16 @@
 				<exclude name="**/log4j.properties" />
 				<exclude name="**/WEB-INF/src*/**" />
 				<exclude name="**/WEB-INF/lib/*.zip" />
-				
 				<exclude name="**/WEB-INF/lib/ant-jmeter.jar" />
 				<exclude name="**/WEB-INF/lib/junit-4.11.jar" />
 				<exclude name="**/WEB-INF/lib/mockito-all-1.9.5.jar" />	
 				<exclude name="**/WEB-INF/lib/cobertura.jar"/>
 				<!--exclude name="**/WEB-INF/lib/asm-3.0.jar"/-->
-				<exclude name="**/WEB-INF/lib/asm-tree-3.0.jar"/>
 				<!-- exclude name="**/WEB-INF/lib/ant*.jar" / -->
 				<exclude name="**/WEB-INF/lib/junit*.jar" />
 				<!--<exclude name="**/WEB-INF/lib/dom4*.jar" />-->
 				<exclude name="**/*servlet.jar*" />
-
+				
 				<exclude name="**/*hibernate2.jar*" />
 				<exclude name="**/*jta.jar*" />
 				<exclude name="**/CVS*" />
@@ -758,6 +756,7 @@
 		<copy todir="${zip.dir}" overwrite="true">
 			<fileset dir="${base.dir}" includes="aq-forms/**"/>
 			<fileset dir="${base.dir}" includes="aq-queries/**"/>
+			<fileset dir="${base.dir}" includes="spe-forms/**"/>
 		</copy>
 
 		<copy todir="${zip.dir}/modules/report_scripts" overwrite="true">

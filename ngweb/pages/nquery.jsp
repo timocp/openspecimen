@@ -28,6 +28,7 @@
     <script src="../external/eternicode/js/bootstrap-datepicker.js" type="text/javascript"></script>
 
     <link href="../css/app.css" rel="stylesheet" type="text/css"></link>
+    <link href="../css/pivottable.css" rel="stylesheet" type="text/css"></link>
 
     <style type="text/css">
        .plus-panel {
@@ -243,14 +244,6 @@
           border-color: #ffffff rgba(0, 0, 0, 0);
        }
 
-       .modal-content {
-          height: 550px;
-       }
-
-       .import-query .modal-content {
-          height: 300px;
-       }
-
        html, body {
           height: 100%;
        }
@@ -323,18 +316,6 @@
           margin-top: 27px;
        }
 
-       .query-folder-modal .modal-header {
-          height: 15%;
-       }
-
-       .query-folder-modal .modal-content {
-         height: 300px;
-       }
-
-       .query-folder-modal .modal-header h3 {
-          margin-top: 0;
-       }
-
        .table.borderless > tbody > tr > td, .table.borderless > thead > tr > th {
           border: none;
        }
@@ -375,10 +356,6 @@
           z-index: 10000;
        }
  
-       .view-query-sql .modal-content {
-           height: 400px;
-       }
-
        input[type='file'] {
          color: transparent;
        }
@@ -425,6 +402,10 @@
          font-size: 10px;
          color: white;
        } 
+
+       .define-view-dialog > div.modal-dialog {
+         width: 700px;
+       }
     </style>
   </head>
 
@@ -474,11 +455,11 @@
                 <span class="glyphicon glyphicon-folder-close"></span>&nbsp;
                 <span class="caret"></span>
               </button>
-              <ul class="dropdown-menu" style="width: 200px;">
+              <ul class="dropdown-menu" style="width: 300px;">
                 <li>
                   <input ng-model="searchQueryFolder" 
                     type="text" class="form-control" 
-                    style="width: 160px; margin: 3px 20px" 
+                    style="width: 260px; margin: 3px 20px" 
                     ng-click="$event.stopPropagation()">
                 </li>
                 <li>
@@ -805,6 +786,7 @@
         <span ng-if="queryData.notifs.error == 'BAD_REQUEST'">Malformed Query. Please go back and edit query. <a href="https://catissueplus.atlassian.net/wiki/x/O4BLAQ" target="_blank"><b>Click here</b></a> to watch tutorial</span>
         <span ng-if="queryData.notifs.error == 'INTERNAL_SERVER_ERROR'">Internal Server Error. Please retry after some time or contact system admin</span>
       </div>
+
       <div ng-show="!queryData.notifs.waitRecs && !queryData.notifs.error" class="row" style="height: 90%; padding-left: 15px;">
         <div ng-if="queryData.moreData" style="color:#b94a48">
           Export to view all records. 
@@ -813,13 +795,22 @@
           </a> to know why exported data file have more records.
         </div>
 
-        <p class="data-grid-header">
-          <strong ng-if="queryData.id">{{queryData.title}}</strong>
-          <strong ng-if="!queryData.id">Unsaved Query</strong>
-        </p>
-        <div class="data-grid" style="height: 95%;" ng-grid="queryData.resultGridOpts"></div>
+        <div ng-if="queryData.reporting.type == 'crosstab'" style="height: 100%;">
+          <div style="height: 95%;" ka-pivot-table="queryData.pivotTableOpts">
+          </div>
+        </div>
+
+        <div ng-if="queryData.reporting.type != 'crosstab'" style="height: 100%;">
+          <p class="data-grid-header">
+            <strong ng-if="queryData.id">{{queryData.title}}</strong>
+            <strong ng-if="!queryData.id">Unsaved Query</strong>
+          </p>
+          <div class="data-grid" style="height: 95%;" ng-grid="queryData.resultGridOpts">
+          </div>
+        </div>
       </div>
     </div>
+
     <div class="container" ng-if="queryData.view == 'query'">
       <div class="row" style="height: 7%;">
         <div class="col-xs-offset-3 col-xs-9">
@@ -1002,7 +993,9 @@
                   </div>
                 </div>
                 <div style="display: table-cell; vertical-align: middle; width: 83.33%; padding-left: 15px; padding-right: 15px;" ng-if="!filter.expr"> 
-                  <i>{{filter.form.caption}} &gt;&gt; {{filter.field.caption}} </i>
+                  <i>{{filter.form.caption}} &gt;&gt; </i>
+                  <i ng-if="filter.field.extensionForm">{{filter.field.extensionForm}} &gt;&gt; </i>
+                  <i>{{filter.field.caption}} </i>
                   <b> {{filter.op.desc}} </b> 
 
                   <i ng-if="filter.op.name == 'between'">{{filter.value[0]}} and {{filter.value[1]}}</i>
@@ -1054,113 +1047,136 @@
               </div>
               <a href=#" tooltip="Cancel and go back to dashboard" tooltip-placement="top" ng-click="showQueries()" style="margin-left: 10px;">Cancel</a>
             </div>
-            <div ng-include="'count-tmpl.html'" class="pull-right" style="width: 45%; margin-left: 1%;"/>
+            <div ng-include="'count-tmpl.html'" class="pull-right" style="width: 45%; margin-left: 1%;">
+            </div>
           </div>
         </div>
       </div>
     </div>
 
     <script type="text/ng-template" id="parameterized-filters-modal.html">
-      <div class="modal-header" style="height: 10%">
-        <h4>{{queryData.title}}</h4>
+      <div class="ka-modal-header">
+        <span>{{queryData.title}}</span>
+        <div class="ka-close" ng-click="cancel()">&times;</div>
       </div>
-      <div class="modal-body" style="height: 75%;overflow:auto;">
-        <table class="table">
+      <div class="ka-modal-body">
+        <table class="table" style="margin-bottom: 0px;">
           <thead>
             <th class="col-xs-5">Field</th>
             <th class="col-xs-3">Operator</th>
             <th class="col-xs-4">Condition Value</th>
           </thead>
-          <tbody>
-            <tr ng-repeat="filter in queryData.filters | filter: {'parameterized': true}">
-              <td>
-                <i ng-if="!filter.expr">{{filter.form.caption}} &gt;&gt; {{filter.field.caption}}</i>
-                <i ng-if="filter.expr">{{filter.desc}}</i>
-              </td>
-              <td ng-if="!filter.expr">
-                <ka-select id="operator" style="width: 100%;"
-                  data-placeholder="Select Operator"
-                  options="filter.field.ops" option-id="name" option-value="desc"
-                  on-select="onOpSelect(filter)"
-                  selected="filter.op">
-                </ka-select>
-              </td>
-              <td ng-if="filter.expr">
-                <ka-select id="operator" style="width: 100%;"
-                  data-placeholder="Select Operator"
-                  options="filter.tObj.ops" option-id="name" option-value="desc"
-                  on-select="onOpSelect(filter)"
-                  selected="filter.op">
-                </ka-select>
-              </td>
-              <td>
-                <div ng-if="!isUnaryOpSelected(filter)">
-                  <div id="value" ng-switch="getValueType(filter)">
-                    <div ng-switch-when="select">
-                      <ka-select data-placeholder="Select Condition Value"
-                        options="filter.field.pvs"
-                        selected="filter.value" style="width: 100%">
-                      </ka-select>
-                    </div>
-                    <div ng-switch-when="multiSelect">
-                      <ka-select multiple
-                        data-placeholder="Select Condition Values"
-                        options="filter.field.pvs"
-                        selected="filter.value" style="width: 100%">
-                      </ka-select>
-                    </div>
-                    <div ng-switch-when="tagsSelect">
-                      <ka-tags tags="filter.value" 
-                        placeholder="Specify Condition Value & then hit enter key"/>
-                    </div>
-                    <div ng-switch-when="betweenDate" class="clearfix">
-                      <input class="pull-left form-control" placeholder="Range Min" type="text" 
-                        ka-date-picker="{{queryData.datePickerOpts}}"
-                        ng-model="filter.value[0]"
-                        style="width:42%;">
-                      <span class="pull-left" style="width:15%;text-align:center;padding: 4px;">and</span>
-                      <input class="pull-left form-control" placeholder="Range Max" type="text" 
-                        ka-date-picker="{{queryData.datePickerOpts}}"
-                        ng-model="filter.value[1]"
-                        style="width:42%;">
-                    </div>
-                    <div ng-switch-when="betweenNumeric" class="clearfix">
-                      <input class="pull-left form-control" placeholder="Range Min" type="text" 
-                        ng-model="filter.value[0]"
-                        style="width:42%;">
-                      <span class="pull-left" style="width:15%;text-align:center;padding: 4px;">and</span>
-                      <input class="pull-left form-control" placeholder="Range Max" type="text" 
-                        ng-model="filter.value[1]"
-                        style="width:42%;">
-                    </div>
-                    <input ng-switch-when="datePicker" class="form-control"
-                      data-placeholder="Select Date"
-                      type="text" ka-date-picker="{{queryData.datePickerOpts}}"
-                      ng-model="filter.value"></input>
-                    <input ng-switch-default class="form-control"
-                      placeholder="Specify Condition Value"
-                      type="text" ng-model="filter.value"></input>
-                  </div>
-                </div>
-              </td>
-            </tr>
-          </tbody>
         </table>
-      </div>
-      <div class="modal-footer" style="height: 12%">
-        <div ng-include="'count-tmpl.html'" class="pull-left" style="text-align: left; width: 45%; margin-left: 1%;"/>
+        <div style="max-height: 380px; overflow: auto;">
+          <table class="table">
+            <tbody>
+              <tr ng-repeat="filter in queryData.filters | filter: {'parameterized': true}">
+                <td class="col-xs-5">
+                  <span ng-if="!filter.expr">
+                    <i>{{filter.form.caption}} &gt;&gt; </i>
+                    <i ng-if="filter.field.extensionForm">{{filter.field.extensionForm}} &gt;&gt; </i> 
+                    <i>{{filter.field.caption}}</i>
+                  </span>
+                  <i ng-if="filter.expr">{{filter.desc}}</i>
+                </td>
+                <td class="col-xs-3" ng-if="!filter.expr">
+                  <ka-select id="operator" style="width: 100%;"
+                    data-placeholder="Select Operator"
+                    options="filter.field.ops" option-id="name" option-value="desc"
+                    on-select="onOpSelect(filter)"
+                    selected="filter.op">
+                  </ka-select>
+                </td>
+                <td class="col-xs-3" ng-if="filter.expr">
+                  <ka-select id="operator" style="width: 100%;"
+                    data-placeholder="Select Operator"
+                    options="filter.tObj.ops" option-id="name" option-value="desc"
+                    on-select="onOpSelect(filter)"
+                    selected="filter.op">
+                  </ka-select>
+                </td>
+                <td class="col-xs-4">
+                  <div ng-if="!isUnaryOpSelected(filter)">
+                    <div id="value" ng-switch="getValueType(filter)">
+                      <div ng-switch-when="select">
+                        <ka-select data-placeholder="Select Condition Value"
+                          options="filter.field.pvs"
+                          selected="filter.value" style="width: 100%">
+                        </ka-select>
+                      </div>
+                      <div ng-switch-when="multiSelect">
+                        <ka-select multiple
+                          data-placeholder="Select Condition Values"
+                          options="filter.field.pvs"
+                          selected="filter.value" style="width: 100%">
+                        </ka-select>
+                      </div>
+                      <div ng-switch-when="tagsSelect">
+                        <ka-tags tags="filter.value" 
+                          placeholder="Specify Condition Value & then hit enter key"/>
+                      </div>
+                      <div ng-switch-when="betweenDate" class="clearfix">
+                        <input class="pull-left form-control" placeholder="Range Min" type="text" 
+                          ka-date-picker="{{queryData.datePickerOpts}}"
+                          ng-model="filter.value[0]"
+                          style="width:42%;">
+                        <span class="pull-left" style="width:15%;text-align:center;padding: 4px;">and</span>
+                        <input class="pull-left form-control" placeholder="Range Max" type="text" 
+                          ka-date-picker="{{queryData.datePickerOpts}}"
+                          ng-model="filter.value[1]"
+                          style="width:42%;">
+                      </div>
+                      <div ng-switch-when="betweenNumeric" class="clearfix">
+                        <input class="pull-left form-control" placeholder="Range Min" type="text" 
+                          ng-model="filter.value[0]"
+                          style="width:42%;">
+                        <span class="pull-left" style="width:15%;text-align:center;padding: 4px;">and</span>
+                        <input class="pull-left form-control" placeholder="Range Max" type="text" 
+                          ng-model="filter.value[1]"
+                          style="width:42%;">
+                      </div>
+                      <div ng-switch-when="lookupSingle">
+                        <input type="hidden" style="width: 100%;"
+                          ka-lookup opts="filter.field.lookupProps" 
+                          placeholder="Select Condition Value"
+                          selected-opt="filter.value"></input>
+                      </div>
+                      <div ng-switch-when="lookupMultiple">
+                        <input type="hidden" style="width: 100%;"
+                          ka-lookup opts="filter.field.lookupProps" multiple
+                          placeholder="Select Condition Values"
+                          selected-opt="filter.value"></input>
+                      </div>
+                      <input ng-switch-when="datePicker" class="form-control"
+                        data-placeholder="Select Date"
+                        type="text" ka-date-picker="{{queryData.datePickerOpts}}"
+                        ng-model="filter.value"></input>
+                      <input ng-switch-default class="form-control"
+                        placeholder="Specify Condition Value"
+                        type="text" ng-model="filter.value"></input>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="ka-modal-footer">
+          <div ng-include="'count-tmpl.html'" class="pull-left" style="text-align: left; width: 45%; margin-left: 1%;">
+          </div>
 
-        <button class="btn btn-default" ng-click="cancel()">Cancel</button>
-        <button class="btn btn-primary" ng-click="getCount()"
-          tooltip="Get Count" tooltip-placement="top" tooltip-append-to-body="true">
-          <span class="glyphicon glyphicon-dashboard"></span>
-          <span>Get Count</span>
-        </button>
-        <button class="btn btn-primary" ng-click="ok()"
-          tooltip="Run Query" tooltip-placement="top" tooltip-append-to-body="true">
-          <span class="glyphicon glyphicon-play"></span>
-          <span>View Records</span>
-        </button>
+          <button class="btn ka-btn-text" ng-click="cancel()">Cancel</button>
+          <button class="btn btn-primary" ng-click="getCount()"
+            tooltip="Get Count" tooltip-placement="top" tooltip-append-to-body="true">
+            <span class="glyphicon glyphicon-dashboard"></span>
+            <span>Get Count</span>
+          </button>
+          <button class="btn btn-primary" ng-click="ok()"
+            tooltip="Run Query" tooltip-placement="top" tooltip-append-to-body="true">
+            <span class="glyphicon glyphicon-play"></span>
+            <span>View Records</span>
+          </button>
+        </div>
       </div>
     </script>
         
@@ -1215,6 +1231,18 @@
               <input class="pull-left form-control" placeholder="Range Max" type="text" 
                 ng-model="queryData.currFilter.value[1]"
                 style="width:42%;">
+            </div>
+            <div ng-switch-when="lookupSingle">
+              <input type="hidden" style="width: 100%;"
+                ka-lookup opts="queryData.currFilter.field.lookupProps" 
+                placeholder="Select Condition Value"
+                selected-opt="queryData.currFilter.value"></input>
+            </div>
+            <div ng-switch-when="lookupMultiple">
+              <input type="hidden" style="width: 100%;"
+                ka-lookup opts="queryData.currFilter.field.lookupProps" multiple
+                placeholder="Select Condition Values"
+                selected-opt="queryData.currFilter.value"></input>
             </div>
             <input ng-switch-when="datePicker" class="form-control"
               data-placeholder="Select Date"
@@ -1283,131 +1311,108 @@
     </script>
           
     <script type="text/ng-template" id="define-view.html">
-      <div class="modal-body" style="height: 465px;">
-        <div id="define-view-notif" class="define-view-notifs hidden"></div>
-        <tabset>
-          <tab heading="Define View"> 
-            <div style="margin-top: 10px; height: 405px; overflow: auto">
+      <div class="ka-modal-header">
+        <span>Define View</span>
+        <div class="ka-close" ng-click="cancel()">&times;</div>
+      </div>
+
+      <div id="define-view-notif" class="define-view-notifs hidden"></div>
+
+      <div class="ka-modal-body">
+        <div ka-wizard="defineViewWizard">
+          <ka-wizard-step on-finish="prepareAggregateOpts" title="Select Fields">
+            <div style="margin-top: 10px; margin-right: -20px; height: 380px; overflow: auto">
               <span class="plus-heading">Please select the fields that you wish to view in results table</span>
               <span class="plus-note plus-margin-bottom">Drag and drop fields to reorder the view</span>
               <ka-tree opts='treeOpts'></ka-tree>
             </div>
-          </tab>
-          <tab heading="Pivot Table" select="preparePivotTableOpts()">
-            <div style="margin-top: 10px; height: 405px; overflow: auto">
-              <div class="form-group">
-                <label class="checkbox-inline">
-                  <input type="checkbox" ng-model="pivotTable" 
-                    ng-checked="reporting.type == 'crosstab'" ng-change="createPivotTable(pivotTable)"> 
-                  Create Pivot Table
-                </label>
-              </div>
+          </ka-wizard-step>
 
-              <div ng-if="reporting.type == 'crosstab'">
-                <div class="form-group">
-                  <label for="group-rows-by">Row Fields</label>
-                  <ka-select id="group-rows-by" style="width: 100%;"
-                    data-placeholder="Select fields to use for grouping rows"
-                    options="groupRowsBy" option-id="name" option-value="value"
-                    on-select="onGroupRowsByChange"
-                    multiple selected="reporting.params.groupRowsBy">
-                  </ka-select>
-                </div>
+          <ka-wizard-step on-finish="preparePivotTableOpts" title="Aggregates">
+            <div ng-include="'aggregate-functions.html'"></div>
+          </ka-wizard-step>
 
-                <div class="form-group">
-                  <label for="group-col-by">Column Field</label>
-                  <ka-select id="group-col-by" style="width: 100%;"
-                    data-placeholder="Select field to use for grouping columns"
-                    options="groupColBy" option-id="name" option-value="value"
-                    on-select="onGroupColByChange"
-                    selected="reporting.params.groupColBy">
-                  </ka-select>
-                </div>
+          <ka-wizard-step title="Pivot Table">
+            <div ng-include="'pivot-table.html'"></div>
+          </ka-wizard-step>
 
-                <div class="form-group">
-                  <label for="summary-value">Value Field</label>
-                  <ka-select id="summary-value" style="width: 100%;"
-                    data-placeholder="Select summary field"
-                    options="summaryFields" option-id="name" option-value="value"
-                    on-select="onSummaryFieldChange"
-                    multiple selected="reporting.params.summaryFields">
-                  </ka-select>
-                </div>
-
-                <div class="form-group">
-                  <label for="rollup">Rollup Type</label>
-                  <div id="rollup">
-                    <label class="radio-inline">
-                      <input type="radio" name="rollupType" ng-model="reporting.params.rollupType" value="none"> None
-                    </label>
-                    <label class="radio-inline">
-                      <input type="radio" name="rollupType" ng-model="reporting.params.rollupType" value="rollup"> Normal
-                    </label>
-                    <label class="radio-inline">
-                      <input type="radio" name="rollupType" ng-model="reporting.params.rollupType" value="powerset"> Powerset
-                    </label>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </tab>
-      </div>
-      <div class="modal-footer" style="height: 65px;">
-        <button class="btn btn-default" ng-click="cancel()">Cancel</button>
-        <button class="btn btn-primary" ng-click="ok()">Ok</button>
+          <div class="ka-modal-footer">
+            <button class="btn ka-btn-text" ng-click="cancel()">
+              Cancel
+            </button>
+            <button class="btn ka-btn-secondary" ng-if="!defineViewWizard.isFirstStep()" 
+              ng-click="defineViewWizard.previous(false)">
+              Previous
+            </button>
+            <button class="btn btn-primary" ng-if="!defineViewWizard.isLastStep()" 
+              ng-click="defineViewWizard.next(false)">
+              Next
+            </button>
+            <button class="btn btn-primary" ng-click="ok()">
+              Done
+            </button>
+          </div>
+        </div>
       </div>
     </script>
 
     <script type="text/ng-template" id="import-query.html">
-      <div class="modal-header" style="height: 20%">
-        <h4>Import Query</h4>
+      <div class="ka-modal-header">
+        <span>Import Query</span>
+        <div class="ka-close" ng-click="cancel()">&times;</div>
       </div>
-      <div class="modal-body" style="height: 50%">
+      <div class="ka-modal-body">
         <form action="/openspecimen/rest/ng/saved-queries/definition-file">
           <div class="form-group">
             <label>Select Query Definition File</label>
             <div style="position:relative;">
               <input id="uploadQueryDef" class="form-control" name="file" type="file" style="height: auto!important;">
-              <span id="queryDefFilename" style="position:absolute; top:10px; left: 110px; min-width: 150px; background: white;">No File Selected</span>
+              <span id="queryDefFilename" style="position:absolute; top:10px; left: 110px; min-width: 150px; background: white;">
+                No File Selected
+              </span>
             </div>
           </div>
         </form>
-      </div>
-      <div class="modal-footer" style="height: 20%">
-        <button class="btn btn-default" ng-click="cancel()">Cancel</button>
-        <button class="btn btn-primary" id="importQuery">Import</button>
+        <div class="ka-modal-footer">
+          <button class="btn ka-btn-text" ng-click="cancel()">Cancel</button>
+          <button class="btn btn-primary" id="importQuery">Import</button>
+        </div>
       </div>
     </script>
       
     <script type="text/ng-template" id="save-query.html">
-      <div class="modal-header" style="height: 10%">
-        <h4>Save Query</h4>
+      <div class="ka-modal-header">
+        <span>Save Query</span>
+        <div class="ka-close" ng-click="cancel()">&times;</div>
       </div>
-      <div class="modal-body" style="height: 75%;overflow:auto;">
+      <div class="ka-modal-body">
         <div class="form-group">
           <label>Title</label>
           <input class="form-control" ng-model="modalData.title" type="text">
         </div>       
-      </div>
-      <div class="modal-footer" style="height: 12%">
-        <button class="btn btn-default" ng-click="cancel()">Cancel</button>
-        <button class="btn btn-primary" ng-click="save(true)" ng-if="modalData.id">Save a Copy</button>
-        <button class="btn btn-primary" ng-click="save(false)">Save</button>
+        <div class="ka-modal-footer">
+          <button class="btn ka-btn-text" ng-click="cancel()">Cancel</button>
+          <button class="btn ka-btn-secondary" ng-click="save(true)" ng-if="modalData.id">Save a Copy</button>
+          <button class="btn btn-primary" ng-click="save(false)">Save</button>
+        </div>
       </div>
     </script>
 
     <script type="text/ng-template" id="addedit-query-folder.html">
-      <div class="modal-header" style="height: 10%;">
-        <h4 ng-if="!modalData.folderId">New Query Folder</h3>
-        <h4 ng-if="modalData.folderId">Update Query Folder</h3>
+      <div class="ka-modal-header">
+        <span ng-if="!modalData.folderId">New Query Folder</span>
+        <span ng-if="modalData.folderId">Update Query Folder</span>
+        <div class="ka-close" ng-click="cancel()">&times;</div>
       </div>
-      <div class="modal-body" style="height: 75%;">
+
+      <div class="ka-modal-body">
         <div class="form-group">
           <label>Folder Name</label>
           <input type="text" ng-model="modalData.folderName" class="form-control" placeholder="Query Folder Name">
         </div>
+
         <div> <label>Queries</label> </div>
-        <div style="height:45%; margin-bottom: 20px; width: 100%; overflow:auto;">
+        <div style="height: 180px; margin-bottom: 20px; width: 100%; overflow:auto;">
           <table class="table" ng-if="modalData.queries.length > 0">
             <tbody>
               <tr ng-repeat="query in modalData.queries">
@@ -1423,54 +1428,59 @@
             No queries selected. Please select at least one query.
           </span>
         </div>
+
         <div class="checkbox">
           <label>
             <input type="checkbox" ng-checked="modalData.sharedWithAll" ng-model="modalData.sharedWithAll"> 
             Share folder with all present and future users   
           </label>
         </div>
-        <div style="height: 30%;" ng-if="modalData.sharedWithAll != 1 && modalData.sharedWithAll != true">
+
+        <div style="height: 100px;" ng-if="modalData.sharedWithAll != 1 && modalData.sharedWithAll != true">
           <label>Share folder with following users</label>
-          <div style="height: 80%; overflow: auto;">
+          <div style="height: 80px; overflow: auto;">
             <ka-search ng-model="modalData.sharedWith" data-placeholder="Users"
               on-initselectionfn="initSelectedUsers" on-query="searchUser" multiple
               on-select="onUserSelect(selected)" style="width:100%;">
             </ka-search>
           </div>
         </div>
+
+        <div class="ka-modal-footer">
+           <button class="btn ka-btn-text" ng-click="cancel()">Cancel</button>
+           <button class="btn btn-primary" 
+             ng-disabled="modalData.queries.length == 0 || !modalData.folderName" 
+             ng-if="!modalData.folderId" 
+             ng-click="saveOrUpdateFolder()">Create</button>
+           <button class="btn btn-primary" 
+             ng-disabled="modalData.queries.length == 0 || !modalData.folderName" 
+             ng-if="modalData.folderId" 
+             ng-click="saveOrUpdateFolder()">Update</button>
+        </div> 
       </div>
-      <div class="modal-footer" style="height:12%;">
-         <button class="btn btn-default" ng-click="cancel()">Cancel</button>
-         <button class="btn btn-primary" 
-           ng-disabled="modalData.queries.length == 0 || !modalData.folderName" 
-           ng-if="!modalData.folderId" 
-           ng-click="saveOrUpdateFolder()">Create</button>
-         <button class="btn btn-primary" 
-           ng-disabled="modalData.queries.length == 0 || !modalData.folderName" 
-           ng-if="modalData.folderId" 
-           ng-click="saveOrUpdateFolder()">Update</button>
-      </div> 
     </script>
 
     <script type="text/ng-template" id="view-query-sql.html">
-      <div class="modal-header">
-        <h3 class="modal-title">Generated SQL</h3> 
+      <div class="ka-modal-header">
+        <span>Generated SQL</span> 
+        <div class="ka-close" ng-click="close()">&times;</div>
       </div>
-      <div class="modal-body" style="height: 220px; overflow: auto;">
-        <div style="text-align: justify;">
+      <div class="ka-modal-body">
+        <div style="height: 360px; overflow: auto; text-align: justify;">
           <code style="white-space: normal;">{{auditLog.sql}}</code>
         </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-primary" ng-click="close()">Close</button>
+        <div class="ka-modal-footer">
+          <button class="btn btn-primary" ng-click="close()">Close</button>
+        </div>
       </div>
     </script>
 
     <script type="text/ng-template" id="view-audit-logs.html">
-      <div class="modal-header" style="height: 10%">
-        <h3 class="modal-title">Audit Log of #{{query.id}}</h3> 
+      <div class="ka-modal-header">
+        <span>Audit Log of #{{query.id}}</span> 
+        <div class="ka-close" ng-click="close()">&times;</div>
       </div>
-      <div class="modal-body" style="height: 75%">
+      <div class="ka-modal-body">
         <table class="table" style="margin-bottom: 0px;">
           <thead>
             <tr>
@@ -1480,7 +1490,7 @@
             </tr>
           </thead>
         </table>
-        <div style="height:90%; width: 100%; overflow:auto;">
+        <div style="height:300px; width: 100%; overflow:auto;">
           <table class="table list">
             <tbody>
               <tr ng-repeat="auditLog in auditLogs">
@@ -1491,69 +1501,47 @@
             </tbody>
           </table>
         </div>
-      </div>
-      <div class="modal-footer" style="height:12%">
-        <button class="btn btn-primary" ng-click="close()">Close</button>
+        <div class="ka-modal-footer">
+          <button class="btn btn-primary" ng-click="close()">Close</button>
+        </div>
       </div>
     </script>
 
     <script type="text/ng-template" id="delete-query-confirm.html">
-      <div class="modal-header">
-        <h4 class="modal-title">Delete Query</h4>
+      <div class="ka-modal-header">
+        <span>Delete Query</span>
+        <div class="ka-close" ng-click="cancel()">&times;</div>
       </div>
-      <div class="modal-body">
+      <div class="ka-modal-body">
         <p> Are you sure you want to delete following query? </p>
         <p> <i> {{query.title}} </i> </p>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-default" ng-click="cancel()">No</button>
-        <button class="btn btn-primary" ng-click="ok()">Yes</button>
+
+        <div class="ka-modal-footer">
+          <button class="btn ka-btn-secondary" ng-click="cancel()">No</button>
+          <button class="btn btn-primary" ng-click="ok()">Yes</button>
+        </div>
       </div>
     </script>
 
     <script type="text/ng-template" id="create-specimen-list.html">
-      <div class="modal-header" style="height: 25%;">
-        <h4>New Specimen List</h3>
+      <div class="ka-modal-header">
+        <span>New Specimen List</span>
+        <div class="ka-close" ng-click="cancel()">&times;</div>
       </div>
-      <div class="modal-body">
+      <div class="ka-modal-body">
         <div>
           <p>Please enter a new specimen list name:</p>
           <input type="text" ng-model="specimenList.name" class="form-control" placeholder="Specimen List Name">
         </div>
+        <div class="ka-modal-footer">
+          <button class="btn ka-btn-text" ng-click="cancel()">Cancel</button>
+          <button class="btn btn-primary" ng-disabled="!specimenList.name" ng-click="saveSpecimenList()">Create</button>
+        </div> 
       </div>
-      <div class="modal-footer" style="height: 25%;">
-         <button class="btn btn-default" ng-click="cancel()">Cancel</button>
-         <button class="btn btn-primary" ng-disabled="!specimenList.name" ng-click="saveSpecimenList()">Create</button>
-      </div> 
     </script>
 
-    <script type="text/ng-template" id="aggregate-tmpl.html">
-      <div>
-        {{node.val}}
-        <span ng-if="node.aggFn">({{node.desc ? node.desc : node.aggFn}})</span>
-        <div ng-if="node.type == 'field' && hover"> 
-          <label class="radio-inline">
-            <input type="radio" name="aggregateFn" ng-model="node.aggFn" value="count" ng-change="node.checked=true"> Count
-          </label>
-          <label class="radio-inline" ng-if="node.dataType == 'INTEGER' || node.dataType == 'FLOAT'">
-            <input type="radio" name="aggregateFn" ng-model="node.aggFn" value="sum" ng-change="node.checked=true"> Sum
-          </label>
-          <label class="radio-inline" ng-if="node.dataType == 'INTEGER' || node.dataType == 'FLOAT'">
-            <input type="radio" name="aggregateFn" ng-model="node.aggFn" value="avg" ng-change="node.checked=true"> Average
-          </label>
-          <label class="radio-inline" ng-if="node.dataType == 'INTEGER' || node.dataType == 'FLOAT' || node.dataType == 'DATE'">
-            <input type="radio" name="aggregateFn" ng-model="node.aggFn" value="min" ng-change="node.checked=true"> Min
-          </label>
-          <label class="radio-inline" ng-if="node.dataType == 'INTEGER' || node.dataType == 'FLOAT' || node.dataType == 'DATE'">
-            <input type="radio" name="aggregateFn" ng-model="node.aggFn" value="max" ng-change="node.checked=true"> Max
-          </label>
-          <label class="radio-inline" ng-if="node.aggFn">
-            <input type="radio" name="aggregateFn" ng-model="node.aggFn" value=""> Reset
-          </label> 
-          
-          <input class="form-control" ng-if="node.aggFn" ng-model="node.desc">
-        </div>
-      </div>
+    <script type="text/ng-template" id="field-tmpl.html">
+      <div> {{node.val}} </div>
     </script>
 
     <script type="text/ng-template" id="count-tmpl.html">
@@ -1602,6 +1590,109 @@
       </div>
     </script>
 
+    <script type="text/ng-template" id="pivot-table.html">
+      <div style="margin-top: 10px; height: 380px; overflow: auto">
+        <div class="form-group">
+          <label class="checkbox-inline">
+            <input type="checkbox" ng-model="pivotTable" 
+              ng-checked="reporting.type == 'crosstab'" ng-change="createPivotTable(pivotTable)"> 
+            Create Pivot Table
+          </label>
+        </div>
+
+        <div ng-if="reporting.type == 'crosstab'">
+          <div class="form-group">
+            <label for="group-rows-by">Row Fields</label>
+            <ka-select id="group-rows-by" style="width: 100%;"
+              data-placeholder="Select fields to use for grouping rows"
+              options="groupRowsBy"
+              on-select="onGroupRowsByChange"
+              multiple selected="reporting.params.groupRowsBy">
+            </ka-select>
+          </div>
+
+          <div class="form-group">
+            <label for="group-col-by">Column Field</label>
+            <ka-select id="group-col-by" style="width: 100%;"
+              data-placeholder="Select field to use for grouping columns"
+              options="groupColBy"
+              on-select="onGroupColByChange"
+              selected="reporting.params.groupColBy">
+            </ka-select>
+          </div>
+
+          <div class="form-group">
+            <label for="summary-value">Value Field</label>
+            <ka-select id="summary-value" style="width: 100%;"
+              data-placeholder="Select summary field"
+              options="summaryFields"
+              on-select="onSummaryFieldChange"
+              multiple selected="reporting.params.summaryFields">
+            </ka-select>
+          </div>
+
+          <div class="form-group">
+            <label class="checkbox-inline">
+              <input type="checkbox" ng-model="reporting.params.includeSubTotals" 
+                ng-checked="reporting.params.includeSubTotals">
+              Include sub-totals
+            </label>
+          </div>
+        </div>
+      </div>
+    </script>
+
+    <script type="text/ng-template" id="aggregate-functions.html">
+      <div style="margin-top: 20px;">
+        <div class="row">
+          <div class="col-xs-6">
+            <label>Selected Fields</label>
+          </div>
+
+          <div class="col-xs-6">
+            <label>Functions</label>
+          </div> 
+        </div>
+               
+        <div class="row">
+          <div class="col-xs-6" style="height: 340px;">
+            <div class="list-group ka-list-box">
+              <a class="list-group-item ellipsis" 
+                ng-class="{'active': currField.name == selectedField.name}"
+                ng-repeat="selectedField in selectedFields"
+                ng-click="showCurrField(selectedField)">
+                <span class="badge">
+                  {{(selectedField.aggFns | filter:{opted: true}).length}}
+                </span>
+                {{selectedField.label}}
+              </a>
+            </div>
+          </div>
+
+          <div class="col-xs-6" ng-if="!currField.name">
+            Select field in list on the left side panel
+          </div>
+
+          <div class="col-xs-6" ng-if="currField.name">
+            <div class="row form-group" ng-repeat="fn in currField.aggFns">
+              <div class="col-xs-3">
+                <label class="checkbox-inline" style="margin-top: 7px">
+                  <input type="checkbox" 
+                    ng-model="fn.opted" 
+                    ng-checked="fn.opted"
+                    ng-change="toggleAggFn(currField, fn)"> 
+                  {{fn.label}}
+                </label>
+              </div>
+              <div class="col-xs-9" ng-if="fn.opted">
+                <input type="text" class="form-control" ng-model="fn.desc">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </script>
+
     <script>
       var query = query || {};
       query.global = query.global || {};
@@ -1612,6 +1703,7 @@
 
     <script src="../js/utility.js" type="text/javascript"></script>
     <script src="../js/wrapper.js" type="text/javascript"></script>
+    <script src="../js/pivottable.js" type="text/javascript"></script>
     <script src="../js/filters.js" type="text/javascript"></script>
     <script src="../js/services.js" type="text/javascript"></script>
     <script src="../js/forms-service.js" type="text/javascript"></script>

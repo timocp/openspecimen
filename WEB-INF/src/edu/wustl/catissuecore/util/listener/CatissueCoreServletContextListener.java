@@ -35,6 +35,8 @@ import com.krishagni.catissueplus.core.de.ui.SiteControlFactory;
 import com.krishagni.catissueplus.core.de.ui.SiteFieldMapper;
 import com.krishagni.catissueplus.core.de.ui.UserControlFactory;
 import com.krishagni.catissueplus.core.de.ui.UserFieldMapper;
+import com.krishagni.catissueplus.core.notification.schedular.ExternalAppFailNotificationSchedular;
+import com.krishagni.catissueplus.core.notification.schedular.ExternalAppNotificationSchedular;
 
 import edu.common.dynamicextensions.domain.nui.factory.ControlManager;
 import edu.common.dynamicextensions.nutility.BOUtil;
@@ -152,6 +154,9 @@ public class CatissueCoreServletContextListener implements ServletContextListene
 			
             QuartzSchedulerJobUtil.scheduleQuartzSchedulerJob();
             //QueryDataExportService.initialize();
+            
+            ExternalAppNotificationSchedular.scheduleExtAppNotifSchedulerJob();
+            ExternalAppFailNotificationSchedular.scheduleExtAppFailNotifSchedulerJob();
 
 			CSDProperties.getInstance().setUserContextProvider(new CatissueUserContextProviderImpl());
 			
@@ -162,7 +167,7 @@ public class CatissueCoreServletContextListener implements ServletContextListene
             InitialContext ic = new InitialContext();
 			DataSource ds = (DataSource)ic.lookup(JNDI_NAME);
 			String dateFomat = CommonServiceLocator.getInstance().getDatePattern();
-			String timeFormat = CommonServiceLocator.getInstance().getTimePattern();
+			String timeFormat = CommonServiceLocator.getInstance().getTimePattern(); 
 			
 			String dir = new StringBuilder(XMLPropertyHandler.getValue("appserver.home.dir")).append(File.separator)
 					.append("os-data").append(File.separator)
@@ -175,7 +180,7 @@ public class CatissueCoreServletContextListener implements ServletContextListene
 				}
 			}
 						
-			DEApp.init(ds, dir, dateFomat, timeFormat);
+			DEApp.init(ds, dir, dateFomat,timeFormat);
 			initQueryPathsConfig();            
 			registerFancyControls();
 			

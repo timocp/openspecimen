@@ -38,6 +38,11 @@ public class SpecimenDTO
 	private Collection<ExternalIdentifierDTO> externalIdentifiers;
 	private Collection<BiohazardDTO> bioHazards;
 	private String biohazardType;
+	private Long userId;
+	private Date disposalDate;
+	private String disposalHours;
+	private String disposalMins;
+	
 private boolean isToPrintLabel;
 
 private String asigID;
@@ -442,7 +447,38 @@ private String siteName;
 	public void setRequirementId(Long requirementId) {
 		this.requirementId = requirementId;
 	}
+	
+	public Long getUserId() {
+		return userId;
+	}
+	
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+	
+	public Date getDisposalDate() {
+		return disposalDate;
+	}
 
+	public void setDisposalDate(Date disposalDate) {
+		this.disposalDate = disposalDate;
+	}
+	
+	public String getDisposalHours() {
+		return disposalHours;
+	}
+
+	public void setDisposalHours(String disposalHours) {
+		this.disposalHours = disposalHours;
+	}
+
+	public String getDisposalMins() {
+		return disposalMins;
+	}
+	
+	public void setDisposalMins(String disposalMins) {
+		this.disposalMins = disposalMins;
+	}
 
 }
  

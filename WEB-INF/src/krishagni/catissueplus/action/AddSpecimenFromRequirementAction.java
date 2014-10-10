@@ -2,6 +2,7 @@
 package krishagni.catissueplus.action;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -21,6 +22,7 @@ import org.apache.struts.action.ActionMapping;
 import com.google.gson.Gson;
 
 import edu.wustl.catissuecore.action.CatissueBaseAction;
+import edu.wustl.catissuecore.bizlogic.UserBizLogic;
 import edu.wustl.catissuecore.dao.CPRDAO;
 import edu.wustl.catissuecore.domain.Biohazard;
 import edu.wustl.catissuecore.domain.CollectionProtocolRegistration;
@@ -101,6 +103,13 @@ public class AddSpecimenFromRequirementAction extends CatissueBaseAction {
 			specimenDTO.setTissueSite(requirement.getTissueSite());
 			specimenDTO.setClassName(requirement.getSpecimenClass());
 			specimenDTO.setType(requirement.getSpecimenType());
+			specimenDTO.setUserId(((SessionDataBean)request.getSession().getAttribute(Constants.SESSION_DATA)).getUserId());
+			Calendar cal = Calendar.getInstance();
+			specimenDTO.setDisposalDate(cal.getTime());
+			specimenDTO.setDisposalHours(Integer.toString(cal
+					.get(Calendar.HOUR_OF_DAY)));
+			specimenDTO.setDisposalMins(Integer.toString(cal
+					.get(Calendar.MINUTE)));
 			CPRDAO cprDao = new CPRDAO();
 			CollectionProtocolRegistration cpr = cprDao.getCPRByCPAndParticipantId(hibernateDao,specimenDTO.getParticipantID() , specimenDTO.getCpId());
 			specimenDTO.setAsigID(cpr.getProtocolParticipantIdentifier());
@@ -164,6 +173,17 @@ public class AddSpecimenFromRequirementAction extends CatissueBaseAction {
 			String biohazardTypeNameListJSON = gson.toJson(biohazardTypeNameList);
 			request.setAttribute(Constants.BIOHAZARD_TYPE_NAME_LIST_JSON, biohazardTypeNameListJSON);
 			request.setAttribute(Constants.OPERATION, Constants.ADD);
+			UserBizLogic userBizLogic=new UserBizLogic();
+			final List<NameValueBean> users=userBizLogic.getUsersNameValueList(null);
+			users.add(new NameValueBean(Constants.SELECT_OPTION, String.valueOf(Constants.SELECT_OPTION_VALUE)));
+			request.setAttribute(Constants.USERLIST, users);
+			
+		// Sets the hourList attribute to be used in the Add/Edit
+			// FrozenEventParameters Page.
+			request.setAttribute(Constants.HOUR_LIST, Constants.HOUR_ARRAY);
+			// Sets the minutesList attribute to be used in the Add/Edit
+			// FrozenEventParameters Page.
+			request.setAttribute(Constants.MINUTES_LIST, Constants.MINUTES_ARRAY);
 			
 		}
 		finally {

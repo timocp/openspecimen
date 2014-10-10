@@ -9,8 +9,8 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 
 import com.krishagni.catissueplus.core.administrative.domain.Password;
@@ -111,12 +111,10 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
 
 	private static final String GET_USERS_BY_ID = FQN + ".getUsersById";
 	
-	private static final String GET_ALL_USERS = FQN + ".getAllUsers";
-	
 	private static final String GET_ACTIVE_USER = FQN+ ".getActiveUser";
 
 	@Override
-	public List<UserSummary> getAllUsers(int startAt, int maxRecords,
+	public List<UserSummary> getAllUsers(int startAt, int maxRecords, List<String> sortBy,
 			String ... searchString) {
 		Criteria criteria = sessionFactory.getCurrentSession()
 				.createCriteria(User.class, "u")
@@ -127,7 +125,15 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
 		
 		addSearchConditions(criteria, searchString);
 		addProjectionFields(criteria);
-		criteria.addOrder(Order.desc("u.id"));
+		
+		for(String sort : sortBy ){
+			if(sort.startsWith("-")){
+				criteria.addOrder(Property.forName(sort.substring(1)).desc());
+			} else {
+				criteria.addOrder(Property.forName(sort).asc());
+			}
+		}
+
 		addLimits(criteria, startAt, maxRecords);
 		return getUsers(criteria);
 	}

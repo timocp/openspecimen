@@ -9,10 +9,12 @@ import org.apache.commons.lang.StringUtils;
 import com.krishagni.catissueplus.core.de.domain.Filter.Op;
 import com.krishagni.catissueplus.core.de.domain.QueryExpressionNode.LogicalOp;
 import com.krishagni.catissueplus.core.de.domain.QueryExpressionNode.Parenthesis;
+import com.krishagni.catissueplus.core.de.domain.SelectField.Function;
 
 import edu.common.dynamicextensions.domain.nui.Container;
 import edu.common.dynamicextensions.domain.nui.Control;
 import edu.common.dynamicextensions.domain.nui.DataType;
+import edu.common.dynamicextensions.domain.nui.LookupControl;
 
 public class AqlBuilder {
 	
@@ -48,20 +50,29 @@ public class AqlBuilder {
 				}
 				
 				select.append(elem).append(", ");
-			} else if (field instanceof AggregateField) {
-				AggregateField aggField = (AggregateField)field;
+			} else if (field instanceof SelectField) {
+				SelectField aggField = (SelectField)field;
 				String fieldName = aggField.getName();
 				
-				if (aggField.getAggFn() == null) {
+				if (aggField.getAggFns() == null || aggField.getAggFns().isEmpty()) {
 					select.append(fieldName).append(", ");
 				} else {
-					String fnExpr = aggField.getAggFn() + "(";
-					if (aggField.getAggFn().equals("count")) {
-						fnExpr += "distinct ";
+					StringBuilder fnExpr = new StringBuilder("");
+					for (Function fn : aggField.getAggFns()) {
+						if (fnExpr.length() > 0) {
+							fnExpr.append(", ");
+						}
+						
+						if (fn.getName().equals("count")) {
+							fnExpr.append("count(distinct ");
+						} else {
+							fnExpr.append(fn.getName()).append("(");
+						}
+						
+						fnExpr.append(fieldName).append(") as \"").append(fn.getDesc()).append(" \"");
 					}
 					
-					fnExpr += fieldName + ") as \"" + aggField.getLabel() + " \"";
-					select.append(fnExpr).append(", ");
+					select.append(fnExpr.toString()).append(", ");
 				}				
 			}							
 		}
@@ -149,12 +160,14 @@ public class AqlBuilder {
 		}
 		
 		ctrl = form.getControlByUdn(ctrlName, "\\.");				
-		String[] values = (String[])Arrays.copyOf(filter.getValues(), filter.getValues().length);
-		if (ctrl.getDataType() == DataType.STRING || ctrl.getDataType() == DataType.DATE) {
-			for (int i = 0; i < values.length; ++i) {
-				values[i] = "\"" + values[i] + "\"";   
-			}
-		} 
+
+		DataType type = ctrl.getDataType();
+		if (ctrl instanceof LookupControl) {
+			type = ((LookupControl)ctrl).getValueType();
+		}
+		
+		String[] values = (String[])Arrays.copyOf(filter.getValues(), filter.getValues().length);		
+		quoteStrings(type, values);
 		
 		String value = values[0];
 		if (filter.getOp() == Op.IN || filter.getOp() == Op.NOT_IN) {
@@ -164,6 +177,16 @@ public class AqlBuilder {
 		}
 		
 		return filterExpr.append(value).toString();
+	}
+	
+	private void quoteStrings(DataType type, String[] values) {
+		if (type != DataType.STRING && type != DataType.DATE) {
+			return;
+		}
+		
+		for (int i = 0; i < values.length; ++i) {
+			values[i] = "\"" + values[i] + "\"";   
+		}		
 	}
 	
 	private String join(String[] values) {

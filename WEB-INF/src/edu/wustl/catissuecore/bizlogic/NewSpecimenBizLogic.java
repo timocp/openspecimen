@@ -748,10 +748,14 @@ public class NewSpecimenBizLogic extends CatissueDefaultBizLogic {
 					this.setDefaultEventsToSpecimen(dao, specimen, sessionDataBean);
 				}
 			}
-			else {
-				if (specimen.getSpecimenEventCollection() == null || specimen.getSpecimenEventCollection().isEmpty()) {
-					specimen.setSpecimenEventCollection(this.populateDeriveSpecimenEventCollection(parentSpecimen, specimen));
-				}
+			else
+			{
+//				if (specimen.getSpecimenEventCollection() == null
+//						|| specimen.getSpecimenEventCollection().isEmpty())
+//				{
+//					specimen.setSpecimenEventCollection(this.populateDeriveSpecimenEventCollection(
+//							parentSpecimen, specimen));
+//				}
 			}
 		}
 	}
@@ -1731,10 +1735,13 @@ public class NewSpecimenBizLogic extends CatissueDefaultBizLogic {
 					persistentSpecimen.setDefaultSpecimenEventCollection(sessionDataBean.getUserId());
 				}
 			}
-			else if (persistentSpecimen.getParentSpecimen() != null) {
-				persistentSpecimen.setSpecimenEventCollection(this.populateDeriveSpecimenEventCollection(
-						(Specimen) persistentSpecimen.getParentSpecimen(), persistentSpecimen));
-			}
+//			else if (persistentSpecimen.getParentSpecimen() != null)
+//			{
+//				persistentSpecimen.setSpecimenEventCollection(this
+//						.populateDeriveSpecimenEventCollection(
+//								(Specimen) persistentSpecimen.getParentSpecimen(),
+//								persistentSpecimen));
+//			}
 			this.setSpecimenCreatedOnDate(persistentSpecimen);
 		}
 	}
@@ -3121,24 +3128,29 @@ public class NewSpecimenBizLogic extends CatissueDefaultBizLogic {
 	private Set<AbstractDomainObject> populateDeriveSpecimenEventCollection(Specimen parentSpecimen,
 			Specimen deriveSpecimen) {
 		final Set<AbstractDomainObject> deriveEventCollection = new HashSet<AbstractDomainObject>();
-		final Set<SpecimenEventParameters> parentSpecimeneventCollection = (Set<SpecimenEventParameters>) parentSpecimen
-				.getSpecimenEventCollection();
-		SpecimenEventParameters deriveSpecimenEventParameters = null;
-		try {
-			if (parentSpecimeneventCollection != null
-					&& (deriveSpecimen.getSpecimenEventCollection() == null || deriveSpecimen.getSpecimenEventCollection()
-							.isEmpty())) {
-				for (final SpecimenEventParameters specimenEventParameters2 : parentSpecimeneventCollection) {
-					deriveSpecimenEventParameters = (SpecimenEventParameters) specimenEventParameters2.clone();
-					deriveSpecimenEventParameters.setId(null);
-					deriveSpecimenEventParameters.setSpecimen(deriveSpecimen);
-					deriveEventCollection.add(deriveSpecimenEventParameters);
-				}
-			}
-		}
-		catch (final CloneNotSupportedException exception) {
-			LOGGER.error(exception.getMessage(), exception);
-		}
+//		final Set<SpecimenEventParameters> parentSpecimeneventCollection = (Set<SpecimenEventParameters>) parentSpecimen
+//				.getSpecimenEventCollection();
+//		SpecimenEventParameters deriveSpecimenEventParameters = null;
+//		try
+//		{
+//			if (parentSpecimeneventCollection != null
+//					&& (deriveSpecimen.getSpecimenEventCollection() == null || deriveSpecimen
+//							.getSpecimenEventCollection().isEmpty()))
+//			{
+//				for (final SpecimenEventParameters specimenEventParameters2 : parentSpecimeneventCollection)
+//				{
+//					deriveSpecimenEventParameters = (SpecimenEventParameters) specimenEventParameters2
+//							.clone();
+//					deriveSpecimenEventParameters.setId(null);
+//					deriveSpecimenEventParameters.setSpecimen(deriveSpecimen);
+//					deriveEventCollection.add(deriveSpecimenEventParameters);
+//				}
+//			}
+//		}
+//		catch (final CloneNotSupportedException exception)
+//		{
+//			LOGGER.error(exception.getMessage(), exception);
+//		}
 		return deriveEventCollection;
 	}
 

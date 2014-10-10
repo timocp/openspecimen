@@ -1,6 +1,6 @@
 
 angular.module("plus.directives", [])
-  .directive("kaSelect", function() {
+  .directive("kaSelect", function() { // TODO: Deprecated
     return {
       restrict: "E",
       replace: "true",
@@ -46,8 +46,121 @@ angular.module("plus.directives", [])
     };
   })
 
+  .directive('kaLookup', function($timeout) { 
+    var formatNames = function(format, objs) {
+      var result = [];
+      for (var i = 0; i < objs.length; ++i) {
+        result.push(formatName(format, objs[i]));
+      }
 
-  .directive('kaSearch', function($timeout) {
+      return result;
+    };
+
+    var formatName = function(format, obj) {
+      if (!obj) {
+        return "";
+      }
+
+      if (obj.$kaLookupVal) {
+        return obj.$kaLookupVal;
+      }
+
+      return format.replace(
+        /{{(\w+)}}/g, 
+        function(all, s) {
+          if (obj) {
+            return obj[s];
+          } 
+
+          return "undefined";
+        }
+      );
+    };
+
+    var render = function(scope, element, multiple) {
+      var opts = scope.opts;
+
+      element.select2('destroy');
+
+      element.select2({
+        placeholder: scope.placeholder,
+
+        minimumInputLength: 3,
+
+        multiple: multiple ? true : false,
+
+        ajax: {
+          url: '/openspecimen/' + opts.apiUrl,
+
+          dataType: 'json',
+
+          data: function(term, page) {
+            var obj = {};
+            obj[opts.searchTermName] = term;
+            return obj;                
+          },
+
+          results: function(data, page) {
+            var results = data;
+            if (opts.respField) {
+              results = data[opts.respField];
+            }
+
+            return {results: results};
+          }
+        },
+
+        initSelection: function(el, callback) {
+        },
+
+        formatResult: function(obj) {
+          return formatName(opts.resultFormat, obj);
+        },
+
+        formatSelection: function(obj) {
+          return formatName(opts.resultFormat, obj);
+        }                         
+      }).change(function(evt) {
+        $timeout(function() { 
+          var val = element.select2('data');
+          if (val instanceof Array) {
+            scope.selectedOpt = formatNames(opts.resultFormat, val);
+          } else {
+            scope.selectedOpt = formatName(opts.resultFormat, val); 
+          }
+        });
+      });
+
+      if (scope.selectedOpt instanceof Array) {
+        var items = [];
+        for (var i = 0; i < scope.selectedOpt.length; ++i) {
+          items.push({id: i, $kaLookupVal: scope.selectedOpt[i]});
+        }
+
+        element.select2('data', items);
+      } else if (scope.selectedOpt) {
+        element.select2('data', {$kaLookupVal: scope.selectedOpt});
+      }
+    };
+
+    return {
+      restrict: "A",
+
+      scope: {
+        opts : "=",
+        selectedOpt: "=",
+        placeholder: '@'
+      },
+
+      link: function(scope, element, attrs) {
+        scope.$watch('opts', function(opts) {
+          render(scope, element, attrs.multiple);
+        });
+      }
+    };
+  })
+
+  .directive('kaSearch', function($timeout) { // TODO: Deprecated
     return {
       restrict: "E",
       replace : "true",
@@ -103,7 +216,8 @@ angular.module("plus.directives", [])
         });
       }
     }
-})
+  })
+
   .directive("kaDraggable", function() {
     return {
       restrict: "A",
@@ -442,6 +556,143 @@ angular.module("plus.directives", [])
         scope.removeTag = function(index) {
           scope.tags.splice(index, 1);
         };
+      }
+    };
+  })
+
+  .directive('kaPivotTable', function() {
+    return {
+      restrict: 'A',
+      link: function(scope, element, attrs) {
+        scope.$watch(attrs.kaPivotTable, function(newOpts) {
+          element.children().remove();
+          
+          if (newOpts) {
+            element.append(new PivotTable(newOpts).render()); 
+          }
+        }, true);
+      }
+    };
+  })
+
+  .directive('kaWizard', function() {
+    return {
+      restrict: 'A',
+
+      transclude: true,
+
+      controller: function($scope) {
+        $scope.ctrl = this;
+        $scope.steps = [];
+
+        this.addStep = function(step) {
+          angular.extend(step, {selected: false, finished: false});
+          $scope.steps.push(step);
+        };
+
+        this.previous = function() {
+          this.forward = false;
+          if ($scope.selectedStep == 0) {
+            return false;
+          }
+
+          if ($scope.steps[$scope.selectedStep].onFinish() &&
+              !$scope.steps[$scope.selectedStep].onFinish()(this.forward)) {
+            return false;
+          }
+
+          $scope.selectedStep--;
+          $scope.steps[$scope.selectedStep + 1].selected = false;
+          $scope.steps[$scope.selectedStep].selected = true;
+          $scope.steps[$scope.selectedStep].finished = false;
+          return true;
+        };
+
+        this.next = function() {
+          this.forward = true;
+          if ($scope.steps[$scope.selectedStep].onFinish() &&
+              !$scope.steps[$scope.selectedStep].onFinish()(this.forward)) {
+            return false;
+          }
+
+          if ($scope.selectedStep == $scope.steps.length - 1) {
+            return true; // should it return true or false; // earlier it was false
+          }
+
+          $scope.selectedStep++;
+          $scope.steps[$scope.selectedStep - 1].finished = true;
+          $scope.steps[$scope.selectedStep - 1].selected = false;
+          $scope.steps[$scope.selectedStep].selected= true;
+          return true;
+        };
+
+        this.getCurrentStep = function() {
+          return $scope.selectedStep ;
+        };
+
+        $scope.gotoStep = function(step) {
+          if ($scope.selectedStep == step) {
+            return;
+          }
+
+          var fn = undefined;
+          var numSteps = undefined;
+          if (step > $scope.selectedStep) {
+            numSteps = step - $scope.selectedStep;
+            fn = $scope.ctrl.next;
+          } else {
+            numSteps = $scope.selectedStep - step;
+            fn = $scope.ctrl.previous;
+          }
+
+          for (var i = 0; i < numSteps; ++i) {
+            if(!fn()) {
+              break;
+            }
+          }
+        };
+
+        this.isFirstStep = function() {
+          return $scope.selectedStep == 0;
+        };
+
+        this.isLastStep = function() {
+          return $scope.selectedStep == $scope.steps.length - 1;
+        };
+      },
+
+      compile: function(element, attributes, transclude) {
+        return {
+          pre: function (scope, element, attrs, controller) {
+            scope[attrs.kaWizard] = controller;
+            // scope['dfTemplate'] = (attrs.dfTemplate == undefined ? 'df_std_wizard.html' : attrs.dfTemplate);
+          },
+
+          post: function (scope, element, attributes, controller) {
+            scope.selectedStep = 0;
+            scope.steps[0].selected = true;
+          }
+        }
+      },
+
+      templateUrl: 'templates/wizard-template.html'
+    };
+  })
+
+  .directive('kaWizardStep', function() {
+    return {
+      restrict: 'E',
+      require : '^kaWizard',
+      template: '<div ng-transclude ng-show="selected"></div>',
+      transclude: true,
+      replace : true,
+      scope : {
+        title : '@',
+        onFinish : '&'
+      },
+
+      link: function(scope, element, attrs, wizardCtrl) {
+        wizardCtrl.addStep(scope);
       }
     };
   });

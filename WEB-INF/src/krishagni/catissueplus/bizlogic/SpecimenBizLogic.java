@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.axis.utils.StringUtils;
+
 import krishagni.catissueplus.Exception.CatissueException;
 import krishagni.catissueplus.Exception.SpecimenErrorCodeEnum;
 import krishagni.catissueplus.dao.SCGDAO;
@@ -423,9 +425,10 @@ public class SpecimenBizLogic {
 						sessionDataBean.getUserId(), specimen);
 			}
 		}
-		else {
-			specimen.setSpecimenEventCollection(this.populateDeriveSpecimenEventCollection(parentSpecimen, specimen));
-		}
+//		else
+//		{
+//			specimen.setSpecimenEventCollection(this.populateDeriveSpecimenEventCollection(parentSpecimen, specimen));
+//		}
 	}
 
 	/**
@@ -434,28 +437,33 @@ public class SpecimenBizLogic {
 	 * @param deriveSpecimen Derived Specimen
 	 * @return Set<SpecimenEventParameters>
 	 */
-	private Set<SpecimenEventParameters> populateDeriveSpecimenEventCollection(Specimen parentSpecimen,
-			Specimen deriveSpecimen) {
-		final Set<SpecimenEventParameters> deriveEventCollection = new HashSet<SpecimenEventParameters>();
-		final Set<SpecimenEventParameters> parentSpecimeneventCollection = (Set<SpecimenEventParameters>) parentSpecimen
-				.getSpecimenEventCollection();
-		SpecimenEventParameters deriveSpecimenEventParameters = null;
-		if (parentSpecimeneventCollection != null) {
-			for (final SpecimenEventParameters specimenEventParameters : parentSpecimeneventCollection) {
-				try {
-					deriveSpecimenEventParameters = (SpecimenEventParameters) specimenEventParameters.clone();
-				}
-				catch (CloneNotSupportedException e) {
-					LOGGER.error(e);
-					throw new CatissueException(SpecimenErrorCodeEnum.INTERNAL_SERVER_ERROR.getCode());
-				}
-				deriveSpecimenEventParameters.setId(null);
-				deriveSpecimenEventParameters.setSpecimen(deriveSpecimen);
-				deriveEventCollection.add(deriveSpecimenEventParameters);
-			}
-		}
-		return deriveEventCollection;
-	}
+//	private Set<SpecimenEventParameters> populateDeriveSpecimenEventCollection(Specimen parentSpecimen,
+//			Specimen deriveSpecimen)
+//	{
+//		final Set<SpecimenEventParameters> deriveEventCollection = new HashSet<SpecimenEventParameters>();
+//		final Set<SpecimenEventParameters> parentSpecimeneventCollection = (Set<SpecimenEventParameters>) parentSpecimen
+//				.getSpecimenEventCollection();
+//		SpecimenEventParameters deriveSpecimenEventParameters = null;
+//		if (parentSpecimeneventCollection != null)
+//		{
+//			for (final SpecimenEventParameters specimenEventParameters : parentSpecimeneventCollection)
+//			{
+//				try
+//				{
+//					deriveSpecimenEventParameters = (SpecimenEventParameters) specimenEventParameters.clone();
+//				}
+//				catch (CloneNotSupportedException e)
+//				{
+//					LOGGER.error(e);
+//					throw new CatissueException(SpecimenErrorCodeEnum.INTERNAL_SERVER_ERROR.getCode());
+//				}
+//				deriveSpecimenEventParameters.setId(null);
+//				deriveSpecimenEventParameters.setSpecimen(deriveSpecimen);
+//				deriveEventCollection.add(deriveSpecimenEventParameters);
+//			}
+//		}
+//		return deriveEventCollection;
+//	}
 
 	/**
 	 * Validates the specimen DTO from UI.
@@ -1017,14 +1025,31 @@ public class SpecimenBizLogic {
 	}
 
 	public void disposeSpecimen(HibernateDAO hibernateDao, SessionDataBean sessionDataBean, Specimen specimen,
-			String specimenDisposalReason) throws DAOException, BizLogicException {
-		final DisposalEventParameters disposalEvent = this.createDisposeEvent(sessionDataBean, specimen,
-				specimenDisposalReason);
+			DisposalEventParameters disposalEvent) throws DAOException, BizLogicException
+	{
+		if(Status.ACTIVITY_STATUS_DISABLED.toString().equals(specimen.getActivityStatus())){
+			chkActiveChilds(hibernateDao,specimen.getId());
+		}
+		else{
+			specimen.setActivityStatus(Status.ACTIVITY_STATUS_CLOSED.toString());
+		}
+		
 		SpecimenDAO specimenDAO = new SpecimenDAO();
 		specimenDAO.populateEventWithUserId(disposalEvent, hibernateDao);
 		disposeEvent((DisposalEventParameters) disposalEvent, specimen, hibernateDao);
 		specimen.getSpecimenEventCollection().add(disposalEvent);
 		hibernateDao.insert(disposalEvent);
+	}
+
+	private void chkActiveChilds(HibernateDAO hibernateDao, Long id) throws DAOException, BizLogicException {
+		String hql = "select sp.id from "+Specimen.class.getName()+" sp where sp.parentSpecimen.id = "+id+" and sp.activityStatus != 'Disabled'"
+				+ " and sp.collectionStatus='Collected'";
+		List result = hibernateDao.executeQuery(hql, null);
+		if(result != null && result.size() >=1 ){
+			final ErrorKey errorKey = ErrorKey.getErrorKey("errors.specimen.contains.subspecimen");
+			throw new BizLogicException(errorKey, null, "");
+		}
+	
 	}
 
 	private void disposeEvent(DisposalEventParameters disposalEventParameters, Specimen specimen,
@@ -1037,7 +1062,7 @@ public class SpecimenBizLogic {
 		final SpecimenPosition prevPosition = specimen.getSpecimenPosition();
 		specimen.setSpecimenPosition(null);
 		specimen.setIsAvailable(Boolean.FALSE);
-		specimen.setActivityStatus(disposalEventParameters.getActivityStatus());
+//		specimen.setActivityStatus(disposalEventParameters.getActivityStatus());
 		hibernateDao.update(specimen);
 		if (prevPosition != null) {
 			hibernateDao.delete(prevPosition);
@@ -1053,7 +1078,7 @@ public class SpecimenBizLogic {
 		final User user = new User();
 		user.setId(sessionDataBean.getUserId());
 		disposalEvent.setUser(user);
-		disposalEvent.setActivityStatus(Status.ACTIVITY_STATUS_CLOSED.toString());
+		disposalEvent.setActivityStatus(specimen.getActivityStatus());
 		return disposalEvent;
 	}
 

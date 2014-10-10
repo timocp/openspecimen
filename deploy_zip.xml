@@ -1638,6 +1638,7 @@
     	<antcall target="upgrade_db_plusv3.2" />
     	<antcall target="upgrade_db_plusv3.3" />
         <antcall target="upgrade_db_plusv4.0" />
+    	<antcall target="upgrade_db_os_v1.1" />
         <antcall target="deleteFiles"/>
 
         <!--<delete dir="${de.temp.dir}" />
@@ -2123,6 +2124,7 @@
                         	<antcall target="upgrade_db_plusv3.2" />
                         	<antcall target="upgrade_db_plusv3.3" />
                         	<antcall target="upgrade_db_plusv4.0" />
+                        	<antcall target="upgrade_db_os_v1.1" />
                         </then>
                     <elseif>
                                     <equals arg1="${plus2.0.version}" arg2="${from.version}"/>
@@ -2133,6 +2135,7 @@
                                     	<antcall target="upgrade_db_plusv3.2" />
         	                            <antcall target="upgrade_db_plusv3.3" />
                                     	<antcall target="upgrade_db_plusv4.0" />
+                                    	<antcall target="upgrade_db_os_v1.1" />
                                     </then>
                         </elseif>
                         <elseif>
@@ -2143,6 +2146,7 @@
                                     	<antcall target="upgrade_db_plusv3.2" />
         	                            <antcall target="upgrade_db_plusv3.3" />
                                     	<antcall target="upgrade_db_plusv4.0" />
+                                    	<antcall target="upgrade_db_os_v1.1" />
                                     </then>
                             </elseif>
                             <elseif>
@@ -2152,6 +2156,7 @@
                                     	<antcall target="upgrade_db_plusv3.2" />
                                     	<antcall target="upgrade_db_plusv3.3" />
                                     	<antcall target="upgrade_db_plusv4.0" />
+                                    	<antcall target="upgrade_db_os_v1.1" />
                                     </then>
                                 </elseif>
                                 <elseif>
@@ -2160,6 +2165,7 @@
                                     	<antcall target="upgrade_db_plusv3.2" />
                                     	<antcall target="upgrade_db_plusv3.3" />
                                         <antcall target="upgrade_db_plusv4.0" />
+                                    	<antcall target="upgrade_db_os_v1.1" />
                                     </then>
                                 </elseif>
                                 <elseif>
@@ -2167,15 +2173,23 @@
                 	                                    <then>
                 	                                        <antcall target="upgrade_db_plusv3.3" />
                 	                                        <antcall target="upgrade_db_plusv4.0" />
+                	                                    	<antcall target="upgrade_db_os_v1.1" />
                 	                                    </then>
                 	                                </elseif>
                 	<elseif>
                 	                                    <equals arg1="${plus3.3.version}" arg2="${from.version}"/>
                 	                                    <then>
                 	                                        <antcall target="upgrade_db_plusv4.0" />
+                	                                    	<antcall target="upgrade_db_os_v1.1" />
                 	                                    </then>
                 	                                </elseif>
-                                <elseif>
+                									<elseif>
+                	                                    <equals arg1="${os1.0.version}" arg2="${from.version}"/>
+                	                                    <then>
+                	                                    	<antcall target="upgrade_db_os_v1.1" />
+                	                                    </then>
+                	                            </elseif>
+                                			<elseif>
                                                 <equals arg1="${suite-1.2.version}" arg2="${from.version}"/>
                                                 <then>
                                                     <antcall target="upgrade_db_from_plusv1.2_to_plusv3.0" />
@@ -2183,6 +2197,7 @@
                                                 	<antcall target="upgrade_db_plusv3.2" />
                                                 	<antcall target="upgrade_db_plusv3.3" />
                                                 	<antcall target="upgrade_db_plusv4.0" />
+                                                	<antcall target="upgrade_db_os_v1.1" />
                                                 </then>
                                     </elseif>
                                     <else>
@@ -5535,6 +5550,20 @@
 				<antcall target="migrate_forms"/>
 	    </target>
 
+    <target name="upgrade_db_os_v1.1">
+      <updateDatabase 
+        changeLogFile="${base.dir}/SQL/liquibase_xml/db-os-changelog-1.1.xml" 
+        driver="${final.database.driver}" 
+        url="${final.database.url}" 
+        username="${database.username}" 
+        password="${database.password}" 
+        dropFirst="false" 
+        classpathref="liquibaseClasspath" />
+
+      <antcall target="migrate_specimen_events"/>
+    </target>
+
+
 		<target name="upgrade_de_db">
         	<delete dir="${de.temp.dir}" failonerror="no" />
         	<mkdir dir="${de.temp.dir}" />
@@ -5570,23 +5599,23 @@
         </target>
     
 
-		<target name="migrate_forms">
-            <unwar src="${base.dir}/modules/caTissue/lib/catissuecore.war" dest="${temp.dir}/catissuecore" />
-			<antcall target="setupClassExecutionEnvironment"/>
-			<java classname="krishagni.catissueplus.upgrade.MigrateForms" fork="true" maxmemory="1536M">
-				<arg value="${username}"/>
-				<classpath>
-					<pathelement location="${temp.dir.DE}" />
-					<pathelement location="${temp.dir.DE}/old" />
-					<fileset dir="${temp.dir}/catissuecore/WEB-INF/lib/">
-						<include name="*" />
-					</fileset>
-					<fileset dir="${lib.dir}">
-						<include name="*" />
-					</fileset>
-					<pathelement location="${temp.dir}/catissuecore/WEB-INF/classes" />
-				</classpath>
-			</java>
+        <target name="migrate_forms">
+          <unwar src="${base.dir}/modules/caTissue/lib/catissuecore.war" dest="${temp.dir}/catissuecore" />
+          <antcall target="setupClassExecutionEnvironment"/>
+          <java classname="krishagni.catissueplus.upgrade.MigrateForms" fork="true" maxmemory="1536M">
+            <arg value="${username}"/>
+            <classpath>
+              <pathelement location="${temp.dir.DE}" />
+              <pathelement location="${temp.dir.DE}/old" />
+              <fileset dir="${temp.dir}/catissuecore/WEB-INF/lib/">
+                <include name="*" />
+              </fileset>
+              <fileset dir="${lib.dir}">
+                <include name="*" />
+              </fileset>
+              <pathelement location="${temp.dir}/catissuecore/WEB-INF/classes" />
+            </classpath>
+          </java>
 	</target>
 
        <target name="import_queries">
@@ -5610,7 +5639,56 @@
                 </java>
         </target>
 
+        <target name="migrate_spp">
+          <unwar src="${base.dir}/modules/caTissue/lib/catissuecore.war" dest="${temp.dir}/catissuecore" />
+          <antcall target="setupClassExecutionEnvironment"/>
+          <java classname="krishagni.catissueplus.upgrade.MigrateSppForms" fork="true" maxmemory="1536M">
+            <arg value="${username}"/>
+            <classpath>
+              <pathelement location="${temp.dir.DE}" />
+              <pathelement location="${temp.dir.DE}/old" />
+              <fileset dir="${temp.dir}/catissuecore/WEB-INF/lib/">
+                <include name="*" />
+              </fileset>
+              <fileset dir="${lib.dir}">
+                <include name="*" />
+              </fileset>
+              <pathelement location="${temp.dir}/catissuecore/WEB-INF/classes" />
+            </classpath>
+          </java>
+	</target>
+
+        <target name="migrate_specimen_events">
+          <unwar src="${base.dir}/modules/caTissue/lib/catissuecore.war" dest="${temp.dir}/catissuecore" />
+          <antcall target="setupClassExecutionEnvironment"/>
+
+          <java classname="krishagni.catissueplus.upgrade.MigrateSpecimenEvents" fork="true" maxmemory="1024M">
+            <arg value="${username}"/>
+            <arg value="spe-forms/events-cfg.json"/>
+            <classpath>
+              <pathelement location="${temp.dir.DE}" />
+              <pathelement location="${temp.dir.DE}/old" />
+              <fileset dir="${temp.dir}/catissuecore/WEB-INF/lib/">
+                <include name="*" />
+              </fileset>
+              <pathelement location="${temp.dir}/catissuecore/WEB-INF/classes" />
+            </classpath>
+          </java>
+        </target>
+
+        <target name="prepare_nciv20_for_os_upgrade">
+          <echo message="Preparing caTissue NCI v2.0 database for OS upgrade."/>
+          <updateDatabase 
+            changeLogFile="${base.dir}/SQL/liquibase_xml/db-nciv2-changelog.xml" 
+            driver="${final.database.driver}" 
+            url="${final.database.url}" 
+            username="${database.username}" 
+            password="${database.password}" 
+            dropFirst="false" 
+            classpathref="liquibaseClasspath" />
+	</target>
+
 	<target name="post_upgrade">
-		<antcall target="aq_form"/>
+          <antcall target="aq_form"/>
 	</target>
 </project>

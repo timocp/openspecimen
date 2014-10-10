@@ -62,7 +62,8 @@ var Select2 = function(element, config) {
     for (var i = 0; i < this.config.options.length; ++i) {
       var option = this.config.options[i];
       if (typeof option == "object") {
-        this.element.append($('<option/>').prop('value', option[id]).append(option[value]));
+        var idVal = (id in option) ? option[id] : i;
+        this.element.append($('<option/>').prop('value', idVal).append(option[value]));
       } else {
         this.element.append($('<option/>').prop('value', option).append(option));
       }
@@ -143,6 +144,7 @@ var Select2Search = function(element, opts) {
     var that = this;
     this.element.select2({
       minimumInputLength: 0,
+      multiple: typeof opts != "undefined" && opts.multiple == true,
       query: function(query) {
         that.queryFn(query.term, function(result) {
           query.callback({results: result});

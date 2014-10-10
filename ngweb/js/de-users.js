@@ -10,6 +10,8 @@ openspecimen.ui.fancy.Users = function() {
  
   var defaultList = [];
 
+  var signedInUser;
+
   this.getUsers = function(queryTerm, callback) {
     if (!queryTerm && defaultList.length > 0) {
       callback(defaultList);
@@ -18,11 +20,11 @@ openspecimen.ui.fancy.Users = function() {
 
     var xhr;
     if (queryTerm) {
-      xhr = $.ajax({type: 'GET', url: baseUrl, data: {searchString: queryTerm}});
+      xhr = $.ajax({type: 'GET', url: baseUrl, data: {searchString: queryTerm, sortBy:'lastName,firstName'}});
     } else if (this.getAllUsersXhr) {
       xhr = this.getAllUsersXhr;
     } else {
-      xhr = this.getAllUsersXhr = $.ajax({type: 'GET', url: baseUrl});
+      xhr = this.getAllUsersXhr = $.ajax({type: 'GET', url: baseUrl, data: {sortBy:'lastName,firstName'}});
     }
    
     xhr.done(
@@ -30,7 +32,7 @@ openspecimen.ui.fancy.Users = function() {
         var result = [];
         var users = data.users;
         for (var i = 0; i < users.length; ++i) {
-          result.push({id: users[i].id, text: users[i].firstName + ' ' + users[i].lastName});
+          result.push({id: users[i].id, text: users[i].lastName + ', ' + users[i].firstName});
         }
 
         if (!queryTerm) {
@@ -62,12 +64,31 @@ openspecimen.ui.fancy.Users = function() {
 
     $.ajax({type: 'GET', url: baseUrl + userId})
       .done(function(data) {
-        var result = {id: data.id, text: data.firstName + ' ' + data.lastName};
+        var result = {id: data.id, text: data.lastName + ', ' + data.firstName};
         userCacheMap[userId] = result;
         callback(result);
       })
       .fail(function(data) {
         alert("Failed to retrieve user")
+      });
+  };
+
+  this.getSignedInUser = function(callback) {
+    if (signedInUser) {
+      callback(signedInUser);
+      return;
+    }
+
+    var that = this;
+    $.ajax({type: 'GET', url: baseUrl + '/signed-in-user'})
+      .done(function(data) {
+        var result = {id: data.id, text: data.lastName + ', ' + data.firstName};
+        userCacheMap[data.id] = result;
+        signedInUser = result;
+        callback(result);
+      })
+      .fail(function(data) {
+        alert("Failed to retrieve user");
       });
   };
 };
@@ -115,13 +136,16 @@ openspecimen.ui.fancy.UserField = function(params) {
 
   var initSelectedUser = function(userId, elem, callback) {
     if (!userId) {
-      qFunc('', callback);
+      usersSvc.getSignedInUser(function(user) {
+        that.value = user.id;
+        that.control.setValue(user.id);
+        callback(user);
+      });
       return;
     }
 
     usersSvc.getUser(userId, callback);
-  }; 
-
+  };
 
   this.render = function() {
     this.inputEl = $("<input/>")
@@ -143,6 +167,7 @@ openspecimen.ui.fancy.UserField = function(params) {
         initSelectedUser(that.value, elem, callback);
       }
     ).render();
+
   };
 
   this.getName = function() {
@@ -187,6 +212,10 @@ openspecimen.ui.fancy.UserField = function(params) {
 
   this.validate = function() {
     return this.validator.validate();
+  };
+
+  this.getPrintEl = function() {
+    return edu.common.de.Utility.getPrintEl(this);
   };
 };
 

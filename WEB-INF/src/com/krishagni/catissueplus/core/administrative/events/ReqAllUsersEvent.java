@@ -1,8 +1,15 @@
 package com.krishagni.catissueplus.core.administrative.events;
 
+import java.util.List;
+
 import com.krishagni.catissueplus.core.common.events.RequestEvent;
 
 public class ReqAllUsersEvent extends RequestEvent {
+	public static enum SortType {
+		ASC,
+		DESC
+	}
+	
 	private String searchString;
 	
 	private int startAt;
@@ -10,6 +17,9 @@ public class ReqAllUsersEvent extends RequestEvent {
 	private int maxRecords;
 	
 	private boolean countReq;
+	
+	private List<String> sortBy;
+	
 
 	public String getSearchString() {
 		return searchString;
@@ -42,4 +52,14 @@ public class ReqAllUsersEvent extends RequestEvent {
 	public void setCountReq(boolean countReq) {
 		this.countReq = countReq;
 	}
+	
+	public List<String> getSortBy() {
+		return sortBy;
+	}
+
+	public void setSortBy(List<String> sortBy) {
+		this.sortBy = sortBy;
+	}
+
+
 }

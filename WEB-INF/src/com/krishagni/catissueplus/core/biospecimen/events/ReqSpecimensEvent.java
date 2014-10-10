@@ -1,9 +1,11 @@
 package com.krishagni.catissueplus.core.biospecimen.events;
 
+import java.util.List;
+
 import com.krishagni.catissueplus.core.common.events.RequestEvent;
 
 
-public class ReqAllSpecimensEvent extends RequestEvent{
+public class ReqSpecimensEvent extends RequestEvent{
 
 	private String searchString;
 
@@ -12,6 +14,8 @@ public class ReqAllSpecimensEvent extends RequestEvent{
 	private int maxRecords;
 
 	private boolean countReq;
+	
+	private List<String> specimenLabels;
 
 	public String getSearchString() {
 		return searchString;
@@ -44,4 +48,13 @@ public class ReqAllSpecimensEvent extends RequestEvent{
 	public void setCountReq(boolean countReq) {
 		this.countReq = countReq;
 	}
+
+	public List<String> getSpecimenLabels() {
+		return specimenLabels;
+	}
+
+	public void setSpecimenLabels(List<String> specimenLabels) {
+		this.specimenLabels = specimenLabels;
+	}
+	
 }
