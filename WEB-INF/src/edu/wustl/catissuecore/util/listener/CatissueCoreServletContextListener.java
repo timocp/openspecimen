@@ -29,6 +29,10 @@ import org.apache.commons.io.FilenameUtils;
 import titli.model.util.TitliResultGroup;
 import au.com.bytecode.opencsv.CSVReader;
 
+import com.krishagni.catissueplus.core.de.ui.DistributionProtocolControlFactory;
+import com.krishagni.catissueplus.core.de.ui.DistributionProtocolFieldMapper;
+import com.krishagni.catissueplus.core.de.ui.SiteControlFactory;
+import com.krishagni.catissueplus.core.de.ui.SiteFieldMapper;
 import com.krishagni.catissueplus.core.de.ui.UserControlFactory;
 import com.krishagni.catissueplus.core.de.ui.UserFieldMapper;
 
@@ -158,6 +162,7 @@ public class CatissueCoreServletContextListener implements ServletContextListene
             InitialContext ic = new InitialContext();
 			DataSource ds = (DataSource)ic.lookup(JNDI_NAME);
 			String dateFomat = CommonServiceLocator.getInstance().getDatePattern();
+			String timeFormat = CommonServiceLocator.getInstance().getTimePattern();
 			
 			String dir = new StringBuilder(XMLPropertyHandler.getValue("appserver.home.dir")).append(File.separator)
 					.append("os-data").append(File.separator)
@@ -170,10 +175,9 @@ public class CatissueCoreServletContextListener implements ServletContextListene
 				}
 			}
 						
-			DEApp.init(ds, dir, dateFomat);
+			DEApp.init(ds, dir, dateFomat, timeFormat);
 			initQueryPathsConfig();            
-			ControlManager.getInstance().registerFactory(UserControlFactory.getInstance());
-			ControlMapper.getInstance().registerControlMapper("userField", new UserFieldMapper());
+			registerFancyControls();
 			
 			logger.info("Initialization complete");									
 		}
@@ -188,6 +192,17 @@ public class CatissueCoreServletContextListener implements ServletContextListene
  	private void initQueryPathsConfig() {
  		String path = System.getProperty("app.propertiesDir") + File.separatorChar + "paths.xml";
  		PathConfig.intialize(path);
+	}
+ 	
+ 	private void registerFancyControls() {
+ 		ControlManager.getInstance().registerFactory(UserControlFactory.getInstance());
+ 		ControlMapper.getInstance().registerControlMapper("userField", new UserFieldMapper());
+
+ 		ControlManager.getInstance().registerFactory(DistributionProtocolControlFactory.getInstance());
+ 		ControlMapper.getInstance().registerControlMapper("distributionProtocolField", new DistributionProtocolFieldMapper());
+
+ 		ControlManager.getInstance().registerFactory(SiteControlFactory.getInstance());
+		ControlMapper.getInstance().registerControlMapper("siteField", new SiteFieldMapper());
 	}
 
 	/**
