@@ -415,7 +415,7 @@ function switchToOlderView()
  <tr>
           <td class="buttonbg" colspan="2">
 					<input type="button" class="blue_ar_b" value="Next >>" onclick="goToConsentTabFromNext()" accesskey="Enter">
-    <input type="button" class="blue_ar_b" value="Export Order" onclick="exportOrder('${requestScope.id}')" accesskey="Enter">
+    <input type="button" class="blue_ar_b" value="Export Order" onclick="defineView('${requestScope.id}')" accesskey="Enter">
     <input type="button" class="blue_ar_b" value="Return Specimens" onclick="createReturnEvent()" accesskey="Enter">			
  </td>
 </tr>
@@ -611,7 +611,7 @@ var chkdNodes = tree.getAllChecked();
 if(chkdNodes.length == 0){
 alert("Please select atleast one node to export");
 return;
-
+}
 var dwdIframe = document.getElementById("orderExportFrame");
 var itemsList = tree.getAllChecked();
 itemsList = itemsList.replace("scg,","");
