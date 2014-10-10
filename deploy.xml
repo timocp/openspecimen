@@ -1717,6 +1717,7 @@
 		<antcall target="upgrade_db_plusv3.3" />
 		<antcall target="upgrade_db_plusv4.0" />
         <antcall target="upgrade_db_os_v1.1"/>
+		<antcall target="upgrade_db_to_STV"/>
 
 	</target>
 
