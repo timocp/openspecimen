@@ -51,20 +51,13 @@ public class SpecimenDTO
 	private String consentBlood;
 	private String labNumber;
 	private String siteName;
-	
-	public boolean isToPrintLabel()
-	{
-		return isToPrintLabel;
-	}
-	
-  private Long participantID;
-  private Long cprID;
-  private Long cpId;
-  private String userName;
-  private String dnaMethod;
-  private Double dna260;
-
-  private Long thawCycle;
+	private Long participantID;
+	private Long cprID;
+	private Long cpId;
+	private String userName;
+	private String dnaMethod;
+	private Double dna260;
+	private Long thawCycle;
   
   public Long getThawCycle()
   {
