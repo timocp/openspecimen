@@ -20,7 +20,7 @@ public class DistributionProtocolDetails {
 
 	private Date startDate;
 
-	private Long anticipatedSpecimenCount;
+	//private Long anticipatedSpecimenCount;
 
 	private String descriptionUrl;
 
@@ -58,13 +58,13 @@ public class DistributionProtocolDetails {
 		this.shortTitle = shortTitle;
 	}
 
-	public Long getAnticipatedSpecimenCount() {
+/*	public Long getAnticipatedSpecimenCount() {
 		return anticipatedSpecimenCount;
 	}
 
 	public void setAnticipatedSpecimenCount(Long anticipatedSpecimenCount) {
 		this.anticipatedSpecimenCount = anticipatedSpecimenCount;
-	}
+	}*/
 
 	public String getIrbId() {
 		return irbId;
@@ -106,7 +106,7 @@ public class DistributionProtocolDetails {
 		details.setTitle(distributionProtocol.getTitle());
 		details.setIrbId(distributionProtocol.getIrbId());
 		details.setStartDate(distributionProtocol.getStartDate());
-		details.setAnticipatedSpecimenCount(distributionProtocol.getAnticipatedSpecimenCount());
+		//details.setAnticipatedSpecimenCount(distributionProtocol.getAnticipatedSpecimenCount());
 		details.setDescriptionUrl(distributionProtocol.getDescriptionUrl());
 		details.setPrincipalInvestigator(getPrincipleInvestigatorInfo(distributionProtocol.getPrincipalInvestigator()));
 		details.setActivityStatus(distributionProtocol.getActivityStatus());

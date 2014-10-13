@@ -6,7 +6,7 @@
 <hibernate-mapping auto-import="false">
   <class
 	name="com.krishagni.catissueplus.core.administrative.domain.DistributionProtocol"
-	table="OS_DISTRIBUTION_PROTOCOL">
+	table="CATISSUE_DISTRIBUTION_PROTOCOL">
 	
 	<cache usage="read-write"/>
 	
@@ -18,7 +18,7 @@
 		unsaved-value="null">
 		
 	 	<generator class="native">
-	 		<param name="sequence">OS_DISTRIBUTION_PROTOCOL_SEQ</param>
+	 		<param name="sequence">CATISSUE_DISTRI_PROT_SEQ</param>
         </generator>
         	
     </id>
@@ -60,11 +60,11 @@
             column="DESCRIPTION_URL"
             length="255" />
         
-      <property
+    <!--    <property
             name="anticipatedSpecimenCount"
             type="long"
             column="ANTICIPATED_SPECIMEN_COUNT"
-            length="30" />
+            length="30" /> -->
             
      <property
             name="activityStatus"

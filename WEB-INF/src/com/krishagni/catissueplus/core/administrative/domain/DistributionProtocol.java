@@ -23,7 +23,7 @@ public class DistributionProtocol {
 
 	private String descriptionUrl;
 
-	private Long anticipatedSpecimenCount;
+	//private Long anticipatedSpecimenCount;
 
 	private String activityStatus;
 
@@ -83,13 +83,13 @@ public class DistributionProtocol {
 		this.descriptionUrl = descriptionURL;
 	}
 
-	public Long getAnticipatedSpecimenCount() {
+/*	public Long getAnticipatedSpecimenCount() {
 		return anticipatedSpecimenCount;
 	}
 
 	public void setAnticipatedSpecimenCount(Long anticipatedSpecimenCount) {
 		this.anticipatedSpecimenCount = anticipatedSpecimenCount;
-	}
+	}*/
 
 	public String getActivityStatus() {
 		return activityStatus;
@@ -109,7 +109,7 @@ public class DistributionProtocol {
 			this.setTitle(distributionProtocol.getTitle());
 		}
 		this.setIrbId(distributionProtocol.getIrbId());
-		this.setAnticipatedSpecimenCount(distributionProtocol.getAnticipatedSpecimenCount());
+		//this.setAnticipatedSpecimenCount(distributionProtocol.getAnticipatedSpecimenCount());
 		this.setPrincipalInvestigator(distributionProtocol.getPrincipalInvestigator());
 		this.setDescriptionUrl(distributionProtocol.getDescriptionUrl());
 		this.setStartDate(distributionProtocol.getStartDate());

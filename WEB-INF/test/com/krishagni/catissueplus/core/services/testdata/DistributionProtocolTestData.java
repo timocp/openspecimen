@@ -41,7 +41,7 @@ public class DistributionProtocolTestData {
 		protocol.setShortTitle("DPP");
 		protocol.setStartDate(new Date());
 		protocol.setDescriptionUrl("www.distributionprotocol.com");
-		protocol.setAnticipatedSpecimenCount(50L);
+		//protocol.setAnticipatedSpecimenCount(50L);
 		protocol.setPrincipalInvestigator(getUserDetails());
 		protocol.setActivityStatus("Active");
 		return protocol;
@@ -55,7 +55,7 @@ public class DistributionProtocolTestData {
 		protocol.setShortTitle("DPP");
 		protocol.setStartDate(new Date());
 		protocol.setDescriptionUrl("www.distributionprotocol.com");
-		protocol.setAnticipatedSpecimenCount(50L);
+		//protocol.setAnticipatedSpecimenCount(50L);
 		protocol.setPrincipalInvestigator(getUserDetailsWithNullAuthDomain());
 		protocol.setActivityStatus("Active");
 		return protocol;
@@ -102,7 +102,7 @@ public class DistributionProtocolTestData {
 		details.setIrbId("IRB333");
 		details.setPrincipalInvestigator(getPrincipalInvestigator());
 		details.setDescriptionUrl("www.simpleurl.com");
-		details.setAnticipatedSpecimenCount(56L);
+		//details.setAnticipatedSpecimenCount(56L);
 		details.setShortTitle("CPP");
 		details.setTitle("CPProtocol");
 		details.setStartDate(new Date(10 - 06 - 2014));
@@ -322,13 +322,13 @@ public class DistributionProtocolTestData {
 
 	public static CreateDistributionProtocolEvent getCreateDistributionProtocolEventWithNegativeAnticipatedSpecimenCountNumber() {
 		CreateDistributionProtocolEvent event = getCreateDistributionProtocolEvent();
-		event.getDistributionProtocolDetails().setAnticipatedSpecimenCount(-2L);
+		//event.getDistributionProtocolDetails().setAnticipatedSpecimenCount(-2L);
 		return event;
 	}
 
 	public static UpdateDistributionProtocolEvent getUpdateDistributionProtocolEventWithNegativeAnticipatedSpecimenCountNumber() {
 		UpdateDistributionProtocolEvent event = getUpdateDistributionProtocolEvent();
-		event.getDetails().setAnticipatedSpecimenCount(-2L);
+		//event.getDetails().setAnticipatedSpecimenCount(-2L);
 		return event;
 	}
 

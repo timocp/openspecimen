@@ -44,7 +44,7 @@ public class DistributionProtocolFactoryImpl implements DistributionProtocolFact
 		ObjectCreationException exceptionHandler = new ObjectCreationException();
 		setTitle(distributionProtocol, details.getTitle(), exceptionHandler);
 		setIbrId(distributionProtocol, details.getIrbId(), exceptionHandler);
-		setAnticipatedSpecimenCount(distributionProtocol, details.getAnticipatedSpecimenCount(), exceptionHandler);
+		//setAnticipatedSpecimenCount(distributionProtocol, details.getAnticipatedSpecimenCount(), exceptionHandler);
 		setPrincipalInvestigator(distributionProtocol, details.getPrincipalInvestigator(), exceptionHandler);
 		setShortTitle(distributionProtocol, details.getShortTitle(), exceptionHandler);
 		setDescriptionURL(distributionProtocol, details.getDescriptionUrl(), exceptionHandler);
@@ -139,7 +139,7 @@ public class DistributionProtocolFactoryImpl implements DistributionProtocolFact
 			exceptionHandler.addError(StorageContainerErrorCode.INVALID_ATTR_VALUE, ANTICIPANTED_SPECIMEN_COUNT);
 			return;
 		}
-		distributionProtocol.setAnticipatedSpecimenCount(anticipatedSpecimenCount);
+		//distributionProtocol.setAnticipatedSpecimenCount(anticipatedSpecimenCount);
 
 	}
 
