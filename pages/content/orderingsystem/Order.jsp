@@ -637,7 +637,7 @@ function createReturnEvent()
       specimenLabels.push(specimenLabel);
     }
   }				
-  window.location.href = "http://localhost:8080/openspecimen/specimenEventsBulkDataEntry.do?specimenLabels="+specimenLabels;
+  window.location.href = "specimenEventsBulkDataEntry.do?specimenLabels="+specimenLabels +"&formId=";
 }
 </script>
 <script>

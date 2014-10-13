@@ -13,6 +13,8 @@ specimenEvent.controller('SpecimenEventController',
     FormsService.getAllSpecimenEventForms().then( 
       function(events) {
         $scope.specimenEvents = events;
+        $scope.selectedEvent = globalSelectedEvent;
+        $scope.onEventSelect($scope.selectedEvent);
       }
     );
 
@@ -41,10 +43,12 @@ specimenEvent.controller('SpecimenEventController',
     };
 
     $scope.onEventSelect = function(selectedEvent) {
+      var formId = (typeof(selectedEvent) == 'string') ? selectedEvent : selectedEvent.formId;
       $scope.dataEntryMode = $scope.editRecords  = $scope.deleteRows = false;
       $scope.dataTable = undefined;
-      FormsService.getFormDef(selectedEvent.formId).then(function (formDef) {
-        $scope.dataTable = renderDataTable(selectedEvent.formId, formDef);
+      FormsService.getFormDef(formId).then(function (formDef) {
+        $scope.dataTable = renderDataTable(formId, formDef);
+        $scope.addRecord();
       });
     };
 
