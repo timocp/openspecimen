@@ -884,7 +884,7 @@ req.onreadystatechange = function() {
   document.getElementById("specimenSubmitButton").disabled = false;
   // Request successful, read the response
   var resp = req.responseText;
-  var updatedSpecimenDTO = eval('('+resp+')')
+  var updatedSpecimenDTO = eval('('+resp+')');
 	
   parent.handleCpView(null, updatedSpecimenDTO.specimenCollectionGroupId, updatedSpecimenDTO.id);
 
@@ -1407,7 +1407,8 @@ req.onreadystatechange = function() {
 			//alert(loader.xmlDoc.responseText);
 			//alert(loader.xmlDoc.responseText);
 			var specimenDto = eval('('+resp+')');
-			
+			parent.handleCpView(null, specimenDto.specimenCollectionGroupId, specimenDto.id);
+
 			var errMsgDiv = document.getElementById('errorMsg');
 			//if(response.success == "success")
 			//{//
@@ -1446,8 +1447,7 @@ req.onreadystatechange = function() {
 					document.forms[0].action = action;
 					document.forms[0].submit();
 				}
-				parent.handleCpView(null, specimenDto.specimenCollectionGroupId, specimenDto.id);
-
+			
 			/*}
 			else
 			{

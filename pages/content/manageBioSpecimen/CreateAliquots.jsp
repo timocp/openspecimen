@@ -370,10 +370,7 @@ function getJsonFromGrid(){
     var aliLabel = "";
     var aliBarcode = "";
         for(var cnt=1;cnt<aliquotGrid.getRowsNum();cnt++){
-        if(isLabelGenerationOn == "false" || !isLabelGenerationOn)
-        {
             aliLabel = aliquotGrid.cellByIndex(cnt,0).getValue();
-        }
         if(isBarGenerationOn == "false" || !isLabelGenerationOn)
         {
             aliBarcode = aliquotGrid.cellByIndex(cnt,1).getValue();

@@ -3235,14 +3235,24 @@ public class SpecimenCollectionGroupBizLogic extends CatissueDefaultBizLogic
 		
 		try
 		{ 
-			String retrieveScgHql = "from "+SpecimenCollectionGroup.class.getName()+ " scg where scg.collectionTimestamp = ? and"
+			String retrieveScgHql = "from "+SpecimenCollectionGroup.class.getName()+ " scg where scg.collectionTimestamp >= ? and scg.collectionTimestamp <= ? and"
 					+ " scg.collectionProtocolRegistration.protocolParticipantIdentifier=? ";//'"+scg.getCollectionTimestamp()+"'";
 			SpecimenCollectionGroup absScg = null;
-			ColumnValueBean scgCollTime = new ColumnValueBean(scg.getCollectionTimestamp());
+			Date startDate = new Date(scg.getCollectionTimestamp().getTime());
+			startDate.setHours(0);
+			startDate.setMinutes(0);
+			startDate.setSeconds(0);
+			Date endDate = scg.getCollectionTimestamp();
+			endDate.setHours(20);
+			endDate.setMinutes(59);
+			endDate.setSeconds(59);
+   
+			ColumnValueBean scgCollTime = new ColumnValueBean(startDate);
 			ColumnValueBean ppId = new ColumnValueBean(scg.getCollectionProtocolRegistration().getProtocolParticipantIdentifier());
 			List<ColumnValueBean> scgHqlParams = new ArrayList<ColumnValueBean>();
 			
 			scgHqlParams.add(scgCollTime);
+   scgHqlParams.add(new ColumnValueBean(endDate));
 			scgHqlParams.add(ppId);
 			List scgList = dao.executeQuery(retrieveScgHql, scgHqlParams);
 			if(scgList.size() > 0){
@@ -3297,6 +3307,7 @@ public class SpecimenCollectionGroupBizLogic extends CatissueDefaultBizLogic
 				}
 				User reciever = (User)recResult.get(0);
 				scg.setReceiver(reciever);
+				generateSCGLabel(scg);
 				if(validate(scg, dao, Constants.ADD)){
 					dao.insert(scg);
 				}
