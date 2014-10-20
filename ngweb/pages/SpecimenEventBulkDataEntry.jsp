@@ -126,13 +126,13 @@
       var query = parent.location.search.substr(1);
       query.split("&").forEach(function(part) {
         var item = part.split("=");
-        params[item[0]] = decodeURIComponent(item[1]);
+        params[decodeURIComponent(item[0])] = decodeURIComponent(item[1]);
       });
     }
 
     populateQueryStringParams();
     var globalSpecimenLabels = params.specimenLabels;
-    var globalSelectedEvent = params.formId;
+    var globalSelectedEventFormName = params.formName;
 
   </script>
   <script src="../js/utility.js" type="text/javascript"></script>

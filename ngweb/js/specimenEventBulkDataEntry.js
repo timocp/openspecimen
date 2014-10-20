@@ -13,8 +13,15 @@ specimenEvent.controller('SpecimenEventController',
     FormsService.getAllSpecimenEventForms().then( 
       function(events) {
         $scope.specimenEvents = events;
-        $scope.selectedEvent = globalSelectedEvent;
-        $scope.onEventSelect($scope.selectedEvent);
+        if(globalSelectedEventFormName) {
+          for (i=0; i<$scope.specimenEvents.length; i++) {
+            if ($scope.specimenEvents[i].name == globalSelectedEventFormName) {
+              $scope.selectedEvent = $scope.specimenEvents[i];
+              $scope.onEventSelect($scope.specimenEvents[i]);
+              return;
+            }
+          }
+        }
       }
     );
 
@@ -43,10 +50,11 @@ specimenEvent.controller('SpecimenEventController',
     };
 
     $scope.onEventSelect = function(selectedEvent) {
-      var formId = (typeof(selectedEvent) == 'string') ? selectedEvent : selectedEvent.formId;
+      var formId = selectedEvent.formId;
       $scope.dataEntryMode = $scope.editRecords  = $scope.deleteRows = false;
       $scope.dataTable = undefined;
       FormsService.getFormDef(formId).then(function (formDef) {
+        $scope.formDef = formDef;
         $scope.dataTable = renderDataTable(formId, formDef);
         $scope.addRecord();
       });
@@ -77,15 +85,15 @@ specimenEvent.controller('SpecimenEventController',
           $scope.specimenMap[specimen.label] = specimen;
         }
 
+        var record = getRecordWithDefaultValues();
         var tableData =[];
         for (var i = 0; i < specimenLabels.length; i++) {
           var specimen = $scope.specimenMap[specimenLabels[i]];
           var tableRec = {
             key            : {id : specimen.label, label : specimen.label},
-            appColumnsData : {cpName: specimen.cpShortTitle, specimenType: specimen.specimenType },
-            records        : []
+            appColumnsData : {cpName: specimen.cpShortTitle, specimenType: specimen.specimenType},
+            records        : [record]
           };
-
           tableData.push(tableRec);
         }
 
@@ -95,6 +103,21 @@ specimenEvent.controller('SpecimenEventController',
         $scope.dataTable.setData(tableData);
       });
     };
+
+    var getRecordWithDefaultValues = function() {
+      var record = {};
+      var rows = $scope.formDef.rows;
+      for (var i = 0 ; i < rows.length; i++) {
+        var row = rows[i];
+        for (j = 0 ; j < row.length; j++) {
+          var field = row[j].name;
+          if(params[field]) {
+            record[field] = params[field];
+          }
+        }
+      }
+      return record;
+    }
 
     $scope.deleteSelectedRows = function() {
       $scope.dataTable.deleteRows();

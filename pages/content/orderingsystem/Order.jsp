@@ -636,8 +636,20 @@ function createReturnEvent()
       var specimenLabel = mygrid.cellById(rowIds[i],0).getValue();
       specimenLabels.push(specimenLabel);
     }
-  }				
-  window.location.href = "specimenEventsBulkDataEntry.do?specimenLabels="+specimenLabels +"&formId=";
+  }
+  var orderName = document.getElementById('orderName').value;
+  var dpId = distributionProtocolNameCombo.getActualValue();
+  var siteId = site_combo.getActualValue();
+  var url = "specimenEventsBulkDataEntry.do?specimenLabels="+specimenLabels
+      +"&formName=specimenReturnEvent"+"&ST6="+orderName;
+  if (dpId != -1) {
+    url = url.concat("&distributionProtocol=" + dpId);
+  }
+  if (siteId != -1) {
+    url = url.concat("&site=" + siteId);
+  }
+  window.location.href = url;
+
 }
 </script>
 <script>
