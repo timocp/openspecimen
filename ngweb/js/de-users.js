@@ -12,10 +12,11 @@ openspecimen.ui.fancy.Users = function() {
 
   var signedInUser;
 
-  this.getUsers = function(queryTerm, callback) {
+  this.getUsers = function(queryTerm) {
+    var deferred = $.Deferred();
     if (!queryTerm && defaultList.length > 0) {
-      callback(defaultList);
-      return;
+      deferred.resolve(defaultList);
+      return deferred.promise();
     }
 
     var xhr;
@@ -26,6 +27,7 @@ openspecimen.ui.fancy.Users = function() {
     } else {
       xhr = this.getAllUsersXhr = $.ajax({type: 'GET', url: baseUrl, data: {sortBy:'lastName,firstName'}});
     }
+   
    
     xhr.done(
       function(data) {
@@ -39,26 +41,30 @@ openspecimen.ui.fancy.Users = function() {
           defaultList = result;
         }
 
-        callback(result);
+        deferred.resolve(result);
       }
     ).fail(
       function(data) {
         alert("Failed to load users list");
+        deferred.resolve([]);
       }
     );
+
+    return deferred.promise();
   };
 
   this.getUser = function(userId, callback) {
+    var deferred = $.Deferred(); 
     var user = userCacheMap[userId];
     if (user) {
-      callback(user);
-      return;
+      deferred.resolve(user);
+      return deferred.promise();
     }
 
     for (var i = 0; i < defaultList.length; ++i) {
       if (defaultList[i].id == userId) { 
-        callback(defaultList[i]);
-        return;
+        deferred.resolve(defaultList[i]);
+        return deferred.promise();
       }
     }
 
@@ -66,17 +72,21 @@ openspecimen.ui.fancy.Users = function() {
       .done(function(data) {
         var result = {id: data.id, text: data.lastName + ', ' + data.firstName};
         userCacheMap[userId] = result;
-        callback(result);
+        deferred.resolve(result);
       })
       .fail(function(data) {
         alert("Failed to retrieve user")
+        deferred.resolve(undefined);
       });
+
+    return deferred.promise();
   };
 
-  this.getSignedInUser = function(callback) {
+  this.getSignedInUser = function() {
+    var deferred = $.Deferred(); 
     if (signedInUser) {
-      callback(signedInUser);
-      return;
+      deferred.resolve(signedInUser);
+      return deferred.promise();
     }
 
     var that = this;
@@ -85,139 +95,32 @@ openspecimen.ui.fancy.Users = function() {
         var result = {id: data.id, text: data.lastName + ', ' + data.firstName};
         userCacheMap[data.id] = result;
         signedInUser = result;
-        callback(result);
+        deferred.resolve(result);
       })
       .fail(function(data) {
         alert("Failed to retrieve user");
+        deferred.resolve(undefined);
       });
+
+    return deferred.promise();
   };
 };
 
 var usersSvc = new openspecimen.ui.fancy.Users();
 
-openspecimen.ui.fancy.UserField = function(params) {
-  this.inputEl = null;
+openspecimen.ui.fancy.UserField = edu.common.de.LookupField.extend({
+  getDefaultValue: function() {
+    return usersSvc.getSignedInUser();
+  },
 
-  this.control = null;
+  lookup: function(userId) {
+    return usersSvc.getUser(userId);
+  },
 
-  this.value = '';
-
-  this.validator;
-
-  var field = params.field;
-  var id = params.id;
-  var timeout = undefined;
-  var that = this;
-
-  var qFunc = function(qTerm, qCallback) {
-    var timeInterval = 500;
-    if (qTerm.length == 0) {
-      timeInterval = 0;
-    }
-
-    if (timeout != undefined) {
-      clearTimeout(timeout);
-    }
-
-    timeout = setTimeout(
-      function() { 
-        usersSvc.getUsers(qTerm, qCallback); 
-      }, 
-      timeInterval);
-  };
-
-  var onChange = function(selected) { 
-    if (selected) {
-      this.value = selected.id;
-    } else {
-      this.value = '';
-    }
-  };
-
-  var initSelectedUser = function(userId, elem, callback) {
-    if (!userId) {
-      usersSvc.getSignedInUser(function(user) {
-        that.value = user.id;
-        that.control.setValue(user.id);
-        callback(user);
-      });
-      return;
-    }
-
-    usersSvc.getUser(userId, callback);
-  };
-
-  this.render = function() {
-    this.inputEl = $("<input/>")
-      .prop({id: id, title: field.toolTip, value: field.defaultValue})
-      .css("border", "0px").css("padding", "0px")
-      .val("")
-      .addClass("form-control");
-    this.validator = new edu.common.de.FieldValidator(field.validationRules, this);
-    return this.inputEl;
-  };
-
-  this.postRender = function() {
-    this.control = new Select2Search(this.inputEl);
-    this.control.onQuery(qFunc).onChange(onChange);
-    this.control.setValue(this.value);
-
-    this.control.onInitSelection(
-      function(elem, callback) {
-        initSelectedUser(that.value, elem, callback);
-      }
-    ).render();
-
-  };
-
-  this.getName = function() {
-    return field.name;
-  };
-
-  this.getCaption = function() {
-    return field.caption;
-  };
-
-  this.getTooltip = function() {
-    return field.toolTip ? field.toolTip : field.caption;
-  };
-
-  this.getValue = function() {
-    var val = this.control.getValue();
-    if (val) {
-      val = val.id;
-    }
-
-    return {name: field.name, value: val ? val : ''};
-  };
-
-  this.getDisplayValue = function() {
-    if(!this.control) {
-      this.postRender();
-    }
-    var val = this.control.getValue();
-    if (val) {
-      var displayValue = val.text;
-    }
-    return {name: field.name, value: displayValue ? displayValue : '' };
+  search: function(qTerm) {
+    return usersSvc.getUsers(qTerm);
   }
-
-  this.setValue = function(recId, value) {
-    this.recId = recId;
-    this.value = value ? value : '';
-    if (this.control) {
-      this.control.setValue(value);
-    }
-  };
-
-  this.validate = function() {
-    return this.validator.validate();
-  };
-
-  this.getPrintEl = function() {
-    return edu.common.de.Utility.getPrintEl(this);
-  };
-};
+});
 
 edu.common.de.FieldManager.getInstance()
   .register({
