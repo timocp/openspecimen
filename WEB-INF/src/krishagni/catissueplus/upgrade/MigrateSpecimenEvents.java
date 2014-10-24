@@ -22,6 +22,7 @@ import org.apache.log4j.Logger;
 import au.com.bytecode.opencsv.CSVWriter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.krishagni.catissueplus.core.de.ui.StorageContainerControlFactory;
 import com.krishagni.catissueplus.core.de.ui.UserControlFactory;
 
 import edu.common.dynamicextensions.domain.nui.Container;
@@ -78,6 +79,7 @@ public class MigrateSpecimenEvents {
 		eventsLog = new CSVWriter(new FileWriter("events-record-mapping.csv"));
 		
 		ControlManager.getInstance().registerFactory(UserControlFactory.getInstance());
+		ControlManager.getInstance().registerFactory(StorageContainerControlFactory.getInstance());
 		
 		List<Map<String, String>> eventsInfo = 
 				new ObjectMapper().readValue(new File(args[1]), List.class);		

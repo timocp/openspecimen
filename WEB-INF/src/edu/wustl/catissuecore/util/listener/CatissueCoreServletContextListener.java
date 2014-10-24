@@ -29,6 +29,8 @@ import org.apache.commons.io.FilenameUtils;
 import titli.model.util.TitliResultGroup;
 import au.com.bytecode.opencsv.CSVReader;
 
+import com.krishagni.catissueplus.core.de.ui.StorageContainerControlFactory;
+import com.krishagni.catissueplus.core.de.ui.StorageContainerMapper;
 import com.krishagni.catissueplus.core.de.ui.UserControlFactory;
 import com.krishagni.catissueplus.core.de.ui.UserFieldMapper;
 import com.krishagni.catissueplus.core.notification.schedular.ExternalAppFailNotificationSchedular;
@@ -177,9 +179,8 @@ public class CatissueCoreServletContextListener implements ServletContextListene
 			}
 						
 			DEApp.init(ds, dir, dateFomat,timeFormat);
-			initQueryPathsConfig();            
-			ControlManager.getInstance().registerFactory(UserControlFactory.getInstance());
-			ControlMapper.getInstance().registerControlMapper("userField", new UserFieldMapper());
+			initQueryPathsConfig();
+			initFancyControls();
 			
 			logger.info("Initialization complete");									
 		}
@@ -195,6 +196,16 @@ public class CatissueCoreServletContextListener implements ServletContextListene
  		String path = System.getProperty("app.propertiesDir") + File.separatorChar + "paths.xml";
  		PathConfig.intialize(path);
 	}
+ 	
+ 	private void initFancyControls() {
+ 		ControlManager ctrlMgr = ControlManager.getInstance();
+		ctrlMgr.registerFactory(UserControlFactory.getInstance());
+		ctrlMgr.registerFactory(StorageContainerControlFactory.getInstance());
+		
+		ControlMapper ctrlMapper = ControlMapper.getInstance();
+		ctrlMapper.registerControlMapper("userField", new UserFieldMapper());
+		ctrlMapper.registerControlMapper("storageContainer", new StorageContainerMapper());
+ 	}
 
 	/**
 	 * Inite mpi.
