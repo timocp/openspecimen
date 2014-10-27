@@ -1,32 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<BulkOperationMetadata batchSize="5" templateName="createSCG">
+<BulkOperationMetadata batchSize="5" templateName="create_SCG">
 	<BulkOperationClass className="edu.wustl.catissuecore.domain.SpecimenCollectionGroup">
 		<referenceAssociation className="edu.wustl.catissuecore.domain.Site" roleName="specimenCollectionSite">
 				<attribute csvColumnName="Collection Site Name" name="name"/>
 		</referenceAssociation>
 		
 		<referenceAssociation className="edu.wustl.catissuecore.domain.CollectionProtocolRegistration" roleName="collectionProtocolRegistration">
-				<referenceAssociation className="edu.wustl.catissuecore.domain.Participant" parentRoleName="collectionProtocolRegistration" roleName="participant">
-					<containmentAssociation cardinality="*" className="edu.wustl.catissuecore.domain.ParticipantMedicalIdentifier" maxNoOfRecords="1" parentRoleName="participant" roleName="participantMedicalIdentifierCollection">
-		<referenceAssociation className="edu.wustl.catissuecore.domain.Site" parentRoleName="participant" roleName="site">
-					<attribute csvColumnName="Site Name" name="name"/>					
-				</referenceAssociation>	
-			<attribute csvColumnName="Medical Record Number" name="medicalRecordNumber"/>
-		</containmentAssociation>
-				</referenceAssociation>	
+				<attribute csvColumnName="PPID" name="protocolParticipantIdentifier"/>
 				<referenceAssociation className="edu.wustl.catissuecore.domain.CollectionProtocol" roleName="collectionProtocol">
-				<attribute csvColumnName="CP Title" name="shortTitle"/>
+				<attribute csvColumnName="CP Title" name="Title"/>
 			</referenceAssociation>
 		</referenceAssociation>
-		<!--<referenceAssociation
-			className="edu.wustl.catissuecore.domain.CollectionProtocolRegistration"
-			  roleName="collectionProtocolRegistration"
-			   >
-				<attribute name="id" csvColumnName="RegistrationIdentifier"   />
-		</referenceAssociation>-->
+		
 		<referenceAssociation className="edu.wustl.catissuecore.domain.CollectionProtocolEvent" roleName="collectionProtocolEvent">
 			<attribute csvColumnName="CollectionPointLabel" name="collectionPointLabel"/>
         </referenceAssociation>
+		
+		
 		
 				<referenceAssociation className="edu.wustl.catissuecore.domain.User" roleName="collector">
 					<attribute csvColumnName="Collected User Name" name="loginName"/>
@@ -50,6 +40,8 @@
 		<attribute csvColumnName="Collection Status" name="collectionStatus"/>
 		<attribute csvColumnName="Activity Status" name="activityStatus"/>
 		<attribute csvColumnName="Create Anticipated Specimen" name="isToInsertAnticipatorySpecimens"/>
+		
+		
 		<attribute csvColumnName="SPR Name" name="surgicalPathologyNumber"/>
 		<attribute csvColumnName="SCG Name" name="name"/>
 	</BulkOperationClass>
