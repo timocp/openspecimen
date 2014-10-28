@@ -146,5 +146,6 @@
   <script src="../js/de-users.js" type="text/javascript"></script>
   <script src="../js/de-distribution-protocols.js" type="text/javascript"></script>
   <script src="../js/de-sites.js" type="text/javascript"></script>
+  <script src="../js/de-storage-containers.js" type="text/javascript"></script>
 </body>
 </html>

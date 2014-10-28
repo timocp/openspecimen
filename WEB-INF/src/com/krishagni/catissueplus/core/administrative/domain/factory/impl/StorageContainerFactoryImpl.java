@@ -223,8 +223,8 @@ public class StorageContainerFactoryImpl implements StorageContainerFactory {
 		}
 
 		if (parentContainerName != null) {
-			StorageContainer parentContainer = daoFactory.getStorageContainerDao().getStorageContainerByName(
-					parentContainerName);
+			StorageContainer parentContainer = null; /*daoFactory.getStorageContainerDao().getStorageContainerByName(
+					parentContainerName);*/
 			if (parentContainer == null) {
 				exceptionHandler.addError(StorageContainerErrorCode.INVALID_ATTR_VALUE, STORAGE_CONTAINER);
 				return;

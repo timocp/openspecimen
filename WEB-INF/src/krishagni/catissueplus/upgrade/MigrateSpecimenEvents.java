@@ -1,6 +1,8 @@
 package krishagni.catissueplus.upgrade;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -17,7 +19,10 @@ import javax.sql.DataSource;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
+import au.com.bytecode.opencsv.CSVWriter;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.krishagni.catissueplus.core.de.ui.StorageContainerControlFactory;
 import com.krishagni.catissueplus.core.de.ui.UserControlFactory;
 
 import edu.common.dynamicextensions.domain.nui.Container;
@@ -30,11 +35,14 @@ import edu.common.dynamicextensions.ndao.JdbcDaoFactory;
 import edu.common.dynamicextensions.ndao.ResultExtractor;
 import edu.common.dynamicextensions.ndao.TransactionManager;
 import edu.common.dynamicextensions.ndao.TransactionManager.Transaction;
+import edu.common.dynamicextensions.nutility.IoUtil;
 
 public class MigrateSpecimenEvents {
 	private static final Logger logger = Logger.getLogger(MigrateSpecimenEvents.class);
 
 	private static final int INSERT_BATCH_SIZE = 5000;
+	
+	private static CSVWriter eventsLog;
 	
 	private String eventName;
 	
@@ -44,12 +52,12 @@ public class MigrateSpecimenEvents {
 	
 	private boolean systemEvent;
 	
-
+	
+			
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args) 
 	throws Exception {
 		logger.setLevel(Level.INFO);
-
 		logger.info("Migrating Specimen Events ...");
 
 		if (args.length != 2) {
@@ -64,11 +72,17 @@ public class MigrateSpecimenEvents {
 		TransactionManager.getInstance(ds);
 
 		UserContext ctx = getUserCtxt(args[0]);
-		ControlManager.getInstance().registerFactory(UserControlFactory.getInstance());
-
-		List<Map<String, String>> eventsInfo = 
-				new ObjectMapper().readValue(new File(args[1]), List.class);
+		if (ctx == null) {
+			return;
+		}
 		
+		eventsLog = new CSVWriter(new FileWriter("events-record-mapping.csv"));
+		
+		ControlManager.getInstance().registerFactory(UserControlFactory.getInstance());
+		ControlManager.getInstance().registerFactory(StorageContainerControlFactory.getInstance());
+		
+		List<Map<String, String>> eventsInfo = 
+				new ObjectMapper().readValue(new File(args[1]), List.class);		
 		for (Map<String, String> eventInfo : eventsInfo) {
 			try {
 				MigrateSpecimenEvents migrator = new MigrateSpecimenEvents(eventInfo);
@@ -76,6 +90,8 @@ public class MigrateSpecimenEvents {
 			} catch (Exception e) {
 			}
 		}
+		
+		IoUtil.close(eventsLog);
 	}
 
 	private static UserContext getUserCtxt(final String username)
@@ -197,7 +213,7 @@ public class MigrateSpecimenEvents {
 		JdbcDao jdbcDao = JdbcDaoFactory.getJdbcDao();
 		String sql = DbUtil.isOracle() ? INSERT_FORM_CTX_ORA_SQL : INSERT_FORM_CTX_MY_SQL;
 
-		List<? extends Object> params = Arrays.asList(formId, "SpecimenEvent", -1, null, 1);
+		List<? extends Object> params = Arrays.asList(formId, "SpecimenEvent", -1, null, 1, systemEvent ? 1 : 0);
 		Number id = jdbcDao.executeUpdateAndGetKey(sql, params, "IDENTIFIER");
 		if (id == null) {
 			logger.error("Error creating form context for form: " + formId);
@@ -207,7 +223,8 @@ public class MigrateSpecimenEvents {
 		return id.longValue();
 	}
 
-	private void migrateRecords(UserContext ctx, Long formId, String table) {
+	private void migrateRecords(UserContext ctx, Long formId, String table) 
+	throws Exception {
 		addEventIdColumn(table);
 
 		boolean endOfRecords = false;
@@ -264,7 +281,8 @@ public class MigrateSpecimenEvents {
 				});
 	}
 
-	private void insertAndUpdateNewRecordIds(Long userId, Long formId, String table, Map<Long, Long> records, JdbcDao jdbcDao) {
+	private void insertAndUpdateNewRecordIds(Long userId, Long formId, String table, Map<Long, Long> records, JdbcDao jdbcDao) 
+	throws Exception {
 		List<Object[]> inserts = new ArrayList<Object[]>();
 		List<Object[]> updates = new ArrayList<Object[]>();
 
@@ -284,6 +302,17 @@ public class MigrateSpecimenEvents {
 
 		String updateSql = String.format(UPDATE_EVENT_ID_SQL, table);
 		jdbcDao.batchUpdate(updateSql, updates);
+		
+		log(updates);
+	}
+	
+	private void log(List<Object[]> updates)  
+	throws IOException { 
+		for (Object[] row : updates) { // [ {new record ID, old event id
+			eventsLog.writeNext(new String[] {eventName, row[1].toString(), row[0].toString(), "SUCCESS"});
+		}
+		
+		eventsLog.flush();
 	}
 
 	private Long getNextRecordId() {
@@ -332,13 +361,13 @@ public class MigrateSpecimenEvents {
 	}
 
 	private static final String INSERT_FORM_CTX_MY_SQL = "insert into catissue_form_context( "
-			+ "  identifier, container_id, entity_type, cp_id, sort_order, is_multirecord) "
-			+ "values (" + "  default, ?, ?, ?, ?, ?)";
+			+ "  identifier, container_id, entity_type, cp_id, sort_order, is_multirecord, is_sys_form) "
+			+ "values (" + "  default, ?, ?, ?, ?, ?, ?)";
 
 	private static final String INSERT_FORM_CTX_ORA_SQL = "insert into catissue_form_context( "
-			+ "  identifier, container_id, entity_type, cp_id, sort_order, is_multirecord) "
+			+ "  identifier, container_id, entity_type, cp_id, sort_order, is_multirecord, is_sys_form) "
 			+ "values ("
-			+ "  catissue_form_context_seq.nextval, ?, ?, ?, ?, ?)";
+			+ "  catissue_form_context_seq.nextval, ?, ?, ?, ?, ?, ?)";
 
 	private static final String GET_ID_AND_SPECIMEN_ID_ORA_SQL = 
 			"select * from " +

@@ -33,6 +33,9 @@ import com.krishagni.catissueplus.core.de.ui.DistributionProtocolControlFactory;
 import com.krishagni.catissueplus.core.de.ui.DistributionProtocolFieldMapper;
 import com.krishagni.catissueplus.core.de.ui.SiteControlFactory;
 import com.krishagni.catissueplus.core.de.ui.SiteFieldMapper;
+import com.krishagni.catissueplus.core.de.ui.StorageContainerControlFactory;
+import com.krishagni.catissueplus.core.de.ui.StorageContainerMapper;
+
 import com.krishagni.catissueplus.core.de.ui.UserControlFactory;
 import com.krishagni.catissueplus.core.de.ui.UserFieldMapper;
 import com.krishagni.catissueplus.core.notification.schedular.ExternalAppFailNotificationSchedular;
@@ -181,9 +184,9 @@ public class CatissueCoreServletContextListener implements ServletContextListene
 			}
 						
 			DEApp.init(ds, dir, dateFomat,timeFormat);
-			initQueryPathsConfig();            
-			registerFancyControls();
-			
+
+			initQueryPathsConfig();
+			initFancyControls();
 			logger.info("Initialization complete");									
 		}
 		catch (final Exception e)
@@ -199,16 +202,19 @@ public class CatissueCoreServletContextListener implements ServletContextListene
  		PathConfig.intialize(path);
 	}
  	
- 	private void registerFancyControls() {
- 		ControlManager.getInstance().registerFactory(UserControlFactory.getInstance());
- 		ControlMapper.getInstance().registerControlMapper("userField", new UserFieldMapper());
-
- 		ControlManager.getInstance().registerFactory(DistributionProtocolControlFactory.getInstance());
- 		ControlMapper.getInstance().registerControlMapper("distributionProtocolField", new DistributionProtocolFieldMapper());
-
- 		ControlManager.getInstance().registerFactory(SiteControlFactory.getInstance());
-		ControlMapper.getInstance().registerControlMapper("siteField", new SiteFieldMapper());
-	}
+ 	private void initFancyControls() {
+ 		ControlManager ctrlMgr = ControlManager.getInstance();
+		ctrlMgr.registerFactory(UserControlFactory.getInstance());
+		ctrlMgr.registerFactory(StorageContainerControlFactory.getInstance());
+		ctrlMgr.registerFactory(SiteControlFactory.getInstance());
+		ctrlMgr.registerFactory(DistributionProtocolControlFactory.getInstance());
+		
+		ControlMapper ctrlMapper = ControlMapper.getInstance();
+		ctrlMapper.registerControlMapper("userField", new UserFieldMapper());
+		ctrlMapper.registerControlMapper("storageContainer", new StorageContainerMapper());
+		ctrlMapper.registerControlMapper("siteField", new SiteFieldMapper());
+		ctrlMapper.registerControlMapper("distributionProtocolField", new DistributionProtocolFieldMapper());
+ 	}
 
 	/**
 	 * Inite mpi.

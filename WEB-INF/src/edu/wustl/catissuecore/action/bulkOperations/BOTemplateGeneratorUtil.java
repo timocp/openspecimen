@@ -12,70 +12,78 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class BOTemplateGeneratorUtil {
-	 private static Map<String, String> participantIntegratorFields = new HashMap<String, String>();
+	private static Map<String, String> PARTICIPANT_INTEGRATOR_FIELDS = new HashMap<String, String>();
 
-	 private static Map<String, String> specimenIntegratorFields = new HashMap<String, String>();
-	 
-	 private static Map<String, String> scgIntegratorFields = new HashMap<String, String>();
+	private static Map<String, String> SPECIMEN_INTEGRATOR_FIELDS = new HashMap<String, String>();
 
-	    static {
-            participantIntegratorFields.put("Collection Protocol Title", "collectionProtocol");
-            participantIntegratorFields.put("Participant Protcol ID", "ppi");
+	private static Map<String, String> SPE_INTEGRATOR_FIELDS = new HashMap<String, String>();
 
-            specimenIntegratorFields.put("Specimen Name", "specimenLabel");
-            specimenIntegratorFields.put("Specimen ID", "specimenId");
-            specimenIntegratorFields.put("Specimen Barcode", "specimenBarcode");
+	private static Map<String, String> SCG_INTEGRATOR_FIELDS = new HashMap<String, String>();
 
-            scgIntegratorFields.put("SCG Name", "scgName");
-	    	scgIntegratorFields.put("SCG ID", "scgId");
-	    	scgIntegratorFields.put("SCG Barcode", "scgBarcode");
-	    }
-	    
-		public String generateAndUploadTemplate(Long formId, String level) throws Exception {
-			Map<String, String> integratorCtxtFields = getIntegratorCtrxt(level);
-			
-			Container c = Container.getContainer(formId);
-			if (c == null) {
-				throw new RuntimeException("There is no container with Id "+formId);
-	    	}
-	            
-			String tmplName = new StringBuilder().append(c.getCaption()).append("_")
-	            		.append(c.getId()).append("_").append(level).toString();
-			
-			BOTemplateGenerator generator = new BOTemplateGenerator(tmplName, c, integratorCtxtFields);
-			generator.generate();
+	static {
+		PARTICIPANT_INTEGRATOR_FIELDS.put("Collection Protocol Title", "collectionProtocol");
+		PARTICIPANT_INTEGRATOR_FIELDS.put("Participant Protcol ID",    "ppi");
 
-			BulkOperationTemplate template = new BulkOperationTemplate();
-			template.setOperationName(tmplName);
-			template.setTemplateName(tmplName);
-			template.setXmlTemplate(generator.getTemplateXml());
-			template.setCsvTemplate(generator.getTemplateCsv());
-			String product = DbSettingsFactory.getProduct();
+		SPECIMEN_INTEGRATOR_FIELDS.put("Specimen Name",    "specimenLabel");
+		SPECIMEN_INTEGRATOR_FIELDS.put("Specimen ID",      "specimenId");
+		SPECIMEN_INTEGRATOR_FIELDS.put("Specimen Barcode", "specimenBarcode");
 
-			if (product.equals("Oracle")) {
-				product = BulkOperationConstants.ORACLE_DATABASE;
-			} else if (product.equals("MySQL")) {
-				product = BulkOperationConstants.MYSQL_DATABASE;
-			}
-		
-			BulkOperationDao boDao = new BulkOperationDao(JdbcDaoFactory.getJdbcDao());
-			boDao.uploadTemplate(template, product);
-	        return null;
-	        
+		SPE_INTEGRATOR_FIELDS.put("Specimen Name",    "specimenLabelForEvent");
+		SPE_INTEGRATOR_FIELDS.put("Specimen ID",      "specimenIdForEvent");
+		SPE_INTEGRATOR_FIELDS.put("Specimen Barcode", "specimenBarcodeForEvent");
+
+		SCG_INTEGRATOR_FIELDS.put("SCG Name",    "scgName");
+		SCG_INTEGRATOR_FIELDS.put("SCG ID",      "scgId");
+		SCG_INTEGRATOR_FIELDS.put("SCG Barcode", "scgBarcode");
+	}
+
+	public String generateAndUploadTemplate(Long formId, String level)
+	throws Exception {
+		Map<String, String> integratorCtxtFields = getIntegratorCtrxt(level);
+
+		Container c = Container.getContainer(formId);
+		if (c == null) {
+			throw new RuntimeException("There is no container with Id "	+ formId);
 		}
 
-		private Map<String, String> getIntegratorCtrxt(String level) {
-			Map<String, String> integratorCtxtFields = new HashMap<String, String>();
-			if (level.equalsIgnoreCase("Participant")) {
-				integratorCtxtFields = participantIntegratorFields;
-			} else if (level.equalsIgnoreCase("SpecimenCollectionGroup")) {
-				integratorCtxtFields = scgIntegratorFields;
-			} else if (level.equalsIgnoreCase("Specimen")) {
-				integratorCtxtFields = specimenIntegratorFields;
-			}
-			
-			return integratorCtxtFields;
+		String tmplName = new StringBuilder().append(c.getCaption())
+				.append("_").append(c.getId()).append("_").append(level)
+				.toString();
+
+		BOTemplateGenerator generator = new BOTemplateGenerator(tmplName, c, integratorCtxtFields);
+		generator.generate();
+
+		BulkOperationTemplate template = new BulkOperationTemplate();
+		template.setOperationName(tmplName);
+		template.setTemplateName(tmplName);
+		template.setXmlTemplate(generator.getTemplateXml());
+		template.setCsvTemplate(generator.getTemplateCsv());
+		String product = DbSettingsFactory.getProduct();
+
+		if (product.equals("Oracle")) {
+			product = BulkOperationConstants.ORACLE_DATABASE;
+		} else if (product.equals("MySQL")) {
+			product = BulkOperationConstants.MYSQL_DATABASE;
 		}
-	
-	
+
+		BulkOperationDao boDao = new BulkOperationDao(JdbcDaoFactory.getJdbcDao());
+		boDao.uploadTemplate(template, product);
+		return null;
+
+	}
+
+	private Map<String, String> getIntegratorCtrxt(String level) {
+		Map<String, String> integratorCtxtFields = new HashMap<String, String>();
+		if (level.equalsIgnoreCase("Participant")) {
+			integratorCtxtFields = PARTICIPANT_INTEGRATOR_FIELDS;
+		} else if (level.equalsIgnoreCase("SpecimenCollectionGroup")) {
+			integratorCtxtFields = SCG_INTEGRATOR_FIELDS;
+		} else if (level.equalsIgnoreCase("Specimen")) {
+			integratorCtxtFields = SPECIMEN_INTEGRATOR_FIELDS;
+		} else if (level.equalsIgnoreCase("SpecimenEvent")) {
+			integratorCtxtFields = SPE_INTEGRATOR_FIELDS;
+		}
+
+		return integratorCtxtFields;
+	}
 }
