@@ -26,7 +26,7 @@ openspecimen.ui.fancy.StorageContainers = edu.common.de.LookupSvc.extend({
 
   getDefaultValue: function() {
     var deferred = $.Deferred();
-    deferred.resolve({id: -1, text: 'Virtual'});
+    deferred.resolve({id: -1, name: 'Virtual'});
     return deferred.promise();
   }
 });

@@ -26,7 +26,7 @@ openspecimen.ui.fancy.Sites = edu.common.de.LookupSvc.extend({
 
   getDefaultValue: function() {
     var deferred = $.Deferred();
-    deferred.resolve({});
+    deferred.resolve({id: '',name: ''});
     return deferred.promise();
   }
 });

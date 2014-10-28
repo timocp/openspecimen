@@ -6,7 +6,7 @@ import java.util.Properties;
 
 import edu.common.dynamicextensions.domain.nui.AbstractLookupControl;
 
-public class DistributionProtocolControl extends AbstractLookupControl{
+public class DistributionProtocolControl extends AbstractLookupControl {
 	private static final long serialVersionUID = 1L;
 
 	@Override

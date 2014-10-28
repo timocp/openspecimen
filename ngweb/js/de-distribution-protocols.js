@@ -1,188 +1,39 @@
-
 var openspecimen = openspecimen || {}
 openspecimen.ui = openspecimen.ui || {};
 openspecimen.ui.fancy = openspecimen.ui.fancy || {};
 
-openspecimen.ui.fancy.DistributionProtocols = function() {
-  var baseUrl = '/openspecimen/rest/ng/distribution-protocols/';
+openspecimen.ui.fancy.DistributionProtocols = edu.common.de.LookupSvc.extend({
+  getApiUrl: function() {
+    return '/openspecimen/rest/ng/distribution-protocols/';
+  },
 
-  var dpCacheMap = {};
- 
-  var defaultList = [];
+  searchRequest: function(searchTerm) {
+    return {name: searchTerm};
+  },
 
-  this.getDistributionProtocols = function(queryTerm, callback) {
-    if (!queryTerm && defaultList.length > 0) {
-      callback(defaultList);
-      return;
+  formatResults: function(distributionProtocols) {
+    var result = [];
+    for (var i = 0; i < distributionProtocols.length; ++i) {
+      result.push({id: distributionProtocols[i].id, text: distributionProtocols[i].shortTitle});
     }
 
-    var xhr;
-    if (this.getDistributionProtocolsXhr) {
-      xhr = this.getDistributionProtocolsXhr;
-    } else {
-      xhr = this.getDistributionProtocolsXhr = $.ajax({type: 'GET', url: baseUrl});
-    }
-   
-    xhr.done(
-      function(data) {
-        var result = [];
-        for (var i = 0; i < data.length; ++i) {
-          result.push({id: data[i].id, text: data[i].shortTitle});
-        }
-        defaultList = result;
-        callback(result);
-      }
-    ).fail(
-      function(data) {
-        alert("Failed to load distribution protocol list");
-      }
-    );
-  };
+    return result;
+  },
 
-  this.getDistributionProtocol = function(dpId, callback) {
-    var distributionProtocol = dpCacheMap[dpId];
-    if (distributionProtocol) {
-      callback(distributionProtocol);
-      return;
-    }
+  formatResult: function(distributionProtocol) {
+    return {id: distributionProtocol.id, text: distributionProtocol.shortTitle};
+  },
 
-    for (var i = 0; i < defaultList.length; ++i) {
-      if (defaultList[i].id == dpId) {
-        callback(defaultList[i]);
-        return;
-      }
-    }
-
-    $.ajax({type: 'GET', url: baseUrl + dpId})
-      .done(function(data) {
-        var result = {id: data.id, text: data.shortTitle};
-        dpCacheMap[dpId] = result;
-        callback(result);
-      })
-      .fail(function(data) {
-        alert("Failed to retrieve distribution protocol");
-      });
-  };
-};
-
-var dpSvc = new openspecimen.ui.fancy.DistributionProtocols();
-
-openspecimen.ui.fancy.DistributionProtocolField = function(params) {
-  this.inputEl = null;
-
-  this.control = null;
-
-  this.value = '';
-
-  this.validator;
-
-  var field = params.field;
-  var id = params.id;
-  var timeout = undefined;
-  var that = this;
-
-  var qFunc = function(qTerm, qCallback) {
-    var timeInterval = 500;
-    if (qTerm.length == 0) {
-      timeInterval = 0;
-    }
-
-    if (timeout != undefined) {
-      clearTimeout(timeout);
-    }
-
-    timeout = setTimeout(
-      function() { 
-        dpSvc.getDistributionProtocols(qTerm, qCallback); 
-      }, 
-      timeInterval);
-  };
-
-  var onChange = function(selected) { 
-    if (selected) {
-      this.value = selected.id;
-    } else {
-      this.value = '';
-    }
-  };
-
-  var initSelectedDP = function(dpId, elem, callback) {
-    if (dpId) {
-      dpSvc.getDistributionProtocol(dpId, callback);
-    }
-  };
-
-  this.render = function() {
-    this.inputEl = $("<input/>")
-      .prop({id: id, title: field.toolTip, value: field.defaultValue})
-      .css("border", "0px").css("padding", "0px")
-      .val("")
-      .addClass("form-control");
-    this.validator = new edu.common.de.FieldValidator(field.validationRules, this);
-    return this.inputEl;
-  };
-
-  this.postRender = function() {
-    this.control = new Select2Search(this.inputEl);
-    this.control.onQuery(qFunc).onChange(onChange);
-    this.control.setValue(this.value);
-
-    this.control.onInitSelection(
-      function(elem, callback) {
-        initSelectedDP(that.value, elem, callback);
-      }
-    ).render();
-
-  };
-
-  this.getName = function() {
-    return field.name;
-  };
-
-  this.getCaption = function() {
-    return field.caption;
-  };
-
-  this.getTooltip = function() {
-    return field.toolTip ? field.toolTip : field.caption;
-  };
-
-  this.getValue = function() {
-    var val = this.control.getValue();
-    if (val) {
-      val = val.id;
-    }
-
-    return {name: field.name, value: val ? val : ''};
-  };
-
-  this.getDisplayValue = function() {
-    if(!this.control) {
-      this.postRender();
-    }
-    var val = this.control.getValue();
-    if (val) {
-      var displayValue = val.text;
-    }
-    return {name: field.name, value: displayValue ? displayValue : '' };
+  getDefaultValue: function() {
+    var deferred = $.Deferred();
+    deferred.resolve({id: '', shortTitle: ''});
+    return deferred.promise();
   }
+});
 
-  this.setValue = function(recId, value) {
-    this.recId = recId;
-    this.value = value ? value : '';
-    if (this.control) {
-      this.control.setValue(value);
-    }
-  };
-
-  this.validate = function() {
-    return this.validator.validate();
-  };
-
-  this.getPrintEl = function() {
-    return edu.common.de.Utility.getPrintEl(this);
-  };
-};
+openspecimen.ui.fancy.DistributionProtocolField = edu.common.de.LookupField.extend({
+  svc: new openspecimen.ui.fancy.DistributionProtocols()
+});
 
 edu.common.de.FieldManager.getInstance()
   .register({
