@@ -143,7 +143,7 @@ public class MigrateForm {
 	
 	private static Set<String> containerNames = new HashSet<String>();
 	
-	private static final String specialChars = "[+-/*(){}%. ]";
+	private static final String specialChars = "[\\[\\]+-/*(){}%. ]";
 	
 	private static Map<String, Long> staticEntityMap = null;
 
@@ -1431,7 +1431,12 @@ public class MigrateForm {
 			}
 			
 			Map<BaseAbstractAttributeInterface, Object> valueMap = (Map<BaseAbstractAttributeInterface, Object>) dataValue;
-			for (Object obj : valueMap.values()) {
+			for (Map.Entry<BaseAbstractAttributeInterface, Object> value : valueMap.entrySet()) {
+				if (value.getKey() == null || value.getKey().getName() == null) { // id attribute
+					continue;
+				}
+				
+				Object obj = value.getValue();
 				if (obj.toString() == null || obj.toString().trim().isEmpty()) {
 					continue;
 				}
