@@ -987,8 +987,8 @@ public class SpecimenBizLogic
 							&& (!Validator.isEmpty(specimenDTO.getContainerName()))
 							&& (strContainerName.equals(specimenDTO.getContainerName())))
 					{
-						pos1 = positions[1];
-						pos2 = positions[2];
+				/*		pos1 = positions[1];
+						pos2 = positions[2];*/
 					}
 				}
 			StorageContainerBizlogic storageContainerBizlogic = new StorageContainerBizlogic();
