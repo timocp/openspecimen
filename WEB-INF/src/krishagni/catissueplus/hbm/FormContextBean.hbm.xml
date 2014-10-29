@@ -251,7 +251,7 @@
             where
               c.deleted_on is null and fc.entity_type = 'Participant' and (reg.identifier = :cprId or fc.cp_id = -1)
             group by
-              fc.identifier, fc.container_id, c.caption , fc.cp_id, fc.is_multirecord
+              fc.identifier, fc.container_id, c.caption , fc.cp_id, fc.is_multirecord, fc.is_sys_form
         </sql-query>
 
         <sql-query name="getSpecimenForms">
@@ -280,7 +280,7 @@
             where
               c.deleted_on is null and fc.entity_type = 'Specimen' and (specimen.identifier = :specimenId or fc.cp_id = -1)
             group by
-              fc.identifier, fc.container_id, c.caption , fc.cp_id, fc.is_multirecord
+              fc.identifier, fc.container_id, c.caption , fc.cp_id, fc.is_multirecord, fc.is_sys_form
         </sql-query>
         
         <sql-query name="getSpecimenEventForms">
@@ -308,7 +308,7 @@
             where
               c.deleted_on is null and fc.entity_type = 'SpecimenEvent' and (specimen.identifier = :specimenId or fc.cp_id = -1)
             group by
-              fc.identifier, fc.container_id, c.caption , fc.cp_id, fc.is_multirecord
+              fc.identifier, fc.container_id, c.caption , fc.cp_id, fc.is_multirecord, fc.is_sys_form
             order by 
                c.caption  
 
@@ -338,7 +338,7 @@
             where
               c.deleted_on is null and fc.entity_type = 'SpecimenCollectionGroup' and (scg.identifier = :scgId or fc.cp_id = -1)
             group by
-              fc.identifier, fc.container_id, c.caption , fc.cp_id, fc.is_multirecord
+              fc.identifier, fc.container_id, c.caption , fc.cp_id, fc.is_multirecord, fc.is_sys_form
         </sql-query>
 
         <sql-query name="getFormRecords">
