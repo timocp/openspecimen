@@ -2191,7 +2191,12 @@ angular.module('plus.controllers', ['checklist-model', 'ui.app'])
       for (var i = 0; i < fields.length; ++i) {
         var field = fields[i];
         if (field.type == 'DATE' || field.type == 'INTEGER' || field.type == 'FLOAT') {
-          result.push({label: field.caption, value: field.name});
+          var label = field.caption;
+          if (field.extensionForm) {
+            label = field.extensionForm + ": " + label;
+          }
+
+          result.push({label: label, value: field.name});
         }
       }
 
