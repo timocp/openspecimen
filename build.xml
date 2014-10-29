@@ -802,7 +802,10 @@
 		<copy todir="${zip.dir}/modules/caTissue/conf/catissuecore-properties" overwrite="true">
 			<fileset dir="${base.dir}/catissuecore-properties" />
 		</copy>
-		
+		<copy todir="${zip.dir}/modules/appResources" overwrite="true">
+			<fileset dir="${base.dir}/appResources" />
+		</copy>
+				
 		<copy todir="${zip.dir}/modules/caTissue/conf/catissuecore-properties/ng-email-templates" overwrite="true">
 			<fileset dir="${base.dir}/WEB-INF/resources/ng-email-templates"/>
 		</copy>
