@@ -3,7 +3,11 @@ package com.krishagni.catissueplus.core.administrative.repository.impl;
 
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 
 import com.krishagni.catissueplus.core.administrative.domain.Site;
 import com.krishagni.catissueplus.core.administrative.repository.SiteDao;
@@ -14,8 +18,6 @@ public class SiteDaoImpl extends AbstractDao<Site> implements SiteDao {
 	private static final String FQN = Site.class.getName();
 
 	private static final String GET_SITE_BY_NAME = FQN + ".getSiteByName";
-
-	private static final String GET_ALL_SITES = FQN + ".getAllSites";
 
 	@Override
 	@SuppressWarnings("unchecked")
@@ -42,10 +44,20 @@ public class SiteDaoImpl extends AbstractDao<Site> implements SiteDao {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<Site> getAllSites(int maxResults) {
-		Query query = sessionFactory.getCurrentSession().getNamedQuery(GET_ALL_SITES);
+	public List<Site> getAllSites(String name, int maxResults) {
+		Criteria query = sessionFactory.getCurrentSession().createCriteria(Site.class);
+		
+		if (name != null && !name.trim().isEmpty()) {
+			query.add(Restrictions.ilike("name", name.trim(), MatchMode.ANYWHERE));
+		}
+		query.add(Restrictions.ne("activityStatus", "Disabled"));
+		query.addOrder(Order.asc("name"));
+		
+		if (maxResults <= 0) {
+			maxResults = 100;
+		}
 		query.setMaxResults(maxResults);
-		return query.list();
 
+		return query.list();
 	}
 }

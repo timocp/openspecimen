@@ -5,7 +5,17 @@ import com.krishagni.catissueplus.core.common.events.RequestEvent;
 
 public class ReqAllDistributionProtocolEvent extends RequestEvent {
 
+	private String shortTitle;
+	
 	private int maxResults;
+	
+	public String getShortTitle() {
+		return shortTitle;
+	}
+
+	public void setShortTitle(String shortTitle) {
+		this.shortTitle = shortTitle;
+	}
 
 	public int getMaxResults() {
 		return maxResults;

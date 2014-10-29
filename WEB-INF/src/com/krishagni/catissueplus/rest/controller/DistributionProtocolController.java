@@ -57,9 +57,12 @@ public class DistributionProtocolController {
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
 	public List<DistributionProtocolDetails> getAllDistributionProtocols(
-			@RequestParam(value = "maxResults", required = false, defaultValue = "1000") String maxResults) {
+			@RequestParam(value = "shortTitle", required = false, defaultValue = "") String shortTitle,
+			@RequestParam(value = "maxResults", required = false, defaultValue = "100") String maxResults) {
 		ReqAllDistributionProtocolEvent req = new ReqAllDistributionProtocolEvent();
+		req.setShortTitle(shortTitle);
 		req.setMaxResults(Integer.parseInt(maxResults));
+		
 		AllDistributionProtocolsEvent resp = distributionProtocolSvc.getAllDistributionProtocols(req);
 		if (!resp.isSuccess()) {
 			resp.raiseException();

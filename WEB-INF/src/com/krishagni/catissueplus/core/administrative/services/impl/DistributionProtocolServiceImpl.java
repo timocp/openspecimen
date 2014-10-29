@@ -50,7 +50,7 @@ public class DistributionProtocolServiceImpl implements DistributionProtocolServ
 	@PlusTransactional
 	public AllDistributionProtocolsEvent getAllDistributionProtocols(ReqAllDistributionProtocolEvent event) {
 		List<DistributionProtocol> distributionProtocols = daoFactory.getDistributionProtocolDao()
-				.getAllDistributionProtocol(event.getMaxResults());
+				.getAllDistributionProtocol(event.getShortTitle(), event.getMaxResults());
 		List<DistributionProtocolDetails> result = new ArrayList<DistributionProtocolDetails>();
 
 		for (DistributionProtocol distributionProtocol : distributionProtocols) {

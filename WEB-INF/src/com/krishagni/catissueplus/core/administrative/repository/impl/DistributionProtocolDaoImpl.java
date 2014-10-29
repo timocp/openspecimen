@@ -3,7 +3,11 @@ package com.krishagni.catissueplus.core.administrative.repository.impl;
 
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 
 import com.krishagni.catissueplus.core.administrative.domain.DistributionProtocol;
 import com.krishagni.catissueplus.core.administrative.repository.DistributionProtocolDao;
@@ -17,8 +21,6 @@ public class DistributionProtocolDaoImpl extends AbstractDao<DistributionProtoco
 
 	private static final String GET_DISTRIBUTION_PROTOCOL_SHORT_TITLE = FQN + ".getDistributionProtocolByShortTitle";
 
-	private static final String GET_ALL_DPS = FQN + ".getAllDistributionProtocols";
-
 	@Override
 	public DistributionProtocol getDistributionProtocol(Long id) {
 		return (DistributionProtocol) sessionFactory.getCurrentSession().get(DistributionProtocol.class, id);
@@ -26,8 +28,19 @@ public class DistributionProtocolDaoImpl extends AbstractDao<DistributionProtoco
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<DistributionProtocol> getAllDistributionProtocol(int maxResults) {
-		Query query = sessionFactory.getCurrentSession().getNamedQuery(GET_ALL_DPS);
+	public List<DistributionProtocol> getAllDistributionProtocol(String shortTitle, int maxResults) {
+		Criteria query = sessionFactory.getCurrentSession().createCriteria(DistributionProtocol.class);
+		
+		if(shortTitle != null && !shortTitle.trim().isEmpty()) {
+			query.add(Restrictions.ilike("shortTitle", shortTitle.trim(), MatchMode.ANYWHERE));
+		}
+		query.add(Restrictions.ne("activityStatus", "Disabled"));
+		query.addOrder(Order.asc("shortTitle"));
+		
+		if(maxResults <= 0) {
+			maxResults = 100;
+		}
+		
 		return query.setMaxResults(maxResults).list();
 	}
 

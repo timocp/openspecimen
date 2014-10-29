@@ -9,6 +9,11 @@ import edu.common.dynamicextensions.domain.nui.AbstractLookupControl;
 public class SiteControl extends AbstractLookupControl {
 
 	private static final long serialVersionUID = 1L;
+	
+	private static final String LU_TABLE = "CATISSUE_SITE";
+	
+	private static final Properties LU_PV_SOURCE_PROPS = initPvSourceProps();
+	
 
 	@Override
 	public void getProps(Map<String, Object> props) {
@@ -22,11 +27,19 @@ public class SiteControl extends AbstractLookupControl {
 
 	@Override
 	public Properties getPvSourceProps() {
-		return null;
+		return LU_PV_SOURCE_PROPS;
 	}
 
 	@Override
 	public String getTableName() {
-		return null;
+		return LU_TABLE;
+	}
+	
+	private static Properties initPvSourceProps() {
+		Properties props = new Properties();
+		props.put("apiUrl", "rest/ng/sites/");
+		props.put("searchTermName", "name");
+		props.put("resultFormat", "{{name}}");
+		return props;
 	}
 }

@@ -16,6 +16,6 @@ public interface DistributionProtocolDao extends Dao<DistributionProtocol> {
 
 	public DistributionProtocol getDistributionProtocol(String title);
 
-	public List<DistributionProtocol> getAllDistributionProtocol(int maxResults);
+	public List<DistributionProtocol> getAllDistributionProtocol(String shortTitle, int maxResults);
 
 }

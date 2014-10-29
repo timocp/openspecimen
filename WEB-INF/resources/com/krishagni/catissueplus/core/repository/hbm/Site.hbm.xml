@@ -86,10 +86,6 @@
     	SELECT site FROM com.krishagni.catissueplus.core.administrative.domain.Site site WHERE site.name = :siteName
     </query>
     
-     <query name="getAllSites">
-        from com.krishagni.catissueplus.core.administrative.domain.Site where activityStatus != 'Disabled'
-    </query>
-    
  </class>
 
 </hibernate-mapping>

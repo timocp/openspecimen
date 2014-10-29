@@ -83,14 +83,18 @@ public class SiteController {
 	//@CacheControl(policy = {CachePolicy.NO_STORE, CachePolicy.NO_CACHE})
 	@ResponseBody
 	public List<SiteDetails> getAllSites(
-			@RequestParam(value = "maxResults", required = false, defaultValue = "1000") String maxResults) {
+			@RequestParam(value = "name", required = false, defaultValue = "") String name,
+			@RequestParam(value = "maxResults", required = false, defaultValue = "100") String maxResults) {
+		
 		ReqAllSiteEvent req = new ReqAllSiteEvent();
+		req.setName(name);
 		req.setMaxResults(Integer.parseInt(maxResults));
+		
 		AllSitesEvent resp = siteService.getAllSites(req);
 		if (!resp.isSuccess()) {
 			resp.raiseException();
 		}
-			return resp.getSites();
+		return resp.getSites();
 	}
 
 	@RequestMapping(method = RequestMethod.POST)

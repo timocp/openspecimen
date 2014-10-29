@@ -67,7 +67,7 @@ public class SiteServiceImpl implements SiteService {
 	@Override
 	@PlusTransactional
 	public AllSitesEvent getAllSites(ReqAllSiteEvent req) {
-		List<Site> sites = daoFactory.getSiteDao().getAllSites(req.getMaxResults());
+		List<Site> sites = daoFactory.getSiteDao().getAllSites(req.getName(), req.getMaxResults());
 		List<SiteDetails> result = new ArrayList<SiteDetails>();
 
 		for (Site site : sites) {

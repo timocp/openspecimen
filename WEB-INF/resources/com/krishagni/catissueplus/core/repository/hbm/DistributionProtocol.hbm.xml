@@ -79,10 +79,6 @@
        <query name="getDistributionProtocolByShortTitle">
       	Select distributionProtocol FROM com.krishagni.catissueplus.core.administrative.domain.DistributionProtocol distributionProtocol where distributionProtocol.shortTitle=:shortTitle 
       </query>
-      
-      <query name="getAllDistributionProtocols">
-        from com.krishagni.catissueplus.core.administrative.domain.DistributionProtocol where activityStatus != 'Disabled'
-      </query>
-      
+
  </class>
 </hibernate-mapping>
