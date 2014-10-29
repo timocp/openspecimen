@@ -334,7 +334,7 @@ public class SiteBizLogic extends CatissueDefaultBizLogic
 				throw this.getBizLogicException(null, "errors.item.required", message);
 			}
 		}*/
-		if(site.getName()!=null && (site.getName().contains("'")|| site.getName().contains("\"")))
+		if(site.getName()!=null&& "".equals(site.getName()))
 		{
 			throw this.getBizLogicException(null, "error.quotes.site.name", "");
 		}
