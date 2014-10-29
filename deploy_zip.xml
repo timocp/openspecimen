@@ -428,6 +428,11 @@
 
         <copy file="${temp.dir}/catissuecore/WEB-INF/classes/DAOConfig.xml" todir="${temp.dir}" />
         <copy file="${base.dir}/modules/caTissue/conf/login-config.xml" todir="${temp.dir}" overwrite="true" />
+		<copy todir="${temp.dir}/catissuecore/WEB-INF/classes" overwrite="true">
+			<fileset dir="${base.dir}/modules/appResources">
+				<include name="**.*"/>
+			</fileset>
+		</copy>
         <copy file="${base.dir}/modules/caTissue/conf/properties-service.xml" todir="${temp.dir}" overwrite="true" />
         <if>
             <not>
