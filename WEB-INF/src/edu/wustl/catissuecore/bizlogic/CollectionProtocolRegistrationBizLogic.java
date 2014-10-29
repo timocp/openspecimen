@@ -2576,7 +2576,7 @@ public class CollectionProtocolRegistrationBizLogic extends CatissueDefaultBizLo
 	}
 	public String getCpTitlelistForParticipant(Long participantId,HibernateDAO hibernateDAO) throws BizLogicException{
 	    String hql = "select cp.shortTitle from  edu.wustl.catissuecore.domain.CollectionProtocolRegistration cpr join cpr.collectionProtocol cp " +
-	    		" where  cpr.participant.id = :pid";
+	    		" where  cpr.participant.id = :pid and cpr.activityStatus = 'Active'";
 	    ColumnValueBean columnValueBean=new ColumnValueBean(participantId);
         columnValueBean.setColumnName("pid");
         List<ColumnValueBean>  columnValueBeans=new ArrayList();
