@@ -103,5 +103,19 @@ public class SiteDAO
 					"errors.executeQuery.genericmessage", "");
 		}
 	}
+	
+	public Site getSite(HibernateDAO hibenrateDAO, Long id) throws BizLogicException{
+		String hql = "from "+Site.class.getName()+" where id="+id;
+		List<Site> result;
+		try {
+			result = hibenrateDAO.executeQuery(hql);
+		}
+		catch (DAOException e) {
+			LOGGER.error(e);
+			throw new BizLogicException(null, null,
+					"errors.executeQuery.genericmessage", "");
+		}
+		return result.get(0);
+	}
 
 }
