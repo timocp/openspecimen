@@ -426,7 +426,7 @@
 					<fileset dir="${base.dir}/custom_impl_lib" />
 		</copy>
 		<copy todir="${temp.dir}/catissuecore/WEB-INF/classes" overwrite="true">
-    <fileset dir="${base.dir}/modules/appResources">
+    <fileset dir="${base.dir}/appResources">
         <include name="**.*"/>
     </fileset>
 </copy>
