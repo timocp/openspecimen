@@ -118,7 +118,9 @@ public class AddSpecimenFromRequirementAction extends CatissueBaseAction {
       {
         Iterator<ParticipantMedicalIdentifier> itr = mrnColl.iterator();
         ParticipantMedicalIdentifier mrn = itr.next();
-        specimenDTO.setSiteName(mrn.getSite().getName());
+        if(mrn != null && !StringUtils.isEmpty(mrn.getMedicalRecordNumber())){
+        	specimenDTO.setSiteName(mrn.getSite().getName());
+        }
       }
       request.setAttribute("DNAMethodList", CDEManager.getCDEManager().getPermissibleValueList("DNA Method", null));
 

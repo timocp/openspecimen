@@ -238,5 +238,12 @@ public class UserDAO
         }
 
     }
+    
+    public User getUserById(HibernateDAO hibernateDao, Long id) throws DAOException {
+  		User user = new User();
+  		List<User> users = hibernateDao.executeQuery("from " + User.class.getName() + " where id = " + id);
+  		user = users.get(0);
+  		return user;
+  	}
 
 }

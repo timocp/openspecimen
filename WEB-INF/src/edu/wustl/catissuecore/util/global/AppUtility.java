@@ -4979,4 +4979,16 @@ public class AppUtility
 
     return typeList;
   }
+  
+  public static List<NameValueBean> getAllPrivileges() {
+		List<NameValueBean> allPrivleges = new ArrayList<NameValueBean>();
+		allPrivleges.add(new NameValueBean("User Provisioning", 13));
+		allPrivleges.add(new NameValueBean("Distribution", 21));
+		allPrivleges.add(new NameValueBean("Storage Administration", 15));
+		allPrivleges.add(new NameValueBean("Shipment Processing", 30));
+		allPrivleges.add(new NameValueBean("Protocol Administration", 16));
+		allPrivleges.add(new NameValueBean("Specimen Processing", 26));
+		allPrivleges.add(new NameValueBean("Registration", 18));
+		return allPrivleges;
+	}
 }

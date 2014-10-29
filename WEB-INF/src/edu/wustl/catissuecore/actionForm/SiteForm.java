@@ -137,7 +137,7 @@ public class SiteForm extends AbstractActionForm
 		phoneNumber = site.getAddress().getPhoneNumber();
 		faxNumber = site.getAddress().getFaxNumber();
 		this.setActivityStatus(site.getActivityStatus());
-		coordinatorId = site.getCoordinator().getId().longValue();
+		coordinatorId = site.getCoordinatorCollection().iterator().next().getId().longValue();
 		facilityId = site.getFacilityId();
 	}
 

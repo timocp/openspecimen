@@ -70,7 +70,7 @@ public class ShipmentBizLogic extends BaseShipmentBizLogic
 	{
 		final Shipment shipment = (Shipment) baseShipment;
 		final String[] toUser = new String[1];
-		toUser[0] = shipment.getReceiverSite().getCoordinator().getEmailAddress();
+		toUser[0] = shipment.getReceiverSite().getCoordinatorCollection().iterator().next().getEmailAddress();
 		return toUser;
 	}
 

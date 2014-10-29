@@ -1,6 +1,7 @@
 
 package edu.wustl.catissuecore.caties.util;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -202,7 +203,9 @@ public class AddCollectionProtocol
 		site.setName(CaTIESProperties.getValue(CaTIESConstants.SITE_NAME_FROM_PROPERTIES));
 		site.setType("Repository");
 		site.setActivityStatus("Active");
-		site.setCoordinator(user);
+		Set<User> users = new HashSet<User>();
+		users.add(user);
+		site.setCoordinatorCollection(users);
 
 		final Address address = new Address();
 		if (address.getCity() == null)

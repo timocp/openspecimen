@@ -1137,9 +1137,9 @@ public abstract class BaseShipmentBizLogic extends CatissueDefaultBizLogic
 		//Add mailing functionality
 		final EmailHandler emailHandler = new EmailHandler();
 		emailHandler.createShipmentEmail(baseShipment.getReceiverSite()
-				.getCoordinator().getLastName()
+				.getCoordinatorCollection().iterator().next().getLastName()
 				+ ","
-				+ baseShipment.getReceiverSite().getCoordinator()
+				+ baseShipment.getReceiverSite().getCoordinatorCollection().iterator().next()
 						.getFirstName(), toUser,
 				ccUsers, baseShipment.getSenderContactPerson().getEmailAddress(),
 				baseShipment.getLabel(), baseShipment.getReceiverContactPerson()
@@ -1193,7 +1193,7 @@ public abstract class BaseShipmentBizLogic extends CatissueDefaultBizLogic
 				{
 					receiverSite = (Site) receiverSiteList.get( 0 );
 				}
-				final User receiverSiteCoordinator = receiverSite.getCoordinator();
+				final User receiverSiteCoordinator = receiverSite.getCoordinatorCollection().iterator().next();
 				baseShipment.setReceiverContactPerson( receiverSiteCoordinator );
 			}
 		}
@@ -1214,7 +1214,7 @@ public abstract class BaseShipmentBizLogic extends CatissueDefaultBizLogic
 					{
 						receiverSite = (Site) receiverSiteList.get( 0 );
 					}
-					final User receiverSiteCoordinator = receiverSite.getCoordinator();
+					final User receiverSiteCoordinator = receiverSite.getCoordinatorCollection().iterator().next();
 					baseShipment.setReceiverContactPerson( receiverSiteCoordinator );
 				}
 			}

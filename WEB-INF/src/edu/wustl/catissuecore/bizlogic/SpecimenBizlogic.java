@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
+
 import edu.wustl.catissuecore.domain.Biohazard;
 import edu.wustl.catissuecore.domain.CollectionProtocolRegistration;
 import edu.wustl.catissuecore.domain.ConsentTierResponse;
@@ -741,7 +743,8 @@ public class SpecimenBizlogic
     if (mrnColl != null && mrnColl.size() > 0)
     {
       Iterator<ParticipantMedicalIdentifier> itr = mrnColl.iterator();
-      ParticipantMedicalIdentifier mrn = itr.next();
+      ParticipantMedicalIdentifier mrn = itr.next(); 
+      if(mrn != null && !StringUtils.isEmpty(mrn.getMedicalRecordNumber()))
       specimenDTO.setSiteName(mrn.getSite().getName());
     }
     specimenDTO.setCpId(specimen.getSpecimenCollectionGroup().getCollectionProtocolRegistration()

@@ -387,7 +387,7 @@ public class BaseShipmentAction extends CatissueBaseAction
 			{
 				receiverSite = (Site) list.get(0);
 			}
-			final User receiverSiteCoordinator = receiverSite.getCoordinator();
+			final User receiverSiteCoordinator = receiverSite.getCoordinatorCollection().iterator().next();
 			final StringBuffer stbuff = new StringBuffer();
 			stbuff.append(receiverSiteCoordinator.getFirstName());
 			stbuff.append(" ");

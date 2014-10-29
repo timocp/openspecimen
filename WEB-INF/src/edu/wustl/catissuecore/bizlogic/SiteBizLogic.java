@@ -83,7 +83,7 @@ public class SiteBizLogic extends CatissueDefaultBizLogic
 		{
 			final Site site = (Site) obj;
 
-			this.checkStatus(dao, site.getCoordinator(), "Coordinator");
+			this.checkStatus(dao, site.getCoordinatorCollection().iterator().next(), "Coordinator");
 
 			final Set protectionObjects = new HashSet();
 
@@ -124,9 +124,9 @@ public class SiteBizLogic extends CatissueDefaultBizLogic
 			final Site site = (Site) obj;
 			final Site siteOld = (Site) oldObj;
 
-			if (!site.getCoordinator().getId().equals(siteOld.getCoordinator().getId()))
+			if (!site.getCoordinatorCollection().iterator().next().getId().equals(siteOld.getCoordinatorCollection().iterator().next().getId()))
 			{
-				this.checkStatus(dao, site.getCoordinator(), "Coordinator");
+				this.checkStatus(dao, site.getCoordinatorCollection().iterator().next(), "Coordinator");
 			}
 
 			this.setCordinator(dao, site);
@@ -195,21 +195,23 @@ public class SiteBizLogic extends CatissueDefaultBizLogic
 		try
 		{
 
-			if(site.getCoordinator().getId() != null)
+			if(site.getCoordinatorCollection() != null && !site.getCoordinatorCollection().isEmpty())
 			{
-				final Object object = dao.retrieveById(User.class.getName(), site.getCoordinator()
-						.getId());
+				final Object object = dao.retrieveById(User.class.getName(), site.getCoordinatorCollection().iterator().next().getId());
 
 				if (object != null)
 				{
 					final User user = (User) object;
-					site.setCoordinator(user);
+					site.getCoordinatorCollection().add(user);
 				}
 			}
-			else if(site.getCoordinator() != null && !Validator.isEmpty(site.getCoordinator().getLoginName()))
+			else if(site.getCoordinatorCollection() != null && !site.getCoordinatorCollection().isEmpty() && 
+					!Validator.isEmpty(site.getCoordinatorCollection().iterator().next().getLoginName()))
 			{
 				UserDAO userDAO = new UserDAO();
-				site.getCoordinator().setId(userDAO.getUserIDFromLoginName((HibernateDAO)dao, site.getCoordinator().getLoginName(),Constants.ACTIVITY_STATUS_ACTIVE));
+				User user = new User();
+				user.setId(userDAO.getUserIDFromLoginName((HibernateDAO)dao, site.getCoordinatorCollection().iterator().next().getLoginName(),Constants.ACTIVITY_STATUS_ACTIVE));
+				site.getCoordinatorCollection().add(user);
 			}
 			
 		}
@@ -300,9 +302,10 @@ public class SiteBizLogic extends CatissueDefaultBizLogic
 			throw this.getBizLogicException(null, "errors.item.required", message);
 		}
 
-		if ((site.getCoordinator() == null || site.getCoordinator().getId() == null
-				|| site.getCoordinator().getId() == 0
-				|| site.getCoordinator().getId().longValue() == -1L) && Validator.isEmpty(site.getCoordinator().getLoginName()))
+		if ((site.getCoordinatorCollection() == null || site.getCoordinatorCollection().isEmpty() || 
+				site.getCoordinatorCollection().iterator().next().getId() == null
+				|| site.getCoordinatorCollection().iterator().next().getId() == 0
+				|| site.getCoordinatorCollection().iterator().next().getId().longValue() == -1L) && Validator.isEmpty(site.getCoordinatorCollection().iterator().next().getLoginName()))
 		{
 			message = ApplicationProperties.getValue("site.coordinator");
 			throw this.getBizLogicException(null, "errors.item.required", message);

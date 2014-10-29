@@ -5,6 +5,8 @@ package edu.wustl.catissuecore.util;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import edu.wustl.catissuecore.domain.Address;
 import edu.wustl.catissuecore.domain.CancerResearchGroup;
@@ -183,9 +185,11 @@ public final class ApiSearchUtil
  	}
 	public static void setSiteDefault(Site site)
 	{		
-    	if (SearchUtil.isNullobject(site.getCoordinator()))
+    	if (SearchUtil.isNullobject(site.getCoordinatorCollection()))
     	{
-    		site.setCoordinator(new User());
+    		Set<User> users = new HashSet<User>();
+    		users.add(new User());
+    		site.setCoordinatorCollection(users);
     	}    	
     	if (SearchUtil.isNullobject(site.getAddress()))
     	{

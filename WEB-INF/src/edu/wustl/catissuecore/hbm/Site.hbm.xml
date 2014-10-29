@@ -59,7 +59,14 @@
             length="255"
         />
 
-        <many-to-one
+        <set name="coordinatorCollection"  table="CATISSUE_SITE_COORDINATORS">
+         <key column="SITE_ID"/>
+         <many-to-many 
+         	column="USER_ID" 
+         	class="edu.wustl.catissuecore.domain.User"/>
+       </set>
+       
+       <!--  <many-to-one
             name="coordinator"
             class="edu.wustl.catissuecore.domain.User"
             cascade="none"
@@ -67,7 +74,7 @@
             update="true"
             insert="true"
             column="USER_ID" lazy="false" 
-        />
+        /> -->
 
         <property
             name="activityStatus"

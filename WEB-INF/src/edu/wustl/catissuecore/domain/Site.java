@@ -12,6 +12,7 @@ package edu.wustl.catissuecore.domain;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 
 import edu.wustl.catissuecore.actionForm.SiteForm;
 import edu.wustl.catissuecore.util.SearchUtil;
@@ -74,7 +75,8 @@ public class Site extends AbstractDomainObject
 	/**
 	 * The User who currently coordinates operations at the Site.
 	 */
-	protected User coordinator;
+	
+	protected Set<User> coordinatorCollection = new HashSet<User>();
 
 	//Change for API Search   --- Ashwin 04/10/2006
 	/**
@@ -126,7 +128,7 @@ public class Site extends AbstractDomainObject
 		collectionProtocolCollection = null;
 		specimenCollectionGroupCollection = null;
 		collectionProtocolEventcollection = null;
-		coordinator = null;
+		coordinatorCollection = null;
 		address = null;
 	}
 
@@ -235,21 +237,21 @@ public class Site extends AbstractDomainObject
 	 * Returns the coordinator associated with this site.
 	 * @hibernate.many-to-one column="USER_ID"  class="edu.wustl.catissuecore.domain.User" constrained="true"
 	 * @return coordinator associated with this site.
-	 * @see #setCoordinator(User)
+	 * @see #setCoordinatorCollection(User)
 	 */
-	public User getCoordinator()
+	public Set<User> getCoordinatorCollection()
 	{
-		return coordinator;
+		return coordinatorCollection;
 	}
 
 	/**
 	 * Sets the coordinator to this site.
 	 * @param coordinator coordinator to be set.
-	 * @see #getCoordinator()
+	 * @see #getCoordinatorCollection()
 	 */
-	public void setCoordinator(edu.wustl.catissuecore.domain.User coordinator)
+	public void setCoordinatorCollection(Set<User> coordinatorCollection)
 	{
-		this.coordinator = coordinator;
+		this.coordinatorCollection = coordinatorCollection;
 	}
 
 	/**
@@ -308,9 +310,9 @@ public class Site extends AbstractDomainObject
 		{
 
 			//Change for API Search   --- Ashwin 04/10/2006
-			if (SearchUtil.isNullobject(coordinator))
+			if (SearchUtil.isNullobject(coordinatorCollection))
 			{
-				coordinator = new User();
+				coordinatorCollection = new HashSet<User>();
 			}
 			//Change for API Search   --- Ashwin 04/10/2006
 			if (SearchUtil.isNullobject(address))
@@ -327,7 +329,9 @@ public class Site extends AbstractDomainObject
 
 			activityStatus = form.getActivityStatus();
 			logger.debug("form.getCoordinatorId() " + form.getCoordinatorId());
-			coordinator.setId(Long.valueOf(form.getCoordinatorId()));
+			User user = new User();
+			user.setId(Long.valueOf(form.getCoordinatorId()));
+			coordinatorCollection.add(user);
 
 			address.setStreet(form.getStreet());
 			address.setCity(form.getCity());
