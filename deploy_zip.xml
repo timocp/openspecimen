@@ -5551,6 +5551,8 @@
 	    </target>
 
     <target name="upgrade_db_os_v1.1">
+      <antcall target="upgrade_de_db"/>
+
       <updateDatabase 
         changeLogFile="${base.dir}/SQL/liquibase_xml/db-os-changelog-1.1.xml" 
         driver="${final.database.driver}" 
