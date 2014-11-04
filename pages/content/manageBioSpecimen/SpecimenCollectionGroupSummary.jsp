@@ -3,6 +3,8 @@
 
 
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<link rel="stylesheet" type="text/css" href="dhtmlxSuite_v35/dhtmlxCalendar/codebase/dhtmlxcalendar.css" />
+<link rel="stylesheet" type="text/css" href="dhtmlxSuite_v35/dhtmlxCalendar/codebase/skins/dhtmlxcalendar_dhx_skyblue.css" />
 <script	src="dhtmlxSuite_v35/dhtmlxGrid/codebase/dhtmlxcommon.js"></script>
 <script	src="dhtmlxSuite_v35/dhtmlxCombo/codebase/dhtmlxcombo.js"></script>
 <script	src="dhtmlxSuite_v35/dhtmlxCombo/codebase/ext/dhtmlxcombo_extra.js"></script>
@@ -10,12 +12,12 @@
 <link rel="stylesheet" type="text/css" href="dhtmlxSuite_v35/dhtmlxCombo/codebase/dhtmlxcombo.css" />
 
 <script src="dhtmlxSuite_v35/dhtmlxCalendar/codebase/dhtmlxcalendar.js"></script>
-<link rel="stylesheet" type="text/css" href="dhtmlxSuite_v35/dhtmlxCalendar/codebase/skins/dhtmlxcalendar_dhx_skyblue.css" />
-<link rel="stylesheet" type="text/css" href="dhtmlxSuite_v35/dhtmlxCalendar/codebase/dhtmlxcalendar.css" />
+
+
 
 <link rel="stylesheet" type="text/css" href="css/styleSheet.css" />
 <LINK type=text/css rel=stylesheet href="css/participantEffects.css" />
-
+<script src="jss/script.js" type="text/javascript"></script>
 <script src="jss/scgSummary.js"></script>
 <script src="jss/json2.js" type="text/javascript"></script>
 <fmt:formatDate type="time" value="${scgSummaryDTO.collectedDate}" pattern="H" var="collectedTimeinHr"/>
@@ -88,7 +90,7 @@
 	<td align="left" class="black_new date_text_field" >
 						<input type="text" name="collectedDate" class="black_ar date_text_field"  onblur="processData(this)"
 					id="collectedDate" size="10" value="${collectedformatedDate}"
-							 onclick="doInitCalendar('collectedDate',false,'${uiDatePattern}');" /> </td>
+							  /> </td>
         
             <td align="left" style="padding-left:4px">
             
@@ -126,7 +128,7 @@
         
 						<input type="text" class="black_ar date_text_field"  name="receivedDate" onblur="processData(this)"
 							id="receivedDate" size="10" value="${receivedformatedDate}" 
-							 onclick="doInitCalendar('receivedDate',false,'${uiDatePattern}');" />
+							  />
 	</td>
          <td align="left" style="padding-left:4px">
                  <select  class="frmFieldSized"  size="1" id="receivehoursTime" name="receiveHrTime"
@@ -176,5 +178,7 @@
 
 var scgDataJSON = {};
 scgDataJSON["scgId"] = ${scgSummaryDTO.scgId};
+doInitCal('collectedDate',false,'${uiDatePattern}');
+doInitCal('receivedDate',false,'${uiDatePattern}');
 convertSelectToCombo();
 </script>

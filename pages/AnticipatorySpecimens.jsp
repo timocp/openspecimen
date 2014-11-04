@@ -91,7 +91,7 @@ if(Constants.TRUE.equals(request.getParameter("isClinicalDataEntry")))
 <script language="JavaScript" type="text/javascript"	src="javascripts/de/scr.js"></script>
 <script language="JavaScript" type="text/javascript"	src="javascripts/de/combobox.js"></script>
 <script language="JavaScript" type="text/javascript"	src="jss/ext-base.js"></script>
-<script language="JavaScript" type="text/javascript"	src="jss/ext-all.js"></script>
+
 <script language="JavaScript" type="text/javascript"	src="javascripts/de/ajax.js"></script>
 <script language="JavaScript" type="text/javascript"	src="/jss/multiselectUsingCombo.js"></script>
 <LINK href="css/catissue_suite.css" type="text/css" rel="stylesheet">
