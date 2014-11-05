@@ -356,6 +356,24 @@
             column="COMMENTS"
             length="500"
         />
+        
+        <property
+            name="orderName"
+            type="string"
+            update="true"
+            insert="true"
+            column="ORDER_NAME"
+            length="500"
+        />
+        
+        <property
+            name="distributionTitle"
+            type="string"
+            update="true"
+            insert="true"
+            column="DP_TITLE"
+            length="500"
+        />
             <property
                 name="distributedQuantity"              
                 type="double"

@@ -18,36 +18,36 @@ import edu.wustl.common.util.logger.Logger;
  * @hibernate.joined-subclass table="CATISSUE_TRANSFER_EVENT_PARAM"
  * @hibernate.joined-subclass-key column="IDENTIFIER"
  */
-public class DistributionEventParameters extends SpecimenEventParameters
-		implements
-			java.io.Serializable
-{
+public class DistributionEventParameters extends SpecimenEventParameters implements java.io.Serializable {
 
 	/**
 	 * logger Logger - Generic logger.
 	 */
 	private static Logger logger = Logger.getCommonLogger(DistributionEventParameters.class);
+
 	/**
 	 * Serial Version ID of the class.
 	 */
 	private static final long serialVersionUID = 1234567890L;
 
-    private Double distributedQuantity=0D;
-	
-    private Distribution distributionDetails;
+	private Double distributedQuantity = 0D;
+
+	private Distribution distributionDetails;
+
+	private String distributionTitle;
+
+	private String orderName;
+
 	/**
 	 * NOTE: Do not delete this constructor. Hibernet uses this by reflection API.
 	 * */
-	public DistributionEventParameters()
-	{
+	public DistributionEventParameters() {
 		super();
 	}
 
-    	
 	public Double getDistributedQuantity() {
 		return distributedQuantity;
 	}
-
 
 	public void setDistributedQuantity(Double distributedQuantity) {
 		this.distributedQuantity = distributedQuantity;
@@ -57,19 +57,32 @@ public class DistributionEventParameters extends SpecimenEventParameters
 		return distributionDetails;
 	}
 
-
 	public void setDistributionDetails(Distribution distributionDetails) {
 		this.distributionDetails = distributionDetails;
 	}
 
+	public String getDistributionTitle() {
+		return distributionTitle;
+	}
+
+	public void setDistributionTitle(String distributionTitle) {
+		this.distributionTitle = distributionTitle;
+	}
+
+	public String getOrderName() {
+		return orderName;
+	}
+
+	public void setOrderName(String orderName) {
+		this.orderName = orderName;
+	}
 
 	/**
 	 * Parameterised constructor.
 	 * @param abstractForm of AbstractActionForm type.
 	 * @throws AssignDataException : AssignDataException
 	 */
-	public DistributionEventParameters(AbstractActionForm abstractForm) throws AssignDataException
-	{
+	public DistributionEventParameters(AbstractActionForm abstractForm) throws AssignDataException {
 		super();
 		this.setAllValues(abstractForm);
 	}
@@ -82,16 +95,13 @@ public class DistributionEventParameters extends SpecimenEventParameters
 	 * @throws AssignDataException : AssignDataException
 	 * */
 	@Override
-	public void setAllValues(IValueObject abstractForm) throws AssignDataException
-	{
-		try
-		{
+	public void setAllValues(IValueObject abstractForm) throws AssignDataException {
+		try {
 			final TransferEventParametersForm form = (TransferEventParametersForm) abstractForm;
-						super.setAllValues(form);
+			super.setAllValues(form);
 		}
-		catch (final Exception excp)
-		{
-			DistributionEventParameters.logger.error(excp.getMessage(),excp);
+		catch (final Exception excp) {
+			DistributionEventParameters.logger.error(excp.getMessage(), excp);
 			final ErrorKey errorKey = ErrorKey.getErrorKey("assign.data.error");
 			throw new AssignDataException(errorKey, null, "DistributionEventParameters.java :");
 		}

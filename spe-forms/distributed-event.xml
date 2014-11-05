@@ -24,6 +24,24 @@
         <column>USER_ID</column>
       </userField>
     </row>
+    
+    <row>
+      <textField>
+        <name>distributionTitle</name>
+        <udn>distributionTitle</udn>
+        <caption>Distribution Title</caption>
+        <column>DP_TITLE</column>
+      </textField>
+    </row>
+    
+    <row>
+      <textField>
+        <name>orderName</name>
+        <udn>orderName</udn>
+        <caption>Order Name</caption>
+        <column>ORDER_NAME</column>
+      </textField>
+    </row>
 
     <row>
       <datePicker>
