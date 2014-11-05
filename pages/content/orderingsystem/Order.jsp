@@ -239,7 +239,7 @@ function switchToOlderView()
     Encountered errors with some of the specimens in the order. Please check the below table for specific error.
 </div>
 <div class="alert alert-success" id="success" style="display:none">
-   Order Submitted Sucessfully.
+   Order updated Successfully.
 </div>
 </td>
 		        </tr>
