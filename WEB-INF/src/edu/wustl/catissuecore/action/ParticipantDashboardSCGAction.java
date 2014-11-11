@@ -93,7 +93,7 @@ public class ParticipantDashboardSCGAction extends CatissueBaseAction
 				{
 					specimenCollectionGroup.setSpecimenCollectionSite(collectionProtocolEvent.getDefaultSite());
 					specimenCollectionGroup.setCollectionStatus(isPlanned?Constants.COLLECTION_STATUS_PENDING:Constants.COMPLETE);
-					specimenCollectionGroup.setIsCPBasedSpecimenEntryChecked(isPlanned);
+					specimenCollectionGroup.setIsCPBasedSpecimenEntryChecked(true);
 					specimenCollectionGroup.setCollectionProtocolRegistration(cpr);
 					collectionGroupBizLogic.insertSCG(specimenCollectionGroup,hibernateDAO,sessionDataBean);
 				}
