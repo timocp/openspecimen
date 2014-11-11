@@ -452,7 +452,7 @@ public class SpecimenBizLogic
 		final Specimen parentSpecimen = (Specimen) specimen.getParentSpecimen();
 		if (specimen.getParentSpecimen() == null)
 		{
-			if (specimen.getId() == null)
+			if (specimen.getId() == null && specimen.getSpecimenRequirement() == null)
 			{
 				specimen.setPropogatingSpecimenEventCollection(specimen.getSpecimenCollectionGroup()
 						.getSpecimenEventParametersCollection(), sessionDataBean.getUserId(), specimen);

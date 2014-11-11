@@ -42,6 +42,7 @@ import edu.wustl.catissuecore.bizlogic.IdentifiedSurgicalPathologyReportBizLogic
 import edu.wustl.catissuecore.bizlogic.SpecimenCollectionGroupBizLogic;
 import edu.wustl.catissuecore.cdms.integrator.CatissueCdmsIntegrator;
 import edu.wustl.catissuecore.cdms.integrator.CatissueCdmsURLInformationObject;
+import edu.wustl.catissuecore.dao.UserDAO;
 import edu.wustl.catissuecore.domain.CollectionEventParameters;
 import edu.wustl.catissuecore.domain.CollectionProtocol;
 import edu.wustl.catissuecore.domain.CollectionProtocolEvent;
@@ -1211,6 +1212,14 @@ public class SpecimenCollectionGroupAction extends CatissueBaseAction
 		AppUtility.setUserInForm(request, operation);
 		final long collectionEventUserId = AppUtility.setUserInForm(request, operation);
 		setEventUserId(specimenCollectionGroupForm, collectionEventUserId);
+		UserDAO userDao = new UserDAO();
+		String collUserName = userDao.getUserNameById(specimenCollectionGroupForm.getCollectionEventUserId());
+		
+		String recUserName = userDao.getUserNameById(specimenCollectionGroupForm.getReceivedEventUserId());
+		
+		request.setAttribute("collUserName", collUserName);
+		request.setAttribute("recUserName", recUserName);
+		
 		// Setting the List for drop downs
 		this.setEventsListInRequest(request);
 	}

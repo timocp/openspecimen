@@ -45,8 +45,14 @@
         <td align="left" width="60%" class="align_left_style1">
 						<html:select property="collectionEventUserId"
 							             styleClass="black_ar" styleId="collectionEventUserId" size="1">
-							       <html:options collection="userList" labelProperty="name" property="value" />
+							       
 					    </html:select>
+						<script>
+							var collUserName = "${collUserName}";
+							var recUserName = "${recUserName}";
+							var collUserId = "<%=form.getReceivedEventUserId()%>";
+							var recUserId = "<%=form.getCollectionEventUserId()%>";
+						</script>
 		</td>
       </tr>
       <tr>

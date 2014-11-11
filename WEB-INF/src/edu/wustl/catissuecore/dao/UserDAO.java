@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -13,6 +14,9 @@ import edu.wustl.catissuecore.bizlogic.UserBizLogic;
 import edu.wustl.catissuecore.domain.User;
 import edu.wustl.catissuecore.util.global.AppUtility;
 import edu.wustl.catissuecore.util.global.Constants;
+import edu.wustl.common.beans.NameValueBean;
+import edu.wustl.common.bizlogic.DefaultBizLogic;
+import edu.wustl.common.cde.PermissibleValueImpl;
 import edu.wustl.common.domain.LoginDetails;
 import edu.wustl.common.exception.ApplicationException;
 import edu.wustl.common.exception.BizLogicException;
@@ -23,8 +27,11 @@ import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.global.CommonServiceLocator;
 import edu.wustl.common.util.global.Status;
 import edu.wustl.common.util.logger.Logger;
+import edu.wustl.dao.DAO;
 import edu.wustl.dao.HibernateDAO;
 import edu.wustl.dao.JDBCDAO;
+import edu.wustl.dao.MySQLDAOImpl;
+import edu.wustl.dao.OracleDAOImpl;
 import edu.wustl.dao.daofactory.DAOConfigFactory;
 import edu.wustl.dao.exception.DAOException;
 import edu.wustl.dao.query.generator.ColumnValueBean;
@@ -238,5 +245,42 @@ public class UserDAO
         }
 
     }
+
+		public List<NameValueBean> getUserNameList(String query, boolean b) throws ApplicationException {
+			final List<NameValueBean> usrNameList = new ArrayList();
+			JDBCDAO dao = null;
+			try {
+				dao = AppUtility.openJDBCSession();
+				String sql = "";
+				if(dao instanceof MySQLDAOImpl){
+					sql = "select u.first_name, u.last_name, u.identifier from CATISSUE_USER u where lower(first_name) like ? or lower(last_name) like ?  limit  ?";
+				}else if(dao instanceof OracleDAOImpl){
+					sql = "select u.first_name, u.last_name, u.identifier from CATISSUE_USER u where lower(first_name) like ? or lower(last_name) like ?  and ROWNUM <=  ?";
+				}
+				List<ColumnValueBean> parameters = new ArrayList<ColumnValueBean>(); 
+				parameters = new ArrayList<ColumnValueBean>(); 
+				parameters.add(new ColumnValueBean("%"+query.toLowerCase()+"%"));
+				parameters.add(new ColumnValueBean("%"+query.toLowerCase()+"%"));
+				parameters.add(new ColumnValueBean(100));
+				List dataList = dao.executeQuery(sql, parameters);
+
+				usrNameList
+						.add(new NameValueBean(""
+								+ Constants.SELECT_OPTION_VALUE,Constants.SELECT_OPTION));
+				int cnt = 1;
+				if(dataList!=null && !dataList.isEmpty()){
+					for (Object object : dataList) {
+						List res = (List)object;
+						res.get(0);
+						usrNameList.add(new NameValueBean(res.get(2),res.get(1)+", "+res.get(0)));
+						System.out.println();
+					}
+				}
+
+			}  finally {
+				AppUtility.closeJDBCSession(dao);
+			}
+			return usrNameList;
+		}
 
 }

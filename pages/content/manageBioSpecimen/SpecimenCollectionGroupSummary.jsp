@@ -3,6 +3,7 @@
 
 
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page import="edu.wustl.catissuecore.dto.SCGSummaryDTO"%>
 <link rel="stylesheet" type="text/css" href="dhtmlxSuite_v35/dhtmlxCalendar/codebase/dhtmlxcalendar.css" />
 <link rel="stylesheet" type="text/css" href="dhtmlxSuite_v35/dhtmlxCalendar/codebase/skins/dhtmlxcalendar_dhx_skyblue.css" />
 <script	src="dhtmlxSuite_v35/dhtmlxGrid/codebase/dhtmlxcommon.js"></script>
@@ -20,6 +21,14 @@
 <script src="jss/script.js" type="text/javascript"></script>
 <script src="jss/scgSummary.js"></script>
 <script src="jss/json2.js" type="text/javascript"></script>
+<%
+	Object obj = request.getAttribute("scgSummaryDTO");
+	SCGSummaryDTO dto =null;
+	if(obj != null && obj instanceof SCGSummaryDTO)
+	{
+ 		dto=(SCGSummaryDTO)obj;
+	}
+%>
 <fmt:formatDate type="time" value="${scgSummaryDTO.collectedDate}" pattern="H" var="collectedTimeinHr"/>
 <fmt:formatDate type="time" value="${scgSummaryDTO.collectedDate}" pattern="m" var="collectedTimeinmin"/>
 <fmt:formatDate type="time" value="${scgSummaryDTO.receivedDate}" pattern="H"  var="receivedTimeinHr"/>
@@ -62,8 +71,7 @@
 		    <html:select property="collector" name="scgSummaryDTO" 
 			 styleClass="formFieldSized" styleId="collector" size="1"
 			 onmouseover="showTip(this.id)" onmouseout="hideTip(this.id)" onblur="processData(this)">
-			  <html:options collection="userList"
-			  labelProperty="name" property="value" /></html:select>
+			  </html:select>
 		</td>
 		<td class="black_new padding_right_style black_ar" align="right">
 		 <b> <bean:message key="specimen.receivedevents.username"/> </b>
@@ -72,11 +80,16 @@
 							<html:select property="receiver" name="scgSummaryDTO" 
 								styleClass="formFieldSized" styleId="receiver" size="1"
 								onmouseover="showTip(this.id)" onmouseout="hideTip(this.id)" onblur="processData(this)">
-								<html:options collection="userList"
-									labelProperty="name" property="value" />
+								
 							</html:select>
 		</td>
 
+		<script>
+							var collUserName = "${collUserName}";
+							var recUserName = "${recUserName}";
+							var collUserId = "<%=dto.getCollector()%>";
+							var recUserId = "<%=dto.getReceiver()%>";
+						</script>
 	</tr>
 
         <tr>

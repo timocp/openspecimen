@@ -16,6 +16,7 @@ import org.apache.struts.action.ActionMapping;
 import edu.wustl.catissuecore.bizlogic.SiteBizLogic;
 import edu.wustl.catissuecore.bizlogic.UserBizLogic;
 import edu.wustl.catissuecore.dao.SCGDAO;
+import edu.wustl.catissuecore.dao.UserDAO;
 import edu.wustl.catissuecore.dto.SCGSummaryDTO;
 import edu.wustl.catissuecore.dto.UserNameIdDTO;
 import edu.wustl.catissuecore.util.global.AppUtility;
@@ -77,6 +78,14 @@ public class DisplaySCGAction extends Action
 				{
 					scgSummaryDTO.setCollector(sessionData.getUserId());
 				}
+				
+				UserDAO userDao = new UserDAO();
+				String collUserName = userDao.getUserNameById(scgSummaryDTO.getCollector());
+				
+				String recUserName = userDao.getUserNameById(scgSummaryDTO.getReceiver());
+				
+				request.setAttribute("collUserName", collUserName);
+				request.setAttribute("recUserName", recUserName);
 				
 				request.setAttribute("scgSummaryDTO", scgSummaryDTO);
 				//setSiteList

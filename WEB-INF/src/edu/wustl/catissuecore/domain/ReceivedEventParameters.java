@@ -116,6 +116,7 @@ public class ReceivedEventParameters extends SpecimenEventParameters
 	{
 		super();
 		this.receivedQuality = obj.receivedQuality;
+		this.user = obj.user;
 		this.comment = obj.comment;
 	}
 }

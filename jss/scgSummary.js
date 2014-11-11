@@ -11,6 +11,74 @@ siteCombo.setName("site");
 siteCombo.attachEvent("onOpen",onComboClick);
 siteCombo.attachEvent("onKeyPressed",onComboKeyPress);
 
+//collectore event
+			collectCombo = new dhtmlXCombo("collector","collector","100px");;
+			collectCombo.setOptionWidth(177);
+			collectCombo.setSize(177);
+			collectCombo.loadXML('/openspecimen/CatissueCommonAjaxAction.do?type=getUserNames',function(){
+				collectCombo.setComboText(collUserName);
+				collectCombo.setComboValue(collUserId);
+				collectCombo.DOMelem_input.title=collUserName;
+			
+			});
+			
+			collectCombo.attachEvent("onKeyPressed",function(){
+				collectCombo.enableFilteringMode(true,'/openspecimen/CatissueCommonAjaxAction.do?type=getUserNames',false);
+				collectCombo.attachEvent("onChange", function(){collectCombo.DOMelem_input.focus();});
+				});
+			collectCombo.attachEvent("onOpen",onComboClick);
+				
+			collectCombo.attachEvent("onSelectionChange",function(){
+	 var diagnosisVal = collectCombo.getSelectedText();
+				if(diagnosisVal)
+					collectCombo.DOMelem_input.title=collectCombo.getSelectedText();
+				else
+					collectCombo.DOMelem_input.title='Start typing to see values';
+	 });
+			collectCombo.attachEvent("onXLE",function (){collectCombo.addOption(collUserName,collUserId);});
+			dhtmlxEvent(collectCombo.DOMelem_input,"mouseover",function(){
+	     var diagnosisVal = collectCombo.getSelectedText();
+				if(diagnosisVal){
+					collectCombo.DOMelem_input.title=collectCombo.getSelectedText();}
+				else
+					collectCombo.DOMelem_input.title='Start typing to see values';
+	});
+	//ENDS
+	//REceiver Event User Id
+	receiverCombo = new dhtmlXCombo("receiver","receiver","100px");;
+			receiverCombo.setOptionWidth(177);
+			receiverCombo.setSize(177);
+			receiverCombo.loadXML('/openspecimen/CatissueCommonAjaxAction.do?type=getUserNames',function(){
+				receiverCombo.setComboText(recUserName);
+				receiverCombo.setComboValue(recUserId);
+				receiverCombo.DOMelem_input.title=recUserName;
+			
+			});
+			
+			receiverCombo.attachEvent("onKeyPressed",function(){
+				receiverCombo.enableFilteringMode(true,'/openspecimen/CatissueCommonAjaxAction.do?type=getUserNames',false);
+				receiverCombo.attachEvent("onChange", function(){receiverCombo.DOMelem_input.focus();});
+				});
+			receiverCombo.attachEvent("onOpen",onComboClick);
+				
+			receiverCombo.attachEvent("onSelectionChange",function(){
+	 var diagnosisVal = receiverCombo.getSelectedText();
+				if(diagnosisVal)
+					receiverCombo.DOMelem_input.title=receiverCombo.getSelectedText();
+				else
+					receiverCombo.DOMelem_input.title='Start typing to see values';
+	 });
+			receiverCombo.attachEvent("onXLE",function (){receiverCombo.addOption(recUserName,recUserId);});
+			dhtmlxEvent(receiverCombo.DOMelem_input,"mouseover",function(){
+	     var diagnosisVal = receiverCombo.getSelectedText();
+				if(diagnosisVal){
+					receiverCombo.DOMelem_input.title=receiverCombo.getSelectedText();}
+				else
+					receiverCombo.DOMelem_input.title='Start typing to see values';
+	});
+	//ENDS
+
+/*
 receiverCombo = dhtmlXComboFromSelect("receiver");
 receiverCombo.setSize("240");
 receiverCombo.attachEvent("onSelectionChange",processComboChange);
@@ -27,7 +95,7 @@ collectCombo.setName("collector");
 collectCombo.enableFilteringMode(true);
 collectCombo.attachEvent("onOpen",onComboClick);
 collectCombo.attachEvent("onKeyPressed",onComboKeyPress); 
-
+*/
 collectionStatusCombo = dhtmlXComboFromSelect("collectionStatus");
 collectionStatusCombo.setSize("240");
 collectionStatusCombo.attachEvent("onSelectionChange",processComboChange);
