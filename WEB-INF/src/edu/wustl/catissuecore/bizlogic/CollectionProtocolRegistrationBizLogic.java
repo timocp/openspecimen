@@ -1047,9 +1047,9 @@ public class CollectionProtocolRegistrationBizLogic extends CatissueDefaultBizLo
 		this.registerParticipantAndProtocol(dao, collectionProtocolRegistration);
 		this.dateOfLastEvent = collectionProtocolRegistration.getRegistrationDate();
 		this.cntOfStudyCalEventPnt = 0;
-		String anicipatedScgEnabled = XMLPropertyHandler.getValue("aniticipated.scg.enabled");
+		String createAnicipatedScg = XMLPropertyHandler.getValue("create.anticipated.scg");
 		
-		if(!Validator.isEmpty(anicipatedScgEnabled) && Boolean.valueOf(anicipatedScgEnabled)){
+		if(!Validator.isEmpty(createAnicipatedScg) && Boolean.valueOf(createAnicipatedScg)){
 		final Collection<CollectionProtocolEvent> collectionProtocolEventCollection = collectionProtocolRegistration
 				.getCollectionProtocol().getCollectionProtocolEventCollection();
 		SpecimenCollectionGroupBizLogic specimenCollectionGroupBizLogic=new SpecimenCollectionGroupBizLogic();
