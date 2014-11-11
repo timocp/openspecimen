@@ -467,7 +467,13 @@ function registerParticipant(){
     req.onreadystatechange = function() {
         if (req.readyState != 4) return; // Not there yet
         if (req.status != 200) {
-            var errorMsg=req.getResponseHeader("errorMsg");
+            
+			var resp = req.responseText;
+			var updatedSpecimenDTO = eval('('+resp+')');
+			/*alert("updatedSpecimenDTO: "+updatedSpecimenDTO);
+			alert("updatedSpecimenDTO.errorMessages[0]: "+updatedSpecimenDTO.errorMessages[0]);
+			alert("updatedSpecimenDTO.errorMessages[0].message: "+updatedSpecimenDTO.errorMessages[0].message);*/
+			var errorMsg=updatedSpecimenDTO.errorMessages[0].message;
     showErrorMessage(errorMsg);
     return;
         }else{

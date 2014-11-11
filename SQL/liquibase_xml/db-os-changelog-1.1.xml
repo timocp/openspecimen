@@ -151,4 +151,13 @@
       commit;
     </sql>
   </changeSet>
+  
+  <changeSet id="delete empty rows for PMI" author="nmarwaha">
+    <sql>
+      delete from catissue_part_medical_id where MEDICAL_RECORD_NUMBER is null and SITE_ID is null
+    </sql>
+    <sql>
+      commit;
+    </sql>
+  </changeSet>
 </databaseChangeLog>
