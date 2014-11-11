@@ -290,7 +290,7 @@
 scg.activityStatus = 'Active' order by scg.name</query>
 
 <query name="getCPENameIdPairList">select DISTINCT cpe.collectionPointLabel,cpe.studyCalendarEventPoint,cpe.id 
-from edu.wustl.catissuecore.domain.CollectionProtocolEvent cpe where cpe.collectionProtocol.id= ? and cpe.activityStatus = 'Active' order by cpe.studyCalendarEventPoint</query>
+from edu.wustl.catissuecore.domain.CollectionProtocolEvent cpe where cpe.collectionProtocol.id= ? and cpe.activityStatus = 'Active' order by cpe.studyCalendarEventPoint, cpe.id</query>
 
 <query name="getSCGListFromCPE">select scg.id,scg.name from edu.wustl.catissuecore.domain.SpecimenCollectionGroup scg, edu.wustl.catissuecore.domain.AbstractSpecimenCollectionGroup ascg where scg.collectionProtocolEvent.id = ? and scg.collectionProtocolRegistration.id = ? and ascg.activityStatus = 'Active' and ascg.id=scg.id order by scg.name</query>
 
