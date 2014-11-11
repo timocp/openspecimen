@@ -1047,15 +1047,17 @@ public class CollectionProtocolRegistrationBizLogic extends CatissueDefaultBizLo
 		this.registerParticipantAndProtocol(dao, collectionProtocolRegistration);
 		this.dateOfLastEvent = collectionProtocolRegistration.getRegistrationDate();
 		this.cntOfStudyCalEventPnt = 0;
-
+		String anicipatedScgEnabled = XMLPropertyHandler.getValue("aniticipated.scg.enabled");
 		
-//		final Collection<CollectionProtocolEvent> collectionProtocolEventCollection = collectionProtocolRegistration
-//				.getCollectionProtocol().getCollectionProtocolEventCollection();
-//		SpecimenCollectionGroupBizLogic specimenCollectionGroupBizLogic=new SpecimenCollectionGroupBizLogic();
-//		Collection<SpecimenCollectionGroup> scgCollection =specimenCollectionGroupBizLogic.createSCGsForCPEs(collectionProtocolRegistration, dao, sessionDataBean,
-//				collectionProtocolEventCollection,cntOfStudyCalEventPnt);
-//		
-//		collectionProtocolRegistration.setSpecimenCollectionGroupCollection(scgCollection);
+		if(!Validator.isEmpty(anicipatedScgEnabled) && Boolean.valueOf(anicipatedScgEnabled)){
+		final Collection<CollectionProtocolEvent> collectionProtocolEventCollection = collectionProtocolRegistration
+				.getCollectionProtocol().getCollectionProtocolEventCollection();
+		SpecimenCollectionGroupBizLogic specimenCollectionGroupBizLogic=new SpecimenCollectionGroupBizLogic();
+		Collection<SpecimenCollectionGroup> scgCollection =specimenCollectionGroupBizLogic.createSCGsForCPEs(collectionProtocolRegistration, dao, sessionDataBean,
+				collectionProtocolEventCollection,cntOfStudyCalEventPnt);
+		
+		collectionProtocolRegistration.setSpecimenCollectionGroupCollection(scgCollection);
+		}
 
 	}
 

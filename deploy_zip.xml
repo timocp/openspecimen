@@ -799,6 +799,7 @@
 			<replacefilter token="@@email.sendEmailFrom.name@@" value="${email.sendEmailFrom.name}" />
 			<replacefilter token="@@email.exception.subject@@" value="${email.exception.subject}" />
 			
+			<replacefilter token="@@anticipatedSCGEnabled@@" value="${aniticipated.scg.enabled}" />
 			<replacefilter token="@@CiderWMQEnabled@@" value="${cider.integration.enabled}" />
 			<replacefilter token="@@CiderWMQServerName@@" value="${cider.wmq.server.name}" />
 			<replacefilter token="@@CiderWMQMGRName@@" value="${cider.wmq.mgr.name}" />

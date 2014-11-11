@@ -811,7 +811,8 @@
 			<replacefilter token="@@WMQPort@@" value="${wmq.port}" />
 			<replacefilter token="@@HL7ListenerAdminUser@@" value="${hl7.listener.admin.user}" />
 		<!-- END -->
-
+			
+			<replacefilter token="@@anticipatedSCGEnabled@@" value="${aniticipated.scg.enabled}" />
 			<replacefilter token="@@CiderWMQEnabled@@" value="${cider.integration.enabled}" />
 						<replacefilter token="@@CiderWMQServerName@@" value="${cider.wmq.server.name}" />
 						<replacefilter token="@@CiderWMQMGRName@@" value="${cider.wmq.mgr.name}" />
