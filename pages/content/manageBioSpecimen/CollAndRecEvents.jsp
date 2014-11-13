@@ -43,18 +43,27 @@
 			</label>
 		</td>
         <td align="left" width="60%" class="align_left_style1">
+		  <table border="0" cellspacing="0" cellpadding="0">
+			<tr>
+				<td>
+					<div>
 						<html:select property="collectionEventUserId"
 							             styleClass="black_ar" styleId="collectionEventUserId" size="1">
 							       
 					    </html:select>
-						<script>
-							var collUserName = "${collUserName}";
-							var recUserName = "${recUserName}";
-							var collUserId = "<%=form.getReceivedEventUserId()%>";
-							var recUserId = "<%=form.getCollectionEventUserId()%>";
-						</script>
+						</div>
+				</td>
+				<td>
+				</td></tr></table>
+						<span class="grey_ar_s">Start typing to see values</span>
 		</td>
       </tr>
+	  <script>
+							var collUserName = "${collUserName}";
+							var recUserName = "${recUserName}";
+							var collUserId = "<%=form.getCollectionEventUserId()%>";
+							var recUserId = "<%=form.getReceivedEventUserId()%>";
+						</script>
       <tr>
          <td class="black_ar" align="right" width="40%">
 		 
@@ -138,7 +147,7 @@
 			<html:textarea styleClass="black_ar" style="width: 68%" rows="2" styleId="collectionEventComments" property="collectionEventComments" />
 		</td>		
     </table></td>
-    <td width="50%">
+    <td width="50%" >
 		<table width="100%" border="0" cellspacing="0" cellpadding="3">
 		<tr class="tr_alternate_color_lightGrey">
         <html:hidden property="receivedEventId" />
@@ -156,10 +165,19 @@
 			</label>
 		</td>
         <td width="60%" align="left" class="black_ar align_left_style1">
+			<table border="0" cellspacing="0" cellpadding="0">
+			<tr>
+				<td>
+					<div>
 				<html:select property="receivedEventUserId"
 								 styleClass="black_ar" styleId="receivedEventUserId" size="1">
 						   <html:options collection="userList" labelProperty="name" property="value" />
-				</html:select>		
+				</html:select>
+				</div>
+				</td>
+				<td>
+				</td></tr></table>
+						<span class="grey_ar_s">Start typing to see values</span>				
 		</td>
       </tr>
       <tr>

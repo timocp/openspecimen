@@ -99,7 +99,7 @@ public class SpecimenProtocolAction extends CatissueBaseAction
 			userList.add(nvb);
 		}
 		//userList.add(0,new NameValueBean(Constants.SELECT_OPTION,Long.valueOf(Constants.SELECT_OPTION_VALUE)));
-		request.setAttribute(Constants.USERLIST, userList);
+//		request.setAttribute(Constants.USERLIST, userList);
 		this.logger.debug("1");
 		// get the Specimen class and type from the cde
 		final List specimenTypeList = CDEManager.getCDEManager().getPermissibleValueList(

@@ -93,7 +93,7 @@ public class DisplaySCGAction extends Action
 
 				//setUserList
 				request.setAttribute("siteList", sitelist);
-				request.setAttribute("userList", new UserBizLogic().getUsers("edit"));
+//				request.setAttribute("userList", new UserBizLogic().getUsers("edit"));
 				//sethoursList
 				request.setAttribute(Constants.HOUR_LIST, Constants.HOUR_ARRAY);
 				//setMinList

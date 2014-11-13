@@ -35,7 +35,7 @@ siteCombo.attachEvent("onKeyPressed",onComboKeyPress);
 				else
 					collectCombo.DOMelem_input.title='Start typing to see values';
 	 });
-			collectCombo.attachEvent("onXLE",function (){collectCombo.addOption(collUserName,collUserId);});
+			collectCombo.attachEvent("onXLE",function (){collectCombo.addOption(collUserId,collUserName);});
 			dhtmlxEvent(collectCombo.DOMelem_input,"mouseover",function(){
 	     var diagnosisVal = collectCombo.getSelectedText();
 				if(diagnosisVal){
@@ -68,7 +68,7 @@ siteCombo.attachEvent("onKeyPressed",onComboKeyPress);
 				else
 					receiverCombo.DOMelem_input.title='Start typing to see values';
 	 });
-			receiverCombo.attachEvent("onXLE",function (){receiverCombo.addOption(recUserName,recUserId);});
+			receiverCombo.attachEvent("onXLE",function (){receiverCombo.addOption(recUserId,recUserName);});
 			dhtmlxEvent(receiverCombo.DOMelem_input,"mouseover",function(){
 	     var diagnosisVal = receiverCombo.getSelectedText();
 				if(diagnosisVal){

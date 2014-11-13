@@ -16,10 +16,13 @@ import edu.wustl.catissuecore.actionForm.CollectionProtocolForm;
 import edu.wustl.catissuecore.bean.CollectionProtocolBean;
 import edu.wustl.catissuecore.bizlogic.SynchronizeCollectionProtocolBizLogic;
 import edu.wustl.catissuecore.cpSync.SyncCPThreadExecuterImpl;
+import edu.wustl.catissuecore.dao.UserDAO;
 import edu.wustl.catissuecore.domain.CpSyncAudit;
 import edu.wustl.catissuecore.util.global.Constants;
 import edu.wustl.common.action.BaseAction;
+import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.util.global.CommonServiceLocator;
+import edu.wustl.common.util.global.Validator;
 
 /**
  * Forward to collection protocol main page.
@@ -48,6 +51,12 @@ public class OpenCollectionProtocolAction extends BaseAction
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		final CollectionProtocolForm formName = (CollectionProtocolForm) form;
+		if(formName.getPrincipalInvestigatorId() == 0){
+			formName.setPrincipalInvestigatorId(((SessionDataBean)request.getSession().getAttribute(Constants.SESSION_DATA)).getUserId());
+		}
+			UserDAO userDAO = new UserDAO();
+			String piName = userDAO.getUserNameById(formName.getPrincipalInvestigatorId());
+		request.setAttribute("piName", piName);
 		final String operation = request.getParameter(Constants.OPERATION);
 		final String pageOf = request.getParameter(Constants.PAGE_OF);
 		final HttpSession session = request.getSession();

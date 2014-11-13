@@ -204,7 +204,7 @@ function onBlurFunc() {alert(clinicalDiagnosisCombo.getLastSelectedValue());
 				else
 					scgCombo.collectionEventUserIdCombo.DOMelem_input.title='Start typing to see values';
 	 });
-			scgCombo.collectionEventUserIdCombo.attachEvent("onXLE",function (){scgCombo.collectionEventUserIdCombo.addOption(collUserName,collUserId);});
+			scgCombo.collectionEventUserIdCombo.attachEvent("onXLE",function (){scgCombo.collectionEventUserIdCombo.addOption(collUserId,collUserName);});
 			dhtmlxEvent(scgCombo.collectionEventUserIdCombo.DOMelem_input,"mouseover",function(){
 	     var diagnosisVal = scgCombo.collectionEventUserIdCombo.getSelectedText();
 				if(diagnosisVal){
@@ -237,7 +237,7 @@ function onBlurFunc() {alert(clinicalDiagnosisCombo.getLastSelectedValue());
 				else
 					scgCombo.receivedEventUserIdCombo.DOMelem_input.title='Start typing to see values';
 	 });
-			scgCombo.receivedEventUserIdCombo.attachEvent("onXLE",function (){scgCombo.receivedEventUserIdCombo.addOption(recUserName,recUserId);});
+			scgCombo.receivedEventUserIdCombo.attachEvent("onXLE",function (){scgCombo.receivedEventUserIdCombo.addOption(recUserId,recUserName);});
 			dhtmlxEvent(scgCombo.receivedEventUserIdCombo.DOMelem_input,"mouseover",function(){
 	     var diagnosisVal = scgCombo.receivedEventUserIdCombo.getSelectedText();
 				if(diagnosisVal){

@@ -32,6 +32,7 @@
 	src="jss/dhtmlDropDown.js"></script>
 <script src="dhtmlxSuite_v35/dhtmlxGrid/codebase/dhtmlxcommon.js"></script>
 <script src="dhtmlxSuite_v35/dhtmlxCombo/codebase/dhtmlxcombo.js"></script>
+<script language="JavaScript" type="text/javascript" src="dhtmlxSuite_v35/dhtmlxCombo/codebase/ext/dhtmlxcombo_whp.js"></script>
 <script src="dhtmlxSuite_v35/dhtmlxTree/codebase/dhtmlxtree.js"></script>
 <script src="dhtmlxSuite_v35/dhtmlxTree/codebase/ext/dhtmlxtree_li.js"></script>
 <script language="JavaScript" type="text/javascript"
@@ -119,18 +120,17 @@ gridDropDownInfo['visibilityStatusVariable'] = true;
 autoCompleteControlGeneric(gridDropDownInfo['gridDiv'],gridDropDownInfo['dropDownId'],gridObj);
 }
 }
-function onInvestigatorListReady()
-{
+
 var principalInvestigatorsId = '${collectionProtocolForm.principalInvestigatorId}';
-if(principalInvestigatorsId != "" && principalInvestigatorsId != 0 && principalInvestigatorsId != null)
-investigatorOnRowSelect(principalInvestigatorsId,0);
-}
+var piName = '${requestScope.piName}';
+
 function onParentProtocolListReady()
 {
 var parentProtocolId = '${collectionProtocolForm.parentCollectionProtocolId}';
 if(parentProtocolId != "" && parentProtocolId != 0 && parentProtocolId != null)
 parentProtocolOnRowSelect(parentProtocolId,0);
 }
+
 function doOnLoad()
 {
 if("<%=request.getParameter("isErrorPage")%>"=='true' && '${requestScope.operation}'=='add')
@@ -138,10 +138,10 @@ if("<%=request.getParameter("isErrorPage")%>"=='true' && '${requestScope.operati
 window.parent.firstTimeLoad = true; //this require to create cp node when user directly click on Add Event button
 }
 //Drop Down components information
-investigatorDropDownInfo = {propertyId:'principalInvestigatorId',gridObj:"principleInvestigatorGrid", gridDiv:"principleInvestigator", dropDownId:"principleInvestigatorDropDown", pagingArea:"principleInvestigatorPagingArea", infoArea:"principleInvestigatorInfoArea", onOptionSelect:investigatorOnRowSelect, actionToDo:"CatissueCommonAjaxAction.do?type=allUserList", callBackAction:onInvestigatorListReady, visibilityStatusVariable:piGridVisible};
+//investigatorDropDownInfo = {propertyId:'principalInvestigatorId',gridObj:"principleInvestigatorGrid", gridDiv:"principleInvestigator", dropDownId:"principleInvestigatorDropDown", pagingArea:"principleInvestigatorPagingArea", infoArea:"principleInvestigatorInfoArea", onOptionSelect:investigatorOnRowSelect, actionToDo:"CatissueCommonAjaxAction.do?type=allUserList", callBackAction:onInvestigatorListReady, visibilityStatusVariable:piGridVisible};
 parentProtocolDropDownInfo = {propertyId:'parentCollectionProtocolId',gridObj:"parentProtocolGrid", gridDiv:"parentProtocol", dropDownId:"parentProtocolDropDown", pagingArea:"ppPagingArea", infoArea:"ppInfoArea", onOptionSelect:parentProtocolOnRowSelect, actionToDo:"CatissueCommonAjaxAction.do?type=getAllCPList", callBackAction:onParentProtocolListReady, visibilityStatusVariable:ppGridVisible};
 // initialising grid
-piGrid = initDropDownGrid(investigatorDropDownInfo,true); //initialize DropDown control for priciple Investigator
+piGrid = '';//initDropDownGrid(investigatorDropDownInfo,true); //initialize DropDown control for priciple Investigator
 ppGrid = initDropDownGrid(parentProtocolDropDownInfo,true); //initialize DropDown control for priciple Investigator
 enableDisableParentProtocol('${collectionProtocolForm.type}');
 //initializing tab buttons
@@ -373,43 +373,23 @@ div#d999 {
 						width="6" height="6" hspace="0" vspace="0" /></td>
 					<td width="30%" align="left" class="black_ar"><bean:message
 							key="collectionprotocol.principalinvestigator" /></td>
-					<td width="69%" align="left" class="black_ar"><html:hidden
-							property="principalInvestigatorId" />
-						<div>
-							<table border="0" width="28%" id="outerTable2" cellspacing="0"
-								cellpadding="0">
-								<tr>
-									<td align="left" width="88%" height="100%">
-										<div id="piDropDownIddiv" class="x-form-field-wrap"
-											style="width: 137px;">
-											<input id="principleInvestigatorDropDown"
-												onkeydown="keyNavigationCall(event,investigatorDropDownInfo,piGrid);"
-												onKeyUp="autoCompleteControlGeneric(event,investigatorDropDownInfo,piGrid);"
-												onClick="noEventPropogation(event)" autocomplete="off"
-												size="18"
-												class="black_ar_new x-form-text x-form-field x-form-focus" /><img
-												id="piDropDownId" style="top: 0px !important;"
-												class="x-form-trigger x-form-arrow-trigger"
-												onclick="showHideGrid(event,investigatorDropDownInfo,piGrid);"
-												src="images/uIEnhancementImages/s.gif" />
-										</div>
-									</td>
-								</tr>
+					<td width="69%" align="left" class="black_ar">
+							<table border="0" cellspacing="0" cellpadding="0">
 								<tr>
 									<td>
-										<div id="principleInvestigator" style="z-index: 100"
-											onClick="noEventPropogation(event)">
-											<div id="principleInvestigatorGrid" style="height: 100px;"
-												onClick="noEventPropogation(event)"></div>
-											<div id="principleInvestigatorPagingArea"
-												onClick="noEventPropogation(event)"></div>
-											<div id="principleInvestigatorInfoArea"
-												onClick="noEventPropogation(event)"></div>
-										</div>
+										<div>
+							<html:select styleId="principalInvestigatorId" property="principalInvestigatorId" 
+								styleClass="formFieldSized" size="1"
+								onmouseover="showTip(this.id)" onmouseout="hideTip(this.id)" >
+							</html:select>
+							</div>
 									</td>
-								</tr>
-							</table>
-						</div></td>
+									<td>
+									</td></tr></table>
+								
+											<span class="grey_ar_s">Start typing to see values</span>
+							</td>
+						
 				</tr>
 				<tr>
 					<td align="center" class="black_ar" width="1%">&nbsp;</td>
@@ -775,6 +755,39 @@ if(document.getElementById("errorRow")!=null && document.getElementById("errorRo
 {
 window.top.document.getElementById("errorRow").innerHTML = "";
 }
+
+//REceiver Event User Id
+	var piCombo = new dhtmlXCombo("principalInvestigatorId","principalInvestigatorId","100px");;
+			piCombo.setOptionWidth(177);
+			piCombo.setSize(177);
+			piCombo.loadXML('/openspecimen/CatissueCommonAjaxAction.do?type=getUserNames',function(){
+				piCombo.setComboText(piName);
+				piCombo.setComboValue(principalInvestigatorsId);
+				piCombo.DOMelem_input.title=piName;
+			});
+			
+			piCombo.attachEvent("onKeyPressed",function(){
+				piCombo.enableFilteringMode(true,'/openspecimen/CatissueCommonAjaxAction.do?type=getUserNames',false);
+				piCombo.attachEvent("onChange", function(){piCombo.DOMelem_input.focus();});
+				});
+			piCombo.attachEvent("onOpen",onComboClick);
+				
+			piCombo.attachEvent("onSelectionChange",function(){
+	 var diagnosisVal = piCombo.getSelectedText();
+				if(diagnosisVal)
+					piCombo.DOMelem_input.title=piCombo.getSelectedText();
+				else
+					piCombo.DOMelem_input.title='Start typing to see values';
+	 });
+			piCombo.attachEvent("onXLE",function (){piCombo.addOption(principalInvestigatorsId,piName);});
+			dhtmlxEvent(piCombo.DOMelem_input,"mouseover",function(){
+	     var diagnosisVal = piCombo.getSelectedText();
+				if(diagnosisVal){
+					piCombo.DOMelem_input.title=piCombo.getSelectedText();}
+				else
+					piCombo.DOMelem_input.title='Start typing to see values';
+	});
+	//ENDS
 </script>
 <link rel="STYLESHEET" type="text/css" 
 	href="css/dhtmldropdown.css"/>

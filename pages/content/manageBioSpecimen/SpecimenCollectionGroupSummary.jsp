@@ -68,20 +68,39 @@
 		<b> <bean:message key="specimen.collectedevents.username"/> </b>
 		</td>
 		<td align="left" class="black_new" colspan="3">
+			 <table border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td>
+                                        <div>
 		    <html:select property="collector" name="scgSummaryDTO" 
 			 styleClass="formFieldSized" styleId="collector" size="1"
-			 onmouseover="showTip(this.id)" onmouseout="hideTip(this.id)" onblur="processData(this)">
+			 onmouseover="showTip(this.id)" onmouseout="hideTip(this.id)" >
 			  </html:select>
+			  </div>
+				</td>
+				<td>
+				</td></tr></table>
+			
+						<span class="grey_ar_s">Start typing to see values</span>
 		</td>
 		<td class="black_new padding_right_style black_ar" align="right">
 		 <b> <bean:message key="specimen.receivedevents.username"/> </b>
 		</td>
 		<td align="left" class="black_new padding_right_style" colspan="3">
-							<html:select property="receiver" name="scgSummaryDTO" 
-								styleClass="formFieldSized" styleId="receiver" size="1"
-								onmouseover="showTip(this.id)" onmouseout="hideTip(this.id)" onblur="processData(this)">
-								
-							</html:select>
+		<table border="0" cellspacing="0" cellpadding="0">
+			<tr>
+				<td>
+					<div>
+		<html:select property="receiver" name="scgSummaryDTO" 
+			styleClass="formFieldSized" styleId="receiver" size="1"
+			onmouseover="showTip(this.id)" onmouseout="hideTip(this.id)" >
+		</html:select>
+		</div>
+				</td>
+				<td>
+				</td></tr></table>
+			
+						<span class="grey_ar_s">Start typing to see values</span>
 		</td>
 
 		<script>
