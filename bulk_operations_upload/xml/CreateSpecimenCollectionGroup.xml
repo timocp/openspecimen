@@ -8,7 +8,7 @@
 		<referenceAssociation className="edu.wustl.catissuecore.domain.CollectionProtocolRegistration" roleName="collectionProtocolRegistration">
 				<attribute csvColumnName="PPID" name="protocolParticipantIdentifier"/>
 				<referenceAssociation className="edu.wustl.catissuecore.domain.CollectionProtocol" roleName="collectionProtocol">
-				<attribute csvColumnName="CP Title" name="Title"/>
+				<attribute csvColumnName="CP Title" name="title"/>
 			</referenceAssociation>
 		</referenceAssociation>
 		
