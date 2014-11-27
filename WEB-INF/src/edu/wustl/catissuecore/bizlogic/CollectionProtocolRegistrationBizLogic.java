@@ -727,7 +727,7 @@ public class CollectionProtocolRegistrationBizLogic extends CatissueDefaultBizLo
 		return false;
 	}
 
-	private List<CollectionProtocol> getChildColl(CollectionProtocol parent)
+	public List<CollectionProtocol> getChildColl(CollectionProtocol parent)
 	{
 		final Collection<CollectionProtocol> childCPcollection = parent
 				.getChildCollectionProtocolCollection();
@@ -1217,17 +1217,27 @@ public class CollectionProtocolRegistrationBizLogic extends CatissueDefaultBizLo
 					.getSpecimenCollectionGroupCollection();
 			collectionProtocolRegistration
 					.setSpecimenCollectionGroupCollection(specimenCollectionGroupCollection);
-			 
-			//persistentCPR.setConsentTierResponseCollection(collectionProtocolRegistration.getConsentTierResponseCollection());
-			/*setConsetResponseCollection(dao, collectionProtocolRegistration,
-					persistentCPR);
-			this.updateConsentResponseForSCG(persistentCPR,oldCollectionProtocolRegistration, dao);
-			persistentCPR.setConsentWitness(collectionProtocolRegistration.getConsentWitness());
-			persistentCPR.setConsentSignatureDate(collectionProtocolRegistration
-					.getConsentSignatureDate());
-			persistentCPR.setSignedConsentDocumentURL(collectionProtocolRegistration
-					.getSignedConsentDocumentURL());
-		*/
+            if (collectionProtocolRegistration.getConsentTierResponseCollection() != null && !collectionProtocolRegistration.getConsentTierResponseCollection().isEmpty())
+            {
+//                persistentCPR.setConsentTierResponseCollection(collectionProtocolRegistration
+//                        .getConsentTierResponseCollection());
+                setConsetResponseCollection(dao, collectionProtocolRegistration, persistentCPR);
+                this.updateConsentResponseForSCG(persistentCPR, oldCollectionProtocolRegistration, dao);
+               
+            }
+            if(collectionProtocolRegistration.getConsentWitness()!=null){
+                persistentCPR.setConsentWitness(collectionProtocolRegistration.getConsentWitness());
+            }
+            if (collectionProtocolRegistration.getConsentSignatureDate() != null)
+            {
+                persistentCPR.setConsentSignatureDate(collectionProtocolRegistration.getConsentSignatureDate());
+            }
+            if (collectionProtocolRegistration.getSignedConsentDocumentURL() != null)
+            {
+                persistentCPR.setSignedConsentDocumentURL(collectionProtocolRegistration.getSignedConsentDocumentURL());
+            }
+            
+            
 			persistentCPR.setProtocolParticipantIdentifier(collectionProtocolRegistration
 					.getProtocolParticipantIdentifier());
 			persistentCPR.setRegistrationDate(collectionProtocolRegistration.getRegistrationDate());
@@ -1320,12 +1330,18 @@ public class CollectionProtocolRegistrationBizLogic extends CatissueDefaultBizLo
 			Collection<ConsentTierResponse> consentTierResponseCollection=persistentCPR.getConsentTierResponseCollection();
 			Collection<ConsentTierResponse> newConsentTierResponseCollection=collectionProtocolRegistration.getConsentTierResponseCollection();
 			for (ConsentTierResponse newConsentTierResponse : newConsentTierResponseCollection) {
+			    boolean updated =false;
 				 for (ConsentTierResponse consentTierResponse : consentTierResponseCollection) {
 				  if(consentTierResponse.getConsentTier().getId().equals(newConsentTierResponse.getConsentTier().getId())){	 
 					  consentTierResponse.setConsentTier(newConsentTierResponse.getConsentTier());
 				      consentTierResponse.setResponse(newConsentTierResponse.getResponse());
-				  }   
+				      updated = true;
+				      break;
+				  }
 				}
+				 if(!updated){
+				     consentTierResponseCollection.add(newConsentTierResponse);
+				 }
 			}
 			
 	}
@@ -1353,7 +1369,9 @@ public class CollectionProtocolRegistrationBizLogic extends CatissueDefaultBizLo
 		{
 			final SpecimenCollectionGroup specimenCollectionGroup = specimenCollectionGroupIterator
 					.next();
-		
+//			specimenCollectionGroup
+//					.setConsentTierStatusCollectionFromCPR(collectionProtocolRegistration);
+
 			SpecimenCollectionGroup oldSpecimenCollectionGroup = getOldSpecimenCollectionGroup
 			(specimenCollectionGroup.getId(),oldCollectionProtocolRegistration.getSpecimenCollectionGroupCollection());
 
@@ -1989,18 +2007,25 @@ public class CollectionProtocolRegistrationBizLogic extends CatissueDefaultBizLo
 		final Collection scgCollection = oldCollectionProtocolRegistration
 				.getSpecimenCollectionGroupCollection();
 		final Iterator scgItr = scgCollection.iterator();
-		
+//		try
+//		{
 			while (scgItr.hasNext())
 			{
 				final SpecimenCollectionGroup scg = (SpecimenCollectionGroup) scgItr.next();
 				final String cprWithdrawOption = collectionProtocolRegistration
 						.getConsentWithdrawalOption();
 
-			
+//				ConsentUtil.updateSCG(scg, consentTierID, cprWithdrawOption, dao, sessionDataBean);
+
 				newScgCollection.add(scg); // set updated scg in cpr
 			}
 			collectionProtocolRegistration.setSpecimenCollectionGroupCollection(newScgCollection);
-		
+//		}
+//		catch (final ApplicationException e)
+//		{
+//			LOGGER.error(e.getMessage(), e);
+//			throw this.getBizLogicException(e, e.getErrorKeyName(), e.getMsgValues());
+//		}
 	}
 
 	// Mandar : 11-Jan-07 For Consent Tracking Withdrawal -------- end
@@ -2144,7 +2169,7 @@ public class CollectionProtocolRegistrationBizLogic extends CatissueDefaultBizLo
 	 * @throws BizLogicException
 	 *             DAOException
 	 */
-	private CollectionProtocolRegistration getCPRbyCollectionProtocolIDAndParticipantID(DAO dao,
+	public CollectionProtocolRegistration getCPRbyCollectionProtocolIDAndParticipantID(DAO dao,
 			Long CpId, Long ParticipantId) throws BizLogicException
 	{
 		final String[] selectColumName = null;
