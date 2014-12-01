@@ -149,7 +149,7 @@ public class MigrateForm {
 
 	private FormMigrationCtxt formMigrationCtxt = null;
 	
-	private ContainerInterface oldForm = null;
+	protected ContainerInterface oldForm = null;
 	
 	private CSVWriter recordsLog;
 	
@@ -250,7 +250,7 @@ public class MigrateForm {
 	public String getObsoleteTables() {
 		return StringUtils.join(obsoleteTables, ",");
 	}
-
+	
 	
 	////////////////////////////////////////////////////////////////////////////////////////
 	//
@@ -259,7 +259,7 @@ public class MigrateForm {
 	////////////////////////////////////////////////////////////////////////////////////////
 	
 
-	private ContainerInterface getOldFormDefinition(Long containerId) 
+	protected ContainerInterface getOldFormDefinition(Long containerId) 
 	throws Exception {
 		HibernateDAO dao = null;		
 		ContainerInterface container = null;
@@ -1122,7 +1122,7 @@ public class MigrateForm {
 				", time = " + (System.currentTimeMillis() - t1) / 1000 + " seconds"); 
 	}
 	
-	private String getRecordIdCol(FormInfo info, Long entityId, String tableName) {
+	protected String getRecordIdCol(FormInfo info, Long entityId, String tableName) {
 		String recordIdCol = "DYEXTN_AS_" + getHookEntityId(info, oldForm.getId()) + "_" + entityId;
 		if (doesColumnExists(tableName, recordIdCol)) {
 			return recordIdCol;
@@ -1158,7 +1158,7 @@ public class MigrateForm {
 		}		
 	}
 	
-	private Long getRecordId(String tableName, String recordIdCol, Long oldRecId) {
+	protected Long getRecordId(String tableName, String recordIdCol, Long oldRecId) {
 		String query = String.format(GET_ID_FROM_ASSO_ID_SQL, tableName, recordIdCol);
 		JdbcDao jdbcDao = JdbcDaoFactory.getJdbcDao();
 		List<Object> param = new ArrayList<Object>();
@@ -1327,7 +1327,7 @@ public class MigrateForm {
 		return formData;
 	}
 	
-	private void log(Long oldRecId, Long newRecId, String failReason) 
+	protected void log(Long oldRecId, Long newRecId, String failReason) 
 	throws IOException {
 		if (recordsLog == null) {
 			return;
@@ -1550,12 +1550,16 @@ public class MigrateForm {
 			" select identifier from %s where %s= ?";
 	
 	private static final String INSERT_FORM_CTXT_SQL_MYSQL = 
-			"insert into catissue_form_context values(default, ?, ?, ?, ?, ?)";
-	
-	
+			"insert into " +
+			"  catissue_form_context(identifier, container_id, entity_type, cp_id, sort_order, is_multirecord) " +
+			"values " + 
+			"  (default, ?, ?, ?, ?, ?)";
+
 	private static final String INSERT_FORM_CTXT_SQL_ORACLE = 
-			"insert into catissue_form_context values(CATISSUE_FORM_CONTEXT_SEQ.NEXTVAL, ?, ?, ?, ?, ?)";
-	
+			"insert into " +
+			"  catissue_form_context(identifier, container_id, entity_type, cp_id, sort_order, is_multirecord) " +
+			"values " +
+			"  (CATISSUE_FORM_CONTEXT_SEQ.NEXTVAL, ?, ?, ?, ?, ?)";	
 	
 	private static final String INSERT_RECORD_ENTRY_SQL_MYSQL = 
 			"insert into catissue_form_record_entry values(default, ?, ?, ?, ?, ?, ?)";

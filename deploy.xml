@@ -5218,6 +5218,7 @@
           <java classname="krishagni.catissueplus.upgrade.MigrateSpecimenEvents" fork="true" maxmemory="1024M">
             <arg value="${username}"/>
             <arg value="spe-forms/events-cfg.json"/>
+            <arg value="${nciv20}"/>
             <classpath>
               <pathelement location="${temp.dir.DE}" />
               <pathelement location="${temp.dir.DE}/old" />
