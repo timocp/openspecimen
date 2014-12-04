@@ -360,6 +360,12 @@ public class ShipmentReceivingBizLogic extends ShipmentBizLogic
 						storageContainerIds,pos1,pos2);
 				//Bug 15392 end
 				this.setSpecimenActivityStatus( specimen, positionArr[i] );
+				/*BMS-3621
+								Update the caTissue shipment receive page to match the 2.0A shipment recieve page*/
+								this.setSpecimenAvailableQuantity(specimen,positionArr[i]);
+								
+								this.setSpecimenLabel(specimen,positionArr[i]);
+								this.setSpecimenEventCollection(specimen,positionArr[i]);
 			}
 			if (specimen != null && specimen.getActivityStatus() != null)
 			{
@@ -690,5 +696,27 @@ public class ShipmentReceivingBizLogic extends ShipmentBizLogic
 		}
 		return objId;
 	}
+	
+	/**
+     *  Set the user selected specimen's  available Quantity.
+     */
+    private void setSpecimenAvailableQuantity(Specimen specimen, SpecimenPosition specimenPosition)
+    {       
+        specimen.setAvailableQuantity(specimenPosition.getSpecimen().getAvailableQuantity());
+    }
+    
+    /**
+     *  Set the user selected specimen's Label.
+     */
+    private void setSpecimenLabel(Specimen specimen, SpecimenPosition specimenPosition)
+    {       
+        specimen.setLabel(specimenPosition.getSpecimen().getLabel());
+    }
+ 
+    
+    private void setSpecimenEventCollection(Specimen specimen, SpecimenPosition specimenPosition)
+    {       
+       specimen.setSpecimenEventCollection(specimenPosition.getSpecimen().getSpecimenEventCollection());
+    }
 
 }

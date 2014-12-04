@@ -2,6 +2,7 @@
 package edu.wustl.catissuecore.action.shippingtracking;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,11 +16,16 @@ import org.apache.struts.action.ActionMapping;
 
 import edu.wustl.catissuecore.actionForm.shippingtracking.ShipmentForm;
 import edu.wustl.catissuecore.actionForm.shippingtracking.ShipmentReceivingForm;
+import edu.wustl.catissuecore.domain.ReceivedEventParameters;
 import edu.wustl.catissuecore.domain.Specimen;
+import edu.wustl.catissuecore.domain.SpecimenEventParameters;
 import edu.wustl.catissuecore.domain.StorageContainer;
+import edu.wustl.catissuecore.domain.User;
+import edu.wustl.catissuecore.util.EventsUtil;
 import edu.wustl.catissuecore.util.global.Constants;
 import edu.wustl.common.action.CommonAddEditAction;
 import edu.wustl.common.action.CommonEdtAction;
+import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.exception.ApplicationException;
 import edu.wustl.common.util.logger.Logger;
 
@@ -46,6 +52,18 @@ public class ProcessShipmentReceivedAction extends CommonAddEditAction
 	public ActionForward executeXSS(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response)throws Exception
 	{
+		/*BMS-3621
+				Update the caTissue shipment receive page to match the 2.0A shipment receive page*/
+    Long loggedInUserId = 0l;
+    if (request.getSession().getAttribute(
+            edu.wustl.catissuecore.util.global.Constants.SESSION_DATA) != null)
+    {
+        //Getting the loggedIn User Id
+        loggedInUserId = ((SessionDataBean) request.getSession().getAttribute(
+                edu.wustl.catissuecore.util.global.Constants.SESSION_DATA)).getUserId();
+    }
+    User user=new User();
+    user.setId(loggedInUserId);
 		final CommonEdtAction commonEditAction = new CommonEdtAction();
 		ActionForward forward = mapping.findForward(Constants.FAILURE);
 		if (form instanceof ShipmentReceivingForm)
@@ -58,6 +76,20 @@ public class ProcessShipmentReceivedAction extends CommonAddEditAction
 			//bug 11543
 			try
 			{
+			//catissue1.3 fix
+				                // BMS-3621
+								//Update the caTissue shipment receive page to match the 2.0A shipment receive page
+				                //Adding ReceivedEventParameters to their respective specimens
+				for(Specimen specimen: ((ShipmentReceivingForm) form).getSpecimenCollection()){
+	          final Collection<SpecimenEventParameters> specimenEventColl = new HashSet<SpecimenEventParameters>();
+	
+	          final ReceivedEventParameters receivedEventParameters = EventsUtil
+	                  .populateReceivedEventParameters(user);
+	          receivedEventParameters.setSpecimen(specimen);
+	          receivedEventParameters.setReceivedQuality(request.getParameter("receivedQualitys_"+specimen.getId()));
+	          specimenEventColl.add(receivedEventParameters);
+	          specimen.setSpecimenEventCollection(specimenEventColl);
+	      }
 				forward = commonEditAction.executeXSS(mapping, form, request, response);
 			}
 			catch (final ApplicationException e)

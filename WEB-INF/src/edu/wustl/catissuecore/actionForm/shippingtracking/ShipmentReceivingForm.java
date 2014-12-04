@@ -3,15 +3,19 @@ package edu.wustl.catissuecore.actionForm.shippingtracking;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
+import edu.wustl.catissuecore.domain.ExternalIdentifier;
 import edu.wustl.catissuecore.domain.Specimen;
 import edu.wustl.catissuecore.domain.SpecimenPosition;
 import edu.wustl.catissuecore.domain.StorageContainer;
 import edu.wustl.catissuecore.domain.shippingtracking.BaseShipment;
 import edu.wustl.catissuecore.domain.shippingtracking.Shipment;
 import edu.wustl.catissuecore.util.shippingtracking.Constants;
+import edu.wustl.common.cde.CDEManager;
 import edu.wustl.common.domain.AbstractDomainObject;
 
 /**
@@ -56,7 +60,33 @@ public class ShipmentReceivingForm extends ShipmentForm
 	 * Indicates control comes from the page to display shipment receiving page.
 	 */
 	private String fromPage;
+	
+	protected List receivedQualityList;
+	
+	protected Map<Long,String> externalIdentifierMap = new HashMap<Long,String>();
 
+		/**
+	     * Gets the received quality list.
+	     *
+	     */
+	    public List getReceivedQualityList()
+	    {
+	        receivedQualityList = CDEManager.getCDEManager().getPermissibleValueList(edu.wustl.catissuecore.util.global.Constants.CDE_NAME_RECEIVED_QUALITY, null);     
+	        receivedQualityList.remove(0);
+	        return this.receivedQualityList;
+	    }  
+	 
+	    public Map<Long, String> getExternalIdentifierMap() {
+	        return externalIdentifierMap;
+	    }
+	
+	    public void setExternalIdentifierMap(Map<Long, String> externalIdentifierMap) {
+	        this.externalIdentifierMap = externalIdentifierMap;
+	    }
+	    
+	    public void setRequiredQualityList(List<String> receivedQualityList){
+	    	        this.receivedQualityList=receivedQualityList;
+	    	    }
 	/**
 	 * @return specimens contained in shipment.
 	 */
@@ -355,7 +385,14 @@ public class ShipmentReceivingForm extends ShipmentForm
 		while (spPosIterator.hasNext())
 		{
 			final SpecimenPosition position = spPosIterator.next();
-			this.specimenCollection.add(position.getSpecimen());
+			Specimen localSpecimen = position.getSpecimen();
+						this.specimenCollection.add(localSpecimen);
+						for(ExternalIdentifier externalIdentifier : localSpecimen.getExternalIdentifierCollection()){
+			                if(externalIdentifier.getName()!=null && externalIdentifier.getName().equalsIgnoreCase("biomsid")){
+			                    this.externalIdentifierMap.put(localSpecimen.getId(),externalIdentifier.getValue());
+			                    break;
+			                }
+			            }
 		}
 	}
 }
