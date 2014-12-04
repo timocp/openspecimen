@@ -12,6 +12,7 @@ package edu.wustl.catissuecore.action;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -23,7 +24,11 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import edu.wustl.catissuecore.actionForm.DistributionProtocolForm;
+import edu.wustl.catissuecore.bizlogic.UserBizLogic;
 import edu.wustl.catissuecore.util.global.Constants;
+import edu.wustl.common.beans.NameValueBean;
+import edu.wustl.common.factory.AbstractFactoryConfig;
+import edu.wustl.common.factory.IFactory;
 import edu.wustl.common.util.MapDataParser;
 import edu.wustl.common.util.global.CommonServiceLocator;
 import edu.wustl.common.util.global.CommonUtilities;
@@ -93,6 +98,18 @@ public class DistributionProtocolAction extends SpecimenProtocolAction
 					+ coordinatorID);
 			distributionProtocolForm.setPrincipalInvestigatorId(Long.parseLong(coordinatorID));
 		}
+		final IFactory factory = AbstractFactoryConfig.getInstance().getBizLogicFactory();
+		final UserBizLogic userBizLogic = (UserBizLogic) factory
+				.getBizLogic(Constants.USER_FORM_ID);
+		final List<NameValueBean> userCollection = userBizLogic.getUsersNameValueList(Constants.ADD);
+		final List<NameValueBean> userList = new ArrayList<NameValueBean>();
+		for(NameValueBean nvb : userCollection)
+		{
+			nvb.setValue(nvb.getValue().toString());
+			userList.add(nvb);
+		}
+		userList.add(0,new NameValueBean(Constants.SELECT_OPTION,Long.valueOf(Constants.SELECT_OPTION_VALUE)));
+		request.setAttribute(Constants.USERLIST, userList);
 		// -- 24-Jan-06 end
 
 		return super.executeCatissueAction(mapping, form, request, response);

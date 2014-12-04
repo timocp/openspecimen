@@ -89,15 +89,15 @@ public class SpecimenProtocolAction extends CatissueBaseAction
 		request.setAttribute(Constants.ACTIVITYSTATUSLIST, Constants.ACTIVITY_STATUS_VALUES);
 
 		final IFactory factory = AbstractFactoryConfig.getInstance().getBizLogicFactory();
-		final UserBizLogic userBizLogic = (UserBizLogic) factory
-				.getBizLogic(Constants.USER_FORM_ID);
-		final List<NameValueBean> userCollection = userBizLogic.getUsersNameValueList(operation);
-		final List<NameValueBean> userList = new ArrayList<NameValueBean>();
-		for(NameValueBean nvb : userCollection)
-		{
-			nvb.setValue(nvb.getValue().toString());
-			userList.add(nvb);
-		}
+//		final UserBizLogic userBizLogic = (UserBizLogic) factory
+//				.getBizLogic(Constants.USER_FORM_ID);
+//		final List<NameValueBean> userCollection = userBizLogic.getUsersNameValueList(operation);
+//		final List<NameValueBean> userList = new ArrayList<NameValueBean>();
+//		for(NameValueBean nvb : userCollection)
+//		{
+//			nvb.setValue(nvb.getValue().toString());
+//			userList.add(nvb);
+//		}
 		//userList.add(0,new NameValueBean(Constants.SELECT_OPTION,Long.valueOf(Constants.SELECT_OPTION_VALUE)));
 //		request.setAttribute(Constants.USERLIST, userList);
 		this.logger.debug("1");
