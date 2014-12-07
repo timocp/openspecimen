@@ -10,6 +10,8 @@
 
   <property name="int.type" value="bigint(20)" dbms="mysql" />
   <property name="int.type" value="number(19,0)" dbms="oracle" />
+  <property name="text.type" value="varchar" dbms="mysql" />
+  <property name="text.type" value="varchar2" dbms="oracle" />
 
   <changeSet id="add primary key to users table" author="vpawar" failOnError="false">
     <addPrimaryKey tableName="CATISSUE_USER" columnNames="IDENTIFIER"/>
@@ -93,5 +95,11 @@
     <addColumn tableName="CATISSUE_IDENTIFIED_REPORT">
       <column name="SCG_ID" type="${int.type}"/>
     </addColumn>
+  </changeSet>
+  
+  <changeSet id="alter specimens req table to rename title column" author="nmarwaha" failOnError="false">
+    <dropColumn columnName="SPEC_REQ_LABEL" tableName="CATISSUE_CP_REQ_SPECIMEN"/>
+    
+    <renameColumn columnDataType="${text.type}" newColumnName="SPEC_REQ_LABEL" oldColumnName="TITLE" tableName="CATISSUE_CP_REQ_SPECIMEN"/>
   </changeSet>
 </databaseChangeLog>

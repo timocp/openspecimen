@@ -158,28 +158,46 @@
                                 <td align="center" class="black_ar"><span class="blue_ar_b"><img src="images/uIEnhancementImages/star.gif" alt="Mandatory" width="6" height="6" hspace="0" vspace="0" /></span></td>
 								<td align="left" class="black_ar"><bean:message key="specimen.collectedevents.username"/></td>
 							          <td align="left" class="black_ar">
-									<autocomplete:AutoCompleteTag property="collectionEventUserId"
-									  optionsList = "<%=request.getAttribute(Constants.USERLIST)%>"
-									  initialValue="<%=new Long(form.getCollectionEventUserId())%>"
-									  staticField="false"
-									  styleClass="black_ar"
-									  size="20"
-									/>
+									  <table border="0" cellspacing="0" cellpadding="0">
+										<tr>
+											<td>
+												<div>
+													<html:select property="collectionEventUserId"
+																	 styleClass="black_ar" styleId="collectionEventUserId" size="1">
+															   
+													</html:select>
+													</div>
+											</td>
+											<td>
+											</td></tr></table>
+										<span class="grey_ar_s">Start typing to see values</span>
 								</td>
 							  	<html:hidden property="receivedEventId" />
 									<html:hidden property="receivedEventSpecimenId" />
                                <td align="center" class="black_ar"><span class="blue_ar_b"><img src="images/uIEnhancementImages/star.gif" alt="Mandatory" width="6" height="6" hspace="0" vspace="0" /></span></td>
                                <td align="left" class="black_ar"><bean:message key="specimen.receivedevents.username"/></td>
 								<td align="left" class="black_ar">
-									<autocomplete:AutoCompleteTag property="receivedEventUserId"
-									  optionsList = "<%=request.getAttribute(Constants.USERLIST)%>"
-									  initialValue="<%=new Long(form.getReceivedEventUserId())%>"
-									  staticField="false"
-									  styleClass="black_ar"
-									  size="20"
-									/>
+								  <table border="0" cellspacing="0" cellpadding="0">
+										<tr>
+											<td>
+												<div>
+													<html:select property="receivedEventUserId"
+																	 styleClass="black_ar" styleId="receivedEventUserId" size="1">
+															   
+													</html:select>
+													</div>
+											</td>
+											<td>
+											</td></tr></table>
+										<span class="grey_ar_s">Start typing to see values</span>
 								</td>
                               </tr>
+							  <script>
+							var collUserName = "${collUserName}";
+							var recUserName = "${recUserName}";
+							var collUserId = "<%=form.getCollectionEventUserId()%>";
+							var recUserId = "<%=form.getReceivedEventUserId()%>";
+						</script>
                               <tr>
                                <td align="center" class="black_ar"><span class="blue_ar_b"><img src="images/uIEnhancementImages/star.gif" alt="Mandatory" width="6" height="6" hspace="0" vspace="0" /></span></td>
                               <td align="left" class="black_ar"><bean:message key="cpbasedentry.collectionprocedure"/></td>

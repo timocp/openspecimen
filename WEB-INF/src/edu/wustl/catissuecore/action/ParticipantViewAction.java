@@ -104,7 +104,7 @@ public class ParticipantViewAction  extends CatissueBaseAction
 		       		       List<NameValueBean> eventLabels = new ArrayList<NameValueBean>();
 		       		       List<NameValueBean> specimenLabels = new ArrayList<NameValueBean>();
 		       		       scgLabels.addAll(scgdao.getSCGNameList(hibernateDao,registrationId));
-		       		       eventLabels.addAll(scgdao.getEventLabelsList(hibernateDao,new Long(registrationId)));
+		       		       eventLabels.addAll(scgdao.getEventLabelsList(hibernateDao,new Long(cpId)));
 		       		       specimenLabels = scgdao.getspecimenLabelsList(hibernateDao,registrationId);
 		       		       for(CollectionProtocol collectionProtocol : arms)
 		       		       {

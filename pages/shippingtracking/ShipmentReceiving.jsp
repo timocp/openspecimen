@@ -581,7 +581,7 @@ function onParentContainerSelectChange(selectedOption,containerId)
 																		<td class="black_ar" width="9%"><c:out
 																				value="${shipmentReceivingForm.externalIdentifierMap[specimenItem.id]}" />
 																		</td>
-																		<td class="black_ar" width="9%"><c:out value="${specimenItem.specimenRequirement.title}"/></td>
+																		<td class="black_ar" width="9%"><c:out value="${specimenItem.specimenRequirement.specimenRequirementLabel}"/></td>
 																		<td class="black_ar" width="9%"><c:out
 																				value="${specimenItem.specimenCollectionGroup.collectionProtocolRegistration.protocolParticipantIdentifier}" />
 																			<%--<html:hidden name="specimenItem" property="specimenCollectionGroup.collectionProtocolRegistration.protocolParticipantIdentifier" value="${specimenItem.specimenCollectionGroup.collectionProtocolRegistration.protocolParticipantIdentifier}" indexed="true" />--%>

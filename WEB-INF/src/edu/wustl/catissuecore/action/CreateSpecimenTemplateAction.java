@@ -21,6 +21,7 @@ import edu.wustl.catissuecore.actionForm.CreateSpecimenTemplateForm;
 import edu.wustl.catissuecore.bean.CollectionProtocolBean;
 import edu.wustl.catissuecore.bean.SpecimenRequirementBean;
 import edu.wustl.catissuecore.bizlogic.UserBizLogic;
+import edu.wustl.catissuecore.dao.UserDAO;
 import edu.wustl.catissuecore.domain.User;
 import edu.wustl.catissuecore.util.CollectionProtocolUtil;
 import edu.wustl.catissuecore.util.EventsUtil;
@@ -240,6 +241,13 @@ public class CreateSpecimenTemplateAction extends BaseAction
 			session.setAttribute(Constants.TREE_NODE_ID, nodeId);
 		}*/
 		this.setUserInForm(request, operation, createSpecimenTemplateForm);
+		UserDAO userDao = new UserDAO();
+		String collUserName = userDao.getUserNameById(createSpecimenTemplateForm.getCollectionEventUserId());
+		
+		String recUserName = userDao.getUserNameById(createSpecimenTemplateForm.getReceivedEventUserId());
+		
+		request.setAttribute("collUserName", collUserName);
+		request.setAttribute("recUserName", recUserName);
 		final String redirectTo = request.getParameter("redirectTo");
 		if (Constants.EDIT.equals(operation) && !ERROR_STRING.equals(pageOf) && !"delete".equals(pageOf) && selectedNode.startsWith("New"))
 		{
@@ -291,7 +299,7 @@ public class CreateSpecimenTemplateAction extends BaseAction
 		if (sessionData != null)
 		{
 			final String user = sessionData.getLastName() + ", " + sessionData.getFirstName();
-			final long collectionEventUserId = EventsUtil.getIdFromCollection(userCollection, user);
+			final long collectionEventUserId = sessionData.getUserId();//EventsUtil.getIdFromCollection(userCollection, user);
 
 			if (createSpecimenTemplateForm.getCollectionEventUserId() == 0)
 			{
