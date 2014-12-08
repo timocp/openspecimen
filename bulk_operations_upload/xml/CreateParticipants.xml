@@ -23,13 +23,13 @@
 			<referenceAssociation
 				className="edu.wustl.catissuecore.domain.User"
 				   roleName="consentWitness"   >
-				<attribute name="loginName" csvColumnName="Witness Name"   />
+				<attribute name="loginName" csvColumnName="Witness Login Name"   />
 			</referenceAssociation>
 			<attribute name="consentSignatureDate" csvColumnName="Consent Sign Date"   />
 
 			<attribute name="protocolParticipantIdentifier" csvColumnName="PPI"   />
 				<attribute name="registrationDate" csvColumnName="Registration Date"   />
-				<attribute name="isToInsertAnticipatorySCGs" csvColumnName="isToInsertAnticipatorySCGs"   />
+				
 		</containmentAssociation>
 		<containmentAssociation
 			className="edu.wustl.catissuecore.domain.Race"
