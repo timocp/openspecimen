@@ -4,7 +4,25 @@
     <caption>Collection Event</caption>
     <table>CATISSUE_COLL_EVENT_PARAM</table>
     <primaryKey>IDENTIFIER</primaryKey>
-
+    <row>
+      <userField>
+        <name>user</name>
+        <udn>user</udn>
+        <caption>User</caption>
+        <column>USER_ID</column>
+        <mandatory>true</mandatory>
+      </userField>
+    </row>
+    <row>
+      <datePicker>
+        <name>time</name>
+        <udn>time</udn>
+        <caption>Date and Time</caption>
+        <column>EVENT_TIMESTAMP</column>
+        <format>MM-dd-yyyy HH:mm</format>
+        <mandatory>true</mandatory>
+      </datePicker>
+    </row>
     <row>
       <dropDown>
         <name>procedure</name>
@@ -21,7 +39,6 @@
         <mandatory>true</mandatory>
       </dropDown>
     </row>
-
     <row>
       <dropDown>
         <name>container</name>
@@ -38,27 +55,6 @@
         <mandatory>true</mandatory>
       </dropDown>
     </row>
-
-    <row>
-      <userField>
-        <name>user</name>
-        <udn>user</udn>
-        <caption>User</caption>
-        <column>USER_ID</column>
-      </userField>
-    </row>
-
-    <row>
-      <datePicker>
-        <name>time</name>
-        <udn>time</udn>
-        <caption>Date and Time</caption>
-        <column>EVENT_TIMESTAMP</column>
-        <format>MM-dd-yyyy HH:mm</format>
-      </datePicker>
-    </row>
-
-
     <row>
       <textArea>
         <name>comments</name>
