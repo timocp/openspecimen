@@ -38,6 +38,7 @@ import edu.common.dynamicextensions.ndao.ResultExtractor;
 import edu.common.dynamicextensions.ndao.TransactionManager;
 import edu.common.dynamicextensions.ndao.TransactionManager.Transaction;
 import edu.common.dynamicextensions.nutility.IoUtil;
+import edu.wustl.catissuecore.action.bulkOperations.BOTemplateGeneratorUtil;
 
 public class MigrateSpecimenEvents {
 	private static final Logger logger = Logger.getLogger(MigrateSpecimenEvents.class);
@@ -212,6 +213,7 @@ public class MigrateSpecimenEvents {
 		try {
 			Long formId = Container.createContainer(ctx, formFile, ".", false);
 			Long formCtxId = insertFormCtx(formId);
+			new BOTemplateGeneratorUtil().generateAndUploadTemplate(formId, "SpecimenEvent");
 			TransactionManager.getInstance().commit(txn);
 			return formCtxId;
 		} catch (Exception e) {

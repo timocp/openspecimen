@@ -5676,6 +5676,9 @@
                 <include name="*" />
               </fileset>
               <pathelement location="${temp.dir}/catissuecore/WEB-INF/classes" />
+              <fileset dir="${lib.dir}">
+                <include name="*" />
+              </fileset>
             </classpath>
           </java>
         </target>

@@ -5225,6 +5225,9 @@
               <fileset dir="WEB-INF/lib">
                 <include name="*" />
               </fileset>
+              <fileset dir="extra_lib/">
+                <include name="*" />
+              </fileset>
               <pathelement location="${temp.dir}/catissuecore/WEB-INF/classes" />
             </classpath>
           </java>
