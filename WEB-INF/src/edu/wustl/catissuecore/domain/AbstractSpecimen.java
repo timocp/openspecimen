@@ -39,59 +39,11 @@ public abstract class AbstractSpecimen extends AbstractDomainObject
 	 */
 	private static final long serialVersionUID = 156565234567890L;
 
-	/**
-	 * System generated identifier.
-	 */
-	protected Long id;
+	
 	/**
 	 * parentSpecimen from which this specimen is derived.
 	 */
-	protected AbstractSpecimen parentSpecimen;
-	/**
-	 * Collection of childSpecimenCollection derived from this specimen.
-	 */
-	protected Collection<AbstractSpecimen> childSpecimenCollection = new LinkedHashSet<AbstractSpecimen>();
-
-	/**
-	 * The anatomical site from which a specimen is derived.
-	 */
-	protected String tissueSite;
-
-	/**
-	 * For bilateral sites, left or right.
-	 */
-	protected String tissueSide;
-
-	/**
-	 * Collection of Specimen Event Parameters associated with this specimen.
-	 */
-	protected Collection<SpecimenEventParameters> specimenEventCollection = new HashSet<SpecimenEventParameters>();
-	/**
-	 * pathologicalStatus - Histoathological character of specimen.
-	 * e.g. Non-Malignant, Malignant, Non-Malignant Diseased, Pre-Malignant.
-	 */
-	protected String pathologicalStatus;
-	/**
-	 * lineage - A historical information about the specimen i.e. whether the specimen is a new specimen
-	 * or a derived specimen or an aliquot
-	 */
-	protected String lineage;
-	/**
-	 * label - A label name of this specimen.
-	 */
-	protected String label;
-	/**
-	 * initialQuantity - The quantity of a specimen.
-	 */
-	protected Double initialQuantity;
-	/**
-	 * specimenClass - Tissue, Molecular,Fluid and Cell.
-	 */
-	protected String specimenClass;
-	/**
-	 * specimenType - Type of specimen. e.g. Serum, Plasma, Blood, Fresh Tissue etc.
-	 */
-	protected String specimenType;
+	
 
 	/**
 	 * Overidden from AbstractDomainObject class.
@@ -104,15 +56,10 @@ public abstract class AbstractSpecimen extends AbstractDomainObject
 		logger.debug("Empty implementation of setAllValue");
 	}
 
-	protected Double concentrationInMicrogramPerMicroliter; 
-	public Double getConcentrationInMicrogramPerMicroliter() {
-		return concentrationInMicrogramPerMicroliter;
-	}
+	public abstract Double getConcentrationInMicrogramPerMicroliter();
 
-	public void setConcentrationInMicrogramPerMicroliter(
-			Double concentrationInMicrogramPerMicroliter) {
-		this.concentrationInMicrogramPerMicroliter = concentrationInMicrogramPerMicroliter;
-	}
+	public abstract void setConcentrationInMicrogramPerMicroliter(
+			Double concentrationInMicrogramPerMicroliter);
 	/**
 	 * It would return the Activity Status.
 	 * @return activity status of String type.
@@ -137,77 +84,51 @@ public abstract class AbstractSpecimen extends AbstractDomainObject
 	 * @return identifier of type Long.
 	 */
 	@Override
-	public Long getId()
-	{
-		return this.id;
-	}
+	public abstract Long getId();
 
 	/**
 	 * Set the identifier.
 	 * @param identifier which is of Long type.
 	 */
 	@Override
-	public void setId(final Long identifier)
-	{
-		this.id = identifier;
-	}
+	public abstract void setId(final Long identifier);
 
 	
 	
-	public String getTissueSite() {
-		return tissueSite;
-	}
+	public abstract String getTissueSite();
 
 	
-	public void setTissueSite(String tissueSite) {
-		this.tissueSite = tissueSite;
-	}
+	public abstract void setTissueSite(String tissueSite);
 
 	
-	public String getTissueSide() {
-		return tissueSide;
-	}
+	public abstract String getTissueSide();
 
 	
-	public void setTissueSide(String tissueSide) {
-		this.tissueSide = tissueSide;
-	}
+	public abstract void setTissueSide(String tissueSide);
 
 	/**
 	 * Get the pathological status.
 	 * @return pathological status in String type.
 	 */
-	public String getPathologicalStatus()
-	{
-		return this.pathologicalStatus;
-	}
+	public abstract String getPathologicalStatus();
 
 	/**
 	 * Set the pathological status.
 	 * @param pathologicalStatus of type String.
 	 */
-	public void setPathologicalStatus(final String pathologicalStatus)
-	{
-		this.pathologicalStatus = pathologicalStatus;
-	}
+	public abstract void setPathologicalStatus(String pathologicalStatus);
 
 	/**
 	 * Get the lineage.
 	 * @return String.
 	 */
-	public String getLineage()
-	{
-		return this.lineage;
-	}
+	public abstract String getLineage();
 
 	/**
 	 * Set the lineage.
 	 * @param lineage of type String.
 	 */
-	public void setLineage(final String lineage)
-	{
-		this.lineage = lineage;
-	}
+	public abstract void setLineage(final String lineage);
 
 	/**
 	 * Get the label.
@@ -222,38 +143,26 @@ public abstract class AbstractSpecimen extends AbstractDomainObject
 	 * Get the initial quantity.
 	 * @return initial quantity in double.
 	 */
-	public Double getInitialQuantity()
-	{
-		return this.initialQuantity;
-	}
+	public abstract Double getInitialQuantity();
 
 	/**
 	 * Set the initial quantity.
 	 * @param initialQuantity which is of Double type.
 	 */
-	public void setInitialQuantity(final Double initialQuantity)
-	{
-		this.initialQuantity = initialQuantity;
-	}
+	public abstract void setInitialQuantity(final Double initialQuantity);
 
 	/**
 	 * Returns the type of specimen. e.g. Serum, Plasma, Blood, Fresh Tissue etc.
 	 * @return The type of specimen. e.g. Serum, Plasma, Blood, Fresh Tissue etc.
 	 * @see #getType(String)
 	 */
-	public String getSpecimenType()
-	{
-		return this.specimenType;
-	}
+	public abstract String getSpecimenType();
 
 	/**
 	 * Set the specimen type.
 	 * @param specimenType SpecimenType)
 	 */
-	public void setSpecimenType(final String specimenType)
-	{
-		this.specimenType = specimenType;
-	}
+	public abstract void setSpecimenType(final String specimenType);
 
 	/**
 	 * Returns the parent specimen from which this specimen is derived.
@@ -262,20 +171,14 @@ public abstract class AbstractSpecimen extends AbstractDomainObject
 	 * @return the parent specimen from which this specimen is derived.
 	 * @see #setParentSpecimen(SpecimenNew)
 	 */
-	public AbstractSpecimen getParentSpecimen()
-	{
-		return this.parentSpecimen;
-	}
+	public abstract AbstractSpecimen getParentSpecimen();
 
 	/**
 	 * Sets the parent specimen from which this specimen is derived.
 	 * @param parentSpecimen the parent specimen from which this specimen is derived.
 	 * @see #getParentSpecimen()
 	 */
-	public void setParentSpecimen(final AbstractSpecimen parentSpecimen)
-	{
-		this.parentSpecimen = parentSpecimen;
-	}
+	public abstract void setParentSpecimen(final AbstractSpecimen parentSpecimen);
 
 	/**
 	 * Returns the collection of children specimens derived from this specimen.
@@ -286,10 +189,7 @@ public abstract class AbstractSpecimen extends AbstractDomainObject
 	 * @return the collection of children specimens derived from this specimen.
 	 * @see #setChildrenSpecimen(Set)
 	 */
-	public Collection<AbstractSpecimen> getChildSpecimenCollection()
-	{
-		return this.childSpecimenCollection;
-	}
+	public abstract Collection<AbstractSpecimen> getChildSpecimenCollection();
 
 	/**
 	 * Sets the collection of children specimens derived from this specimen.
@@ -297,10 +197,7 @@ public abstract class AbstractSpecimen extends AbstractDomainObject
 	 * derived from this specimen.
 	 * @see #getChildrenSpecimen()
 	 */
-	public void setChildSpecimenCollection(final Collection<AbstractSpecimen> childrenSpecimen)
-	{
-		this.childSpecimenCollection = childrenSpecimen;
-	}
+	public abstract void setChildSpecimenCollection(final Collection<AbstractSpecimen> childrenSpecimen);
 
 	/**
 	 * Returns the collection of Specimen Event Parameters associated with this specimen.
@@ -311,10 +208,7 @@ public abstract class AbstractSpecimen extends AbstractDomainObject
 	 * @return the collection of Specimen Event Parameters associated with this specimen.
 	 * @see #setEventCollection(Set)
 	 */
-	public Collection<SpecimenEventParameters> getSpecimenEventCollection()
-	{
-		return this.specimenEventCollection;
-	}
+	public abstract Collection<SpecimenEventParameters> getSpecimenEventCollection();
 
 	/**
 	 * Sets the collection of Specimen Event Parameters associated with this specimen.
@@ -322,36 +216,23 @@ public abstract class AbstractSpecimen extends AbstractDomainObject
 	 * associated with this specimen.
 	 * @see #getSpecimenEventCollection()
 	 */
-	public void setSpecimenEventCollection(final Collection specimenEventCollection)
-	{
-		this.specimenEventCollection = specimenEventCollection;
-	}
+	public abstract void setSpecimenEventCollection(final Collection specimenEventCollection);
 
 	/**
 	 * This function returns the actual type of the specimen i.e Cell / Fluid / Molecular / Tissue.
 	 * @return String className.
 	 */
-	public final String getClassName()
-	{
-		
-		return this.specimenClass;
-	}
+	public abstract String getClassName();
 
 	/**
 	 * Get the specimen class.
 	 * @return String type "Specimen Class".
 	 */
-	public String getSpecimenClass()
-	{
-		return this.specimenClass;
-	}
+	public abstract String getSpecimenClass();
 
 	/**
 	 * Set the specimen class.
 	 * @param specimenClass SpecimenClass.
 	 */
-	public void setSpecimenClass(final String specimenClass)
-	{
-		this.specimenClass = specimenClass;
-	}
+	public abstract void setSpecimenClass(final String specimenClass);
 }

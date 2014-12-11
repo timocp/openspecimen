@@ -4,6 +4,8 @@ package edu.wustl.catissuecore.domain;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import edu.wustl.common.util.global.Validator;
@@ -19,6 +21,52 @@ public class SpecimenRequirement extends AbstractSpecimen
 	 */
 	private static final long serialVersionUID = -34444448799655L;
 
+	protected AbstractSpecimen parentSpecimen;
+	/**
+	 * Collection of childSpecimenCollection derived from this specimen.
+	 */
+	protected Collection<AbstractSpecimen> childSpecimenCollection = new LinkedHashSet<AbstractSpecimen>();
+
+	/**
+	 * The anatomical site from which a specimen is derived.
+	 */
+	protected String tissueSite;
+
+	/**
+	 * For bilateral sites, left or right.
+	 */
+	protected String tissueSide;
+
+	/**
+	 * Collection of Specimen Event Parameters associated with this specimen.
+	 */
+	protected Collection<SpecimenEventParameters> specimenEventCollection = new HashSet<SpecimenEventParameters>();
+	/**
+	 * pathologicalStatus - Histoathological character of specimen.
+	 * e.g. Non-Malignant, Malignant, Non-Malignant Diseased, Pre-Malignant.
+	 */
+	protected String pathologicalStatus;
+	/**
+	 * lineage - A historical information about the specimen i.e. whether the specimen is a new specimen
+	 * or a derived specimen or an aliquot
+	 */
+	protected String lineage;
+	/**
+	 * label - A label name of this specimen.
+	 */
+	protected String label;
+	/**
+	 * initialQuantity - The quantity of a specimen.
+	 */
+	protected Double initialQuantity;
+	/**
+	 * specimenClass - Tissue, Molecular,Fluid and Cell.
+	 */
+	protected String specimenClass;
+	/**
+	 * specimenType - Type of specimen. e.g. Serum, Plasma, Blood, Fresh Tissue etc.
+	 */
+	protected String specimenType;
 	private Date collectionTimestamp;
 
 	/**
@@ -74,6 +122,24 @@ public class SpecimenRequirement extends AbstractSpecimen
 	 */
 	private String activityStatus;
 
+	private  Long id;
+	
+	@Override
+	public Long getId()
+	{
+		return this.id;
+	}
+
+	/**
+	 * Set the identifier.
+	 * @param identifier which is of Long type.
+	 */
+	@Override
+	public void setId(final Long identifier)
+	{
+		this.id = identifier;
+	}
+	
 	public Date getCollectionTimestamp()
 	{
 		return collectionTimestamp;
@@ -325,4 +391,180 @@ public class SpecimenRequirement extends AbstractSpecimen
 		}
 	}
 
+	public String getTissueSite() {
+		return tissueSite;
+	}
+
+	
+	public void setTissueSite(String tissueSite) {
+		this.tissueSite = tissueSite;
+	}
+
+	
+	public String getTissueSide() {
+		return tissueSide;
+	}
+
+	
+	public void setTissueSide(String tissueSide) {
+		this.tissueSide = tissueSide;
+	}
+
+	/**
+	 * Get the pathological status.
+	 * @return pathological status in String type.
+	 */
+	public String getPathologicalStatus()
+	{
+		return this.pathologicalStatus;
+	}
+
+	/**
+	 * Set the pathological status.
+	 * @param pathologicalStatus of type String.
+	 */
+	public void setPathologicalStatus(final String pathologicalStatus)
+	{
+		this.pathologicalStatus = pathologicalStatus;
+	}
+
+	/**
+	 * Get the lineage.
+	 * @return String.
+	 */
+	public String getLineage()
+	{
+		return this.lineage;
+	}
+
+	/**
+	 * Set the lineage.
+	 * @param lineage of type String.
+	 */
+	public void setLineage(final String lineage)
+	{
+		this.lineage = lineage;
+	}
+	
+	/**
+	 * Get the initial quantity.
+	 * @return initial quantity in double.
+	 */
+	public Double getInitialQuantity()
+	{
+		return this.initialQuantity;
+	}
+
+	/**
+	 * Set the initial quantity.
+	 * @param initialQuantity which is of Double type.
+	 */
+	public void setInitialQuantity(final Double initialQuantity)
+	{
+		this.initialQuantity = initialQuantity;
+	}
+
+	/**
+	 * Returns the type of specimen. e.g. Serum, Plasma, Blood, Fresh Tissue etc.
+	 * @return The type of specimen. e.g. Serum, Plasma, Blood, Fresh Tissue etc.
+	 * @see #getType(String)
+	 */
+	public String getSpecimenType()
+	{
+		return this.specimenType;
+	}
+
+	/**
+	 * Set the specimen type.
+	 * @param specimenType SpecimenType)
+	 */
+	public void setSpecimenType(final String specimenType)
+	{
+		this.specimenType = specimenType;
+	}
+
+	/**
+	 * Returns the parent specimen from which this specimen is derived.
+	 * @hibernate.many-to-one column="PARENT_SPECIMEN_ID"
+	 * class="edu.wustl.catissuecore.domain.Specimen" constrained="true"
+	 * @return the parent specimen from which this specimen is derived.
+	 * @see #setParentSpecimen(SpecimenNew)
+	 */
+	public AbstractSpecimen getParentSpecimen()
+	{
+		return this.parentSpecimen;
+	}
+
+	/**
+	 * Sets the parent specimen from which this specimen is derived.
+	 * @param parentSpecimen the parent specimen from which this specimen is derived.
+	 * @see #getParentSpecimen()
+	 */
+	public void setParentSpecimen(final AbstractSpecimen parentSpecimen)
+	{
+		this.parentSpecimen = parentSpecimen;
+	}
+
+	/**
+	 * Returns the collection of children specimens derived from this specimen.
+	 * @hibernate.set name="childrenSpecimen" table="CATISSUE_SPECIMEN"
+	 * cascade="save-update" inverse="true" lazy="false"
+	 * @hibernate.collection-key column="PARENT_SPECIMEN_ID"
+	 * @hibernate.collection-one-to-many class="edu.wustl.catissuecore.domain.Specimen"
+	 * @return the collection of children specimens derived from this specimen.
+	 * @see #setChildrenSpecimen(Set)
+	 */
+	public Collection<AbstractSpecimen> getChildSpecimenCollection()
+	{
+		return this.childSpecimenCollection;
+	}
+
+	/**
+	 * Sets the collection of children specimens derived from this specimen.
+	 * @param childrenSpecimen the collection of children specimens
+	 * derived from this specimen.
+	 * @see #getChildrenSpecimen()
+	 */
+	public void setChildSpecimenCollection(final Collection<AbstractSpecimen> childrenSpecimen)
+	{
+		this.childSpecimenCollection = childrenSpecimen;
+	}
+
+	/**
+	 * This function returns the actual type of the specimen i.e Cell / Fluid / Molecular / Tissue.
+	 * @return String className.
+	 */
+	public String getClassName()
+	{
+		
+		return this.specimenClass;
+	}
+
+	/**
+	 * Get the specimen class.
+	 * @return String type "Specimen Class".
+	 */
+	public String getSpecimenClass()
+	{
+		return this.specimenClass;
+	}
+
+	/**
+	 * Set the specimen class.
+	 * @param specimenClass SpecimenClass.
+	 */
+	public void setSpecimenClass(final String specimenClass)
+	{
+		this.specimenClass = specimenClass;
+	}
+	
+	protected Double concentrationInMicrogramPerMicroliter; 
+	public Double getConcentrationInMicrogramPerMicroliter() {
+		return concentrationInMicrogramPerMicroliter;
+	}
+
+	public void setConcentrationInMicrogramPerMicroliter(
+			Double concentrationInMicrogramPerMicroliter) {
+		this.concentrationInMicrogramPerMicroliter = concentrationInMicrogramPerMicroliter;
+	}
 }
