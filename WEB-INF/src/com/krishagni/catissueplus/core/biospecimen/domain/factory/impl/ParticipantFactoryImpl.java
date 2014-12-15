@@ -6,6 +6,7 @@ import static com.krishagni.catissueplus.core.common.CommonValidator.isValidPv;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -15,6 +16,7 @@ import java.util.regex.Pattern;
 import com.krishagni.catissueplus.core.administrative.domain.Site;
 import com.krishagni.catissueplus.core.biospecimen.domain.Participant;
 import com.krishagni.catissueplus.core.biospecimen.domain.ParticipantMedicalIdentifier;
+import com.krishagni.catissueplus.core.biospecimen.domain.Race;
 import com.krishagni.catissueplus.core.biospecimen.domain.factory.ParticipantErrorCode;
 import com.krishagni.catissueplus.core.biospecimen.domain.factory.ParticipantFactory;
 import com.krishagni.catissueplus.core.biospecimen.events.ParticipantDetail;
@@ -216,7 +218,15 @@ public class ParticipantFactoryImpl implements ParticipantFactory {
 
 		String[] races = raceList.toArray(new String[raceList.size()]);
 		if (isValidPv(races, RACE)) {
-			participant.setRaceColl(raceList);
+			Set<Race> raceSet = new HashSet<Race>();
+			for (String string : races) {
+				Race race = new Race();
+				race.setRaceName(string);
+				race.setParticipant(participant);
+				raceSet.add(race);
+			}
+			
+			participant.setRaceColl(raceSet);
 			return;
 		}
 		exception.addError(ParticipantErrorCode.CONSTRAINT_VIOLATION, RACE);

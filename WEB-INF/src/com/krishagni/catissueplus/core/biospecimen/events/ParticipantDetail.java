@@ -12,6 +12,7 @@ import org.hibernate.LazyInitializationException;
 
 import com.krishagni.catissueplus.core.biospecimen.domain.Participant;
 import com.krishagni.catissueplus.core.biospecimen.domain.ParticipantMedicalIdentifier;
+import com.krishagni.catissueplus.core.biospecimen.domain.Race;
 
 public class ParticipantDetail {
 
@@ -186,11 +187,11 @@ public class ParticipantDetail {
 			
 		}
 		participantDetail.setPmiCollection(pmiColl);
-		Set<String> raceSet = participant.getRaceColl();
+		Set<Race> raceSet = participant.getRaceColl();
 		Set<String> newRace = new HashSet<String>(); 
 		if(raceSet != null){
-			for (String race : raceSet) {
-				newRace.add(race);
+			for (Race race : raceSet) {
+				newRace.add(race.getRaceName());
 			}
 		}
 		
