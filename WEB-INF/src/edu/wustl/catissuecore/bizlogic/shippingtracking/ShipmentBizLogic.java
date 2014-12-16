@@ -174,8 +174,8 @@ public class ShipmentBizLogic extends BaseShipmentBizLogic
 	private String getWhereClauseForShipment(Long[] siteId, String columnName)
 	{
 		final StringBuffer whereClause = new StringBuffer();
-		whereClause.append( " shipment.activityStatus!='" + Constants.ACTIVITY_STATUS_RECEIVED
-				+ "' " + CommonConstants.AND_JOIN_CONDITION + " (" );
+		whereClause.append( " shipment.activityStatus not in ('" + Constants.ACTIVITY_STATUS_RECEIVED
+				+ "', 'Disabled') " + CommonConstants.AND_JOIN_CONDITION + " (" );
 		for (final Long element : siteId)
 		{
 			whereClause.append( " shipment." + columnName + "=? "
