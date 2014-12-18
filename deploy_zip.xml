@@ -1005,8 +1005,6 @@
                             <echo>after deploy_app: ${time_deploy_app_after}</echo>
         <antcall target="load_bulk_operator_templates" />       
     
-        <antcall target="server_security" />
-
         <!-- Configure the IIS properties, if configure.IIS.properties is 'true'. -->
         <if>
             <equals arg1="${configure.IIS.properties}" arg2="true" />
