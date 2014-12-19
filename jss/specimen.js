@@ -1,6 +1,7 @@
 var typeCombo;
 var classNameCombo;
 var collectionStatusCombo;
+var morphologicalAbnormalityValue;
 function initCombo()
 {
 	    classNameCombo = dhtmlXComboFromSelect("className");
@@ -830,6 +831,11 @@ function submitTabData(operation)
 		if(concen != null && concen != "")
 		{
 			tabDataJSON["concentration"] = document.getElementById("concentration").value; 
+		}
+		
+		if(morphologicalAbnormalityValue != null && morphologicalAbnormalityValue != "" &&  morphologicalAbnormalityValue != "Not Specified")
+		{
+			tabDataJSON["morphologicalAbnormality"] = morphologicalAbnormalityValue; 
 		}
 	
 		createRESTSpec(tabDataJSON,printFlag,operation);

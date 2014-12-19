@@ -30,7 +30,7 @@
 <link href="css/catissue_suite.css" type="text/css" rel="stylesheet"/>
 <link rel="stylesheet" type="text/css" href="css/styleSheet.css" />
 <link rel="stylesheet" type="text/css" href="css/alretmessages.css"/>
-<link rel="stylesheet" type="text/css" href="css/tag-popup.css"/>
+<link rel="stylesheet" type="text/css" href="css/advQuery/tag-popup.css"/>
 <link rel="STYLESHEET" type="text/css" href="dhtmlxSuite_v35/dhtmlxWindows/codebase/dhtmlxwindows.css"/>
 <link rel="STYLESHEET" type="text/css" href="dhtmlxSuite_v35/dhtmlxWindows/codebase/skins/dhtmlxwindows_dhx_skyblue.css"/>
 <link rel="STYLESHEET" type="text/css" href="dhtmlxSuite_v35/dhtmlxCombo/codebase/dhtmlxcombo.css"/>
@@ -82,7 +82,63 @@
 }
 </style>
 <script>
+	var morphTree;
+	var newMorphCombo = {};
+	function init(){
+		morphTree = new dhtmlXTreeObject("treeBox","100%","100%",0);
+	morphTree.setImagePath("dhtmlxSuite_v35/dhtmlxTree/codebase/imgs/");
+	morphTree.enableSmartXMLParsing(true);
+	morphTree.enableCheckBoxes(false);
+    morphTree.enableDragAndDrop(false);
+	morphTree.enableTreeImages(false); 
+	morphTree.enableThreeStateCheckboxes(false);
+	morphTree.deleteChildItems(0);
+	morphTree.attachEvent("onClick", function(id){
+		newMorphCombo.setComboText(morphTree.getItemText(id));
+		newMorphCombo.setComboValue(morphTree.getItemText(id));
+		newMorphCombo.DOMelem_input.title=morphTree.getItemText(id);
+		popup('new_PopUpDiv');
+	});
+	morphTree.setOnOpenHandler(expand);
+	morphTree.loadXML("MorphologicalAbnormality.do?action=getRootAbnormalities");
+		LoadSCGTabBar('${requestScope.operation}');
+		newMorphCombo = new dhtmlXCombo("morphologicalAbnormality","morphologicalAbnormality","203px");
+				newMorphCombo.setSize(203);
+				newMorphCombo.loadXML('/openspecimen/MorphologicalAbnormality.do',function(){
+				if("${specimenDTO.morphologicalAbnormality}" == "") {
+					newMorphCombo.setComboText("Not Specified");
+					newMorphCombo.setComboValue("Not Specified");
+					newMorphCombo.DOMelem_input.title="Not Specified";
+				} else {
+					newMorphCombo.setComboText("${specimenDTO.morphologicalAbnormality}");
+					newMorphCombo.setComboValue("${specimenDTO.morphologicalAbnormality}");
+					newMorphCombo.DOMelem_input.title="${specimenDTO.morphologicalAbnormality}";
+				}
+			});
+			
+			newMorphCombo.attachEvent("onKeyPressed",function(){
+				newMorphCombo.enableFilteringMode(true,'/openspecimen/MorphologicalAbnormality.do',true);	
+				newMorphCombo.attachEvent("onChange", function(){newMorphCombo.DOMelem_input.focus();});
+			});
+			newMorphCombo.attachEvent("onOpen",onComboClick);
+			newMorphCombo.attachEvent("onSelectionChange",function(){
+	 			morphologicalAbnormalityValue = newMorphCombo.getSelectedText();
+				if(morphologicalAbnormalityValue)
+					newMorphCombo.DOMelem_input.title=newMorphCombo.getSelectedText();
+				else
+					newMorphCombo.DOMelem_input.title='Start typing to see values';
+		 	});
+			newMorphCombo.attachEvent("onXLE",function (){newMorphCombo.addOption("${specimenDTO.morphologicalAbnormality}","${specimenDTO.morphologicalAbnormality}");});
+			dhtmlxEvent(newMorphCombo.DOMelem_input,"mouseover",function(){
+	     var diagnosisVal = newMorphCombo.getSelectedText();
+				if(diagnosisVal){
+					newMorphCombo.DOMelem_input.title=newMorphCombo.getSelectedText();}
+				else
+					newMorphCombo.DOMelem_input.title='Start typing to see values';
+	});
+	}
     var imgsrc="images/";
+			
     window.dhx_globalImgPath = "dhtmlxSuite_v35/dhtmlxWindows/codebase/imgs/";
 		var activityStatusCombo={};
         var aliquotDateErr = false;
@@ -90,6 +146,7 @@
         var aliquotPopUpParam = {};
         var aliquotNameSpace = {};
 		var userListCombo;
+		
         function showDisableSpecimenWindow(){
             if(aliquotNameSpace.dhxWins == undefined){
                 aliquotNameSpace.dhxWins = new dhtmlXWindows();
@@ -257,7 +314,7 @@ req.onreadystatechange = function() {
         }
 </script>
 <!----------------------------------------------------------------------->
-<body onload="LoadSCGTabBar('${requestScope.operation}');"> 
+<body onload="init();"> 
 <html:form action="NewSpecimenEdit.do">
 
 <html:hidden name="specimenDTO" property="generateLabel"/>
@@ -266,6 +323,7 @@ req.onreadystatechange = function() {
 <html:hidden name="specimenDTO" property="id" styleId="id"/>
 <html:hidden name="specimenDTO" property="requirementId" styleId="requirementId"/>
 <html:hidden name="specimenDTO" property="specimenCollectionGroupId" styleId="scgId"/>
+
                                 
     <table width="100%" border="0" cellpadding="0" cellspacing="0" height="100%">
       <tr>
@@ -504,8 +562,8 @@ req.onreadystatechange = function() {
                                      </div>
                                 </td>
                             </tr>
-            
-                            <tr class="tr_alternate_color_lightGrey">
+            				
+							<tr class="tr_alternate_color_lightGrey">
                                  <td width="20% class="black_ar">&nbsp;
                                  </td>
                                  <td width="30%" align="left" valign="top" >
@@ -540,7 +598,7 @@ req.onreadystatechange = function() {
                                      </div>
                                 </td>
                             </tr>
-                        
+					
                             <tr class="tr_alternate_color_white">
                                 <td width="20%" class="black_ar align_right_style">
                                     <img src="images/uIEnhancementImages/star.gif" alt="Mandatory" width="6" height="6" hspace="0" vspace="0" />    
@@ -601,7 +659,7 @@ req.onreadystatechange = function() {
                                     </label>
                                 </td>
                                                                 
-                                <td colspan="3" class="black_ar">
+                                <td colspan="1" class="black_ar">
                     <!-------Select Box Begins----->
                     
                                 <logic:equal name="specimenDTO" property="isVirtual" value="true">
@@ -609,11 +667,9 @@ req.onreadystatechange = function() {
                                     <input type="text" size="30" maxlength="255"  class="black_ar tr_alternate_color_lightGrey"  value='Virtually Located' readonly style="border:0px;" id="storageContainerPosition" title="Virtually Located"/>
                                 </logic:equal>
                                 <logic:equal name="specimenDTO" property="isVirtual" value="false">
-								<span id="containerSpan">
                                 <input type="text" size="30" maxlength="255"  class="black_ar tr_alternate_color_lightGrey"  value='<bean:write name="specimenDTO" property="containerName" scope="request"/>:(<bean:write name="specimenDTO" property="pos1" scope="request"/>,<bean:write name="specimenDTO" property="pos2" scope="request"/>)' readonly style="border:0px" id="storageContainerPosition" title='<bean:write name="specimenDTO" property="containerName" scope="request"/>:(<bean:write name="specimenDTO" property="pos1" scope="request"/>,<bean:write name="specimenDTO" property="pos2" scope="request"/>)'/>
-                                </span>
+                                    
                                 </logic:equal>
-								<span id="containerPopSpan">
                                 <a href="#" onclick="javascript:loadDHTMLXWindowForTransferEvent();return false">
                             <img src="images/uIEnhancementImages/grid_icon.png" alt="Displays the positions for the selected container"  width="16" height="16" border="0" style="vertical-align: middle" title="Displays the positions for the selected container"></a>
                                     
@@ -623,15 +679,37 @@ req.onreadystatechange = function() {
             <img src="images/uIEnhancementImages/Tree.gif" border="0" width="16" height="16" style="vertical-align: bottom" title="select positions from hierarchical view"/>
         </a>
                                 </span>
-								</span>
                                 <html:hidden name="specimenDTO" property="isVirtual" styleId="isVirtual"/>
                                 <html:hidden name="specimenDTO" property="containerName" styleId="containerName"/>
                                 <html:hidden name="specimenDTO" property="pos1" styleId="pos1"/>
                                 <html:hidden name="specimenDTO" property="pos2" styleId="pos2"/>
                                 <html:hidden name="specimenDTO" property="containerId" styleId="containerId" />
                                 </td>
+								<c:choose>
+                                    <c:when test="${specimenDTO.morphHierarchyEnabled == 'true'}">
+									<td width="20%" class="black_ar align_right_style">
+										<label for="morphologicalAbnormality">
+											Morphological Abnormality
+										</label>
+										</td>
+										<td width="20%" class="black_new">
+										<span style="float:left;">
+										<html:select property="morphologicalAbnormality"
+										 styleClass="black_ar" name="specimenDTO" styleId="morphologicalAbnormality" size="1">
+								   		
+										</html:select>
+										</span>
+										<span style="padding: 5px 0px 0px 10px; float:left; display:inline;">
+											<a onclick="morphpopup('new_PopUpDiv');return false" href="#">
+												<img width="16" height="16" border="0" title="select value from hierarchical view" style="vertical-align: bottom" src="images/uIEnhancementImages/Tree.gif"></img>
+											</a>
+										</span>
+									</td>	
+								 	</c:when>
+                                </c:choose>	
                             </tr>
-
+							
+                             
                             <tr class="tr_alternate_color_white">
                                 <td width="20%" valign="top" class="black_ar align_right_style">
                                     <label for="comments">
@@ -714,7 +792,7 @@ req.onreadystatechange = function() {
                                         </div>
                                     </td>
                                 </tr>
-                                
+								
                                 <tr class="tr_alternate_color_white">
                                     <td width="20%"> &nbsp;</td>    
                                     <td align="left" colspan="3" valign="middle">
@@ -1051,7 +1129,6 @@ function updateHelpURL()
 		
 	return URL;
 }
-
 function activityStatusChange(radio){
 if(radio.value == 'Closed'){
 document.getElementById('disbDiv').style.display ="none";
@@ -1061,4 +1138,5 @@ document.getElementById('disbDiv').style.display ="block";
 
 }
 </script>
+	
 </body>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog 
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+  <property name="boolean.type" value="boolean" dbms="mysql" />
+  <property name="boolean.type" value="number(1,0)" dbms="oracle" />
+  <property name="text.type" value="varchar" dbms="mysql" />
+  <property name="text.type" value="varchar2" dbms="oracle" />
+
+
+  <changeSet id="Added column for morphological hierarchy" author="dpatil">
+    <addColumn tableName="catissue_specimen">
+      <column name="MORPHOLOGICAL_ABNORMALITY" type="${text.type}(255)">
+      </column>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="add entry in cde table for morph tree" author="dpatil">
+    <sql>insert into catissue_cde values ('Morphological_Abnormalitiy_PID', 'Morphological Abnormalitiy PID', 'Morphological Abnormalitiy PID', '1.1', NULL)</sql>
+  </changeSet>
+  
+  <changeSet id="Permissible_values csv file upload" author="dpatil">
+    <loadUpdateData encoding="UTF-8"
+      file="./SQL/Permissible_values/morphological_hierarchy.csv"
+      primaryKey="IDENTIFIER"
+      tableName="CATISSUE_PERMISSIBLE_VALUE">
+      <column name="CONCEPT_CODE" type="String"/>           
+    </loadUpdateData>
+  </changeSet>
+
+</databaseChangeLog>

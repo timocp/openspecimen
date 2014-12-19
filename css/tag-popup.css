@@ -177,3 +177,15 @@ img {border:1px}
 }
 
 #popUpDiv a {position:relative;   top:20px; left:20px}
+
+#new_PopUpDiv {
+        position:absolute;
+	background:#ffffff;
+	width:600px;
+	height:450px;
+	border:2px solid #6E81A6;
+	z-index: 9002;
+	overflow:auto;
+}
+
+#new_PopUpDiv a {position:absolute;   top:20px; left:20px}

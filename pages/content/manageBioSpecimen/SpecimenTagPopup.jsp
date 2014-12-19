@@ -155,5 +155,14 @@ function assignTargetCallFunc()
 						</table>
 				</div>
 			</div>
+
+				<div id="new_PopUpDiv" style="display: none; top: 100px; left: 210.5px; padding-left:35px;">
+					<a onclick="popup('new_PopUpDiv')"><img style="float: right; cursor:pointer;"
+						height='23' width='24' title="Close" src='images/advQuery/close_button.gif'
+						border='0'> </a>
+			    <div class="cp-dropdown-label" style="padding: 17px 0;"><b>Morphological Abnormality Tree </b> </div>
+				<div id="treeBox" style="overflow:auto; height:390px;"></div>
+				</div>
+			</div>
 </body>
 </html>

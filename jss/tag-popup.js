@@ -48,12 +48,17 @@ function window_pos(popUpDivVar) {
 	window_width=window_width/2-270;//200 is half popup's width
 	popUpDiv.style.left = window_width + 'px';
 }
-
 function popup(windowname) {
 	blanket_size(windowname);
 	window_pos(windowname);
 	toggle('blanket');
 	toggle(windowname);		
+}
+
+var isTreePopulated=false;
+function morphpopup(){
+	popup('new_PopUpDiv');	
+	
 }
 //---------------------------popup fuctions End---------------------------
 
@@ -459,3 +464,70 @@ else
 	}
 }
  
+function ajaxCall(url, respMethod) {
+		if (window.XMLHttpRequest) { 
+	  		xmlHttpobj=new XMLHttpRequest();
+	  	} else { 
+	  		xmlHttpobj=new ActiveXObject("Microsoft.XMLHTTP");
+	  	}
+		xmlHttpobj.open("POST", url, true);
+		xmlHttpobj.setRequestHeader("Content-Type",
+				"application/x-www-form-urlencoded");
+	 
+		xmlHttpobj.onreadystatechange = respMethod;
+		xmlHttpobj.send();
+}
+
+function getResponse() {
+	if (xmlHttpobj.readyState == 4) 
+	{
+		popup('new_PopUpDiv');
+		var i;
+		morphTree.deleteChildItems("0");
+		var tree=xmlHttpobj.responseText;	
+		var arrObj = eval('(' +tree+ ')');	 
+		alert(arrObj.data.length)
+		var xml = '<?xml version="1.0" encoding="iso-8859-1"?><tree id="0">'
+		for(i=0; i<arrObj.data.length; i++) {
+			xml += '<item text="'+arrObj.data[i][1]+'" id="'+arrObj.data[i][0]+'"><item></item></item>'
+		}
+		morphTree.loadXMLString(xml+'</tree>');
+	}
+}
+
+
+var expandedNode;
+function getResponseChilds(request, id) {
+		
+	if (request.status == 200 && request.readyState == 4) {	
+		var childData=request.responseText;
+		
+		var arrObj = eval('(' +childData+ ')');	
+		morphTree.deleteChildItems(id);
+		for(i=0; i<arrObj.data.length; i++) {	
+			morphTree.insertNewChild(id,arrObj.data[i][1],arrObj.data[i][0],0,0,0,0,"CHILD");
+			if(arrObj.data[i][2] != "")
+			morphTree.insertNewChild(arrObj.data[i][1],arrObj.data[i][1],arrObj.data[i][0],0,"","","","");
+		}
+		expandedNode = "node_"+id;
+		morphTree.closeAllItems(id);
+		morphTree.openItem(id);
+ 	}
+}
+
+function expand(id,mode) {
+	var iCountCount=morphTree.hasChildren(id);
+		var previousNode ="node_"+id;
+		var level = morphTree.getLevel(id);
+		if(iCountCount>1 )
+		{
+			return true;
+		} else if (expandedNode == previousNode) {
+			return true
+		}
+		var request = newXMLHTTPReq();
+		request.onreadystatechange=function(){getResponseChilds(request, id)};
+		request.open("POST","MorphologicalAbnormality.do?pvId="+id,true);
+		request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+		request.send();
+}

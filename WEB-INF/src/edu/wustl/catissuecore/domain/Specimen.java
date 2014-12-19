@@ -209,6 +209,8 @@ public class Specimen extends AbstractSpecimen implements Serializable, IActivit
 	 * Default Apply none to allow normal flow.
 	 */
 	private String applyChangesTo = Constants.APPLY_NONE;
+	
+	private String morphologicalAbnormality;
 
 	protected Long id;
 	
@@ -247,6 +249,14 @@ public class Specimen extends AbstractSpecimen implements Serializable, IActivit
 	{
 		super();
 		this.setAllValues(form);
+	}
+
+	public String getMorphologicalAbnormality() {
+		return morphologicalAbnormality;
+	}
+
+	public void setMorphologicalAbnormality(String morphologicalAbnormality) {
+		this.morphologicalAbnormality = morphologicalAbnormality;
 	}
 
 	/**

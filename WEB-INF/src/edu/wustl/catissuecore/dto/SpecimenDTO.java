@@ -3,6 +3,8 @@ package edu.wustl.catissuecore.dto;
 import java.util.Collection;
 import java.util.Date;
 
+import edu.wustl.common.util.XMLPropertyHandler;
+
 
 public class SpecimenDTO 
 {
@@ -43,7 +45,8 @@ public class SpecimenDTO
 	private Date disposalDate;
 	private String disposalHours;
 	private String disposalMins;
-	
+	private String morphologicalAbnormality;
+	private String morphHierarchyEnabled = XMLPropertyHandler.getValue("enable.morphological.hierarchy");
 	public boolean isToPrintLabel()
 	{
 		return isToPrintLabel;
@@ -97,6 +100,18 @@ public class SpecimenDTO
 	}
 	public Long getParentSpecimenId() {
 		return parentSpecimenId;
+	}
+	public String getMorphHierarchyEnabled() {
+		return morphHierarchyEnabled;
+	}
+	public void setMorphHierarchyEnabled(String morphHierarchyEnabled) {
+		this.morphHierarchyEnabled = morphHierarchyEnabled;
+	}
+	public String getMorphologicalAbnormality() {
+		return morphologicalAbnormality;
+	}
+	public void setMorphologicalAbnormality(String morphologicalAbnormality) {
+		this.morphologicalAbnormality = morphologicalAbnormality;
 	}
 	public void setParentSpecimenId(Long parentSpecimenId) {
 		this.parentSpecimenId = parentSpecimenId;
@@ -206,6 +221,7 @@ public class SpecimenDTO
 	public Long getContainerId() {
 		return containerId;
 	}
+	
 	public void setContainerId(Long containerId) {
 		this.containerId = containerId;
 	}

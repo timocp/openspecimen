@@ -256,10 +256,11 @@ img {
 #new_PopUpDiv {
 	position: absolute;
 	background: #ffffff;
-	width: 400px;
-	height: 200px;
+	width: 600px;
+	height: 450px;
 	border: 2px solid #6E81A6;
 	z-index: 9002;
+	overflow:auto;
 }
 
 ul#navlist a {

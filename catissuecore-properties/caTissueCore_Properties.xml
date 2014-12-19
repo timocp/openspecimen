@@ -1010,6 +1010,10 @@ Helpdesk Phone : @@contact.number@@</value>
         <value>false</value>
     </property>
     <property>
+        <name>enable.morphological.hierarchy</name>
+        <value>@@enable.morphological.hierarchy@@</value>
+    </property>
+    <property>
         <name>label.print.file.dir</name>
         <value>/printer</value>
     </property>

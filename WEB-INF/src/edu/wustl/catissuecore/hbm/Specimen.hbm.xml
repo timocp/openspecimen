@@ -59,6 +59,16 @@
             column="TISSUE_SIDE"
             length="50"
         />
+        
+        <property
+            name="morphologicalAbnormality"
+            type="string"
+            update="true"
+            insert="true"
+            column="MORPHOLOGICAL_ABNORMALITY"
+            length="50"
+        />
+        
         <property
             name="tissueSite"
             type="string"

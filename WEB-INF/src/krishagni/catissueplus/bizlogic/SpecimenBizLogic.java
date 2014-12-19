@@ -204,6 +204,7 @@ public class SpecimenBizLogic
 	private void getUpdatedSpecimen(Specimen oldSpecimenObj, SpecimenDTO specimenDTO, SessionDataBean sessionDataBean,
 			HibernateDAO hibernateDao) throws ParseException, ApplicationException
 	{
+		oldSpecimenObj.setMorphologicalAbnormality(specimenDTO.getMorphologicalAbnormality());
 		if (!Validator.isEmpty(specimenDTO.getActivityStatus()))
 		{
 			oldSpecimenObj.setActivityStatus(specimenDTO.getActivityStatus());
@@ -898,6 +899,7 @@ public class SpecimenBizLogic
 		specimen.setLabel(specimenDTO.getLabel());
 		specimen.setActivityStatus(Constants.ACTIVITY_STATUS_ACTIVE);
 		specimen.setAvailableQuantity(specimen.getInitialQuantity());
+		specimen.setMorphologicalAbnormality(specimenDTO.getMorphologicalAbnormality());
 		if(specimenDTO.getRequirementId()!=null)
 		{
 			SpecimenRequirement sr = (SpecimenRequirement)hibernateDao.retrieveById(SpecimenRequirement.class.getName(), specimenDTO.getRequirementId());

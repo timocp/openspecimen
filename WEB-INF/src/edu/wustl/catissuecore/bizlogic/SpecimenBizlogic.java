@@ -669,6 +669,7 @@ public class SpecimenBizlogic
 		specimenDTO.setClassName(specimen.getClassName());
 		specimenDTO.setCollectionStatus(specimen.getCollectionStatus());
 		specimenDTO.setComments(specimen.getComment());
+		specimenDTO.setMorphologicalAbnormality(specimen.getMorphologicalAbnormality());
 		//				specimenDTO.setConcentration(specimen.getc)
 		specimenDTO.setCreatedDate(specimen.getCreatedOn());
 		specimenDTO.setLineage(specimen.getLineage());

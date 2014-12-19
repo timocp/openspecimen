@@ -792,7 +792,7 @@
 			<replacefilter token="@@CdmsURL@@" value="${clinportal.url}" />
 			<replacefilter token="@@CdmsKeyStorePath@@" value="" />
 			<replacefilter token="@@appserver.home.dir@@" value="${jboss.home.dir}" />
-
+			<replacefilter token="@@enable.morphological.hierarchy@@" value="${enable.morphology}" />
 			<replacefilter token="@@use.email.commonpackage.config@@" value="${use.email.commonpackage.config}" />
 			<replacefilter token="@@email.sendEmailTo.emailAddress@@" value="${email.sendEmailTo.emailAddress}" />
 			<replacefilter token="@@email.admin.support.emailAddress@@" value="${email.admin.support.emailAddress}" />

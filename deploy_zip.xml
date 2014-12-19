@@ -798,7 +798,7 @@
 			<replacefilter token="@@email.admin.support.emailAddress@@" value="${email.admin.support.emailAddress}" />
 			<replacefilter token="@@email.sendEmailFrom.name@@" value="${email.sendEmailFrom.name}" />
 			<replacefilter token="@@email.exception.subject@@" value="${email.exception.subject}" />
-			
+			<replacefilter token="@@enable.morphological.hierarchy@@" value="${enable.morphology}" />
 			<replacefilter token="@@anticipatedSCGEnabled@@" value="${create.anticipated.scg}" />
 			<replacefilter token="@@CiderWMQEnabled@@" value="${cider.integration.enabled}" />
 			<replacefilter token="@@CiderWMQServerName@@" value="${cider.wmq.server.name}" />

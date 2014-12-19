@@ -632,6 +632,10 @@ PUBLIC
 				path="/CreateAliquots.do?operation=add&amp;pageOf=pageOfAliquot&amp;menuSelected=15&amp;virtualLocated=true" />
 
 		</action>
+		
+		<action path="/MorphologicalAbnormality" type="edu.wustl.catissuecore.action.MorphologicalAbnormalityAction">
+		</action>
+		
 		<action path="/GetAliquotDetails"
 			type="krishagni.catissueplus.action.GetAliquotDetailsAction"  name="aliquotForm" validate="false" scope="request">
 			<forward name="fromSpecimen" path=".catissuecore.CreateAliquots" />
