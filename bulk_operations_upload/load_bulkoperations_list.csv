@@ -1,7 +1,6 @@
 createSite,Create Site,CreateSite.csv,CreateSite.xml
 createStorageType,Create Storage Type,CreateStorageType.csv,CreateStorageType.xml
-CreateParentContainer,Create Parent Container,AddParentContainer.csv,AddParentContainer.xml
-CreateChildContainer,Create Child Container,AddChildContainer.csv,AddChildContainer.xml
+addContainer,Create Container,addContainer.csv,addContainer.xml
 CreateCP,Create Collection Protocol,CreateCollectionProtocol.csv,CreateCollectionProtocol.xml
 createParticipantWithConsents,Register Participants,CreateParticipants.csv,CreateParticipants.xml
 createSCG,Create Specimen Collection Group,CreateSpecimenCollectionGroup.csv,CreateSpecimenCollectionGroup.xml

@@ -4265,6 +4265,7 @@
                 </fileset>
                 <fileset dir="${lib.dir}">
                     <include name="*.jar" />
+                	<exclude name="xerces.jar"/>
                 </fileset>
             </classpath>
             <sysproperty key="config.dir" value="${base.dir}/modules/caTissue/conf/catissuecore-properties" />
