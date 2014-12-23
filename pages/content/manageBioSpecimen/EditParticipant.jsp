@@ -309,24 +309,11 @@
 							<td width="17%" class="black_ar align_right_style">
 							<b><bean:message key="participant.socialSecurityNumber" /></b>
 							</td>
-							<td width="82%"><html:text styleClass="black_ar" size="3"
-								maxlength="3" styleId="socialSecurityNumberPartA"
-								property="socialSecurityNumberPartA"
-								readonly="<%=readOnlyForAll%>" onkeypress="intOnly(this);"
-								onchange="intOnly(this);"
-								onkeyup="intOnly(this);moveToNext(this,this.value,'socialSecurityNumberPartB');"
-								style="text-align:right" /> - <html:text styleClass="black_ar"
-								size="2" maxlength="2" styleId="socialSecurityNumberPartB"
-								property="socialSecurityNumberPartB"
-								readonly="<%=readOnlyForAll%>" onkeypress="intOnly(this);"
-								onchange="intOnly(this);"
-								onkeyup="intOnly(this);moveToNext(this,this.value,'socialSecurityNumberPartC');"
-								style="text-align:right" /> - <html:text styleClass="black_ar"
-								size="4" maxlength="4" styleId="socialSecurityNumberPartC"
-								property="socialSecurityNumberPartC"
-								readonly="<%=readOnlyForAll%>" onkeypress="intOnly(this);"
-								onchange="intOnly(this);" onkeyup="intOnly(this);"
-								style="text-align:right" /></td>
+							<td width="82%"><html:text styleClass="black_ar" size="30"
+								maxlength="30" styleId="socialSecurityNumber"
+								property="socialSecurityNumber"
+								readonly="<%=readOnlyForAll%>" 
+								style="text-align:left" /></td>
 						</tr>
 						</c:if>
 						</c:forEach>   		

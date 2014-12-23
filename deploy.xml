@@ -1732,7 +1732,7 @@
 		<antcall target="upgrade_db_plusv3.3" />
 		<antcall target="upgrade_db_plusv4.0" />
         <antcall target="upgrade_db_os_v1.1"/>
-
+		<antcall target="upgrade_db_os_v1.2"/>
 	</target>
 
 	<!--MySQL Database Creation -->
@@ -2103,6 +2103,7 @@
 						<antcall target="upgrade_db_plusv3.3" />
 						<antcall target="upgrade_db_plusv4.0" />
 						<antcall target="upgrade_db_os_v1.1" />
+						<antcall target="upgrade_db_os_v1.2"/>
 					</then>
 				<elseif>
 								<equals arg1="${plus2.0.version}" arg2="${from.version}"/>
@@ -2114,6 +2115,7 @@
 									<antcall target="upgrade_db_plusv3.3" />
 									<antcall target="upgrade_db_plusv4.0" />
 									<antcall target="upgrade_db_os_v1.1" />
+									<antcall target="upgrade_db_os_v1.2"/>
 								</then>
 					</elseif>
 					<elseif>
@@ -2125,6 +2127,7 @@
 									<antcall target="upgrade_db_plusv3.3" />
 									<antcall target="upgrade_db_plusv4.0" />
 									<antcall target="upgrade_db_os_v1.1" />
+									<antcall target="upgrade_db_os_v1.2"/>
 								</then>
 						</elseif>
 						<elseif>
@@ -2135,6 +2138,7 @@
 									<antcall target="upgrade_db_plusv3.3" />
 									<antcall target="upgrade_db_plusv4.0" />
 									<antcall target="upgrade_db_os_v1.1" />
+									<antcall target="upgrade_db_os_v1.2"/>
 								</then>
 							</elseif>
                             <elseif>
@@ -2144,6 +2148,7 @@
 	                                    <antcall target="upgrade_db_plusv3.3" />
 	                                    <antcall target="upgrade_db_plusv4.0" />
                     					<antcall target="upgrade_db_os_v1.1" />
+                    					<antcall target="upgrade_db_os_v1.2"/>
                     				</then>
 	                        </elseif>
 							<elseif>
@@ -2153,6 +2158,7 @@
 										<antcall target="upgrade_db_plusv3.3" />
                                     	<antcall target="upgrade_db_plusv4.0" />
                                     	<antcall target="upgrade_db_os_v1.1" />
+                                    	<antcall target="upgrade_db_os_v1.2"/>
                                     </then>
                             </elseif>
 							<elseif>
@@ -2160,12 +2166,20 @@
                                     <then>
                                     	<antcall target="upgrade_db_plusv4.0" />
                                     	<antcall target="upgrade_db_os_v1.1" />
+                                    	<antcall target="upgrade_db_os_v1.2"/>
                                     </then>
                             </elseif>
 							<elseif>
                                     <equals arg1="${os1.0.version}" arg2="${from.version}"/>
                                     <then>
                                     	<antcall target="upgrade_db_os_v1.1" />
+                                    	<antcall target="upgrade_db_os_v1.2"/>
+                                    </then>
+                            </elseif>
+							<elseif>
+                                    <equals arg1="${os1.1.version}" arg2="${from.version}"/>
+                                    <then>
+                                    	<antcall target="upgrade_db_os_v1.2"/>
                                     </then>
                             </elseif>
 							
@@ -2178,6 +2192,7 @@
 												<antcall target="upgrade_db_plusv3.3" />
 												<antcall target="upgrade_db_plusv4.0" />
 												<antcall target="upgrade_db_os_v1.1" />
+												<antcall target="upgrade_db_os_v1.2"/>
 											</then>
 								</elseif>
 								<else>

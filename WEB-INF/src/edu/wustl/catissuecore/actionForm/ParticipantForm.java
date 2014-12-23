@@ -46,6 +46,7 @@ import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.domain.AbstractDomainObject;
 import edu.wustl.common.participant.actionForm.IParticipantForm;
+import edu.wustl.common.participant.bizlogic.CommonParticipantBizlogic;
 import edu.wustl.common.util.XMLPropertyHandler;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.global.CommonServiceLocator;
@@ -126,9 +127,10 @@ public class ParticipantForm extends AbstractActionForm implements Serializable,
 	/**
 	 * Social Security Number of the Participant.
 	 */
-	protected String socialSecurityNumberPartA = "";
-	protected String socialSecurityNumberPartB = "";
-	protected String socialSecurityNumberPartC = "";
+	protected String socialSecurityNumber = "";
+//	protected String socialSecurityNumberPartA = "";
+//	protected String socialSecurityNumberPartB = "";
+//	protected String socialSecurityNumberPartC = "";
 
 	/**
 	 * The Date of Birth of the Participant.
@@ -275,24 +277,25 @@ public class ParticipantForm extends AbstractActionForm implements Serializable,
 	 */
 	private void setSSN(String ssnString)
 	{
-		if (ssnString != null && !ssnString.equals(""))
-		{
-			try
-			{
-				final StringTokenizer tok = new StringTokenizer(ssnString, "-");
-				this.socialSecurityNumberPartA = tok.nextToken();
-				this.socialSecurityNumberPartB = tok.nextToken();
-				this.socialSecurityNumberPartC = tok.nextToken();
-			}
-			catch (final Exception ex)
-			{
-				ParticipantForm.logger.error(ex.getMessage(), ex);
-				ex.printStackTrace();
-				this.socialSecurityNumberPartA = "";
-				this.socialSecurityNumberPartB = "";
-				this.socialSecurityNumberPartC = "";
-			}
-		}
+		socialSecurityNumber = ssnString;
+//		if (ssnString != null && !ssnString.equals(""))
+//		{
+//			try
+//			{
+//				final StringTokenizer tok = new StringTokenizer(ssnString, "-");
+//				this.socialSecurityNumberPartA = tok.nextToken();
+//				this.socialSecurityNumberPartB = tok.nextToken();
+//				this.socialSecurityNumberPartC = tok.nextToken();
+//			}
+//			catch (final Exception ex)
+//			{
+//				ParticipantForm.logger.error(ex.getMessage(), ex);
+//				ex.printStackTrace();
+//				this.socialSecurityNumberPartA = "";
+//				this.socialSecurityNumberPartB = "";
+//				this.socialSecurityNumberPartC = "";
+//			}
+//		}
 	}
 
 	/**
@@ -849,11 +852,10 @@ public class ParticipantForm extends AbstractActionForm implements Serializable,
 				}
 			}
 
-			final String socialSecurityNumber = this.socialSecurityNumberPartA + "-"
-					+ this.socialSecurityNumberPartB + "-" + this.socialSecurityNumberPartC;
-			if (!validator.isEmpty(this.socialSecurityNumberPartA + this.socialSecurityNumberPartB
-					+ this.socialSecurityNumberPartC)
-					&& !validator.isValidSSN(socialSecurityNumber))
+//			final String socialSecurityNumber = this.socialSecurityNumberPartA + "-"
+//					+ this.socialSecurityNumberPartB + "-" + this.socialSecurityNumberPartC;
+			if (!validator.isEmpty(this.socialSecurityNumber)
+					&& !CommonParticipantBizlogic.isValidSSN(socialSecurityNumber))
 			{
 				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.invalid",
 						ApplicationProperties.getValue("participant.socialSecurityNumber")));
@@ -868,9 +870,9 @@ public class ParticipantForm extends AbstractActionForm implements Serializable,
 					&& !validator.isValidOption(this.gender)
 					&& !validator.isValidOption(this.vitalStatus)
 					&& !validator.isValidOption(this.genotype)
-					&& this.ethnicity.equals("-1")
-					&& validator.isEmpty(this.socialSecurityNumberPartA
-							+ this.socialSecurityNumberPartB + this.socialSecurityNumberPartC))
+					&& this.ethnicity.equals("-1"))
+//					&& validator.isEmpty(this.socialSecurityNumberPartA
+//							+ this.socialSecurityNumberPartB + this.socialSecurityNumberPartC))
 			{
 				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
 						"errors.participant.atLeastOneFieldRequired"));
@@ -1116,60 +1118,60 @@ public class ParticipantForm extends AbstractActionForm implements Serializable,
 	 * @return String First part of Social Security Number.
 	 * @see #setSocialSecurityNumberPartA(String)
 	 */
-	public String getSocialSecurityNumberPartA()
-	{
-		return this.socialSecurityNumberPartA;
-	}
+//	public String getSocialSecurityNumberPartA()
+//	{
+//		return this.socialSecurityNumberPartA;
+//	}
 
 	/**
 	 * Sets the first part of Social Security Number.
 	 * @param socialSecurityNumberPartA First part of Social Security Number.
 	 * @see #getSocialSecurityNumberPartA()
 	 */
-	public void setSocialSecurityNumberPartA(String socialSecurityNumberPartA)
-	{
-		this.socialSecurityNumberPartA = socialSecurityNumberPartA;
-	}
+//	public void setSocialSecurityNumberPartA(String socialSecurityNumberPartA)
+//	{
+//		this.socialSecurityNumberPartA = socialSecurityNumberPartA;
+//	}
 
 	/**
 	 * Returns the second part of Social Security Number.
 	 * @return String Second part of Social Security Number.
 	 * @see #setSocialSecurityNumberPartB(String)
 	 */
-	public String getSocialSecurityNumberPartB()
-	{
-		return this.socialSecurityNumberPartB;
-	}
+//	public String getSocialSecurityNumberPartB()
+//	{
+//		return this.socialSecurityNumberPartB;
+//	}
 
 	/**
 	 * Sets the second part of Social Security Number.
 	 * @param socialSecurityNumberPartB Second part of Social Security Number.
 	 * @see #getSocialSecurityNumberPartB()
 	 */
-	public void setSocialSecurityNumberPartB(String socialSecurityNumberPartB)
-	{
-		this.socialSecurityNumberPartB = socialSecurityNumberPartB;
-	}
+//	public void setSocialSecurityNumberPartB(String socialSecurityNumberPartB)
+//	{
+//		this.socialSecurityNumberPartB = socialSecurityNumberPartB;
+//	}
 
 	/**
 	 * Returns the third part of Social Security Number.
 	 * @return String Third part of Social Security Number.
 	 * @see #setSocialSecurityNumberPartC(String)
 	 */
-	public String getSocialSecurityNumberPartC()
-	{
-		return this.socialSecurityNumberPartC;
-	}
+//	public String getSocialSecurityNumberPartC()
+//	{
+//		return this.socialSecurityNumberPartC;
+//	}
 
 	/**
 	 * Sets the third part of Social Security Number.
 	 * @param socialSecurityNumberPartC Third part of Social Security Number.
 	 * @see #getSocialSecurityNumberPartC()
 	 */
-	public void setSocialSecurityNumberPartC(String socialSecurityNumberPartC)
-	{
-		this.socialSecurityNumberPartC = socialSecurityNumberPartC;
-	}
+//	public void setSocialSecurityNumberPartC(String socialSecurityNumberPartC)
+//	{
+//		this.socialSecurityNumberPartC = socialSecurityNumberPartC;
+//	}
 
 	/**
 	 * Returns the Death date of the Participant.
@@ -1352,6 +1354,16 @@ public class ParticipantForm extends AbstractActionForm implements Serializable,
 		this.consentDocumentName = consentDocumentName;
 	}
 
+	
+	public String getSocialSecurityNumber() {
+		return socialSecurityNumber;
+	}
+
+	
+	public void setSocialSecurityNumber(String socialSecurityNumber) {
+		this.socialSecurityNumber = socialSecurityNumber;
+	}
+
 //	public String getConsentDocument()
 //	{
 //		return consentDocument;
@@ -1361,5 +1373,6 @@ public class ParticipantForm extends AbstractActionForm implements Serializable,
 //	{
 //		this.consentDocument = consentDocument;
 //	}
+
 	
 }

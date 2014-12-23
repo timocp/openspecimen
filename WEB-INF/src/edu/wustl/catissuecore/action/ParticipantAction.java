@@ -21,6 +21,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -68,6 +70,7 @@ import edu.wustl.common.factory.AbstractFactoryConfig;
 import edu.wustl.common.factory.IFactory;
 import edu.wustl.common.participant.utility.ParticipantManagerUtility;
 import edu.wustl.common.util.MapDataParser;
+import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.global.CommonServiceLocator;
 import edu.wustl.common.util.global.CommonUtilities;
 import edu.wustl.common.util.global.Status;
@@ -111,7 +114,7 @@ public class ParticipantAction extends CatissueBaseAction
 			ActionForm form, HttpServletRequest request,
 			HttpServletResponse response) throws Exception
 	{
-
+		
 		final String refPart = request.getParameter("refresh");
 		if (refPart != null)
 		{
@@ -642,9 +645,7 @@ public class ParticipantAction extends CatissueBaseAction
 		{
 			mrn = (String) participantForm.getValues().get(key);
 		}
-		String ssn = participantForm.getSocialSecurityNumberPartA()
-				.concat(participantForm.getSocialSecurityNumberPartB())
-				.concat(participantForm.getSocialSecurityNumberPartC());
+		String ssn = participantForm.getSocialSecurityNumber();
 		final String empiIdStatus = ParticipantManagerUtility
 				.getPartiEMPIStatus(participantForm.getId());
 		participantForm.setEmpiIdStatus(empiIdStatus);

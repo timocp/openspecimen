@@ -738,12 +738,9 @@ public class Participant extends AbstractDomainObject
 				}
 			}
 
-			final String socialSecurityNumberTemp = form.getSocialSecurityNumberPartA() + "-"
-					+ form.getSocialSecurityNumberPartB() + "-"
-					+ form.getSocialSecurityNumberPartC();
+			final String socialSecurityNumberTemp = form.getSocialSecurityNumber();
 
-			if (!Validator.isEmpty(socialSecurityNumberTemp)
-					&& validator.isValidSSN(socialSecurityNumberTemp))
+			if (!Validator.isEmpty(socialSecurityNumberTemp))
 			{
 				socialSecurityNumber = socialSecurityNumberTemp;
 			}

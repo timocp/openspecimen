@@ -113,7 +113,7 @@
             update="true"
             insert="true"
             column="SOCIAL_SECURITY_NUMBER"
-            length="50"
+            length="255"
             unique="true"
         />
 
