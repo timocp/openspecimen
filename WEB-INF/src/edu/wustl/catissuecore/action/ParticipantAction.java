@@ -121,6 +121,7 @@ public class ParticipantAction extends CatissueBaseAction
 			request.setAttribute("refresh", refPart);
 
 		}
+		request.setAttribute("uniqIdFormat", ApplicationProperties.getValue("participant.country.uniqueId.format"));
 
 		ParticipantForm participantForm = (ParticipantForm) form;
 		final HttpSession session = request.getSession();

@@ -307,13 +307,14 @@
 								
 							<td width="1%" align="center" class="black_ar">&nbsp;</td>
 							<td width="17%" class="black_ar align_right_style">
-							<b><bean:message key="participant.socialSecurityNumber" /></b>
+							<b><bean:message key="participant.country.uniqueId" /></b>
 							</td>
 							<td width="82%"><html:text styleClass="black_ar" size="30"
 								maxlength="30" styleId="socialSecurityNumber"
 								property="socialSecurityNumber"
 								readonly="<%=readOnlyForAll%>" 
-								style="text-align:left" /></td>
+								style="text-align:left" />
+								<span class="grey_ar_s capitalized"> ${requestScope.uniqIdFormat}</span>&nbsp;</td>
 						</tr>
 						</c:if>
 						</c:forEach>   		
