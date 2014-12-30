@@ -17,3 +17,4 @@ createMolecularSpecimenReviewParameters,Create Molecular Specimen Review Paramet
 CreateTransferEvent,Create Transfer Event Parameters,CreateTransferEvent.csv,CreateTransferEvent.xml
 CreateDisposalEvent,Create Disposal Event Parameters,CreateDisposalEvent.csv,CreateDisposalEvent.xml
 EditSpecimen,Edit Specimen,EditSpecimen.csv,EditSpecimen.xml
+Distribution,Distribute Specimen,Distribution.csv,Distribution.xml
