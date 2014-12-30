@@ -104,7 +104,7 @@ public class OrderDetails extends AbstractDomainObject implements Serializable
 	/**
 	 * The Order Items associated with that order.
 	 */
-	protected Collection orderItemCollection;
+	protected Collection orderItemCollection = new HashSet();;
 	/**
 	 * The distributions associated with the order.
 	 */

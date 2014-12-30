@@ -83,7 +83,7 @@ public class SubmitOrderAction extends BaseAction
 
 			dao = (HibernateDAO) AppUtility.openDAOSession(sessionDataBean);
 			OrderStatusDTO orderStatusDTO = orderBizLogic.updateOrder(orderSubmissionDTO, userId,
-					dao);
+					dao,false);
 
 			if (orderStatusDTO.getOrderErrorDTOs().isEmpty())
 			{

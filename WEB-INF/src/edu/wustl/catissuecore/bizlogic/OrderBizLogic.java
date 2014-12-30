@@ -2108,7 +2108,7 @@ public class OrderBizLogic extends CatissueDefaultBizLogic {
 		return displayOrderDTO;
 	}
 
-	public OrderStatusDTO updateOrder(OrderSubmissionDTO orderSubmissionDTO, Long userId, HibernateDAO dao)
+	public OrderStatusDTO updateOrder(OrderSubmissionDTO orderSubmissionDTO, Long userId, HibernateDAO dao, boolean isDirectDistribution)
 			throws BizLogicException {
 		OrderStatusDTO orderStatusDTO = new OrderStatusDTO();
 		try {
@@ -2149,12 +2149,13 @@ public class OrderBizLogic extends CatissueDefaultBizLogic {
 				List orderItems = dao.retrieve(OrderItem.class.getName(), columnValueBean);
 				OrderItem orderItem = (OrderItem) orderItems.get(0);
 				String orderItemlOldStatus = orderItem.getStatus();
-				if (isUpdateAllowed(orderItemSubmissionDTO.getStatus(), orderItemlOldStatus)) {
+				if (isUpdateAllowed(orderItemSubmissionDTO.getStatus(), orderItemlOldStatus) || isDirectDistribution) {
 
 					SpecimenEventParametersBizLogic specimenEventParametersBizLogic = new SpecimenEventParametersBizLogic();
 					NewSpecimenBizLogic specimenBizLogic = new NewSpecimenBizLogic();
 
-					if (isDistributed(orderItemSubmissionDTO.getStatus()) && !isDistributed(orderItemlOldStatus)) {
+					if ((isDirectDistribution && isDistributed(orderItemSubmissionDTO.getStatus()))
+							 || isDistributed(orderItemSubmissionDTO.getStatus()) && !isDistributed(orderItemlOldStatus)) {
 
 						String specimenUpdateStatus = specimenBizLogic.reduceQuantity(orderItemSubmissionDTO.getDistQty(),
 								orderItemSubmissionDTO.getSpecimenId(), dao);
@@ -2176,7 +2177,8 @@ public class OrderBizLogic extends CatissueDefaultBizLogic {
 						specimenEventParametersBizLogic.createDistributionEvent(orderItemSubmissionDTO, distributionId, dao,
 								userId,orderSubmissionDTO.getDisptributionProtocolName(),orderSubmissionDTO.getOrderName());
 					}
-					if (isClosed(orderItemSubmissionDTO.getStatus()) && !isClosed(orderItemlOldStatus)) {
+					if ((isDirectDistribution && isClosed(orderItemSubmissionDTO.getStatus()))
+							 || isClosed(orderItemSubmissionDTO.getStatus()) && !isClosed(orderItemlOldStatus)) {
 
 						List<String> disposeReason = new ArrayList<String>();
 						disposeReason.add(orderSubmissionDTO.getDisptributionProtocolName());

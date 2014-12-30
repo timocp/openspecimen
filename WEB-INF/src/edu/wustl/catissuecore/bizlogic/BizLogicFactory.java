@@ -390,7 +390,12 @@ public class BizLogicFactory implements IFactory
 		else if (className.equals("edu.wustl.catissuecore.domain.ParticipantMedicalIdentifier"))
 		{
 			bizLogic = new ParticipantMedicalIdentifierBizLogic();
-		}// kalpana:Bug#5941
+		}
+		else if (className.equals("edu.wustl.catissuecore.domain.SpecimenDistribution"))
+		{
+			 bizLogic = new SpecimenDistributionBizlogic();
+		}
+		// kalpana:Bug#5941
 		else if (className.equals("edu.wustl.catissuecore.domain.SpecimenRequirement"))
 		{
 			bizLogic = new RequirementSpecimenBizLogic();
