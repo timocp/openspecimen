@@ -99,6 +99,7 @@ import edu.common.dynamicextensions.query.QueryResultData;
 import edu.common.dynamicextensions.query.QueryResultExporter;
 import edu.common.dynamicextensions.query.QueryResultScreener;
 import edu.common.dynamicextensions.query.ResultColumn;
+import edu.common.dynamicextensions.query.WideRowMode;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.util.XMLPropertyHandler;
 import edu.wustl.common.util.global.CommonServiceLocator;
@@ -219,9 +220,13 @@ public class QueryServiceImpl implements QueryService {
 				return QuerySavedEvent.badRequest(SavedQueryErrorCode.QUERY_ID_FOUND.message(), null);
 			}
 
-			Query.createQuery().wideRows(true).ic(true)
-					.dateFormat(dateFormat).timeFormat(timeFormat)
-					.compile(cprForm, getAql(queryDetail));
+			Query.createQuery()
+				.wideRowMode(WideRowMode.DEEP)
+				.ic(true)
+				.dateFormat(dateFormat)
+				.timeFormat(timeFormat)
+				.compile(cprForm, getAql(queryDetail));
+			
 			SavedQuery savedQuery = getSavedQuery(req.getSessionDataBean(), queryDetail);
 			daoFactory.getSavedQueryDao().saveOrUpdate(savedQuery);
 			return QuerySavedEvent.ok(SavedQueryDetail.fromSavedQuery(savedQuery));
@@ -244,9 +249,13 @@ public class QueryServiceImpl implements QueryService {
 		try {
 			SavedQueryDetail queryDetail = req.getSavedQueryDetail();
 
-			Query.createQuery().wideRows(true).ic(true)
-					.dateFormat(dateFormat).timeFormat(timeFormat)
-					.compile(cprForm, getAql(queryDetail));
+			Query.createQuery()
+				.wideRowMode(WideRowMode.DEEP)
+				.ic(true)
+				.dateFormat(dateFormat)
+				.timeFormat(timeFormat)
+				.compile(cprForm, getAql(queryDetail));
+			
 			SavedQuery savedQuery = getSavedQuery(req.getSessionDataBean(), queryDetail);
 			SavedQuery existing = daoFactory.getSavedQueryDao().getQuery(queryDetail.getId());
 			existing.update(savedQuery);
@@ -301,8 +310,11 @@ public class QueryServiceImpl implements QueryService {
 			boolean pivotTable = CROSS_TAB_PTRN.matcher(req.getAql()).matches();
 			
 			Query query = Query.createQuery()
-					.wideRows(req.isWideRows()).ic(true)
-					.dateFormat(dateFormat).timeFormat(timeFormat);
+					.wideRowMode(WideRowMode.valueOf(req.getWideRowMode()))
+					.ic(true)
+					.dateFormat(dateFormat)
+					.timeFormat(timeFormat);
+			
 			query.compile(
 					cprForm, 
 					getAqlWithCpIdInSelect(sdb, countQuery, req.getAql()), 
@@ -352,14 +364,16 @@ public class QueryServiceImpl implements QueryService {
 			SessionDataBean sdb = req.getSessionDataBean();
 			boolean countQuery = req.getRunType().equals("Count");			
 			
-			Query query = Query.createQuery();
-			query.wideRows(req.isWideRows())
-				.ic(true)
-				.dateFormat(dateFormat).timeFormat(timeFormat)
-				.compile(
-						cprForm, 
-						getAqlWithCpIdInSelect(sdb, countQuery, req.getAql()), 
-						getRestriction(sdb, req.getCpId()));
+			Query query = Query.createQuery()
+					.wideRowMode(WideRowMode.valueOf(req.getWideRowMode()))
+					.ic(true)
+					.dateFormat(dateFormat)
+					.timeFormat(timeFormat);
+			
+			query.compile(
+				cprForm, 
+				getAqlWithCpIdInSelect(sdb, countQuery, req.getAql()), 
+				getRestriction(sdb, req.getCpId()));
 			
 			String filename = UUID.randomUUID().toString();
 			boolean completed = exportData(filename, query, req);
@@ -813,6 +827,7 @@ public class QueryServiceImpl implements QueryService {
 		savedQuery.setLastUpdatedBy(user);
 		savedQuery.setLastUpdated(Calendar.getInstance().getTime());
 		savedQuery.setReporting(detail.getReporting());
+		savedQuery.setWideRowMode(detail.getWideRowMode());
 		return savedQuery;
 	}
 

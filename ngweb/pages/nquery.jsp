@@ -1324,7 +1324,14 @@
             <div style="margin-top: 10px; margin-right: -20px; height: 380px; overflow: auto">
               <span class="plus-heading">Please select the fields that you wish to view in results table</span>
               <span class="plus-note plus-margin-bottom">Drag and drop fields to reorder the view</span>
-              <ka-tree opts='treeOpts'></ka-tree>
+              <ka-tree opts='treeOpts' style="margin-bottom: 20px;"></ka-tree>
+              <div class="form-group">
+                <label class="checkbox-inline">
+                  <input type="checkbox" ng-model="wideRows" ng-change="setWideRowsMode(wideRows)"
+                    ng-checked="wideRowMode == 'DEEP'">
+                  Enable Wide Rows
+                </label>
+              </div>
             </div>
           </ka-wizard-step>
 

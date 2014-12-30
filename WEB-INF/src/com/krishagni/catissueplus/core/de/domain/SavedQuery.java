@@ -36,6 +36,8 @@ public class SavedQuery {
 	private ReportSpec reporting;
 	
 	private Set<QueryFolder> folders = new HashSet<QueryFolder>();
+	
+	private String wideRowMode = "DEEP";
 
 	private Date deletedOn;
 
@@ -151,6 +153,14 @@ public class SavedQuery {
 		this.folders = folders;
 	}
 
+	public String getWideRowMode() {
+		return wideRowMode;
+	}
+
+	public void setWideRowMode(String wideRowMode) {
+		this.wideRowMode = wideRowMode;
+	}
+
 	public Date getDeletedOn() {
 		return deletedOn;
 	}
@@ -177,6 +187,7 @@ public class SavedQuery {
 		query.drivingForm = drivingForm;
 		query.folders = null;
 		query.reporting = reporting;
+		query.wideRowMode = wideRowMode;
 		
 		try {
 			return getObjectMapper().writeValueAsString(query);
@@ -199,6 +210,7 @@ public class SavedQuery {
 		this.queryExpression = query.queryExpression;
 		this.drivingForm = query.drivingForm;
 		this.reporting = query.reporting;
+		this.wideRowMode = query.wideRowMode;
 	}
 	
 	public String getAql() {
@@ -215,6 +227,7 @@ public class SavedQuery {
 		setFilters(query.getFilters());		
 		setQueryExpression(query.getQueryExpression());
 		setReporting(query.getReporting());
+		setWideRowMode(query.getWideRowMode());
 	}
 	
 	@Override
