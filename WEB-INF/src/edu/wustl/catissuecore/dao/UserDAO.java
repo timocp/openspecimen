@@ -239,9 +239,17 @@ public class UserDAO
 
     }
     
-    public User getUserById(HibernateDAO hibernateDao, Long id) throws DAOException {
+    public User getUserById(HibernateDAO hibernateDao, Long id) throws BizLogicException {
   		User user = new User();
-  		List<User> users = hibernateDao.executeQuery("from " + User.class.getName() + " where id = " + id);
+  		List<User> users;
+			try {
+				users = hibernateDao.executeQuery("from " + User.class.getName() + " where id = " + id);
+			}
+			catch (DAOException e) {
+				LOGGER.error(e);
+				throw new BizLogicException(null, null,
+						"errors.executeQuery.genericmessage", "");
+			}
   		user = users.get(0);
   		return user;
   	}
