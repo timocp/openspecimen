@@ -156,6 +156,6 @@
 		
     </class>
     <query name="getDpByTitle">
-			select dp from edu.wustl.catissuecore.domain.DistributionProtocol dp where dp.title=? and dp.activityStatus !='Disabled'
+			select dp from edu.wustl.catissuecore.domain.DistributionProtocol dp where dp.title=? and dp.activityStatus != 'Disabled'
 		</query>
 </hibernate-mapping>

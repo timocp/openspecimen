@@ -9,6 +9,7 @@ import edu.wustl.catissuecore.domain.ParticipantMedicalIdentifier;
 import edu.wustl.catissuecore.domain.Site;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.exception.BizLogicException;
+import edu.wustl.common.exception.ErrorKey;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.global.CommonServiceLocator;
 import edu.wustl.common.util.logger.Logger;
@@ -65,7 +66,8 @@ public class SiteDAO
 			List<Long> idList = hibenrateDAO.executeNamedQuery("getSiteIdByName", params);
 			if(idList == null || idList.isEmpty())
 			{
-				throw new BizLogicException(null, null, "invalid.site.name", siteName);
+				ErrorKey errorKey = ErrorKey.getErrorKey("errors.invalid");
+				throw new BizLogicException(errorKey, null, "Site");
 			}
 			return idList.get(0);
 		}

@@ -1,7 +1,6 @@
 
 package edu.wustl.catissuecore.bizlogic;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -9,21 +8,19 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import krishagni.catissueplus.Exception.CatissueException;
-import krishagni.catissueplus.Exception.SpecimenErrorCodeEnum;
 import krishagni.catissueplus.dao.SpecimenDAO;
 import edu.wustl.catissuecore.dao.SiteDAO;
 import edu.wustl.catissuecore.dao.UserDAO;
 import edu.wustl.catissuecore.domain.DistributionProtocol;
 import edu.wustl.catissuecore.domain.ExistingSpecimenOrderItem;
 import edu.wustl.catissuecore.domain.OrderDetails;
-import edu.wustl.catissuecore.domain.OrderItem;
 import edu.wustl.catissuecore.domain.Site;
 import edu.wustl.catissuecore.domain.Specimen;
 import edu.wustl.catissuecore.domain.SpecimenCollectionGroup;
 import edu.wustl.catissuecore.domain.SpecimenDistribution;
 import edu.wustl.catissuecore.domain.SpecimenPosition;
 import edu.wustl.catissuecore.domain.User;
+import edu.wustl.catissuecore.dto.OrderErrorDTO;
 import edu.wustl.catissuecore.dto.OrderItemSubmissionDTO;
 import edu.wustl.catissuecore.dto.OrderStatusDTO;
 import edu.wustl.catissuecore.dto.OrderSubmissionDTO;
@@ -31,6 +28,7 @@ import edu.wustl.catissuecore.util.global.AppUtility;
 import edu.wustl.catissuecore.util.global.Constants;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.exception.BizLogicException;
+import edu.wustl.common.exception.ErrorKey;
 import edu.wustl.common.util.global.Validator;
 import edu.wustl.common.util.global.Variables;
 import edu.wustl.common.util.logger.Logger;
@@ -62,23 +60,31 @@ public class SpecimenDistributionBizlogic extends CatissueDefaultBizLogic {
 	protected boolean validate(Object obj, DAO dao, String operation) throws BizLogicException {
 		SpecimenDistribution distribution = (SpecimenDistribution) obj;
 		if (Validator.isEmpty(distribution.getDistributionTitle())) {
-			throw this.getBizLogicException(null, "errors.item.required", "distribution title");
+			throw this.getBizLogicException(null, "errors.item.required", "Distribution title");
 		}
 		validateSpecimen(distribution.getSpecimen(), (HibernateDAO) dao);
 		validateDistributionProtocol(distribution.getDistributionProtocol(), dao);
 		validateUser(distribution.getRequestor(), dao);
 		validateSite(distribution.getSite(), dao);
+		validateStatus(distribution.getStatus());
 		return true;
 	}
 
+	private void validateStatus(String status) throws BizLogicException {
+		if(!Constants.ORDER_REQUEST_STATUS_DISTRIBUTED.equals(status) &&  
+				!Constants.ORDER_REQUEST_STATUS_DISTRIBUTED_AND_CLOSE.equals(status)){
+			throw this.getBizLogicException(null, "distribution.status.errmsg", "");
+		}
+	}
+
 	private void validateSite(Site site, DAO dao) throws BizLogicException {
-		if (Validator.isEmpty(site.getName())) {
+		if (site == null || Validator.isEmpty(site.getName())) {
 			throw this.getBizLogicException(null, "errors.item.required", "Site");
 		}
 	}
 
 	private void validateUser(User requestor, DAO dao) throws BizLogicException {
-		if (Validator.isEmpty(requestor.getLoginName())) {
+		if (requestor == null || Validator.isEmpty(requestor.getLoginName())) {
 			throw this.getBizLogicException(null, "errors.item.required", "User login name");
 		}
 
@@ -86,13 +92,13 @@ public class SpecimenDistributionBizlogic extends CatissueDefaultBizLogic {
 
 	private void validateDistributionProtocol(DistributionProtocol distributionProtocol, DAO dao)
 			throws BizLogicException {
-		if (Validator.isEmpty(distributionProtocol.getTitle())) {
+		if (distributionProtocol == null || Validator.isEmpty(distributionProtocol.getTitle())) {
 			throw this.getBizLogicException(null, "errors.distributionprotocol.required", "");
 		}
 	}
 
 	private void validateSpecimen(Specimen specimen, HibernateDAO dao) throws BizLogicException {
-		if (Validator.isEmpty(specimen.getLabel()) && Validator.isEmpty(specimen.getBarcode())) {
+		if (specimen == null || (Validator.isEmpty(specimen.getLabel()) && Validator.isEmpty(specimen.getBarcode()))) {
 			throw this.getBizLogicException(null, "errors.item.required", "Specimen label or barcode");
 		}
 	}
@@ -103,6 +109,11 @@ public class SpecimenDistributionBizlogic extends CatissueDefaultBizLogic {
 			SpecimenDistribution spDistri = (SpecimenDistribution) obj;
 			Specimen origSpecimen = getSpecimen(spDistri.getSpecimen().getLabel(), spDistri.getSpecimen().getBarcode(),
 					(HibernateDAO) dao);
+			if(spDistri.getQuantity() == null){
+				spDistri.setQuantity(origSpecimen.getAvailableQuantity());
+			}else if(Double.compare(0, spDistri.getQuantity()) == 0){
+				throw this.getBizLogicException(null, "errors.item", "Quantity should be a valid number and greater than zero.");
+			}
 			Site site = getSite(spDistri.getSite(), (HibernateDAO) dao);
 
 			DistributionProtocol origDp = getDistributionProtocol(spDistri.getDistributionProtocol().getTitle(),
@@ -167,7 +178,8 @@ public class SpecimenDistributionBizlogic extends CatissueDefaultBizLogic {
 			OrderStatusDTO response = bizLogic.updateOrder(submissionDTO, requestedBy.getId(), (HibernateDAO) dao, true);
 			if (response.getOrderErrorDTOs() != null && response.getOrderErrorDTOs().size() > 0) {
 				LOGGER.error("Error while distributing specimen.");
-				throw this.getBizLogicException(null, "error.specimenDistribution", "");
+				OrderErrorDTO errDto = response.getOrderErrorDTOs().get(0);
+				throw this.getBizLogicException(null, "errors.item", errDto.getError());
 			}
 
 		}
@@ -197,8 +209,8 @@ public class SpecimenDistributionBizlogic extends CatissueDefaultBizLogic {
 				PrivilegeCache privilegeCache = privilegeManager.getPrivilegeCache(user.getLoginName());
 
 				List siteIdsList = bizLogic.getUserSitesWithDistributionPrev(user, privilegeCache);
-				if (hasDistributionPrivOnSite(specimen, siteIdsList) || hasDistributionPrivOnCp(user, privilegeCache, specimen)) {
-
+				if (!hasDistributionPrivOnSite(specimen, siteIdsList) && !hasDistributionPrivOnCp(user, privilegeCache, specimen)) {
+					throw this.getBizLogicException(null, "errors.item", "User doesn't have distribution privileges.");
 				}
 			}
 		}
@@ -286,7 +298,8 @@ public class SpecimenDistributionBizlogic extends CatissueDefaultBizLogic {
 			}
 			else {
 				LOGGER.error("Error: Distribution Protocol object not found with the given title.");
-				throw this.getBizLogicException(null, "errors.distributionprotocol.required", "");
+				ErrorKey errorKey = ErrorKey.getErrorKey("errors.invalid");
+        throw new BizLogicException(errorKey, null, "Distribution Protocol");
 			}
 		}
 		catch (DAOException daoExp) {
