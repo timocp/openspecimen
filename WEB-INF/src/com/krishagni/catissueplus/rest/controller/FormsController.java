@@ -30,7 +30,10 @@ import com.krishagni.catissueplus.core.de.events.BOTemplateGeneratedEvent;
 import com.krishagni.catissueplus.core.de.events.BOTemplateGenerationEvent;
 import com.krishagni.catissueplus.core.de.events.BulkFormDataSavedEvent;
 import com.krishagni.catissueplus.core.de.events.DeleteFormEvent;
+import com.krishagni.catissueplus.core.de.events.FormContextsRemovedEvent;
 import com.krishagni.catissueplus.core.de.events.FormDeletedEvent;
+import com.krishagni.catissueplus.core.de.events.RemoveFormContextEvent;
+import com.krishagni.catissueplus.core.de.events.RemoveFormContextEvent.RemoveType;
 import com.krishagni.catissueplus.core.de.events.SaveBulkFormDataEvent;
 import com.krishagni.catissueplus.core.de.events.DeleteRecordEntriesEvent;
 import com.krishagni.catissueplus.core.de.events.FormContextDetail;
@@ -212,6 +215,28 @@ public class FormsController {
 				resp.setMessage("Error in generating BO templates");
 			}
 			return resp.getFormCtxts();				
+		}
+		
+		return null;
+	}
+
+	@RequestMapping(method = RequestMethod.DELETE, value="{id}/contexts")
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody	
+	public List<FormContextDetail> removeFormContexts(
+			@PathVariable("id") Long formId,
+			@RequestParam(value = "entityType", required = true) String[] entityTypes,
+			@RequestParam(value = "cpId", required = true) Long cpId) {
+		
+		RemoveFormContextEvent req = new RemoveFormContextEvent();
+		req.setCpId(cpId);
+		req.setFormId(formId);
+		req.setEntityTypes(entityTypes);
+		req.setRemoveType(RemoveType.SOFT_REMOVE);
+		
+		FormContextsRemovedEvent resp = formSvc.removeFormContext(req);
+		if (resp.getStatus() == EventStatus.OK) {
+			return resp.getFormCtxts();
 		}
 		
 		return null;

@@ -93,6 +93,12 @@ angular.module('plus.formsServices', [])
         return $http.put(baseUrl + "/" + formId + "/contexts", formCtxts).then(successfn);
       },
 
+      removeFormContext: function(formId, cpId, entity) {
+        return $http.delete(
+          baseUrl + '/' + formId + '/contexts', 
+          {params: {cpId: cpId, entityType: entity}}).then(successfn);
+      },
+
       getCprForms: function(cprId) {
         return Utility.get($http, getFormsUrl('collection-protocol-registrations', cprId), successfn);
       },
