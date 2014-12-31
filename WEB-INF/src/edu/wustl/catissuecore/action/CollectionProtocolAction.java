@@ -35,6 +35,7 @@ import org.apache.struts.action.ActionMapping;
 import edu.wustl.catissuecore.actionForm.CollectionProtocolForm;
 import edu.wustl.catissuecore.bean.CollectionProtocolBean;
 import edu.wustl.catissuecore.bizlogic.CollectionProtocolBizLogic;
+import edu.wustl.catissuecore.dao.UserDAO;
 import edu.wustl.catissuecore.domain.CollectionProtocol;
 import edu.wustl.catissuecore.domain.ConsentTier;
 import edu.wustl.catissuecore.domain.User;
@@ -43,6 +44,7 @@ import edu.wustl.catissuecore.util.MSRUtil;
 import edu.wustl.catissuecore.util.global.AppUtility;
 import edu.wustl.catissuecore.util.global.Constants;
 import edu.wustl.common.beans.NameValueBean;
+import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.bizlogic.IBizLogic;
 import edu.wustl.common.cde.CDEManager;
 import edu.wustl.common.exception.BizLogicException;
@@ -169,6 +171,12 @@ public class CollectionProtocolAction extends SpecimenProtocolAction
 		// Protocol Page in Advance Search Object View.
 
 		final CollectionProtocolForm collectionProtocolForm = (CollectionProtocolForm) form;
+		if(collectionProtocolForm.getPrincipalInvestigatorId() != 0 && collectionProtocolForm.getPrincipalInvestigatorId() != -1){
+			UserDAO userDAO = new UserDAO();
+			String piName = userDAO.getUserNameById(collectionProtocolForm.getPrincipalInvestigatorId());
+			request.setAttribute("piName", piName);
+		}
+			
 		final String cp_id = String.valueOf(collectionProtocolForm.getId());
 		if (!cp_id.equalsIgnoreCase("0"))
 		{
