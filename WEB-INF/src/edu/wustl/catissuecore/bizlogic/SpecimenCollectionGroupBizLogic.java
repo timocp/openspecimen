@@ -884,7 +884,9 @@ public class SpecimenCollectionGroupBizLogic extends CatissueDefaultBizLogic
 					final CollectionEventParameters collEventParam = (CollectionEventParameters) scgEventCollObj;
 					final CollectionEventParameters newCollEventParam = new CollectionEventParameters(
 							collEventParam);
-					newCollEventParam.setUser(collEventParam.getUser());
+					if(newCollEventParam.getUser() == null){
+						newCollEventParam.setUser(collEventParam.getUser());
+					}
 					newCollEventParam.setTimestamp(collEventParam
 							.getTimestamp());
 					newSCGEventColl.add(newCollEventParam);
@@ -895,7 +897,9 @@ public class SpecimenCollectionGroupBizLogic extends CatissueDefaultBizLogic
 					final ReceivedEventParameters recEventParam = (ReceivedEventParameters) scgEventCollObj;
 					final ReceivedEventParameters newRecEventParam = new ReceivedEventParameters(
 							recEventParam);
-					newRecEventParam.setUser(recEventParam.getUser());
+					if(newRecEventParam.getUser() == null){
+						newRecEventParam.setUser(recEventParam.getUser());
+					}
 					newRecEventParam.setTimestamp(recEventParam.getTimestamp());
 					newSCGEventColl.add(newRecEventParam);
 				}

@@ -27,14 +27,13 @@ public class GridSpecimenImpl extends AbstractGridImpl
 				"case when Specimen1.LINEAGE is null then '' else Specimen1.LINEAGE end as LINEAGE, "+
 				"Specimen1.IDENTIFIER as IDENTIFIER "+
 				"FROM   "+ 
-				"CATISSUE_EXTERNAL_IDENTIFIER ExternalIdentifier1 , CATISSUE_SPECIMEN Specimen1 , catissue_spec_tag_items atg, catissue_specimen_coll_group scg "+ 
+				" CATISSUE_SPECIMEN Specimen1 , catissue_spec_tag_items atg, catissue_specimen_coll_group scg "+ 
 				" WHERE scg.identifier = Specimen1.SPECIMEN_COLLECTION_GROUP_ID AND "+ 
-				"Specimen1.IDENTIFIER   =  ExternalIdentifier1.SPECIMEN_ID  AND "+
-				" Specimen1.IDENTIFIER   =  ExternalIdentifier1.SPECIMEN_ID   AND atg.tag_id= "+ jsonString +" and "+ 
+				" atg.tag_id= "+ jsonString +" and "+ 
 				"( ( Specimen1.IDENTIFIER  =atg.obj_id  )   AND UPPER(Specimen1.ACTIVITY_STATUS ) != UPPER('Disabled')  ) "+
-				" ORDER BY Specimen1.IDENTIFIER ,ExternalIdentifier1.IDENTIFIER "; 
+				" ORDER BY Specimen1.IDENTIFIER ,Specimen1.LABEL ";   
 		
-		
+		System.out.println();
 
 		setSessionData(sessionData);
 		return query;

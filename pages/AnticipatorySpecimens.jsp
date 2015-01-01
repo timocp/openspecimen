@@ -91,7 +91,7 @@ if(Constants.TRUE.equals(request.getParameter("isClinicalDataEntry")))
 <script language="JavaScript" type="text/javascript"	src="javascripts/de/scr.js"></script>
 <script language="JavaScript" type="text/javascript"	src="javascripts/de/combobox.js"></script>
 <script language="JavaScript" type="text/javascript"	src="jss/ext-base.js"></script>
-<script language="JavaScript" type="text/javascript"	src="jss/ext-all.js"></script>
+
 <script language="JavaScript" type="text/javascript"	src="javascripts/de/ajax.js"></script>
 <script language="JavaScript" type="text/javascript"	src="/jss/multiselectUsingCombo.js"></script>
 <LINK href="css/catissue_suite.css" type="text/css" rel="stylesheet">
@@ -799,10 +799,12 @@ String lbl = "Apply first to all";
 <script>
 </script>
 <script>
+
 var isSCGPresent = false;
 var scgId = "<%=request.getAttribute("scgId")%>";
 if (scgId && scgId != 'null') {
   parent.handleCpView(null, scgId , null);
+  parent.handleCpViewForSubCP(scgId,'Complete','','');
 } 
 
 </script>
@@ -813,6 +815,7 @@ if (scgId && scgId != 'null') {
   if (!scgId || scgId == 'null') {
     scgId =  ${scgSummaryDTO.scgId}
     parent.handleCpView(null, scgId , null);
+	parent.handleCpViewForSubCP(scgId,'Complete','','');
   }
 </script>
 <%@ include file="/pages/content/manageBioSpecimen/SpecimenCollectionGroupSummary.jsp"%>

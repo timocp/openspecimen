@@ -19,6 +19,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
@@ -97,6 +99,7 @@ import edu.common.dynamicextensions.query.QueryResultData;
 import edu.common.dynamicextensions.query.QueryResultExporter;
 import edu.common.dynamicextensions.query.QueryResultScreener;
 import edu.common.dynamicextensions.query.ResultColumn;
+import edu.common.dynamicextensions.query.WideRowMode;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.util.XMLPropertyHandler;
 import edu.wustl.common.util.global.CommonServiceLocator;
@@ -217,9 +220,13 @@ public class QueryServiceImpl implements QueryService {
 				return QuerySavedEvent.badRequest(SavedQueryErrorCode.QUERY_ID_FOUND.message(), null);
 			}
 
-			Query.createQuery().wideRows(true).ic(true)
-					.dateFormat(dateFormat).timeFormat(timeFormat)
-					.compile(cprForm, getAql(queryDetail));
+			Query.createQuery()
+				.wideRowMode(WideRowMode.DEEP)
+				.ic(true)
+				.dateFormat(dateFormat)
+				.timeFormat(timeFormat)
+				.compile(cprForm, getAql(queryDetail));
+			
 			SavedQuery savedQuery = getSavedQuery(req.getSessionDataBean(), queryDetail);
 			daoFactory.getSavedQueryDao().saveOrUpdate(savedQuery);
 			return QuerySavedEvent.ok(SavedQueryDetail.fromSavedQuery(savedQuery));
@@ -242,9 +249,13 @@ public class QueryServiceImpl implements QueryService {
 		try {
 			SavedQueryDetail queryDetail = req.getSavedQueryDetail();
 
-			Query.createQuery().wideRows(true).ic(true)
-					.dateFormat(dateFormat).timeFormat(timeFormat)
-					.compile(cprForm, getAql(queryDetail));
+			Query.createQuery()
+				.wideRowMode(WideRowMode.DEEP)
+				.ic(true)
+				.dateFormat(dateFormat)
+				.timeFormat(timeFormat)
+				.compile(cprForm, getAql(queryDetail));
+			
 			SavedQuery savedQuery = getSavedQuery(req.getSessionDataBean(), queryDetail);
 			SavedQuery existing = daoFactory.getSavedQueryDao().getQuery(queryDetail.getId());
 			existing.update(savedQuery);
@@ -296,10 +307,14 @@ public class QueryServiceImpl implements QueryService {
 		try {
 			SessionDataBean sdb = req.getSessionDataBean();
 			boolean countQuery = req.getRunType().equals("Count");
+			boolean pivotTable = CROSS_TAB_PTRN.matcher(req.getAql()).matches();
 			
 			Query query = Query.createQuery()
-					.wideRows(req.isWideRows()).ic(true)
-					.dateFormat(dateFormat).timeFormat(timeFormat);
+					.wideRowMode(WideRowMode.valueOf(req.getWideRowMode()))
+					.ic(true)
+					.dateFormat(dateFormat)
+					.timeFormat(timeFormat);
+			
 			query.compile(
 					cprForm, 
 					getAqlWithCpIdInSelect(sdb, countQuery, req.getAql()), 
@@ -309,7 +324,7 @@ public class QueryServiceImpl implements QueryService {
 			insertAuditLog(req, resp);
 			
 			queryResult = resp.getResultData();
-			queryResult.setScreener(new QueryResultScreenerImpl(sdb, countQuery));
+			queryResult.setScreener(new QueryResultScreenerImpl(sdb, countQuery || pivotTable));
 			
 			Integer[] indices = null;
 			if (req.getIndexOf() != null && !req.getIndexOf().isEmpty()) {
@@ -347,17 +362,18 @@ public class QueryServiceImpl implements QueryService {
 	public QueryDataExportedEvent exportQueryData(ExportQueryDataEvent req) {
 		try {
 			SessionDataBean sdb = req.getSessionDataBean();
-			boolean countQuery = req.getRunType().equals("Count");
+			boolean countQuery = req.getRunType().equals("Count");			
 			
+			Query query = Query.createQuery()
+					.wideRowMode(WideRowMode.valueOf(req.getWideRowMode()))
+					.ic(true)
+					.dateFormat(dateFormat)
+					.timeFormat(timeFormat);
 			
-			Query query = Query.createQuery();
-			query.wideRows(req.isWideRows())
-				.ic(true)
-				.dateFormat(dateFormat).timeFormat(timeFormat)
-				.compile(
-						cprForm, 
-						getAqlWithCpIdInSelect(sdb, countQuery, req.getAql()), 
-						getRestriction(sdb, req.getCpId()));
+			query.compile(
+				cprForm, 
+				getAqlWithCpIdInSelect(sdb, countQuery, req.getAql()), 
+				getRestriction(sdb, req.getCpId()));
 			
 			String filename = UUID.randomUUID().toString();
 			boolean completed = exportData(filename, query, req);
@@ -811,6 +827,7 @@ public class QueryServiceImpl implements QueryService {
 		savedQuery.setLastUpdatedBy(user);
 		savedQuery.setLastUpdated(Calendar.getInstance().getTime());
 		savedQuery.setReporting(detail.getReporting());
+		savedQuery.setWideRowMode(detail.getWideRowMode());
 		return savedQuery;
 	}
 
@@ -829,10 +846,11 @@ public class QueryServiceImpl implements QueryService {
 			public Boolean call() throws Exception {				
 				QueryResultExporter exporter = new QueryResultCsvExporter();
 				String path = EXPORT_DATA_DIR + File.separator + filename;
+				boolean pivotTable = CROSS_TAB_PTRN.matcher(req.getAql()).matches();
 				
 				Transaction txn = startTxn();
 				QueryResponse resp = exporter.export(
-						path, query, new QueryResultScreenerImpl(req.getSessionDataBean(), false));
+						path, query, new QueryResultScreenerImpl(req.getSessionDataBean(), pivotTable));
 				try {
 					insertAuditLog(req, resp);
 					sendEmail();
@@ -921,9 +939,10 @@ public class QueryServiceImpl implements QueryService {
 			return aql;
 		} else {
 			String afterSelect = aql.trim().substring(6);
-			return "select " + cpForm + ".id, " + afterSelect;
+			return adjustCrossTabColIndices("select " + cpForm + ".id, " + afterSelect);
 		}
 	}
+	
 	
 	private static int getThreadPoolSize() {
 		String poolSize = XMLPropertyHandler.getValue("query.exportThreadPoolSize");
@@ -978,20 +997,20 @@ public class QueryServiceImpl implements QueryService {
 	private class QueryResultScreenerImpl implements QueryResultScreener {
 		private SessionDataBean sdb;
 		
-		private boolean countQuery;
+		private boolean retainColumnOne;
 		
 		private Map<Long, Boolean> phiAccessMap = new HashMap<Long, Boolean>();
 		
 		private static final String mask = "##########";
 		
-		public QueryResultScreenerImpl(SessionDataBean sdb, boolean countQuery) {
+		public QueryResultScreenerImpl(SessionDataBean sdb, boolean retainColumnOne) {
 			this.sdb = sdb;
-			this.countQuery = countQuery;
+			this.retainColumnOne = retainColumnOne;
 		}
 
 		@Override
 		public List<ResultColumn> getScreenedResultColumns(List<ResultColumn> preScreenedResultCols) {
-			if (sdb.isAdmin() || this.countQuery) {
+			if (sdb.isAdmin() || this.retainColumnOne) {
 				return preScreenedResultCols;
 			}
 			
@@ -1002,7 +1021,7 @@ public class QueryServiceImpl implements QueryService {
 
 		@Override
 		public Object[] getScreenedRowData(List<ResultColumn> preScreenedResultCols, Object[] rowData) {
-			if (sdb.isAdmin() || this.countQuery || rowData.length == 0) {
+			if (sdb.isAdmin() || this.retainColumnOne || rowData.length == 0) {
 				return rowData;
 			}
 						
@@ -1079,4 +1098,40 @@ public class QueryServiceImpl implements QueryService {
 			EmailHandler.sendQueryFolderSharedEmail(user, folder, sharedWith);
 		}		
 	}
+		
+	private String adjustCrossTabColIndices(String aql) {
+		Matcher matcher = CROSS_TAB_PTRN.matcher(aql);
+		if (!matcher.matches()) {
+			return aql;
+		}
+		
+		String newCtExpr = new StringBuilder("crosstab(")
+			.append(newCrossTabIndices(matcher.group(1))).append(",")
+			.append(Integer.parseInt(matcher.group(2)) + 1).append(",")
+			.append(newCrossTabIndices(matcher.group(3)))
+			.append(matcher.group(4) != null ? matcher.group(4) : "")
+			.append(")")
+			.toString();		
+		
+		int idx = aql.indexOf("crosstab");
+		return aql.substring(0, idx) + ' ' + newCtExpr;
+	}
+	
+	private String newCrossTabIndices(String oldList) {
+		String[] items = oldList.split(",");
+		
+		StringBuilder newIndices = new StringBuilder();
+		newIndices.append("(");
+		for (String item : items) {
+			if (item.trim().isEmpty()) {
+				continue;
+			}
+			newIndices.append(Integer.parseInt(item) + 1).append(",");
+		}
+		
+		newIndices.deleteCharAt(newIndices.length() - 1).append(")");
+		return newIndices.toString();
+	}
+		
+	private static final Pattern CROSS_TAB_PTRN = Pattern.compile(".*crosstab\\(\\s*\\((\\s*\\d+[,\\d+]*\\s*)\\)\\s*,\\s*(\\d+)\\s*,\\s*\\((\\s*\\d+[,\\d+]*\\s*)\\)\\s*(,\\s*\\w*)?.*");
 }

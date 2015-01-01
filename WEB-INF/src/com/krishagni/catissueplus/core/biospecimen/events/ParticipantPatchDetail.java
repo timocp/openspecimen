@@ -3,6 +3,7 @@ package com.krishagni.catissueplus.core.biospecimen.events;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -10,6 +11,7 @@ import java.util.Set;
 import com.google.gson.Gson;
 import com.krishagni.catissueplus.core.biospecimen.domain.Participant;
 import com.krishagni.catissueplus.core.biospecimen.domain.ParticipantMedicalIdentifier;
+import com.krishagni.catissueplus.core.biospecimen.domain.Race;
 
 import edu.wustl.catissuecore.util.global.AppUtility;
 
@@ -227,7 +229,14 @@ public class ParticipantPatchDetail {
 			}
 		}
 		participantDetail.setPmiCollection(pmiColl);
-		participantDetail.setRace(participant.getRaceColl());
+		Set<Race> raceSet = participant.getRaceColl();
+		Set<String> newRace = new HashSet<String>();
+		if(raceSet != null){
+			for (Race race : raceSet) {
+				newRace.add(race.getRaceName());
+			}
+		}
+		participantDetail.setRace(newRace);
 		participantDetail.setSexGenotype(participant.getSexGenotype());
 		participantDetail.setSsn(participant.getSocialSecurityNumber());
 		participantDetail.setVitalStatus(participant.getVitalStatus());

@@ -169,14 +169,14 @@ public class SCGDAO
 
 			if (eventParams.isEmpty())
 			{
-				ReceivedEventParameters receiveEvent = new ReceivedEventParameters();
-				setReceivedEventParameter(summaryDto, receiveEvent);
-				receiveEvent.setSpecimenCollectionGroup(persistentSCG);
-				CollectionEventParameters collEvent = new CollectionEventParameters();
-				setCollectedEventParam(summaryDto, collEvent);
-				collEvent.setSpecimenCollectionGroup(persistentSCG);
-				persistentSCG.getSpecimenEventParametersCollection().add(receiveEvent);
-				persistentSCG.getSpecimenEventParametersCollection().add(collEvent);
+//				ReceivedEventParameters receiveEvent = new ReceivedEventParameters();
+				setReceivedEventParameter(summaryDto, persistentSCG);
+//				receiveEvent.setSpecimenCollectionGroup(persistentSCG);
+//				CollectionEventParameters collEvent = new CollectionEventParameters();
+				setCollectedEventParam(summaryDto, persistentSCG);
+//				collEvent.setSpecimenCollectionGroup(persistentSCG);
+//				persistentSCG.getSpecimenEventParametersCollection().add(receiveEvent);
+//				persistentSCG.getSpecimenEventParametersCollection().add(collEvent);
 			}
 			else
 			{
@@ -185,11 +185,11 @@ public class SCGDAO
 				{
 					if (eventParameter instanceof ReceivedEventParameters)
 					{
-						setReceivedEventParameter(summaryDto,(ReceivedEventParameters) eventParameter);
+						setReceivedEventParameter(summaryDto,persistentSCG);
 					}
 					if (eventParameter instanceof CollectionEventParameters)
 					{
-						setCollectedEventParam(summaryDto, (CollectionEventParameters) eventParameter);
+						setCollectedEventParam(summaryDto, persistentSCG);
 					}
 				}
 			}
@@ -201,42 +201,42 @@ public class SCGDAO
 	}
 
 	private void setCollectedEventParam(SCGSummaryDTO summaryDto,
-			CollectionEventParameters eventParameter)
+			SpecimenCollectionGroup scg)
 	{
 		if (summaryDto.getCollector() != null)
 		{
 			User collector = new User();
 			collector.setId(summaryDto.getCollector());
-			eventParameter.setUser(collector);
+			scg.setCollector(collector);
 		}
 		if (summaryDto.getCollectedDate() != null)
 		{
-			eventParameter.setTimestamp(summaryDto.getCollectedDate());
+			scg.setCollectionTimestamp(summaryDto.getCollectedDate());
 		}
-		if(eventParameter.getCollectionProcedure() == null){
-			eventParameter.setCollectionProcedure(Constants.CP_DEFAULT);
+		if(scg.getCollectionProcedure() == null){
+			scg.setCollectionProcedure(Constants.CP_DEFAULT);
 		}
 
-		if(eventParameter.getContainer() == null){
-			eventParameter.setContainer(Constants.CP_DEFAULT);
+		if(scg.getCollectionContainer() == null){
+			scg.setCollectionContainer(Constants.CP_DEFAULT);
 		}
 	}
 
 	private void setReceivedEventParameter(SCGSummaryDTO summaryDto,
-			ReceivedEventParameters eventParameter)
+			SpecimenCollectionGroup scg)
 	{
 		if (summaryDto.getReceiver() != null)
 		{
 			User receiver = new User();
 			receiver.setId(summaryDto.getReceiver());
-			eventParameter.setUser(receiver);
+			scg.setReceiver(receiver);
 		}
 		if (summaryDto.getReceivedDate() != null)
 		{
-			eventParameter.setTimestamp(summaryDto.getReceivedDate());
+			scg.setReceivedTimestamp(summaryDto.getReceivedDate());
 		}
-		if(eventParameter.getReceivedQuality()==null){
-			eventParameter.setReceivedQuality(Constants.CP_DEFAULT);
+		if(scg.getReceivedQuality()==null){
+			scg.setReceivedQuality(Constants.CP_DEFAULT);
 		}
 		
 	}

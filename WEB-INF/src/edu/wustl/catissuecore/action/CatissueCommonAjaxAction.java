@@ -2,6 +2,7 @@
 package edu.wustl.catissuecore.action;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -12,6 +13,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -20,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -51,6 +54,7 @@ import edu.wustl.catissuecore.bizlogic.StorageContainerForSpecimenBizLogic;
 import edu.wustl.catissuecore.bizlogic.SummaryBizLogic;
 import edu.wustl.catissuecore.bizlogic.UserBizLogic;
 import edu.wustl.catissuecore.cpSync.SyncCPThreadExecuterImpl;
+import edu.wustl.catissuecore.dao.UserDAO;
 import edu.wustl.catissuecore.domain.Capacity;
 import edu.wustl.catissuecore.domain.Site;
 import edu.wustl.catissuecore.domain.Specimen;
@@ -186,6 +190,46 @@ public class CatissueCommonAjaxAction extends DispatchAction
 		List<NameValueBean> diagnosisList = comboDataBizObj.getClinicalDiagnosisList(query, false);
 		AppUtility.writeListAsJSon(diagnosisList, request, response);
 		return null;
+	}
+	
+	/**
+	 * This returns list of user names which contains specified string as an query.  
+	 */
+	public ActionForward getUserNames(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws ApplicationException,
+			IOException
+	{
+		String query = request.getParameter("mask")!=null?request.getParameter("mask"):"";//request.getParameter("query");
+		UserDAO userDAO = new UserDAO();
+		
+		List<NameValueBean> userNameList = userDAO.getUserNameList(query, false);
+		response.setContentType("text/xml");
+		final PrintWriter out = response.getWriter();
+//		String encodedurl = URLEncoder.encode(createXml(clinicalDiagnosisCollection).toString(),"UTF-8"); 
+//		URLDecoder.decode(encodedurl);
+		out.write(createXml(userNameList).toString());
+		return null;
+	}
+	
+	private StringBuffer createXml(Collection<NameValueBean> clinicalDiagnosisBean){
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("<?xml version=\"1.0\"?>");
+		buffer.append("<complete>");
+		if(clinicalDiagnosisBean!=null){
+		final ListIterator iterator =  ((List) clinicalDiagnosisBean)
+				.listIterator();
+		int count = 0;
+		while(iterator.hasNext() && count<100){
+			final NameValueBean nameValueBean = (NameValueBean) iterator
+					.next();
+			
+			buffer.append("<option value=\""+StringEscapeUtils.escapeXml(nameValueBean.getName())+"\"><![CDATA["+nameValueBean.getValue()+"]]></option>");
+			count++;
+		}
+		}
+		buffer.append("</complete>");
+		
+		return buffer;
 	}
 
 	public ActionForward getAllSiteList(ActionMapping mapping, ActionForm form,

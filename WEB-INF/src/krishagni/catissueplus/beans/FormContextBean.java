@@ -1,7 +1,8 @@
 package krishagni.catissueplus.beans;
 
-public class FormContextBean {
-	
+import java.util.Date;
+
+public class FormContextBean {	
 	private Long identifier;
 	
 	private Long containerId;
@@ -15,6 +16,8 @@ public class FormContextBean {
 	private boolean multiRecord;
 	
 	private boolean sysForm;
+	
+	private Date deletedOn;
 
 	public Long getIdentifier() {
 		return identifier;
@@ -70,5 +73,13 @@ public class FormContextBean {
 
 	public void setSysForm(boolean sysForm) {
 		this.sysForm = sysForm;
+	}
+
+	public Date getDeletedOn() {
+		return deletedOn;
+	}
+
+	public void setDeletedOn(Date deletedOn) {
+		this.deletedOn = deletedOn;
 	}
 }

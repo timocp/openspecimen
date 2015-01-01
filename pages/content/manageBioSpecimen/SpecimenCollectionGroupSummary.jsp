@@ -3,6 +3,9 @@
 
 
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page import="edu.wustl.catissuecore.dto.SCGSummaryDTO"%>
+<link rel="stylesheet" type="text/css" href="dhtmlxSuite_v35/dhtmlxCalendar/codebase/dhtmlxcalendar.css" />
+<link rel="stylesheet" type="text/css" href="dhtmlxSuite_v35/dhtmlxCalendar/codebase/skins/dhtmlxcalendar_dhx_skyblue.css" />
 <script	src="dhtmlxSuite_v35/dhtmlxGrid/codebase/dhtmlxcommon.js"></script>
 <script	src="dhtmlxSuite_v35/dhtmlxCombo/codebase/dhtmlxcombo.js"></script>
 <script	src="dhtmlxSuite_v35/dhtmlxCombo/codebase/ext/dhtmlxcombo_extra.js"></script>
@@ -10,14 +13,22 @@
 <link rel="stylesheet" type="text/css" href="dhtmlxSuite_v35/dhtmlxCombo/codebase/dhtmlxcombo.css" />
 
 <script src="dhtmlxSuite_v35/dhtmlxCalendar/codebase/dhtmlxcalendar.js"></script>
-<link rel="stylesheet" type="text/css" href="dhtmlxSuite_v35/dhtmlxCalendar/codebase/skins/dhtmlxcalendar_dhx_skyblue.css" />
-<link rel="stylesheet" type="text/css" href="dhtmlxSuite_v35/dhtmlxCalendar/codebase/dhtmlxcalendar.css" />
+
+
 
 <link rel="stylesheet" type="text/css" href="css/styleSheet.css" />
 <LINK type=text/css rel=stylesheet href="css/participantEffects.css" />
-
+<script src="jss/script.js" type="text/javascript"></script>
 <script src="jss/scgSummary.js"></script>
 <script src="jss/json2.js" type="text/javascript"></script>
+<%
+	Object obj = request.getAttribute("scgSummaryDTO");
+	SCGSummaryDTO dto =null;
+	if(obj != null && obj instanceof SCGSummaryDTO)
+	{
+ 		dto=(SCGSummaryDTO)obj;
+	}
+%>
 <fmt:formatDate type="time" value="${scgSummaryDTO.collectedDate}" pattern="H" var="collectedTimeinHr"/>
 <fmt:formatDate type="time" value="${scgSummaryDTO.collectedDate}" pattern="m" var="collectedTimeinmin"/>
 <fmt:formatDate type="time" value="${scgSummaryDTO.receivedDate}" pattern="H"  var="receivedTimeinHr"/>
@@ -57,24 +68,47 @@
 		<b> <bean:message key="specimen.collectedevents.username"/> </b>
 		</td>
 		<td align="left" class="black_new" colspan="3">
+			 <table border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td>
+                                        <div>
 		    <html:select property="collector" name="scgSummaryDTO" 
 			 styleClass="formFieldSized" styleId="collector" size="1"
-			 onmouseover="showTip(this.id)" onmouseout="hideTip(this.id)" onblur="processData(this)">
-			  <html:options collection="userList"
-			  labelProperty="name" property="value" /></html:select>
+			 onmouseover="showTip(this.id)" onmouseout="hideTip(this.id)" >
+			  </html:select>
+			  </div>
+				</td>
+				<td>
+				</td></tr></table>
+			
+						<span class="grey_ar_s">Start typing to see values</span>
 		</td>
 		<td class="black_new padding_right_style black_ar" align="right">
 		 <b> <bean:message key="specimen.receivedevents.username"/> </b>
 		</td>
 		<td align="left" class="black_new padding_right_style" colspan="3">
-							<html:select property="receiver" name="scgSummaryDTO" 
-								styleClass="formFieldSized" styleId="receiver" size="1"
-								onmouseover="showTip(this.id)" onmouseout="hideTip(this.id)" onblur="processData(this)">
-								<html:options collection="userList"
-									labelProperty="name" property="value" />
-							</html:select>
+		<table border="0" cellspacing="0" cellpadding="0">
+			<tr>
+				<td>
+					<div>
+		<html:select property="receiver" name="scgSummaryDTO" 
+			styleClass="formFieldSized" styleId="receiver" size="1"
+			onmouseover="showTip(this.id)" onmouseout="hideTip(this.id)" >
+		</html:select>
+		</div>
+				</td>
+				<td>
+				</td></tr></table>
+			
+						<span class="grey_ar_s">Start typing to see values</span>
 		</td>
 
+		<script>
+							var collUserName = "${collUserName}";
+							var recUserName = "${recUserName}";
+							var collUserId = "<%=dto.getCollector()%>";
+							var recUserId = "<%=dto.getReceiver()%>";
+						</script>
 	</tr>
 
         <tr>
@@ -88,7 +122,7 @@
 	<td align="left" class="black_new date_text_field" >
 						<input type="text" name="collectedDate" class="black_ar date_text_field"  onblur="processData(this)"
 					id="collectedDate" size="10" value="${collectedformatedDate}"
-							 onclick="doInitCalendar('collectedDate',false,'${uiDatePattern}');" /> </td>
+							  /> </td>
         
             <td align="left" style="padding-left:4px">
             
@@ -126,7 +160,7 @@
         
 						<input type="text" class="black_ar date_text_field"  name="receivedDate" onblur="processData(this)"
 							id="receivedDate" size="10" value="${receivedformatedDate}" 
-							 onclick="doInitCalendar('receivedDate',false,'${uiDatePattern}');" />
+							  />
 	</td>
          <td align="left" style="padding-left:4px">
                  <select  class="frmFieldSized"  size="1" id="receivehoursTime" name="receiveHrTime"
@@ -176,5 +210,7 @@
 
 var scgDataJSON = {};
 scgDataJSON["scgId"] = ${scgSummaryDTO.scgId};
+doInitCal('collectedDate',false,'${uiDatePattern}');
+doInitCal('receivedDate',false,'${uiDatePattern}');
 convertSelectToCombo();
 </script>

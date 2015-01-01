@@ -4,34 +4,15 @@
     <caption>Procedure Event</caption>
     <table>CATISSUE_PROCEDURE_EVENT_PARAM</table>
     <primaryKey>IDENTIFIER</primaryKey>
-
-    <row>
-      <textField>
-        <name>url</name>
-        <udn>url</udn>
-        <caption>URL</caption>
-        <column>URL</column>
-      </textField>
-    </row>
-
-    <row>
-      <textField>
-        <name>name</name>
-        <udn>name</udn>
-        <caption>Name</caption>
-        <column>NAME</column>
-      </textField>
-    </row>
-
     <row>
       <userField>
         <name>user</name>
         <udn>user</udn>
         <caption>User</caption>
         <column>USER_ID</column>
+        <mandatory>true</mandatory>
       </userField>
     </row>
-
     <row>
       <datePicker>
         <name>time</name>
@@ -39,9 +20,27 @@
         <caption>Date and Time</caption>
         <column>EVENT_TIMESTAMP</column>
         <format>MM-dd-yyyy HH:mm</format>
+        <mandatory>true</mandatory>
       </datePicker>
     </row>
-
+    <row>
+      <textField>
+        <name>url</name>
+        <udn>url</udn>
+        <caption>URL</caption>
+        <column>URL</column>
+        <mandatory>true</mandatory>
+      </textField>
+    </row>
+    <row>
+      <textField>
+        <name>name</name>
+        <udn>name</udn>
+        <caption>Name</caption>
+        <column>NAME</column>
+        <mandatory>true</mandatory>
+      </textField>
+    </row>
     <row>
       <textArea>
         <name>comments</name>
@@ -53,4 +52,3 @@
     </row>
   </view>
 </form>
-

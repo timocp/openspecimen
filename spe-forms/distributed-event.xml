@@ -4,7 +4,14 @@
     <caption>Distributed Event</caption>
     <table>CATISSUE_DISTRI_EVENT_PARAM</table>
     <primaryKey>IDENTIFIER</primaryKey>
-
+    <row>
+      <userField>
+        <name>user</name>
+        <udn>user</udn>
+        <caption>User</caption>
+        <column>USER_ID</column>
+      </userField>
+    </row>
     <row>
       <numberField>
         <name>quantity</name>
@@ -15,16 +22,22 @@
         <noOfDigitsAfterDecimal>4</noOfDigitsAfterDecimal>
       </numberField>
     </row>
-
     <row>
-      <userField>
-        <name>user</name>
-        <udn>user</udn>
-        <caption>User</caption>
-        <column>USER_ID</column>
-      </userField>
+      <textField>
+        <name>distributionTitle</name>
+        <udn>distributionTitle</udn>
+        <caption>Distribution Title</caption>
+        <column>DP_TITLE</column>
+      </textField>
     </row>
-
+    <row>
+      <textField>
+        <name>orderName</name>
+        <udn>orderName</udn>
+        <caption>Order Name</caption>
+        <column>ORDER_NAME</column>
+      </textField>
+    </row>
     <row>
       <datePicker>
         <name>time</name>
@@ -34,7 +47,6 @@
         <format>MM-dd-yyyy HH:mm</format>
       </datePicker>
     </row>
-
     <row>
       <textArea>
         <name>comments</name>

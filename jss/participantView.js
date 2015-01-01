@@ -266,22 +266,46 @@ function getSpecimenLabelsforSCG(id)
 	     var dataToSend = "scgId=" + id+"&method=getSpecimenLabel";
 	     request.send(dataToSend);
  }
+ // Speed up calls to hasOwnProperty
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+
+function isEmpty(obj) {
+    // null and undefined are "empty"
+    if (obj == null) return true;
+    // Assume if it has a length property with a non-zero value
+    // that that property is correct.
+    if (obj.length > 0)    return false;
+    if (obj.length === 0)  return true;
+    // Otherwise, does it have any properties of its own?
+    // Note that this doesn't handle
+    // toString and valueOf enumeration bugs in IE < 9
+    for (var key in obj) {
+        if (hasOwnProperty.call(obj, key)) return false;
+    }
+    return true;
+}
 function populateSCGLabelsCombo(response)
 {
 	if(droupDownCounter==0){
-		var scgId = eval(response)[0].value;
+		var lbl = eval(response);
+		if(!isEmpty(lbl)){
+		var scgId = lbl[0].value;
+		var scgName = lbl[0].text;
 		var count = scgCombo.optionsArr.length;
+		
+	   //scgCombo.setComboText("");
+		scgCombo.setComboValue(scgId);
+		scgCombo.setComboText(scgName);
 		if(count==1) //select if only one item pesent
 	   {
 		 scgCombo.selectOption(0);
 	   }
-		scgCombo.setComboValue(scgId);
-		
-
-		
-		
-	
-	
+	}
+	else{
+		scgCombo.setComboText("");
+		scgCombo.setComboValue("");
+		scgCombo.unSelectOption();
+	}
 	/*
 	
 	scgCombo.setComboText("");

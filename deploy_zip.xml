@@ -799,6 +799,7 @@
 			<replacefilter token="@@email.sendEmailFrom.name@@" value="${email.sendEmailFrom.name}" />
 			<replacefilter token="@@email.exception.subject@@" value="${email.exception.subject}" />
 			
+			<replacefilter token="@@anticipatedSCGEnabled@@" value="${create.anticipated.scg}" />
 			<replacefilter token="@@CiderWMQEnabled@@" value="${cider.integration.enabled}" />
 			<replacefilter token="@@CiderWMQServerName@@" value="${cider.wmq.server.name}" />
 			<replacefilter token="@@CiderWMQMGRName@@" value="${cider.wmq.mgr.name}" />
@@ -1009,8 +1010,6 @@
                             <echo>after deploy_app: ${time_deploy_app_after}</echo>
         <antcall target="load_bulk_operator_templates" />       
     
-        <antcall target="server_security" />
-
         <!-- Configure the IIS properties, if configure.IIS.properties is 'true'. -->
         <if>
             <equals arg1="${configure.IIS.properties}" arg2="true" />
@@ -4272,6 +4271,7 @@
                 </fileset>
                 <fileset dir="${lib.dir}">
                     <include name="*.jar" />
+                	<exclude name="xerces.jar"/>
                 </fileset>
             </classpath>
             <sysproperty key="config.dir" value="${base.dir}/modules/caTissue/conf/catissuecore-properties" />
@@ -5557,6 +5557,8 @@
 	    </target>
 
     <target name="upgrade_db_os_v1.1">
+      <antcall target="upgrade_de_db"/>
+
       <updateDatabase 
         changeLogFile="${base.dir}/SQL/liquibase_xml/db-os-changelog-1.1.xml" 
         driver="${final.database.driver}" 
@@ -5671,6 +5673,7 @@
           <java classname="krishagni.catissueplus.upgrade.MigrateSpecimenEvents" fork="true" maxmemory="1024M">
             <arg value="${username}"/>
             <arg value="spe-forms/events-cfg.json"/>
+            <arg value="${nciv20}"/>
             <classpath>
               <pathelement location="${temp.dir.DE}" />
               <pathelement location="${temp.dir.DE}/old" />
@@ -5678,6 +5681,9 @@
                 <include name="*" />
               </fileset>
               <pathelement location="${temp.dir}/catissuecore/WEB-INF/classes" />
+              <fileset dir="${lib.dir}">
+                <include name="*" />
+              </fileset>
             </classpath>
           </java>
         </target>

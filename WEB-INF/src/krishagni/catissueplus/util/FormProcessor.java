@@ -12,7 +12,7 @@ import com.krishagni.catissueplus.core.common.events.EventStatus;
 import com.krishagni.catissueplus.core.de.events.AddFormContextsEvent;
 import com.krishagni.catissueplus.core.de.events.AllFormsSummaryEvent;
 import com.krishagni.catissueplus.core.de.events.RemoveFormContextEvent;
-import com.krishagni.catissueplus.core.de.events.FormContextRemovedEvent;
+import com.krishagni.catissueplus.core.de.events.FormContextsRemovedEvent;
 import com.krishagni.catissueplus.core.de.events.FormContextDetail;
 import com.krishagni.catissueplus.core.de.events.FormContextsAddedEvent;
 import com.krishagni.catissueplus.core.de.events.FormSummary;
@@ -78,10 +78,11 @@ public class FormProcessor implements FormPostProcessor {
 		
 		RemoveFormContextEvent req = new RemoveFormContextEvent();
 		req.setFormId(formId);
-		req.setFormType(RemoveFormContextEvent.FormType.QUERY_FORMS);
+		req.setRemoveType(RemoveFormContextEvent.RemoveType.HARD_REMOVE);
+		req.setEntityTypes(new String[] {"Query"});
+		req.setCpId(-1L);
 		
-		FormContextRemovedEvent resp = formSvc.removeFormContext(req);
-		
+		FormContextsRemovedEvent resp = formSvc.removeFormContext(req);		
 		if (resp.getStatus() != EventStatus.OK) {
 			throw new RuntimeException("Could not delete the form: " + formId);
 		}

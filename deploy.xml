@@ -426,10 +426,10 @@
 					<fileset dir="${base.dir}/custom_impl_lib" />
 		</copy>
 		<copy todir="${temp.dir}/catissuecore/WEB-INF/classes" overwrite="true">
-    <fileset dir="${base.dir}/appResources">
-        <include name="**.*"/>
-    </fileset>
-</copy>
+             <fileset dir="${base.dir}/appResources">
+                 <include name="**.*"/>
+             </fileset>
+        </copy>
 		<antcall target="configure_log4j" />
 		<antcall target="configure_appResources" />
 
@@ -811,7 +811,8 @@
 			<replacefilter token="@@WMQPort@@" value="${wmq.port}" />
 			<replacefilter token="@@HL7ListenerAdminUser@@" value="${hl7.listener.admin.user}" />
 		<!-- END -->
-
+			
+			<replacefilter token="@@anticipatedSCGEnabled@@" value="${create.anticipated.scg}" />
 			<replacefilter token="@@CiderWMQEnabled@@" value="${cider.integration.enabled}" />
 						<replacefilter token="@@CiderWMQServerName@@" value="${cider.wmq.server.name}" />
 						<replacefilter token="@@CiderWMQMGRName@@" value="${cider.wmq.mgr.name}" />
@@ -1025,6 +1026,7 @@
        </target>
 
     <target name="upgrade_db_os_v1.1">
+      <antcall target="upgrade_de_db"/>
       <updateDatabase 
         changeLogFile="${base.dir}/SQL/liquibase_xml/db-os-changelog-1.1.xml" 
         driver="${final.database.driver}" 
@@ -1084,7 +1086,7 @@
 						    </tstamp>
 						    <echo>after deploy_app: ${time_deploy_app_after}</echo>
 
-		<antcall target="server_security" />
+		
 		<!-- Configure the IIS properties, if configure.IIS.properties is 'true'. -->
 		<if>
 			<equals arg1="${configure.IIS.properties}" arg2="true" />
@@ -5220,10 +5222,14 @@
           <java classname="krishagni.catissueplus.upgrade.MigrateSpecimenEvents" fork="true" maxmemory="1024M">
             <arg value="${username}"/>
             <arg value="spe-forms/events-cfg.json"/>
+            <arg value="${nciv20}"/>
             <classpath>
               <pathelement location="${temp.dir.DE}" />
               <pathelement location="${temp.dir.DE}/old" />
               <fileset dir="WEB-INF/lib">
+                <include name="*" />
+              </fileset>
+              <fileset dir="extra_lib/">
                 <include name="*" />
               </fileset>
               <pathelement location="${temp.dir}/catissuecore/WEB-INF/classes" />

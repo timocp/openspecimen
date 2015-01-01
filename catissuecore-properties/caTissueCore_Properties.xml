@@ -692,6 +692,10 @@
     </property>
 
 <!--  Added for EMPI integration -->
+	<property>
+        <name>create.anticipated.scg</name>
+        <value>@@anticipatedSCGEnabled@@</value>
+    </property>
     <property>
         <name>empi.Enabled</name>
         <value>@@empiEnabled@@</value>

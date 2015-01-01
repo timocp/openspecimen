@@ -4,20 +4,6 @@
     <caption>Check In Check Out Event</caption>
     <table>CATISSUE_IN_OUT_EVENT_PARAM</table>
     <primaryKey>IDENTIFIER</primaryKey>
-
-    <row>
-      <dropDown>
-        <name>status</name>
-        <udn>status</udn>
-        <caption>Storage Status</caption>
-        <column>STORAGE_STATUS</column>
-        <options>
-          <option><value>CHECK IN</value></option>
-          <option><value>CHECK OUT</value></option>
-        </options>
-      </dropDown>
-    </row>
-
     <row>
       <userField>
         <name>user</name>
@@ -26,7 +12,6 @@
         <column>USER_ID</column>
       </userField>
     </row>
-
     <row>
       <datePicker>
         <name>time</name>
@@ -36,8 +21,23 @@
         <format>MM-dd-yyyy HH:mm</format>
       </datePicker>
     </row>
-
-
+    <row>
+      <dropDown>
+        <name>status</name>
+        <udn>status</udn>
+        <caption>Storage Status</caption>
+        <column>STORAGE_STATUS</column>
+        <options>
+          <option>
+            <value>CHECK IN</value>
+          </option>
+          <option>
+            <value>CHECK OUT</value>
+          </option>
+        </options>
+        <mandatory>true</mandatory>
+      </dropDown>
+    </row>
     <row>
       <textArea>
         <name>comments</name>
@@ -49,4 +49,3 @@
     </row>
   </view>
 </form>
-

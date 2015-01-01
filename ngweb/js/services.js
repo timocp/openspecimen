@@ -9,13 +9,28 @@ angular.module('plus.services', [])
     var successfn = function(result) { return result.data; };
 
     return {
-      executeQuery: function(id, cpId, drivingForm, aql, runType, wideRows) {
-        var req = {indexOf: 'Specimen.label', savedQueryId: id, cpId: cpId, drivingForm: drivingForm, aql: aql, runType: runType, wideRows: wideRows};
+      executeQuery: function(id, cpId, drivingForm, aql, runType, wideRowMode) {
+        var req = {
+          indexOf: 'Specimen.label', 
+          savedQueryId: id, 
+          cpId: cpId, 
+          drivingForm: drivingForm, 
+          aql: aql, 
+          runType: runType, 
+          wideRowMode: wideRowMode || "OFF"
+        };
         return $http.post(baseUrl, req).then(successfn);
       },
 
-      exportQueryData: function(id, cpId, drivingForm, aql, runType, wideRows) {
-        var req = {savedQueryId: id, cpId: cpId, drivingForm: drivingForm, aql: aql, runType: runType, wideRows: wideRows};
+      exportQueryData: function(id, cpId, drivingForm, aql, runType, wideRowMode) {
+        var req = {
+          savedQueryId: id, 
+          cpId: cpId, 
+          drivingForm: drivingForm, 
+          aql: aql, 
+          runType: runType, 
+          wideRowMode: wideRowMode || "OFF"
+        };
         return $http.post(baseUrl + 'export', req).then(successfn);
       },
 

@@ -10,6 +10,7 @@ import edu.wustl.common.exception.ApplicationException;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.exception.ErrorKey;
 import edu.wustl.common.util.global.Status;
+import edu.wustl.common.util.global.Validator;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.dao.DAO;
 
@@ -32,13 +33,14 @@ public class StorageContainerForContainerBizLogic
 	 */
 	public TreeMap<NameValueBean, Map<NameValueBean, List<NameValueBean>>>
 		getAllocatedContainerMapForContainer(final long type_id,final SessionDataBean sessionDataBean,
-				final DAO dao, final String storageType)
+				final DAO dao, final String storageType, final String selContName)
 			throws BizLogicException
 	{
 		try
 		{
 			final String[] queries = this.getStorageContainerForContainerQuery(type_id,sessionDataBean);
-			final List<?> containerList = this.getStorageContainerList(storageType, queries);
+			final List<?> containerList = this.getStorageContainerList(storageType, queries,selContName,type_id);
+			
 			return (TreeMap<NameValueBean, Map<NameValueBean, List<NameValueBean>>>)
 			this.getAllocDetailsForContainers(containerList, dao);
 		}

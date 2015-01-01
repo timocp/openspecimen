@@ -151,5 +151,6 @@ public class CollectionEventParameters extends SpecimenEventParameters
 		this.collectionProcedure = obj.collectionProcedure;
 		this.container = obj.container;
 		this.comment = obj.comment;
+		this.user = obj.user;
 	}
 }

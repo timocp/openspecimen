@@ -253,6 +253,10 @@ public class Shipment extends BaseShipment
 							if (specimen.getId().equals(specimenInForm.getId()))
 							{
 								specimen.setActivityStatus(specimenInForm.getActivityStatus());
+								/*BMS-3621 Update the caTissue shipment receive page to match the 2.0A shipment recieve page*/
+                specimen.setLabel(specimenInForm.getLabel());
+                specimen.setAvailableQuantity(specimenInForm.getAvailableQuantity());
+                specimen.setSpecimenEventCollection(specimenInForm.getSpecimenEventCollection());
 								break;
 							}
 						}

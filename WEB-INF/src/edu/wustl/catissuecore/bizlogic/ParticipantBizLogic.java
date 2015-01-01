@@ -1538,6 +1538,13 @@ public class ParticipantBizLogic extends CatissueDefaultBizLogic
 		}
 	}
 
+	public Long registerParticipant(String userName,Participant participant)
+      throws ApplicationException
+	{
+		this.insert(participant, AppUtility.getSessionDataBean(userName));
+		return participant.getId();
+	
+	}
 	/**
 	 * logic: check whether this participant object is having
 	 * 
@@ -1644,7 +1651,7 @@ public class ParticipantBizLogic extends CatissueDefaultBizLogic
 	 * @throws BizLogicException
 	 *             : BizLogicException
 	 */
-	private void updateParticipant(String userName, Participant participant)
+	public void updateParticipant(String userName, Participant participant)
 			throws BizLogicException
 	{
 		HibernateDAO hibernateDao = null;
@@ -1801,6 +1808,7 @@ public class ParticipantBizLogic extends CatissueDefaultBizLogic
 		}
 		catch (DAOException e)
 		{
+			logger.error(e.getMsgValues());
 			throw new BizLogicException(e.getErrorKey(), e, e.getMsgValues());
 		}
 

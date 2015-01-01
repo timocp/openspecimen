@@ -415,8 +415,10 @@ public class SpecimenBizLogic {
 	 */
 	private void setSpecimenEvents(Specimen specimen, SessionDataBean sessionDataBean) {
 		final Specimen parentSpecimen = (Specimen) specimen.getParentSpecimen();
-		if (specimen.getParentSpecimen() == null) {
-			if (specimen.getId() == null) {
+		if (specimen.getParentSpecimen() == null)
+		{
+			if (specimen.getId() == null && specimen.getSpecimenRequirement() == null)
+			{
 				specimen.setPropogatingSpecimenEventCollection(specimen.getSpecimenCollectionGroup()
 						.getSpecimenEventParametersCollection(), sessionDataBean.getUserId(), specimen);
 			}
@@ -897,9 +899,11 @@ public class SpecimenBizLogic {
 					final String positionStr = storagePositions;
 					final String positions[] = positionStr.split(",");
 					final String strContainerName = positions[0];
-					if ((!Validator.isEmpty(strContainerName.trim())) && (!Validator.isEmpty(specimenDTO.getContainerName()))
-							&& (strContainerName.equals(specimenDTO.getContainerName()))) {
-			/*			pos1 = positions[1];
+					if ((!Validator.isEmpty(strContainerName.trim()))
+							&& (!Validator.isEmpty(specimenDTO.getContainerName()))
+							&& (strContainerName.equals(specimenDTO.getContainerName())))
+					{
+				/*		pos1 = positions[1];
 						pos2 = positions[2];*/
 					}
 				}

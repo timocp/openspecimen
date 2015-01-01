@@ -92,7 +92,9 @@
 			
 			//Changes made by Baljeet for Flexxxx related
 		   // top.frames["cpAndParticipantView"].refreshCpParticipants();
-		    refreshTree('<%=Constants.CP_AND_PARTICIPANT_VIEW%>','<%=Constants.CP_TREE_VIEW%>','<%=Constants.CP_SEARCH_CP_ID%>','<%=Constants.CP_SEARCH_PARTICIPANT_ID%>','1');
+		    parent.handleCpViewForSubCP('<%=form.getId()%>','Registered','','${requestScope.cpType}');
+			refreshTree('<%=Constants.CP_AND_PARTICIPANT_VIEW%>','<%=Constants.CP_TREE_VIEW%>','<%=Constants.CP_SEARCH_CP_ID%>','<%=Constants.CP_SEARCH_PARTICIPANT_ID%>','1');
+			
 		
 		</script>
 	<%

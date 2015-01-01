@@ -409,7 +409,8 @@ angular.module('plus.controllers', ['checklist-model', 'ui.app'])
       $scope.queryData.notifs.waitRecs = true;
       var cpId = $scope.queryData.selectedCp.id;
       var queryId = $scope.queryData.id;
-      QueryService.executeQuery(queryId, cpId, 'Participant', aql, 'Data', true).then(function(result) {
+      var mode = $scope.queryData.wideRowMode;
+      QueryService.executeQuery(queryId, cpId, 'Participant', aql, 'Data', mode).then(function(result) {
         if (result.status != 'OK') {
           $scope.queryData.notifs.error = result.status;
           $scope.queryData.notifs.waitRecs = false;
@@ -601,7 +602,8 @@ angular.module('plus.controllers', ['checklist-model', 'ui.app'])
 
       var cpId = $scope.queryData.selectedCp.id;
       var queryId = $scope.queryData.id;
-      QueryService.exportQueryData(queryId, cpId, 'Participant', aql, 'Export', true).then(
+      var mode = $scope.queryData.wideRowMode;
+      QueryService.exportQueryData(queryId, cpId, 'Participant', aql, 'Export', mode).then(
         function(result) {
           if (result.completed) {
             Utility.notify($("#notifications"), "Downloading query results export data file.", "success", true);
@@ -768,7 +770,8 @@ angular.module('plus.controllers', ['checklist-model', 'ui.app'])
       },
       myLists: undefined,
       selectAll: false,
-      reporting: {type: 'none', params: {}}
+      reporting: {type: 'none', params: {}},
+      wideRowMode: 'DEEP'
     };
     $scope.selectedRows = [];
 
@@ -828,7 +831,8 @@ angular.module('plus.controllers', ['checklist-model', 'ui.app'])
         resultDataSize: 0,
         moreData: false,
 
-        reporting: {type: 'none', params: {}}
+        reporting: {type: 'none', params: {}},
+        wideRowMode: 'DEEP'
       };
     };
 
@@ -1360,7 +1364,8 @@ angular.module('plus.controllers', ['checklist-model', 'ui.app'])
             selectedFields: queryDef.selectList, filters: filters, filtersMap: filtersMap,
             exprNodes: exprNodes, id: query.id, title: query.title, 
             filterId: maxFilterId, selectedCp: selectedCp,
-            reporting: queryDef.reporting || {type: 'none', params: {}}
+            reporting: queryDef.reporting || {type: 'none', params: {}},
+            wideRowMode: queryDef.wideRowMode
           };
 
           angular.extend($scope.queryData, queryProps);
@@ -2121,7 +2126,8 @@ angular.module('plus.controllers', ['checklist-model', 'ui.app'])
           selectList: queryData.selectedFields,
           title: queryData.title, 
           drivingForm: queryData.drivingForm,
-          reporting: queryData.reporting
+          reporting: queryData.reporting,
+          wideRowMode: queryData.wideRowMode
         };
       };
       
@@ -2191,7 +2197,12 @@ angular.module('plus.controllers', ['checklist-model', 'ui.app'])
       for (var i = 0; i < fields.length; ++i) {
         var field = fields[i];
         if (field.type == 'DATE' || field.type == 'INTEGER' || field.type == 'FLOAT') {
-          result.push({label: field.caption, value: field.name});
+          var label = field.caption;
+          if (field.extensionForm) {
+            label = field.extensionForm + ": " + label;
+          }
+
+          result.push({label: label, value: field.name});
         }
       }
 
@@ -2265,6 +2276,7 @@ angular.module('plus.controllers', ['checklist-model', 'ui.app'])
 
       defineViewModal.result.then(
         function(result) {
+          $scope.queryData.wideRowMode = result.wideRowMode;
           $scope.queryData.selectedFields = result.selectedFields;
           $scope.queryData.reporting = result.reporting;
           $scope.disableCpSelection();
@@ -2282,7 +2294,7 @@ angular.module('plus.controllers', ['checklist-model', 'ui.app'])
         avg:   {name: 'avg',   label: 'Avg'}
       };
 
-      $scope.queryData = queryData;
+      $scope.wideRowMode = queryData.wideRowMode;
       $scope.reporting = angular.copy(queryData.reporting);
 
       $scope.reportingOpts = [
@@ -2297,6 +2309,10 @@ angular.module('plus.controllers', ['checklist-model', 'ui.app'])
           $scope.reporting.type = 'crosstab';
           $scope.preparePivotTableOpts();
         }
+      };
+
+      $scope.setWideRowsMode = function(wideRows) {
+        $scope.wideRowMode = wideRows == true ? 'DEEP' : 'SHALLOW';
       };
 
       var forms = [];
@@ -2393,6 +2409,7 @@ angular.module('plus.controllers', ['checklist-model', 'ui.app'])
         sanitizeSelectedFields($scope.selectedFields);
 
         $modalInstance.close({
+          wideRowMode: $scope.wideRowMode,
           selectedFields: $scope.selectedFields, 
           reporting: $scope.reporting
         });
@@ -2648,7 +2665,7 @@ angular.module('plus.controllers', ['checklist-model', 'ui.app'])
           return deferred.promise;
         }
 
-        getFormFields($scope.queryData.selectedCp.id, node.form).then(
+        getFormFields(queryData.selectedCp.id, node.form).then(
           function(fields) {
             node.children = processFields(node.form.caption, node.form.name + ".", fields);
             deferred.resolve(node.children);

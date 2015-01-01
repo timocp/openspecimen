@@ -2,6 +2,8 @@ package krishagni.catissueplus.upgrade;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -42,6 +44,11 @@ public class MigrateForms {
 		Properties prop = UpgradeUtil.loadInstallProps();
 		DataSource ds = DbUtil.getDataSource(prop);
 		UpgradeUtil.initializeDE(prop, ds);
+		
+		if (!doesOldFormsTableExists()) {
+			logger.info("No legacy forms table. Stopping forms migration!");
+			return;
+		}
 		
 		if (areLegacyFormsMigrated()) {
 			logger.info("Forms have been already migrated to V4 (OS v1.0), skipping form migration!");
@@ -162,6 +169,19 @@ public class MigrateForms {
 		logWriter.flush();
 	}
 	
+	private static boolean doesOldFormsTableExists() {
+		try {
+			return JdbcDaoFactory.getJdbcDao().getResultSet(OLD_FORMS_COUNT_SQL, null, new ResultExtractor<Boolean>() {
+				@Override
+				public Boolean extract(ResultSet rs) throws SQLException {
+					return true;
+				}
+			});			
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	
 	private static final String GET_CONTAINER_IDS_SQL = 
 			"select " +
 			"	c.identifier, cfc.collection_protocol_id, map.static_entity_id , fc.identifier, count(pre.identifier), " +
@@ -178,6 +198,9 @@ public class MigrateForms {
 	
 	private static final String FORMS_COUNT_SQL = 
 				"select count(identifier) from dyextn_containers";
+	
+	private static final String OLD_FORMS_COUNT_SQL =
+			"select count(identifier) from dyextn_container";
 	
 	private static final String DE_FORMS_RECORD_LOG = "de-forms-record-mapping.csv";
 	

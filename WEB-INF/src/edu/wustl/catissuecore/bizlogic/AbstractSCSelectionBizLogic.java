@@ -14,6 +14,7 @@ import edu.wustl.common.exception.ApplicationException;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.util.NameValueBeanRelevanceComparator;
 import edu.wustl.common.util.XMLPropertyHandler;
+import edu.wustl.common.util.global.Validator;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.dao.DAO;
 import edu.wustl.dao.JDBCDAO;
@@ -93,10 +94,12 @@ public abstract class AbstractSCSelectionBizLogic
 	 * @param specimenArrayTypeId specimenArrayTypeId
 	 * @param exceedingLimit exceedingLimit value
 	 * @param storageType Auto, Manual, Virtual
+	 * @param selContName 
+	 * @param type_id 
 	 * @return a list of storage containers
 	 * @throws ApplicationException 
 	 */
-	protected List<?> getStorageContainerList(final String storageType, final String[] queries) throws ApplicationException
+	protected List<?> getStorageContainerList(final String storageType, final String[] queries, String selContName, long type_id) throws ApplicationException
 	{
 		final JDBCDAO dao = AppUtility.openJDBCSession();
 		final List containers = new ArrayList();
@@ -129,6 +132,36 @@ public abstract class AbstractSCSelectionBizLogic
 				   containers.addAll(resultList);
 				}
 				remainingContainersNeeded = remainingContainersNeeded - resultList.size();
+			}
+			boolean selContFound = false;
+			if(!Validator.isEmpty(selContName)){
+			for (Object object : containers) {
+				List list = (List)object;
+//				String[] obj = (String[])object;
+				if(selContName.equals(list.get(1))){
+					selContFound = true;
+					break;
+				}
+			}
+			if(!selContFound){
+				String sql = "SELECT VIEW1.IDENTIFIER, VIEW1.NAME, VIEW1.ONE_DIMENSION_CAPACITY, VIEW1.TWO_DIMENSION_CAPACITY FROM  "
+						+ "(SELECT cont.IDENTIFIER, cont.NAME, cap.ONE_DIMENSION_CAPACITY, cap.TWO_DIMENSION_CAPACITY, "
+						+ "(cap.ONE_DIMENSION_CAPACITY * cap.TWO_DIMENSION_CAPACITY)  CAPACITY 	FROM CATISSUE_CAPACITY cap JOIN CATISSUE_CONTAINER "
+						+ "cont   on cap.IDENTIFIER = cont.CAPACITY_ID   LEFT OUTER JOIN CATISSUE_SPECIMEN_POSITION K ON "
+						+ "cont.IDENTIFIER = K.CONTAINER_ID   LEFT OUTER JOIN CATISSUE_CONTAINER_POSITION L ON cont.IDENTIFIER = L.PARENT_CONTAINER_ID "
+						+ " WHERE cont.IDENTIFIER IN  (SELECT t4.STORAGE_CONTAINER_ID   FROM CATISSUE_ST_CONT_ST_TYPE_REL t4  WHERE "
+						+ "(t4.STORAGE_TYPE_ID = '"+type_id+"' OR t4.STORAGE_TYPE_ID='1') and t4.STORAGE_CONTAINER_ID in  "
+						+ "(select SC.IDENTIFIER from CATISSUE_STORAGE_CONTAINER SC  join CATISSUE_SITE S on sc.site_id=S.IDENTIFIER and "
+						+ "S.ACTIVITY_STATUS!='Closed' ))  AND cont.NAME like '"+selContName+"' AND cont.ACTIVITY_STATUS='Active' and "
+						+ "cont.CONT_FULL=0 ) VIEW1  GROUP BY VIEW1.IDENTIFIER, VIEW1.NAME,VIEW1.ONE_DIMENSION_CAPACITY, VIEW1.TWO_DIMENSION_CAPACITY ,"
+						+ "VIEW1.CAPACITY  HAVING (VIEW1.CAPACITY - COUNT(*)) >  0  ORDER BY VIEW1.IDENTIFIER";
+				List subListOfCont = dao.executeQuery(sql);
+				if(subListOfCont!= null && !subListOfCont.isEmpty()){
+					List res = (List)subListOfCont.get(0);
+//					Object[] obj = {res.get(0),res.get(1),res.get(2),res.get(3)};
+					containers.add(res);
+				}
+			}
 			}
 		}
 		finally

@@ -4,16 +4,15 @@
     <caption>Thaw Event</caption>
     <table>CATISSUE_THAW_EVENT_PARAMETERS</table>
     <primaryKey>IDENTIFIER</primaryKey>
-
     <row>
       <userField>
         <name>user</name>
         <udn>user</udn>
         <caption>User</caption>
         <column>USER_ID</column>
+        <mandatory>true</mandatory>
       </userField>
     </row>
-
     <row>
       <datePicker>
         <name>time</name>
@@ -21,10 +20,9 @@
         <caption>Date and Time</caption>
         <column>EVENT_TIMESTAMP</column>
         <format>MM-dd-yyyy HH:mm</format>
+        <mandatory>true</mandatory>
       </datePicker>
     </row>
-
-
     <row>
       <textArea>
         <name>comments</name>
@@ -36,4 +34,3 @@
     </row>
   </view>
 </form>
-

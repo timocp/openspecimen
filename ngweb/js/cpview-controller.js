@@ -8,6 +8,7 @@ angular.module('plus.cpview', [])
   $scope.selectedCp = selectionCp;
   $scope.selectedParticipant = selParticipant;
   $scope.selectedSubCpId="";
+  $scope.selectedNode = {};
 
   if (selParticipant.id == -1) { // How to do it angular way ??
     var $remote = $('#remote');
@@ -55,6 +56,7 @@ angular.module('plus.cpview', [])
 
   $scope.registerParticipant = function() {
     $scope.selectedParticipant={};
+	$scope.selectedSubCpId="";
     $scope.tree = [];
     var url = "QueryParticipant.do?operation=add&pageOf=pageOfParticipantCPQuery&clearConsentSession=true&cpSearchCpId=" +
                $scope.selectedCp.id + "&refresh=true";
@@ -220,6 +222,17 @@ angular.module('plus.cpview', [])
     return false;
   };
 
+  $scope.handleSubCPScenario = function(displayNode) {//alert('here for status update');
+    $scope.selectedNode.collectionStatus=$scope.getStatusIcon(displayNode.collectionStatus,displayNode.cpType);
+	$scope.selectedNode.nodes=[];
+	$scope.selectedNode.state='closed';
+	$scope.selectedNode.regId='';
+	if($scope.selectedNode.type != 'childCP' && displayNode.name){
+      $scope.selectedNode.name=displayNode.name;
+	  $scope.selectedNode.specimenId=displayNode.id;
+	}
+  };
+  
   $scope.getSpecimenTree = function(specimens,parentType) {
     var specimenNodes = [];
 
@@ -405,6 +418,7 @@ angular.module('plus.cpview', [])
 	else {
       //var ids = data.id.split(',');
 	  
+  	  $scope.selectedSubCpId=data.scgId;
 	  var participantId = $scope.selectedParticipant.id.split(',')[0];
 	  
       var url = "CPQuerySubCollectionProtocolRegistration.do?pageOf=pageOfCollectionProtocolRegistrationCPQuery&refresh=false&operation=add&cpSearchParticipantId="+participantId+"&cpSearchCpId="+data.scgId+"&participantId="+participantId+"&clickedNodeId="+data.id+"&regDate=&parentCPId="+$scope.selectedCp.id;
@@ -416,7 +430,7 @@ angular.module('plus.cpview', [])
 
 
   $scope.getStatusIcon = function(collectionStatus, cpType) {
-    var statusIcon;
+    var statusIcon;//alert(collectionStatus+" , "+cpType);
     if(collectionStatus == 'Complete' || collectionStatus == 'Collected') {
       statusIcon = 'fa fa-circle complete';
     } else if(collectionStatus == 'Not Collected' || collectionStatus == 'Closed') {

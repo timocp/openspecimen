@@ -72,7 +72,7 @@ function recordsPerPageChanged(selectBox)
 <table width="100%" border="0" cellpadding="0" cellspacing="0" class="maintable">
 <html:form action='/ShowDashboardAction'>
 
-<html:hidden property="recordsPerPage" styleId="recordsPerPage"/>
+<!-- html:hidden property="recordsPerPage" styleId="recordsPerPage"/-->
 
 <c:set var="identifierFieldIndex" value="${requestScope.identifierFieldIndex}"/>
 			<table width="100%" border="0" cellpadding="0" cellspacing="0" class="maintable">

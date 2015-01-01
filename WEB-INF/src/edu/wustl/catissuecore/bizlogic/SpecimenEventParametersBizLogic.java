@@ -36,6 +36,8 @@ import edu.wustl.catissuecore.domain.StorageContainer;
 import edu.wustl.catissuecore.domain.TissueSpecimenReviewEventParameters;
 import edu.wustl.catissuecore.domain.TransferEventParameters;
 import edu.wustl.catissuecore.domain.User;
+import edu.wustl.catissuecore.dto.OrderItemSubmissionDTO;
+import edu.wustl.catissuecore.dto.OrderSubmissionDTO;
 import edu.wustl.catissuecore.util.ApiSearchUtil;
 import edu.wustl.catissuecore.util.CatissueCoreCacheManager;
 import edu.wustl.catissuecore.util.Position;
@@ -1665,8 +1667,12 @@ public class SpecimenEventParametersBizLogic extends CatissueDefaultBizLogic
 	    }
 		return msg;
 	}
-	public void createDistributionEvent(Double distributedQuantity,String comments,Long specimenId,Long distributionId,DAO dao,Long userId) throws BizLogicException, DAOException
+	public void createDistributionEvent(OrderItemSubmissionDTO orderDto,Long distributionId,DAO dao,Long userId, 
+			String dpName, String orderName) throws BizLogicException, DAOException
 	{
+		Double distributedQuantity = orderDto.getDistQty();
+		String comments = orderDto.getComments();
+		Long specimenId = orderDto.getSpecimenId();
 		AbstractSpecimen abstractSpecimen=new Specimen();
 		abstractSpecimen.setId(specimenId);
 		DistributionEventParameters distributionEventParameters=new DistributionEventParameters();
@@ -1678,10 +1684,11 @@ public class SpecimenEventParametersBizLogic extends CatissueDefaultBizLogic
 		User user=new User();
 		user.setId(userId);
 		distributionEventParameters.setUser(user);
-		
-		Distribution distribution=new Distribution();
+		Distribution distribution= new Distribution();
 		distribution.setId(distributionId);
 		distributionEventParameters.setDistributionDetails(distribution);
+		distributionEventParameters.setDistributionTitle(dpName);
+		distributionEventParameters.setOrderName(orderName);
 		
 		dao.insert(distributionEventParameters);
 	}

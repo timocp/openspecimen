@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<BulkOperationMetadata templateName="CreateChildContainer" batchSize="5">
+<BulkOperationMetadata templateName="addContainer" batchSize="5">
 	<BulkOperationClass className="edu.wustl.catissuecore.domain.StorageContainer"       >
 
 		<referenceAssociation className="edu.wustl.catissuecore.domain.StorageType"       roleName="storageType">
-			<attribute name="name" csvColumnName="Storage Type name"   />
+			<attribute name="id" csvColumnName="Storage Type id"   />
 		</referenceAssociation>
-		
+
+		<referenceAssociation className="edu.wustl.catissuecore.domain.Site"       roleName="site">
+			<attribute name="id" csvColumnName="Site id"   />
+		</referenceAssociation>
+	
 		<referenceAssociation className="edu.wustl.catissuecore.domain.CollectionProtocol"   maxNoOfRecords="2"   cardinality="*" roleName="collectionProtocolCollection">
-			<attribute name="id" csvColumnName="CP id"   />
+			<attribute name="title" csvColumnName="CP title"   />
 		</referenceAssociation>
         
     	<containmentAssociation className="edu.wustl.catissuecore.domain.Capacity"       roleName="capacity">
@@ -28,10 +32,9 @@
 		<attribute name="full" csvColumnName="Full"   />
 		<attribute name="comment" csvColumnName="Comments"   />
 		<attribute name="name" csvColumnName="container name"   />
-		<attribute name="noOfContainers" csvColumnName="No Of Containers"   />
-		<attribute name="barcode" csvColumnName="Barcode"   />
+		<!--<attribute name="noOfContainers" csvColumnName="No Of Containers"   />-->
 
-		<containmentAssociation className="java.lang.String"	  maxNoOfRecords="2"   cardinality="*" roleName="holdsSpecimenClassCollection">
+		<containmentAssociation className="java.lang.String"	  maxNoOfRecords="4"   cardinality="*" roleName="holdsSpecimenClassCollection">
 			<attribute name="holdsSpecimenClassCollection" csvColumnName="holdsSpecimenClass"    />
 		</containmentAssociation>
 

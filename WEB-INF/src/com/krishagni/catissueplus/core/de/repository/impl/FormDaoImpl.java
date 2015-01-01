@@ -148,10 +148,13 @@ public class FormDaoImpl extends AbstractDao<FormContextBean> implements FormDao
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public FormContextBean getQueryFormContext(Long formId) {
-		Query query = sessionFactory.getCurrentSession().getNamedQuery(GET_QUERY_FORM_CONTEXT);
-		List<Object> queryFormContext = query.setLong("formId", formId).setString("entityType", "Query").list();
-		return (FormContextBean)(queryFormContext.size() == 1 ? queryFormContext.get(0) : null);
+	public List<FormContextBean> getFormContexts(Long formId, Long cpId, String[] entityTypes) {
+		return sessionFactory.getCurrentSession()
+				.getNamedQuery(GET_FORM_CTXTS_BY_FORM_CP_ENTITY)
+				.setLong("formId", formId)
+				.setLong("cpId", cpId)
+				.setParameterList("entityTypes", entityTypes)
+				.list();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -506,7 +509,7 @@ public class FormDaoImpl extends AbstractDao<FormContextBean> implements FormDao
 	
 	private static final String GET_FORM_IDS = FQN + ".getFormIds";
 	
-	private static final String GET_QUERY_FORM_CONTEXT = FQN + ".getQueryFormCtxtByContainerId";
+	private static final String GET_FORM_CTXTS_BY_FORM_CP_ENTITY = FQN + ".getFormContextsByFormIdCpAndEntityType";
 	
 	private static final String GET_RECORD_CNT = FQN + ".getRecordCount";
 

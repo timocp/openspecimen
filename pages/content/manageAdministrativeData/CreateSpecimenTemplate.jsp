@@ -128,7 +128,9 @@ if(form != null)
 	HashMap mapOfspecimenType = (HashMap) request.getAttribute(Constants.SPECIMEN_TYPE_MAP);
 
 %>
-
+<script>
+      window.dhx_globalImgPath="dhtmlxSuite_v35/dhtmlxWindows/codebase/imgs/";
+</script>
 
 <SCRIPT LANGUAGE="JavaScript">
 
@@ -301,6 +303,11 @@ if(form != null)
 
 <head>
 <script src="jss/script.js" type="text/javascript"></script>
+<script type="text/javascript" src="dhtmlxSuite_v35/dhtmlxGrid/codebase/dhtmlxcommon.js"></script>
+<script language="JavaScript"  type="text/javascript" src="dhtmlxSuite_v35/dhtmlxCombo/codebase/dhtmlxcombo.js"></script>
+<script language="JavaScript" type="text/javascript" src="dhtmlxSuite_v35/dhtmlxCombo/codebase/ext/dhtmlxcombo_whp.js"></script>
+<link rel="STYLESHEET" type="text/css" href="dhtmlxSuite_v35/dhtmlxCombo/codebase/dhtmlxcombo.css"/>
+
 <link rel="STYLESHEET" type="text/css" href="css/catissue_suite.css">
 <style>
 	img{border:0;}; /* this needs to be fix in commonpackage's Tag.properties file where border=1 is set*/
@@ -555,5 +562,70 @@ function labelGenTypechangedWithId(typechangeId,labelFormatId)
 		document.getElementById(labelFormatId).disabled=true;
 	}
 }
+
+//collectore event
+			var collectionEventUserIdCombo = new dhtmlXCombo("collectionEventUserId","collectionEventUserId","100px");;
+			collectionEventUserIdCombo.setOptionWidth(160);
+			collectionEventUserIdCombo.setSize(160);
+			collectionEventUserIdCombo.loadXML('/openspecimen/CatissueCommonAjaxAction.do?type=getUserNames',function(){
+				collectionEventUserIdCombo.setComboText(collUserName);
+				collectionEventUserIdCombo.setComboValue(collUserId);
+				collectionEventUserIdCombo.DOMelem_input.title=collUserName;
+			
+			});
+			
+			collectionEventUserIdCombo.attachEvent("onKeyPressed",function(){
+				collectionEventUserIdCombo.enableFilteringMode(true,'/openspecimen/CatissueCommonAjaxAction.do?type=getUserNames',false);
+				collectionEventUserIdCombo.attachEvent("onChange", function(){collectionEventUserIdCombo.DOMelem_input.focus();});
+				});
+			collectionEventUserIdCombo.attachEvent("onOpen",onComboClick);
+			collectionEventUserIdCombo.attachEvent("onSelectionChange",function(){
+	 var diagnosisVal = collectionEventUserIdCombo.getSelectedText();
+				if(diagnosisVal)
+					collectionEventUserIdCombo.DOMelem_input.title=collectionEventUserIdCombo.getSelectedText();
+				else
+					collectionEventUserIdCombo.DOMelem_input.title='Start typing to see values';
+	 });
+			collectionEventUserIdCombo.attachEvent("onXLE",function (){collectionEventUserIdCombo.addOption(collUserId,collUserName);});
+			dhtmlxEvent(collectionEventUserIdCombo.DOMelem_input,"mouseover",function(){
+	     var diagnosisVal = collectionEventUserIdCombo.getSelectedText();
+				if(diagnosisVal){
+					collectionEventUserIdCombo.DOMelem_input.title=collectionEventUserIdCombo.getSelectedText();}
+				else
+					collectionEventUserIdCombo.DOMelem_input.title='Start typing to see values';
+	});
+	//ENDS
+	//REceiver Event User Id
+	var receivedEventUserIdCombo = new dhtmlXCombo("receivedEventUserId","receivedEventUserId","100px");;
+			receivedEventUserIdCombo.setOptionWidth(160);
+			receivedEventUserIdCombo.setSize(160);
+			receivedEventUserIdCombo.loadXML('/openspecimen/CatissueCommonAjaxAction.do?type=getUserNames',function(){
+				receivedEventUserIdCombo.setComboText(recUserName);
+				receivedEventUserIdCombo.setComboValue(recUserId);
+				receivedEventUserIdCombo.DOMelem_input.title=recUserName;
+			
+			});
+			
+			receivedEventUserIdCombo.attachEvent("onKeyPressed",function(){
+				receivedEventUserIdCombo.enableFilteringMode(true,'/openspecimen/CatissueCommonAjaxAction.do?type=getUserNames',false);
+				receivedEventUserIdCombo.attachEvent("onChange", function(){receivedEventUserIdCombo.DOMelem_input.focus();});
+				});
+			receivedEventUserIdCombo.attachEvent("onOpen",onComboClick);
+			receivedEventUserIdCombo.attachEvent("onSelectionChange",function(){
+	 var diagnosisVal = receivedEventUserIdCombo.getSelectedText();
+				if(diagnosisVal)
+					receivedEventUserIdCombo.DOMelem_input.title=receivedEventUserIdCombo.getSelectedText();
+				else
+					receivedEventUserIdCombo.DOMelem_input.title='Start typing to see values';
+	 });
+			receivedEventUserIdCombo.attachEvent("onXLE",function (){receivedEventUserIdCombo.addOption(recUserId,recUserName);});
+			dhtmlxEvent(receivedEventUserIdCombo.DOMelem_input,"mouseover",function(){
+	     var diagnosisVal = receivedEventUserIdCombo.getSelectedText();
+				if(diagnosisVal){
+					receivedEventUserIdCombo.DOMelem_input.title=receivedEventUserIdCombo.getSelectedText();}
+				else
+					receivedEventUserIdCombo.DOMelem_input.title='Start typing to see values';
+	});
+	//ENDS
 </script>
 

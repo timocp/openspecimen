@@ -87,7 +87,7 @@ public class SimilarContainersAction extends SecureAction
 		DAO dao = null;
 		String pageOf = null;
 		try
-		{
+		{ 
 			final SessionDataBean sessionDataBean = (SessionDataBean) request.getSession()
 					.getAttribute(Constants.SESSION_DATA);
 			dao = AppUtility.openDAOSession(sessionDataBean);
@@ -355,7 +355,7 @@ public class SimilarContainersAction extends SecureAction
 			final TreeMap containerMap = scBiz.getAllocatedContainerMapForContainer(new Long(
 					request.getParameter("typeId")).longValue(), 
 					sessionDataBean, dao, 
-					similarContainersForm.getParentContainerSelected());
+					"Auto",similarContainersForm.getSelectedContainerName());
 			request.setAttribute(Constants.AVAILABLE_CONTAINER_MAP, containerMap);
 			request.setAttribute(Constants.EXCEEDS_MAX_LIMIT, exceedingMaxLimit);
 			// request.setAttribute("siteForParentList", siteList1);
@@ -608,10 +608,10 @@ public class SimilarContainersAction extends SecureAction
 		while (!(dMapKey.getValue().equals(startingPoint[0])));
 		Map xMap = (Map) dMap.get(dMapKey);
 
-		Iterator xMapIter = xMap.keySet().iterator();
+		Iterator xMapIter = xMap.keySet().iterator(); 
 
 		do
-		{
+		{ 
 			xMapKey = (NameValueBean) xMapIter.next();
 		}
 		while (!(xMapKey.getValue().equals(startingPoint[1])));
@@ -627,7 +627,7 @@ public class SimilarContainersAction extends SecureAction
 		initValues[0] = dMapKey.getValue();
 		initValues[1] = xMapKey.getValue();
 		initValues[2] = yListKey.getValue();
-
+//		initValues[3] = dMapKey.getName();
 		returner.add(initValues);
 
 		for (int i = 1; i < noOfContainers; i++)
@@ -640,6 +640,7 @@ public class SimilarContainersAction extends SecureAction
 				initValues[0] = dMapKey.getValue();
 				initValues[1] = xMapKey.getValue();
 				initValues[2] = yListKey.getValue();
+//				initValues[3] = dMapKey.getName();
 			}
 			else
 			{
@@ -653,6 +654,7 @@ public class SimilarContainersAction extends SecureAction
 					initValues[0] = dMapKey.getValue();
 					initValues[1] = xMapKey.getValue();
 					initValues[2] = yListKey.getValue();
+//					initValues[3] = dMapKey.getName();
 
 				}
 				else
@@ -670,6 +672,7 @@ public class SimilarContainersAction extends SecureAction
 						initValues[0] = dMapKey.getValue();
 						initValues[1] = xMapKey.getValue();
 						initValues[2] = yListKey.getValue();
+//						initValues[3] = dMapKey.getName();
 
 					}
 				}

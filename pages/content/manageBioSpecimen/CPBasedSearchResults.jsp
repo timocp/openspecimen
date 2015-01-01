@@ -397,6 +397,19 @@ function hideCursor(){
       var scgTreeQ = scope.onParticipantSelect(selParticipant, selectedScg == undefined ? true : selectedScg,true);
       scgTreeQ.then(function() { scope.handleDirectObjectLoad(false); });
     }
+	
+	function handleCpViewForSubCP(objId, status,name,cpType) {
+	//alert('result: '+objId+"  :   "+ status+"   :   "+name+"   :    "+cpType);
+		if(objId && objId!=0){
+      var scope = angular.element($("#CpViewController")).scope();
+	  
+	  var displayNode = {name:name,collectionStatus:status,id:objId,cpType:cpType};
+      if(scope.selectedSubCpId){
+	    scope.handleSubCPScenario(displayNode);
+	  }
+	  }
+    }
+
 </script>
 <script type="text/javascript" src="ngweb/js/utility.js"></script>
 <script type="text/javascript" src="ngweb/js/wrapper.js"></script>

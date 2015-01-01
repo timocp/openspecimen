@@ -2174,9 +2174,8 @@ public class OrderBizLogic extends CatissueDefaultBizLogic {
 							continue;
 						}
 						orderItem.setDistribtedQuantity(orderItemSubmissionDTO.getDistQty());
-						specimenEventParametersBizLogic.createDistributionEvent(orderItemSubmissionDTO.getDistQty(),
-								orderItemSubmissionDTO.getComments(), orderItemSubmissionDTO.getSpecimenId(), distributionId, dao,
-								userId);
+						specimenEventParametersBizLogic.createDistributionEvent(orderItemSubmissionDTO, distributionId, dao,
+								userId,orderSubmissionDTO.getDisptributionProtocolName(),orderSubmissionDTO.getOrderName());
 					}
 					if ((isDirectDistribution && isClosed(orderItemSubmissionDTO.getStatus())) 
 							|| isClosed(orderItemSubmissionDTO.getStatus()) && !isClosed(orderItemlOldStatus)) {

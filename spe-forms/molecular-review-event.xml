@@ -4,7 +4,25 @@
     <caption>Molecular Review Event</caption>
     <table>CATISSUE_MOL_SPE_REVIEW_PARAM</table>
     <primaryKey>IDENTIFIER</primaryKey>
-
+    <row>
+      <userField>
+        <name>user</name>
+        <udn>user</udn>
+        <caption>User</caption>
+        <column>USER_ID</column>
+        <mandatory>true</mandatory>
+      </userField>
+    </row>
+    <row>
+      <datePicker>
+        <name>time</name>
+        <udn>time</udn>
+        <caption>Date and Time</caption>
+        <column>EVENT_TIMESTAMP</column>
+        <format>MM-dd-yyyy HH:mm</format>
+        <mandatory>true</mandatory>
+      </datePicker>
+    </row>
     <row>
       <textField>
         <name>gelImageUrl</name>
@@ -13,7 +31,6 @@
         <column>GEL_IMAGE_URL</column>
       </textField>
     </row>
-
     <row>
       <textField>
         <name>qualityIdx</name>
@@ -22,7 +39,6 @@
         <column>QUALITY_INDEX</column>
       </textField>
     </row>
-
     <row>
       <numberField>
         <name>gelNumber</name>
@@ -31,7 +47,6 @@
         <column>GEL_NUMBER</column>
       </numberField>
     </row>
-
     <row>
       <textField>
         <name>laneNumber</name>
@@ -40,7 +55,6 @@
         <column>LANE_NUMBER</column>
       </textField>
     </row>
-
     <row>
       <numberField>
         <name>absorbanceAt260</name>
@@ -49,7 +63,6 @@
         <column>ABSORBANCE_AT_260</column>
       </numberField>
     </row>
-
     <row>
       <numberField>
         <name>absorbanceAt280</name>
@@ -58,7 +71,6 @@
         <column>ABSORBANCE_AT_280</column>
       </numberField>
     </row>
-
     <row>
       <numberField>
         <name>ratio28sTo18s</name>
@@ -67,26 +79,6 @@
         <column>RATIO_28S_TO_18S</column>
       </numberField>
     </row>
-
-    <row>
-      <userField>
-        <name>user</name>
-        <udn>user</udn>
-        <caption>User</caption>
-        <column>USER_ID</column>
-      </userField>
-    </row>
-
-    <row>
-      <datePicker>
-        <name>time</name>
-        <udn>time</udn>
-        <caption>Date and Time</caption>
-        <column>EVENT_TIMESTAMP</column>
-        <format>MM-dd-yyyy HH:mm</format>
-      </datePicker>
-    </row>
-
     <row>
       <textArea>
         <name>comments</name>
@@ -98,4 +90,3 @@
     </row>
   </view>
 </form>
-

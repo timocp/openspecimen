@@ -8,6 +8,8 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
 import edu.wustl.catissuecore.keywordsearch.TitliIndexer;
+import edu.wustl.catissuecore.util.global.Constants;
+import edu.wustl.common.util.XMLPropertyHandler;
 import edu.wustl.common.util.logger.Logger;
 
 /**
@@ -26,20 +28,34 @@ public class QuartzSchedulerJob implements Job
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException
     {
-        logger.info("Starting execution of ContainerSpecimenCountJob");
-        /*Class containerSpecimenCountJob;
-       try
+        String[] jobarr =  XMLPropertyHandler.getValue("schedularJobList").split(",");
+        Class schedularObj;
+        try
         {
-            containerSpecimenCountJob = Class.forName("krishagni.catissueplus.scheduler.ContainerSpecimenCountJob");
-            containerSpecimenCountJob.getMethod("executeContainerSpecimenCountJob").invoke(null);
-            logger.info("End of execution of ContainerSpecimenCountJob");
-        
+            for(int i=0;i < jobarr.length;i++){
+                logger.info("Started execution of "+jobarr[i]);
+                schedularObj = Class.forName(jobarr[i]);
+                schedularObj.getMethod("init").invoke(null);
+                logger.info("End execution of "+jobarr[i]);
+            }
         }
-        
         catch (Exception e)
         {
-           
-        }*/
+        	logger.info("Erorr while running specified jobs.e.g. EPIC integration");
+        }
+        Class containerSpecimenCountJob;
+//        try
+//        {
+//            containerSpecimenCountJob = Class.forName("krishagni.catissueplus.scheduler.ContainerSpecimenCountJob");
+//            containerSpecimenCountJob.getMethod("executeContainerSpecimenCountJob").invoke(null);
+//            logger.info("End of execution of ContainerSpecimenCountJob");
+//        
+//        }
+//        
+//        catch (Exception e)
+//        {
+//           
+//        }
         logger.info("Starting execution of TitliIndexerJob");
         TitliIndexer.main(null);//run titli indexer
         logger.info("End of execution of TitliIndexerJob");

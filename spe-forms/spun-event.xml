@@ -4,7 +4,25 @@
     <caption>Spun Event</caption>
     <table>CATISSUE_SPUN_EVENT_PARAMETERS</table>
     <primaryKey>IDENTIFIER</primaryKey>
-
+    <row>
+      <userField>
+        <name>user</name>
+        <udn>user</udn>
+        <caption>User</caption>
+        <column>USER_ID</column>
+        <mandatory>true</mandatory>
+      </userField>
+    </row>
+    <row>
+      <datePicker>
+        <name>time</name>
+        <udn>time</udn>
+        <caption>Date and Time</caption>
+        <column>EVENT_TIMESTAMP</column>
+        <format>MM-dd-yyyy HH:mm</format>
+        <mandatory>true</mandatory>
+      </datePicker>
+    </row>
     <row>
       <numberField>
         <name>gForce</name>
@@ -13,7 +31,6 @@
         <column>GFORCE</column>
       </numberField>
     </row>
-
     <row>
       <numberField>
         <name>duration</name>
@@ -22,27 +39,6 @@
         <column>DURATION_IN_MINUTES</column>
       </numberField>
     </row>
-
-    <row>
-      <userField>
-        <name>user</name>
-        <udn>user</udn>
-        <caption>User</caption>
-        <column>USER_ID</column>
-      </userField>
-    </row>
-
-    <row>
-      <datePicker>
-        <name>time</name>
-        <udn>time</udn>
-        <caption>Date and Time</caption>
-        <column>EVENT_TIMESTAMP</column>
-        <format>MM-dd-yyyy HH:mm</format>
-      </datePicker>
-    </row>
-
-
     <row>
       <textArea>
         <name>comments</name>
@@ -54,4 +50,3 @@
     </row>
   </view>
 </form>
-

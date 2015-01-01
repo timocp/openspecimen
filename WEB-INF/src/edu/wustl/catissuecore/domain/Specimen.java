@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -59,6 +60,49 @@ public class Specimen extends AbstractSpecimen implements Serializable, IActivit
 	 */
 	private static Logger logger = Logger.getCommonLogger(Specimen.class);
 
+	protected AbstractSpecimen parentSpecimen;
+	/**
+	 * Collection of childSpecimenCollection derived from this specimen.
+	 */
+	protected Collection<AbstractSpecimen> childSpecimenCollection = new LinkedHashSet<AbstractSpecimen>();
+
+	/**
+	 * The anatomical site from which a specimen is derived.
+	 */
+	protected String tissueSite;
+
+	protected Double concentrationInMicrogramPerMicroliter;
+	/**
+	 * For bilateral sites, left or right.
+	 */
+	protected String tissueSide;
+
+	/**
+	 * Collection of Specimen Event Parameters associated with this specimen.
+	 */
+	protected Collection<SpecimenEventParameters> specimenEventCollection = new HashSet<SpecimenEventParameters>();
+	/**
+	 * pathologicalStatus - Histoathological character of specimen.
+	 * e.g. Non-Malignant, Malignant, Non-Malignant Diseased, Pre-Malignant.
+	 */
+	protected String pathologicalStatus;
+	/**
+	 * lineage - A historical information about the specimen i.e. whether the specimen is a new specimen
+	 * or a derived specimen or an aliquot
+	 */
+	protected String lineage;
+	/**
+	 * initialQuantity - The quantity of a specimen.
+	 */
+	protected Double initialQuantity;
+	/**
+	 * specimenClass - Tissue, Molecular,Fluid and Cell.
+	 */
+	protected String specimenClass;
+	/**
+	 * specimenType - Type of specimen. e.g. Serum, Plasma, Blood, Fresh Tissue etc.
+	 */
+	protected String specimenType;
 	/**
 	 * specimenPosition.
 	 */
@@ -166,6 +210,8 @@ public class Specimen extends AbstractSpecimen implements Serializable, IActivit
 	 */
 	private String applyChangesTo = Constants.APPLY_NONE;
 
+	protected Long id;
+	
   private String dnaMethod;
   private Double dna260;
  
@@ -173,11 +219,23 @@ public class Specimen extends AbstractSpecimen implements Serializable, IActivit
   {
     return dnaMethod;
   }
+	@Override
+	public Long getId()
+	{
+		return this.id;
+	}
 
   public void setDnaMethod(String dnaMethod)
   {
     this.dnaMethod = dnaMethod;
   }
+	@Override
+	public void setId(final Long identifier)
+	{
+		this.id = identifier;
+	}
+
+	//protected Collection<SpecimenRecordEntry> specimenRecordEntryCollection = new HashSet<SpecimenRecordEntry>();
 
   public Double getDna260()
   {
@@ -1395,7 +1453,9 @@ public class Specimen extends AbstractSpecimen implements Serializable, IActivit
 							collEventParam);
 					collectionEventParameters.setSpecimen(this);
 					collectionEventParameters.setTimestamp(collTimestamp);
-					collectionEventParameters.setUser(collEventUser);
+					if(collectionEventParameters.getUser() == null){
+						collectionEventParameters.setUser(collEventUser);
+					}
 					if (!Constants.CP_DEFAULT.equals(collProcedure))
 					{
 						collectionEventParameters.setCollectionProcedure(collProcedure);
@@ -1424,7 +1484,9 @@ public class Specimen extends AbstractSpecimen implements Serializable, IActivit
 							recEventParam);
 					receivedEventParameters.setSpecimen(this);
 					receivedEventParameters.setTimestamp(recTimestamp);
-					receivedEventParameters.setUser(recEventUser);
+					if(receivedEventParameters.getUser() == null){
+						receivedEventParameters.setUser(recEventUser);
+					}
 					if (!Constants.CP_DEFAULT.equals(recQty))
 					{
 						receivedEventParameters.setReceivedQuality(recQty);
@@ -1454,4 +1516,121 @@ public class Specimen extends AbstractSpecimen implements Serializable, IActivit
 			availableQuantity = AppUtility.roundOff(availableQuantity, Constants.QUANTITY_PRECISION);
 		}
 	}
+	
+	public String getTissueSite() {
+		return tissueSite;
+	}
+
+	
+	public void setTissueSite(String tissueSite) {
+		this.tissueSite = tissueSite;
+	}
+
+	
+	public String getTissueSide() {
+		return tissueSide;
+	}
+
+	
+	public void setTissueSide(String tissueSide) {
+		this.tissueSide = tissueSide;
+	}
+	
+	/**
+	 * This function returns the actual type of the specimen i.e Cell / Fluid / Molecular / Tissue.
+	 * @return String className.
+	 */
+	public String getClassName()
+	{
+		
+		return this.specimenClass;
+	}
+
+	/**
+	 * Get the specimen class.
+	 * @return String type "Specimen Class".
+	 */
+	public String getSpecimenClass()
+	{
+		return this.specimenClass;
+	}
+
+	/**
+	 * Set the specimen class.
+	 * @param specimenClass SpecimenClass.
+	 */
+	public void setSpecimenClass(final String specimenClass)
+	{
+		this.specimenClass = specimenClass;
+	}
+	
+	public AbstractSpecimen getParentSpecimen()
+	{
+		return this.parentSpecimen;
+	}
+
+	/**
+	 * Sets the parent specimen from which this specimen is derived.
+	 * @param parentSpecimen the parent specimen from which this specimen is derived.
+	 * @see #getParentSpecimen()
+	 */
+	public void setParentSpecimen(final AbstractSpecimen parentSpecimen)
+	{
+		this.parentSpecimen = parentSpecimen;
+	}
+	
+	public Collection<SpecimenEventParameters> getSpecimenEventCollection()
+	{
+	return this.specimenEventCollection;
+	}
+	/**
+	* Sets the collection of Specimen Event Parameters associated with this specimen.
+	* @param specimenEventCollection the collection of Specimen Event Parameters
+	* associated with this specimen.
+	* @see #getSpecimenEventCollection()
+	*/
+	public void setSpecimenEventCollection(final Collection specimenEventCollection)
+	{
+	this.specimenEventCollection = specimenEventCollection;
+	}
+	
+	public String getSpecimenType()
+	{
+		return this.specimenType;
+	}
+
+	/**
+	 * Set the specimen type.
+	 * @param specimenType SpecimenType)
+	 */
+	public void setSpecimenType(final String specimenType)
+	{
+		this.specimenType = specimenType;
+	}
+
+	public Collection<AbstractSpecimen> getChildSpecimenCollection()
+	{
+		return this.childSpecimenCollection;
+	}
+
+	/**
+	 * Sets the collection of children specimens derived from this specimen.
+	 * @param childrenSpecimen the collection of children specimens
+	 * derived from this specimen.
+	 * @see #getChildrenSpecimen()
+	 */
+	public void setChildSpecimenCollection(final Collection<AbstractSpecimen> childrenSpecimen)
+	{
+		this.childSpecimenCollection = childrenSpecimen;
+	}
+	
+	public Double getConcentrationInMicrogramPerMicroliter() {
+		return concentrationInMicrogramPerMicroliter;
+	}
+
+	public void setConcentrationInMicrogramPerMicroliter(
+			Double concentrationInMicrogramPerMicroliter) {
+		this.concentrationInMicrogramPerMicroliter = concentrationInMicrogramPerMicroliter;
+	}
+
 }

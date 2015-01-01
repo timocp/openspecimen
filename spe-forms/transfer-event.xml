@@ -4,53 +4,6 @@
     <caption>Transfer Event</caption>
     <table>CATISSUE_TRANSFER_EVENT_PARAM</table>
     <primaryKey>IDENTIFIER</primaryKey>
-
-    <row>
-      <storageContainer>
-        <name>fromContainer</name>
-        <udn>fromContainer</udn>
-        <caption>From Container</caption>
-        <column>FROM_STORAGE_CONTAINER_ID</column>
-      </storageContainer>
-      
-      <numberField>
-        <name>fromDimensionOne</name>
-        <udn>fromDimensionOne</udn>
-        <caption>Dimension One</caption>
-        <column>FROM_POSITION_DIMENSION_ONE</column>
-      </numberField>
-
-      <numberField>
-        <name>fromDimensionTwo</name>
-        <udn>fromDimensionTwo</udn>
-        <caption>Dimension Two</caption>
-        <column>FROM_POSITION_DIMENSION_Two</column>
-      </numberField>
-    </row>
-
-    <row>
-      <storageContainer>
-        <name>toContainer</name>
-        <udn>toContainer</udn>
-        <caption>To Container</caption>
-        <column>TO_STORAGE_CONTAINER_ID</column>
-      </storageContainer>
-      
-      <numberField>
-        <name>toDimensionOne</name>
-        <udn>toDimensionOne</udn>
-        <caption>Dimension One</caption>
-        <column>TO_POSITION_DIMENSION_ONE</column>
-      </numberField>
-
-      <numberField>
-        <name>toDimensionTwo</name>
-        <udn>toDimensionTwo</udn>
-        <caption>Dimension Two</caption>
-        <column>TO_POSITION_DIMENSION_Two</column>
-      </numberField>
-    </row>
-
     <row>
       <userField>
         <name>user</name>
@@ -59,7 +12,6 @@
         <column>USER_ID</column>
       </userField>
     </row>
-
     <row>
       <datePicker>
         <name>time</name>
@@ -69,7 +21,46 @@
         <format>MM-dd-yyyy HH:mm</format>
       </datePicker>
     </row>
-
+    <row>
+      <storageContainer>
+        <name>fromContainer</name>
+        <udn>fromContainer</udn>
+        <caption>From Container</caption>
+        <column>FROM_STORAGE_CONTAINER_ID</column>
+      </storageContainer>
+      <numberField>
+        <name>fromDimensionOne</name>
+        <udn>fromDimensionOne</udn>
+        <caption>Dimension One</caption>
+        <column>FROM_POSITION_DIMENSION_ONE</column>
+      </numberField>
+      <numberField>
+        <name>fromDimensionTwo</name>
+        <udn>fromDimensionTwo</udn>
+        <caption>Dimension Two</caption>
+        <column>FROM_POSITION_DIMENSION_Two</column>
+      </numberField>
+    </row>
+    <row>
+      <storageContainer>
+        <name>toContainer</name>
+        <udn>toContainer</udn>
+        <caption>To Container</caption>
+        <column>TO_STORAGE_CONTAINER_ID</column>
+      </storageContainer>
+      <numberField>
+        <name>toDimensionOne</name>
+        <udn>toDimensionOne</udn>
+        <caption>Dimension One</caption>
+        <column>TO_POSITION_DIMENSION_ONE</column>
+      </numberField>
+      <numberField>
+        <name>toDimensionTwo</name>
+        <udn>toDimensionTwo</udn>
+        <caption>Dimension Two</caption>
+        <column>TO_POSITION_DIMENSION_Two</column>
+      </numberField>
+    </row>
     <row>
       <textArea>
         <name>comments</name>

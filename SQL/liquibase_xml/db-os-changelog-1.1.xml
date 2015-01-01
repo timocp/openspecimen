@@ -7,21 +7,9 @@
 
   <property name="boolean.type" value="boolean" dbms="mysql" />
   <property name="boolean.type" value="number(1,0)" dbms="oracle" />
+  <property name="text.type" value="varchar" dbms="mysql" />
+  <property name="text.type" value="varchar2" dbms="oracle" />
 
-  <changeSet id="specimen extension records - de + events" author="vpawar" failOnError="true" runOnChange="true">
-    <sql>
-      create or replace view SPECIMEN_EXTN_RECORDS_VIEW as (
-        select
-          re.OBJECT_ID as SPECIMEN_ID, re.RECORD_ID as RECORD_ID
-        from
-          CATISSUE_FORM_RECORD_ENTRY re 
-          inner join CATISSUE_FORM_CONTEXT fc on fc.IDENTIFIER = re.FORM_CTXT_ID
-        where
-          (fc.ENTITY_TYPE = 'Specimen' or fc.ENTITY_TYPE = 'SpecimenEvent') and 
-          re.ACTIVITY_STATUS = 'ACTIVE'
-      )
-    </sql>
-  </changeSet>
 
   <changeSet id="unwanted events param table" author="vpawar" failOnError="true">
     <dropTable cascadeConstraints="true" tableName="catissue_event_param"/>
@@ -40,25 +28,6 @@
     </sql>
   </changeSet> 
 
-  <changeSet id="create triggers for static specimen de events" author="vpawar" runOnChange="true" failOnError="true" dbms="mysql">
-    <sqlFile 
-      encoding="utf8"
-      path="static_specimen_events_de_records_mysql.sql"
-      relativeToChangelogFile="true"
-      endDelimiter="//"
-      splitStatements="true"
-      stripComments="true"/>
-  </changeSet>
-
-  <changeSet id="create triggers for static specimen de events" author="vpawar" runOnChange="true" failOnError="true" dbms="oracle">
-    <sqlFile 
-      encoding="utf8"
-      path="static_specimen_events_de_records_oracle.sql"
-      relativeToChangelogFile="true"
-      endDelimiter="//"
-      splitStatements="true"
-      stripComments="true"/>
-  </changeSet>
 
   <!-- Commenting for now, will uncomment once get the updated PV file from QA -->
   <!-- <changeSet id="Permissible_values csv file upload" author="asamgir">
@@ -104,5 +73,143 @@
         <constraints nullable="true"/>
       </column>
     </addColumn>
+  </changeSet>
+  
+  <changeSet id="Added column in distri event for DP title " author="nmarwaha">
+    <addColumn tableName="catissue_distri_event_param">
+      <column name="DP_TITLE" type="${text.type}(512)">
+      </column>
+    </addColumn>
+  </changeSet>
+  
+  <changeSet id="Added column in distri event for order name" author="nmarwaha">
+    <addColumn tableName="catissue_distri_event_param">
+      <column name="ORDER_NAME" type="${text.type}(500)">
+      </column>
+    </addColumn>
+  </changeSet>
+  
+  <changeSet id="migrate DP title and order name for distribution event" author="nmarwaha" dbms="mysql">
+    <sql>
+      update catissue_distri_event_param devent join catissue_distribution d on d.identifier = devent.distribution_id join 
+      catissue_order ordr on ordr.identifier = d.order_id left join
+      catissue_distribution_protocol dp on dp.identifier = ordr.distribution_protocol_id
+      set devent.DP_Title = dp.TITLE, devent.order_name = ordr.name where devent.identifier is not null
+    </sql>
+    <sql>
+      commit;
+    </sql>
+  </changeSet>
+  
+  <changeSet id="migrate DP title and order name for distribution event" author="nmarwaha" dbms="oracle">
+    <sql>
+      merge into catissue_distri_event_param t2
+      using ( select dp.TITLE as DPTITLE, ordr.NAME as ORDERNAME, d.identifier as distriId
+		from 
+	  catissue_distribution d join catissue_order ordr on ordr.identifier = d.order_id left join
+	  catissue_distribution_protocol dp on dp.identifier = ordr.distribution_protocol_id  ) t1
+		on (t2.distribution_id = t1.distriId AND  t2.identifier is not null)
+	  when matched
+	  then update
+	  set   t2.DP_TITLE = t1.DPTITLE, 
+	  t2.ORDER_NAME = t1.ORDERNAME
+    </sql>
+    <sql>
+      commit;
+    </sql>
+  </changeSet>
+  
+  <changeSet id="delete empty rows for PMI" author="nmarwaha">
+    <sql>
+      delete from catissue_part_medical_id where MEDICAL_RECORD_NUMBER is null and SITE_ID is null
+    </sql>
+    <sql>
+      commit;
+    </sql>
+  </changeSet>
+
+ <changeSet id="Add column to soft delete a form context" author="vpawar" dbms="mysql">
+    <sql>alter table catissue_form_context add column deleted_on TIMESTAMP NULL DEFAULT NULL</sql>
+  </changeSet>
+
+ <changeSet id="Add column to soft delete a form context" author="vpawar" dbms="oracle">
+    <sql>alter table catissue_form_context add deleted_on TIMESTAMP DEFAULT NULL</sql>
+  </changeSet>
+
+  <changeSet author="vpawar" id="Index column used to indicate soft delete of form context">
+    <createIndex 
+      indexName="IDX_FC_DELETED_ON"
+      tableName="CATISSUE_FORM_CONTEXT"
+      unique="false">
+      <column name="DELETED_ON" type="${ts.type}"/>
+    </createIndex> 
+  </changeSet>
+
+  <changeSet id="participant registration extension records" author="vpawar" failOnError="true" runOnChange="true">
+    <sql>
+      CREATE OR REPLACE VIEW cpr_extension_records_view AS (
+        SELECT
+          re.object_id as cpr_id, re.record_id as record_id
+        FROM
+          catissue_form_record_entry re 
+          inner join catissue_form_context fc on re.FORM_CTXT_ID = fc.IDENTIFIER
+        WHERE
+          fc.entity_type = 'Participant' and 
+          fc.deleted_on is null and
+          re.activity_status = 'ACTIVE'
+      )
+    </sql>
+  </changeSet>
+
+  <changeSet id="CREATE SCG_EXTN_RECORDS_VIEW" author="vpawar" failOnError="true" runOnChange="true">
+    <sql>
+      CREATE OR REPLACE VIEW scg_extn_records_view AS (
+        SELECT
+          re.object_id as scg_id, re.record_id as record_id
+        FROM
+          catissue_form_record_entry re 
+          inner join catissue_form_context fc on fc.IDENTIFIER = re.FORM_CTXT_ID
+        WHERE
+          fc.entity_type = 'SpecimenCollectionGroup' and 
+          fc.deleted_on is null and
+          re.activity_status = 'ACTIVE'
+      )
+    </sql>
+  </changeSet>
+
+  <changeSet id="specimen extension records - de + events" author="vpawar" failOnError="true" runOnChange="true">
+    <sql>
+      create or replace view SPECIMEN_EXTN_RECORDS_VIEW as (
+        select
+          re.OBJECT_ID as SPECIMEN_ID, re.RECORD_ID as RECORD_ID
+        from
+          CATISSUE_FORM_RECORD_ENTRY re 
+          inner join CATISSUE_FORM_CONTEXT fc on fc.IDENTIFIER = re.FORM_CTXT_ID
+        where
+          (fc.ENTITY_TYPE = 'Specimen' or fc.ENTITY_TYPE = 'SpecimenEvent') and 
+          fc.deleted_on is null and
+          re.ACTIVITY_STATUS = 'ACTIVE'
+      )
+    </sql>
+  </changeSet>
+
+  <changeSet id="create triggers for static specimen de events" author="vpawar" runOnChange="true" failOnError="true" dbms="mysql">
+    <sqlFile 
+      encoding="utf8"
+      path="static_specimen_events_de_records_mysql.sql"
+      relativeToChangelogFile="true"
+      endDelimiter="//"
+      splitStatements="true"
+      stripComments="true"/>
+  </changeSet>
+
+  <changeSet id="create triggers for static specimen de events" author="vpawar" runOnChange="true" failOnError="true" dbms="oracle">
+    <sqlFile 
+      encoding="utf8"
+      path="static_specimen_events_de_records_oracle.sql"
+      relativeToChangelogFile="true"
+      endDelimiter="//"
+      splitStatements="true"
+      stripComments="true"/>
   </changeSet>
 </databaseChangeLog>

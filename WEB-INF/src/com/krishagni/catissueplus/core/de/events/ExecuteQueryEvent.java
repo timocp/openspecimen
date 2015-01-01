@@ -10,7 +10,7 @@ public class ExecuteQueryEvent extends RequestEvent {
 
 	private String aql;
 	
-	private boolean wideRows = false;
+	private String wideRowMode = "OFF";
 	
 	private Long savedQueryId;
 	
@@ -42,12 +42,12 @@ public class ExecuteQueryEvent extends RequestEvent {
 		this.aql = aql;
 	}
 
-	public boolean isWideRows() {
-		return wideRows;
+	public String getWideRowMode() {
+		return wideRowMode;
 	}
 
-	public void setWideRows(boolean wideRows) {
-		this.wideRows = wideRows;
+	public void setWideRowMode(String wideRowMode) {
+		this.wideRowMode = wideRowMode;
 	}
 
 	public Long getSavedQueryId() {

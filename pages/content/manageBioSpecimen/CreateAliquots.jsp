@@ -312,6 +312,8 @@ ul li ul li a span {
                             var aliquotDetailsDTO = eval('('+response.aliquotDetailsDTO+')')
                             nodeId= "Specimen_"+aliquotDetailsDTO.parentId;
                             parent.handleCpView(null, aliquotDetailsDTO.scgId, aliquotDetailsDTO.parentId);
+							parent.handleCpViewForSubCP(aliquotDetailsDTO.parentId,'Collected','','');
+							
                             
                             if(aliquotGrid.getRowsNum()!=0){
                                 deleteAllRow();

@@ -45,7 +45,7 @@ public class StorageContainerForSpArrayBizLogic extends AbstractSCSelectionBizLo
 		{
 			final String[] queries = this.getStorageContainerForSpecimenArrQuery(sp_arr_type_id,
 					sessionData);
-			final List<?> containerList = this.getStorageContainerList(null,queries);
+			final List<?> containerList = this.getStorageContainerList(null,queries,"",1l);
 			return (TreeMap<NameValueBean, Map<NameValueBean, List<NameValueBean>>>)
 			this.getAllocDetailsForContainers(containerList, dao);
 		}

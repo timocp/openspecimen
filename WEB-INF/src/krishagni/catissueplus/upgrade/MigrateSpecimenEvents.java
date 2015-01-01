@@ -11,8 +11,10 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.sql.DataSource;
 
@@ -36,6 +38,7 @@ import edu.common.dynamicextensions.ndao.ResultExtractor;
 import edu.common.dynamicextensions.ndao.TransactionManager;
 import edu.common.dynamicextensions.ndao.TransactionManager.Transaction;
 import edu.common.dynamicextensions.nutility.IoUtil;
+import edu.wustl.catissuecore.action.bulkOperations.BOTemplateGeneratorUtil;
 
 public class MigrateSpecimenEvents {
 	private static final Logger logger = Logger.getLogger(MigrateSpecimenEvents.class);
@@ -52,19 +55,26 @@ public class MigrateSpecimenEvents {
 	
 	private boolean systemEvent;
 	
-	
-			
+	private static final Set<String> NCI_SPP_FORMS = new HashSet<String>(
+			Arrays.asList("SpecimenEmbeddedEvent", "SpecimenTissueReviewEvent")
+	); 
+				
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args) 
 	throws Exception {
 		logger.setLevel(Level.INFO);
 		logger.info("Migrating Specimen Events ...");
 
-		if (args.length != 2) {
-			logger.error("usage: MigrateSpecimenEvents <username> <config-file>");
+		if (args.length < 2 || args.length > 3) {
+			logger.error("usage: MigrateSpecimenEvents <username> <config-file> [nciv20]");
 			return;
 		}
-
+		
+		//
+		// hack not to migrate OSU SPP forms
+		//
+		boolean nciv20 = args[2] != null && args[2].equalsIgnoreCase("true");
+		
 		DataSource ds = DbUtil.getDataSource();
 		DbSettingsFactory.init(DbUtil.isMySQL() ? "MySQL" : "Oracle");
 
@@ -86,7 +96,7 @@ public class MigrateSpecimenEvents {
 		for (Map<String, String> eventInfo : eventsInfo) {
 			try {
 				MigrateSpecimenEvents migrator = new MigrateSpecimenEvents(eventInfo);
-				migrator.migrate(ctx);				
+				migrator.migrate(ctx, nciv20);				
 			} catch (Exception e) {
 			}
 		}
@@ -131,9 +141,13 @@ public class MigrateSpecimenEvents {
 		}
 	}
 	
-	public void migrate(UserContext ctx) 
+	public void migrate(UserContext ctx, boolean nciv20) 
 	throws Exception {
 		try {
+			if (nciv20 && NCI_SPP_FORMS.contains(eventName)) {
+				return;
+			}
+			
 			long t1 = System.currentTimeMillis();
 			logger.info("Migrating : " + eventName);
 
@@ -199,6 +213,7 @@ public class MigrateSpecimenEvents {
 		try {
 			Long formId = Container.createContainer(ctx, formFile, ".", false);
 			Long formCtxId = insertFormCtx(formId);
+			new BOTemplateGeneratorUtil().generateAndUploadTemplate(formId, "SpecimenEvent");
 			TransactionManager.getInstance().commit(txn);
 			return formCtxId;
 		} catch (Exception e) {

@@ -155,6 +155,9 @@ function updateHelpURL()
 		var operation = '<%=pageView%>';
 	    var scgId =  "<%=form.getId()%>";
 	    parent.handleCpView(null, scgId , null);
+		//alert('coll stat: '+'<%=form.getCollectionStatus()%>');
+		//alert('name: '+'<%=form.getName()%>');
+		parent.handleCpViewForSubCP('<%=form.getId()%>','<%=form.getCollectionStatus()%>','<%=form.getName()%>','');
 	    
 </script>
 	<%

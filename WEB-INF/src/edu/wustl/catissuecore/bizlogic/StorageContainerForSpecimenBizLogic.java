@@ -54,7 +54,7 @@ public class StorageContainerForSpecimenBizLogic extends AbstractSCSelectionBizL
 		{
 			parameterList.add(sessionData);
 			final String[] queries = this.getStorageContainerForSpecimenQuery(parameterList,contName);
-			final List<?> containerList = this.getStorageContainerList(null,queries);
+			final List<?> containerList = this.getStorageContainerList(null,queries,"",1l);
 			return (TreeMap<NameValueBean, Map<NameValueBean, List<NameValueBean>>>)
 			this.getAllocDetailsForContainers(containerList, dao);
 		}
@@ -82,7 +82,7 @@ public class StorageContainerForSpecimenBizLogic extends AbstractSCSelectionBizL
 		{
 			parameterList.add(sessionData);
 			final String[] queries = this.getStorageContainerForSpecimenQuery(parameterList,contName);
-			final List<?> containerList = this.getStorageContainerList(null,queries);
+			final List<?> containerList = this.getStorageContainerList(null,queries,"",1l);
 			LinkedHashMap containerNameListForAutoOption=null;
 			if(containerList!=null && !containerList.isEmpty())
 			{
@@ -123,7 +123,7 @@ public class StorageContainerForSpecimenBizLogic extends AbstractSCSelectionBizL
 		final String[] queries = {query};
 		try
 		{	
-			final List<?> containerList = this.getStorageContainerList(null,queries);
+			final List<?> containerList = this.getStorageContainerList(null,queries,"",1l);
 			Iterator<?> itr = containerList.iterator();
 			if(itr.hasNext()){
 				final ArrayList<?> container = (ArrayList<?>) itr.next();
@@ -191,7 +191,7 @@ public class StorageContainerForSpecimenBizLogic extends AbstractSCSelectionBizL
 		StoragePositionDTO[][] storagePositions = null;
 		try
 		{	
-			final List<?> containerList = this.getStorageContainerList(null,queries);
+			final List<?> containerList = this.getStorageContainerList(null,queries,"",1l);
 			Iterator<?> itr = containerList.iterator();
 			if(itr.hasNext()){
 				final ArrayList<?> container = (ArrayList<?>) itr.next();

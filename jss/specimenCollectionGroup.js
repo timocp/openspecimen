@@ -180,21 +180,86 @@ function onBlurFunc() {alert(clinicalDiagnosisCombo.getLastSelectedValue());
 			scgCombo.receivedEventTimeInMinutesCombo.attachEvent("onOpen",onComboClick);
 			scgCombo.receivedEventTimeInMinutesCombo.attachEvent("onKeyPressed",onComboKeyPress);
 			scgCombo.receivedEventTimeInMinutesCombo.attachEvent("onChange", function(){scgCombo.receivedEventTimeInMinutesCombo.DOMelem_input.focus();});
+	//collectore event
+			scgCombo.collectionEventUserIdCombo = new dhtmlXCombo("collectionEventUserId","collectionEventUserId","100px");;
+			scgCombo.collectionEventUserIdCombo.setOptionWidth(177);
+			scgCombo.collectionEventUserIdCombo.setSize(177);
+			scgCombo.collectionEventUserIdCombo.loadXML('/openspecimen/CatissueCommonAjaxAction.do?type=getUserNames',function(){
+				scgCombo.collectionEventUserIdCombo.setComboText(collUserName);
+				scgCombo.collectionEventUserIdCombo.setComboValue(collUserId);
+				scgCombo.collectionEventUserIdCombo.DOMelem_input.title=collUserName;
 			
-			scgCombo.collectionEventUserIdCombo = dhtmlXComboFromSelect("collectionEventUserId");  
+			});
+			
+			scgCombo.collectionEventUserIdCombo.attachEvent("onKeyPressed",function(){
+				scgCombo.collectionEventUserIdCombo.enableFilteringMode(true,'/openspecimen/CatissueCommonAjaxAction.do?type=getUserNames',false);
+				scgCombo.collectionEventUserIdCombo.attachEvent("onChange", function(){scgCombo.collectionEventUserIdCombo.DOMelem_input.focus();});
+				});
+			scgCombo.collectionEventUserIdCombo.attachEvent("onOpen",onComboClick);
+				
+			scgCombo.collectionEventUserIdCombo.attachEvent("onSelectionChange",function(){
+	 var diagnosisVal = scgCombo.collectionEventUserIdCombo.getSelectedText();
+				if(diagnosisVal)
+					scgCombo.collectionEventUserIdCombo.DOMelem_input.title=scgCombo.collectionEventUserIdCombo.getSelectedText();
+				else
+					scgCombo.collectionEventUserIdCombo.DOMelem_input.title='Start typing to see values';
+	 });
+			scgCombo.collectionEventUserIdCombo.attachEvent("onXLE",function (){scgCombo.collectionEventUserIdCombo.addOption(collUserId,collUserName);});
+			dhtmlxEvent(scgCombo.collectionEventUserIdCombo.DOMelem_input,"mouseover",function(){
+	     var diagnosisVal = scgCombo.collectionEventUserIdCombo.getSelectedText();
+				if(diagnosisVal){
+					scgCombo.collectionEventUserIdCombo.DOMelem_input.title=scgCombo.collectionEventUserIdCombo.getSelectedText();}
+				else
+					scgCombo.collectionEventUserIdCombo.DOMelem_input.title='Start typing to see values';
+	});
+	//ENDS
+	//REceiver Event User Id
+	scgCombo.receivedEventUserIdCombo = new dhtmlXCombo("receivedEventUserId","receivedEventUserId","100px");;
+			scgCombo.receivedEventUserIdCombo.setOptionWidth(177);
+			scgCombo.receivedEventUserIdCombo.setSize(177);
+			scgCombo.receivedEventUserIdCombo.loadXML('/openspecimen/CatissueCommonAjaxAction.do?type=getUserNames',function(){
+				scgCombo.receivedEventUserIdCombo.setComboText(recUserName);
+				scgCombo.receivedEventUserIdCombo.setComboValue(recUserId);
+				scgCombo.receivedEventUserIdCombo.DOMelem_input.title=recUserName;
+			
+			});
+			
+			scgCombo.receivedEventUserIdCombo.attachEvent("onKeyPressed",function(){
+				scgCombo.receivedEventUserIdCombo.enableFilteringMode(true,'/openspecimen/CatissueCommonAjaxAction.do?type=getUserNames',false);
+				scgCombo.receivedEventUserIdCombo.attachEvent("onChange", function(){scgCombo.receivedEventUserIdCombo.DOMelem_input.focus();});
+				});
+			scgCombo.receivedEventUserIdCombo.attachEvent("onOpen",onComboClick);
+				
+			scgCombo.receivedEventUserIdCombo.attachEvent("onSelectionChange",function(){
+	 var diagnosisVal = scgCombo.receivedEventUserIdCombo.getSelectedText();
+				if(diagnosisVal)
+					scgCombo.receivedEventUserIdCombo.DOMelem_input.title=scgCombo.receivedEventUserIdCombo.getSelectedText();
+				else
+					scgCombo.receivedEventUserIdCombo.DOMelem_input.title='Start typing to see values';
+	 });
+			scgCombo.receivedEventUserIdCombo.attachEvent("onXLE",function (){scgCombo.receivedEventUserIdCombo.addOption(recUserId,recUserName);});
+			dhtmlxEvent(scgCombo.receivedEventUserIdCombo.DOMelem_input,"mouseover",function(){
+	     var diagnosisVal = scgCombo.receivedEventUserIdCombo.getSelectedText();
+				if(diagnosisVal){
+					scgCombo.receivedEventUserIdCombo.DOMelem_input.title=scgCombo.receivedEventUserIdCombo.getSelectedText();}
+				else
+					scgCombo.receivedEventUserIdCombo.DOMelem_input.title='Start typing to see values';
+	});
+	//ENDS
+			/*scgCombo.collectionEventUserIdCombo = dhtmlXComboFromSelect("collectionEventUserId");  
 			scgCombo.collectionEventUserIdCombo.setOptionWidth(177);
 			scgCombo.collectionEventUserIdCombo.setSize(177);
 			scgCombo.collectionEventUserIdCombo.attachEvent("onOpen",onComboClick);
 			scgCombo.collectionEventUserIdCombo.attachEvent("onKeyPressed",onComboKeyPress);
 			scgCombo.collectionEventUserIdCombo.attachEvent("onChange", function(){scgCombo.collectionEventUserIdCombo.DOMelem_input.focus();});
-			
-			scgCombo.receivedEventUserIdCombo = dhtmlXComboFromSelect("receivedEventUserId");  
+			*/
+			/*scgCombo.receivedEventUserIdCombo = dhtmlXComboFromSelect("receivedEventUserId");  
 			scgCombo.receivedEventUserIdCombo.setOptionWidth(177);
 			scgCombo.receivedEventUserIdCombo.setSize(177);
 			scgCombo.receivedEventUserIdCombo.attachEvent("onOpen",onComboClick);
 			scgCombo.receivedEventUserIdCombo.attachEvent("onKeyPressed",onComboKeyPress);
 			scgCombo.receivedEventUserIdCombo.attachEvent("onChange", function(){scgCombo.receivedEventUserIdCombo.DOMelem_input.focus();});
-			
+			*/
 			scgCombo.siteIdCombo = dhtmlXComboFromSelect("siteId");  
 			scgCombo.siteIdCombo.setOptionWidth(177);
 			scgCombo.siteIdCombo.setSize(177);

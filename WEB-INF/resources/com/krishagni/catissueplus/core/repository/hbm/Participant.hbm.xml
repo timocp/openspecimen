@@ -61,7 +61,9 @@
 
 		<set name="raceColl" table="CATISSUE_RACE" cascade="all-delete-orphan">
 			<key column="PARTICIPANT_ID" />
-			<element column="RACE_NAME" type="string" />
+			<one-to-many
+                  class="com.krishagni.catissueplus.core.biospecimen.domain.Race"
+              />
 		</set>
 
 		<query name="getParticipantIdBySSN">

@@ -38,6 +38,7 @@ import org.apache.struts.action.ActionMapping;
 
 import edu.wustl.catissuecore.actionForm.CollectionProtocolRegistrationForm;
 import edu.wustl.catissuecore.actionForm.SpecimenCollectionGroupForm;
+import edu.wustl.catissuecore.bizlogic.CollectionProtocolRegistrationBizLogic;
 import edu.wustl.catissuecore.domain.CollectionProtocol;
 import edu.wustl.catissuecore.domain.CollectionProtocolRegistration;
 import edu.wustl.catissuecore.domain.ConsentTier;
@@ -245,6 +246,25 @@ public class CollectionProtocolRegistrationAction extends SecureAction
 							+ " CollectionProtocolRegistrationAction ~>" + exp);
 				}
 			}
+		}
+		
+		final String sourceObjName = CollectionProtocol.class.getName();
+		final String[] selectColName = {"shortTitle","type"};
+		final String[] whereColName = {Constants.SYSTEM_IDENTIFIER};
+		final String[] whereColCond = {"="};
+		final Object[] whereColVal = {((CollectionProtocolRegistrationForm) form).getCollectionProtocolID()};
+
+		final CollectionProtocolRegistrationBizLogic cprBizLogic = (CollectionProtocolRegistrationBizLogic) factory
+		                .getBizLogic(Constants.COLLECTION_PROTOCOL_REGISTRATION_FORM_ID);
+
+		final List resultList = bizLogic.retrieve(sourceObjName, selectColName, whereColName,
+		                whereColCond, whereColVal, Constants.AND_JOIN_CONDITION);
+
+		if (resultList != null && !resultList.isEmpty())
+		{
+		        final Object[] obj = (Object[]) resultList.get(0);
+		        String cpType = (String)obj[1];
+		        request.setAttribute("cpType", cpType);
 		}
 
 		// if(request.getParameter(Constants.CP_SEARCH_CP_ID)!=null)

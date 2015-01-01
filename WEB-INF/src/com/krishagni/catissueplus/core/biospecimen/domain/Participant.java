@@ -61,7 +61,7 @@ public class Participant {
 	/**
 	 * Participant's race origination.
 	 */
-	protected Set<String> raceColl = new HashSet<String>();
+	protected Set<Race> raceColl = new HashSet<Race>();
 
 	/**
 	 * Participant's ethnicity status.
@@ -153,11 +153,11 @@ public class Participant {
 		this.sexGenotype = sexGenotype;
 	}
 
-	public Set<String> getRaceColl() {
+	public Set<Race> getRaceColl() {
 		return raceColl;
 	}
 
-	public void setRaceColl(Set<String> raceCollection) {
+	public void setRaceColl(Set<Race> raceCollection) {
 		this.raceColl = raceCollection;
 	}
 
@@ -236,8 +236,11 @@ public class Participant {
 		updatePmi(participant);
 	}
 
-	private void updateRace(Set<String> raceColl) {
-		SetUpdater.<String> newInstance().update(this.raceColl, raceColl);
+	private void updateRace(Set<Race> raceColl) {
+		SetUpdater.<Race> newInstance().update(this.raceColl, raceColl);
+		for (Race race : this.raceColl) {
+			race.setParticipant(this);
+		}
 	}
 
 	private void updatePmi(Participant participant) {
