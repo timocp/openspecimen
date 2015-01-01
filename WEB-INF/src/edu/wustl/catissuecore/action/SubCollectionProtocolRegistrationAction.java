@@ -74,7 +74,7 @@ public class SubCollectionProtocolRegistrationAction extends CatissueBaseAction
 			collectionProtocolId = new Long(request.getParameter(Constants.CP_SEARCH_CP_ID));
 			participantId = new Long(request.getParameter(Constants.CP_SEARCH_PARTICIPANT_ID));
 
-			this.setAttributesOfCPInForm(collectionProtocolId, collectionProtocolRegistrationForm);
+			this.setAttributesOfCPInForm(collectionProtocolId, collectionProtocolRegistrationForm,request);
 			this
 					.setAttributesOfParticipantInForm(participantId,
 							collectionProtocolRegistrationForm);
@@ -147,11 +147,11 @@ public class SubCollectionProtocolRegistrationAction extends CatissueBaseAction
 	 * @param form : form
 	 * @throws BizLogicException : BizLogicException
 	 */
-	private void setAttributesOfCPInForm(Long cpId, CollectionProtocolRegistrationForm form)
+	private void setAttributesOfCPInForm(Long cpId, CollectionProtocolRegistrationForm form, HttpServletRequest request)
 			throws BizLogicException
 	{
 		final String sourceObjName = CollectionProtocol.class.getName();
-		final String[] selectColName = {"shortTitle", "studyCalendarEventPoint"};
+		final String[] selectColName = {"shortTitle", "studyCalendarEventPoint", "type"};
 		final String[] whereColName = {Constants.SYSTEM_IDENTIFIER};
 		final String[] whereColCond = {"="};
 		final Object[] whereColVal = {cpId};
@@ -169,7 +169,8 @@ public class SubCollectionProtocolRegistrationAction extends CatissueBaseAction
 			final Object[] obj = (Object[]) list.get(0);
 			final String shortTitle = (String) obj[0];
 			final Double studyCalEvtPoint = (Double) obj[1];
-
+			String cpType = (String)obj[2];
+			request.setAttribute("cpType", cpType);
 			form.setCollectionProtocolShortTitle(shortTitle);
 			if (studyCalEvtPoint != null)
 			{

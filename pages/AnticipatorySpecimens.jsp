@@ -799,10 +799,12 @@ String lbl = "Apply first to all";
 <script>
 </script>
 <script>
+
 var isSCGPresent = false;
 var scgId = "<%=request.getAttribute("scgId")%>";
 if (scgId && scgId != 'null') {
   parent.handleCpView(null, scgId , null);
+  parent.handleCpViewForSubCP(scgId,'Complete','','');
 } 
 
 </script>
@@ -813,6 +815,7 @@ if (scgId && scgId != 'null') {
   if (!scgId || scgId == 'null') {
     scgId =  ${scgSummaryDTO.scgId}
     parent.handleCpView(null, scgId , null);
+	parent.handleCpViewForSubCP(scgId,'Complete','','');
   }
 </script>
 <%@ include file="/pages/content/manageBioSpecimen/SpecimenCollectionGroupSummary.jsp"%>

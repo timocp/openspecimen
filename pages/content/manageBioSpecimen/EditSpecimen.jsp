@@ -183,6 +183,7 @@ req.onreadystatechange = function() {
 	if(updatedSpecimenDTO.activityStatus == 'Disabled'){
 	closeTermWindow();
 	  parent.handleCpView(null, updatedSpecimenDTO.specimenCollectionGroupId, null);
+	  parent.handleCpViewForSubCP(updatedSpecimenDTO.specimenCollectionGroupId,'Complete','','');
 	  
 	  document.getElementById('error').style.display='none';
 	  document.getElementById('success').style.display='block';
@@ -211,6 +212,7 @@ req.onreadystatechange = function() {
 	}
 	
 		parent.handleCpView(null, updatedSpecimenDTO.specimenCollectionGroupId, updatedSpecimenDTO.id);
+		parent.handleCpViewForSubCP(updatedSpecimenDTO.id,updatedSpecimenDTO.collectionStatus,updatedSpecimenDTO.label,'');
 	
 				document.getElementById('available').disabled = false;
 				document.getElementById('available').checked = updatedSpecimenDTO.available;
