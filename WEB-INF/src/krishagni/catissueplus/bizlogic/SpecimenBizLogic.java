@@ -312,7 +312,7 @@ public class SpecimenBizLogic {
 			oldSpecimenObj.setThawCycle(specimenDTO.getThawCycle());
 		}
 		else if ("Aliquot".equals(specimenDTO.getLineage())) {
-			oldSpecimenObj.setThawCycle(oldSpecimenObj.getParentSpecimen().getThawCycle() + 1);
+			oldSpecimenObj.setThawCycle(((Specimen)oldSpecimenObj.getParentSpecimen()).getThawCycle() + 1);
 		}
 		else {
 			oldSpecimenObj.setThawCycle(0l);
@@ -966,7 +966,7 @@ public class SpecimenBizLogic {
 			specimen.setThawCycle(specimenDTO.getThawCycle());
 		}
 		else if ("Aliquot".equals(specimenDTO.getLineage())) {
-			specimen.setThawCycle(specimen.getParentSpecimen().getThawCycle() + 1);
+			specimen.setThawCycle(((Specimen)specimen.getParentSpecimen()).getThawCycle() + 1);
 		}
 		else {
 			specimen.setThawCycle(0l);

@@ -52,9 +52,9 @@ public class CatissuePlusCommonUtil {
 	public static String getAliquotEventJsonString(SpecimenDTO specimenDTO, Long userId, int aliquotCount,
 			Long formContextId) {
 		String aliquotJsonString = "{\"appData\":{\"formCtxtId\":" + formContextId + ",\"objectId\" :"
-				+ specimenDTO.getParentSpecimenId() + "},\"FC2\":" + userId + ",\"DP3\":\""
+				+ specimenDTO.getParentSpecimenId() + "},\"user\":" + userId + ",\"time\":\""
 				+ new SimpleDateFormat(ApplicationProperties.getValue("date.pattern.timestamp")).format(new Date())
-				+ "\",\"NT4\":\"" + aliquotCount + "\" }";
+				+ "\",\"aliquotCount\":\"" + aliquotCount + "\" }";
 
 		return aliquotJsonString;
 	}
@@ -62,9 +62,9 @@ public class CatissuePlusCommonUtil {
 	public static String getDerivativeEventJsonString(SpecimenDTO specimenDTO, Long userId, Long formContextId) {
 
 		String derivativeJsonString = "{\"appData\":{\"formCtxtId\":" + formContextId + ",\"objectId\" :"
-				+ specimenDTO.getParentSpecimenId() + "},\"FC2\":" + userId + ",\"DP3\":\""
+				+ specimenDTO.getParentSpecimenId() + "},\"user\":" + userId + ",\"time\":\""
 				+ new SimpleDateFormat(ApplicationProperties.getValue("date.pattern.timestamp")).format(new Date())
-				+ "\",\"ST4\":\" " + specimenDTO.getType() + "\" }";
+				+ "\",\"derivativeType\":\" " + specimenDTO.getType() + "\" }";
 
 		return derivativeJsonString;
 	}

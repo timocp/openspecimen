@@ -98,5 +98,17 @@
     "name"   : "SpecimenTissueReviewEvent",
     "form"   : "spe-forms/tissue-review-event.xml",
     "dbTable": "CATISSUE_TIS_SPE_EVENT_PARAM"
+  },
+  
+  {
+    "name"   : "DerivativeEvent",
+    "form"   : "spe-forms/derivative-event.xml",
+	"systemEvent": "true"
+  },
+  
+  {
+    "name"   : "AliquotEvent",
+    "form"   : "spe-forms/aliquot-event.xml",
+	"systemEvent": "true"
   }
 ]

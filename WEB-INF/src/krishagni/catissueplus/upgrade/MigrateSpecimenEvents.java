@@ -39,6 +39,7 @@ import edu.common.dynamicextensions.ndao.TransactionManager;
 import edu.common.dynamicextensions.ndao.TransactionManager.Transaction;
 import edu.common.dynamicextensions.nutility.IoUtil;
 import edu.wustl.catissuecore.action.bulkOperations.BOTemplateGeneratorUtil;
+import edu.wustl.common.util.global.Validator;
 
 public class MigrateSpecimenEvents {
 	private static final Logger logger = Logger.getLogger(MigrateSpecimenEvents.class);
@@ -54,6 +55,8 @@ public class MigrateSpecimenEvents {
 	private String eventTable;
 	
 	private boolean systemEvent;
+	
+	private boolean createTables; 
 	
 	private static final Set<String> NCI_SPP_FORMS = new HashSet<String>(
 			Arrays.asList("SpecimenEmbeddedEvent", "SpecimenTissueReviewEvent")
@@ -134,7 +137,8 @@ public class MigrateSpecimenEvents {
 		eventName = eventInfo.get("name");
 		eventFormDef = eventInfo.get("form");
 		eventTable = eventInfo.get("dbTable");
-		
+		createTables = Validator.isEmpty(eventTable) ? true:false;
+		System.out.println("eventName :"+createTables);
 		String systemEventStr = eventInfo.get("systemEvent");
 		if (systemEventStr != null && systemEventStr.trim().equalsIgnoreCase("true")) {
 			systemEvent = true;
@@ -169,20 +173,24 @@ public class MigrateSpecimenEvents {
 				throw new RuntimeException("Error creating form for event: " + eventName);
 			}
 
-			logger.info("Migrating records for event: " + eventName);
-			migrateRecords(ctx, formId, eventTable);
-
-			logger.info("Adjusting identifier column for event: " + eventName);
-			
-			long t2 = System.currentTimeMillis();
-			if (!systemEvent) {
-				adjustEventIdColumn(eventTable);
-			} else {
-				adjustSystemEventIdColumn(eventTable);
+			if(!createTables){
+				logger.info("Migrating records for event: " + eventName);
+				System.out.println("migrating : "+eventTable);
+				migrateRecords(ctx, formId, eventTable);
+	
+				logger.info("Adjusting identifier column for event: " + eventName);
+				
+				long t2 = System.currentTimeMillis();
+				if (!systemEvent) {
+					adjustEventIdColumn(eventTable);
+				} else {
+					adjustSystemEventIdColumn(eventTable);
+				}
+				logger.info("Adjusting identifier column for event: " + eventName + " took " + timeDiff(t2));
+				logger.info("Migrated : " + eventName + " in " + timeDiff(t1) + " ms");
 			}
-			logger.info("Adjusting identifier column for event: " + eventName + " took " + timeDiff(t2));
 			
-			logger.info("Migrated : " + eventName + " in " + timeDiff(t1) + " ms");
+			
 		} catch (Exception e) {
 			logger.error("Error migrating data for event: " + eventName, e);
 			throw e;
@@ -211,7 +219,7 @@ public class MigrateSpecimenEvents {
 	private Long createForm(UserContext ctx, String formFile) throws Exception {
 		Transaction txn = TransactionManager.getInstance().newTxn();
 		try {
-			Long formId = Container.createContainer(ctx, formFile, ".", false);
+			Long formId = Container.createContainer(ctx, formFile, ".", createTables);
 			Long formCtxId = insertFormCtx(formId);
 			new BOTemplateGeneratorUtil().generateAndUploadTemplate(formId, "SpecimenEvent");
 			TransactionManager.getInstance().commit(txn);

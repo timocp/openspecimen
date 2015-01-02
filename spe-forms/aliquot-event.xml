@@ -1,0 +1,31 @@
+<form>
+  <view>
+    <name>AliquotEvent</name>
+    <caption>Aliquot Event</caption>
+    <row>
+      <userField>
+        <name>user</name>
+        <udn>user</udn>
+        <caption>User</caption>
+        <mandatory>true</mandatory>
+      </userField>
+    </row>
+    <row>
+      <datePicker>
+        <name>time</name>
+        <udn>time</udn>
+        <caption>Date and Time</caption>
+        <format>MM-dd-yyyy HH:mm</format>
+        <mandatory>true</mandatory>
+      </datePicker>
+    </row>
+    <row>
+      <numberField>
+        <name>aliquotCount</name>
+        <udn>aliquotCount</udn>
+        <caption>Aliquot Count</caption>
+        <mandatory>true</mandatory>
+      </numberField>
+    </row>
+  </view>
+</form>

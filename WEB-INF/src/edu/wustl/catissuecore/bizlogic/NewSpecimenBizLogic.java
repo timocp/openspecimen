@@ -167,8 +167,8 @@ public class NewSpecimenBizLogic extends CatissueDefaultBizLogic {
 	protected void insert(final Object obj, final DAO dao, SessionDataBean sessionDataBean) throws BizLogicException {
 		try {
 			final Specimen specimen = (Specimen) obj;
-			this.setParent(dao, specimen);
-			if (!hasSiteAccess((Specimen) (specimen), sessionDataBean.getUserId(), dao)) {
+			this.setParent(dao, specimen);  
+			if (!sessionDataBean.isAdmin() && !hasSiteAccess((Specimen) (specimen), sessionDataBean.getUserId(), dao)) {
 				String protectionElementName = this.getObjectId(dao, specimen);
 				throw AppUtility.getUserNotAuthorizedException("Specimen processing", protectionElementName, specimen
 						.getClass().getSimpleName());

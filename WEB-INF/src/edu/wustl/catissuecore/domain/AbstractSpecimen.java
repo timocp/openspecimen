@@ -39,30 +39,6 @@ public abstract class AbstractSpecimen extends AbstractDomainObject
 	 */
 	private static final long serialVersionUID = 156565234567890L;
 
-	
-	/**
-	 * parentSpecimen from which this specimen is derived.
-	 */
-	
-
-	/**
-	protected Long thawCycle;
-	  
-	  
-
-	  //protected Collection<SpecimenRecordEntry> specimenRecordEntryCollection = new HashSet<SpecimenRecordEntry>();
-
-	  public Long getThawCycle()
-	  {
-	    return thawCycle;
-	  }
-
-	  public void setThawCycle(Long thawCycle)
-	  {
-	    this.thawCycle = thawCycle;
-	  }
-
-
 	/**
 	 * Overidden from AbstractDomainObject class.
 	 * @param valueObject IValueObject.
