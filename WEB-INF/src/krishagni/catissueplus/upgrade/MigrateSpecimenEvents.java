@@ -18,6 +18,7 @@ import java.util.Set;
 
 import javax.sql.DataSource;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
@@ -39,7 +40,6 @@ import edu.common.dynamicextensions.ndao.TransactionManager;
 import edu.common.dynamicextensions.ndao.TransactionManager.Transaction;
 import edu.common.dynamicextensions.nutility.IoUtil;
 import edu.wustl.catissuecore.action.bulkOperations.BOTemplateGeneratorUtil;
-import edu.wustl.common.util.global.Validator;
 
 public class MigrateSpecimenEvents {
 	private static final Logger logger = Logger.getLogger(MigrateSpecimenEvents.class);
@@ -137,8 +137,7 @@ public class MigrateSpecimenEvents {
 		eventName = eventInfo.get("name");
 		eventFormDef = eventInfo.get("form");
 		eventTable = eventInfo.get("dbTable");
-		createTables = Validator.isEmpty(eventTable) ? true:false;
-		System.out.println("eventName :"+createTables);
+		createTables = StringUtils.isNotBlank(eventTable) ? true:false;
 		String systemEventStr = eventInfo.get("systemEvent");
 		if (systemEventStr != null && systemEventStr.trim().equalsIgnoreCase("true")) {
 			systemEvent = true;
@@ -173,9 +172,10 @@ public class MigrateSpecimenEvents {
 				throw new RuntimeException("Error creating form for event: " + eventName);
 			}
 
-			if(!createTables){
+			if(createTables){
+				return;
+			}
 				logger.info("Migrating records for event: " + eventName);
-				System.out.println("migrating : "+eventTable);
 				migrateRecords(ctx, formId, eventTable);
 	
 				logger.info("Adjusting identifier column for event: " + eventName);
@@ -188,7 +188,6 @@ public class MigrateSpecimenEvents {
 				}
 				logger.info("Adjusting identifier column for event: " + eventName + " took " + timeDiff(t2));
 				logger.info("Migrated : " + eventName + " in " + timeDiff(t1) + " ms");
-			}
 			
 			
 		} catch (Exception e) {

@@ -103,12 +103,12 @@
   {
     "name"   : "DerivativeEvent",
     "form"   : "spe-forms/derivative-event.xml",
-	"systemEvent": "true"
+    "systemEvent": "true"
   },
   
   {
     "name"   : "AliquotEvent",
     "form"   : "spe-forms/aliquot-event.xml",
-	"systemEvent": "true"
+    "systemEvent": "true"
   }
 ]
