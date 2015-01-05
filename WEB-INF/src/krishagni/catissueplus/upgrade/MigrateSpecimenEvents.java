@@ -137,7 +137,7 @@ public class MigrateSpecimenEvents {
 		eventName = eventInfo.get("name");
 		eventFormDef = eventInfo.get("form");
 		eventTable = eventInfo.get("dbTable");
-		createTables = StringUtils.isNotBlank(eventTable) ? true:false;
+		createTables = StringUtils.isNotBlank(eventTable);
 		String systemEventStr = eventInfo.get("systemEvent");
 		if (systemEventStr != null && systemEventStr.trim().equalsIgnoreCase("true")) {
 			systemEvent = true;
@@ -175,21 +175,19 @@ public class MigrateSpecimenEvents {
 			if(createTables){
 				return;
 			}
-				logger.info("Migrating records for event: " + eventName);
-				migrateRecords(ctx, formId, eventTable);
-	
-				logger.info("Adjusting identifier column for event: " + eventName);
-				
-				long t2 = System.currentTimeMillis();
-				if (!systemEvent) {
-					adjustEventIdColumn(eventTable);
-				} else {
-					adjustSystemEventIdColumn(eventTable);
-				}
-				logger.info("Adjusting identifier column for event: " + eventName + " took " + timeDiff(t2));
-				logger.info("Migrated : " + eventName + " in " + timeDiff(t1) + " ms");
+			logger.info("Migrating records for event: " + eventName);
+			migrateRecords(ctx, formId, eventTable);
+
+			logger.info("Adjusting identifier column for event: " + eventName);
 			
-			
+			long t2 = System.currentTimeMillis();
+			if (!systemEvent) {
+				adjustEventIdColumn(eventTable);
+			} else {
+				adjustSystemEventIdColumn(eventTable);
+			}
+			logger.info("Adjusting identifier column for event: " + eventName + " took " + timeDiff(t2));
+			logger.info("Migrated : " + eventName + " in " + timeDiff(t1) + " ms");
 		} catch (Exception e) {
 			logger.error("Error migrating data for event: " + eventName, e);
 			throw e;
@@ -426,9 +424,7 @@ public class MigrateSpecimenEvents {
 	private static final String DELETE_EVENT_ENTRIES_SQL = 
 			"delete from catissue_specimen_event_param where identifier in (select identifier from %s)";
 	
-	private static final String UPDATE_SPE_ID_SQL = 
-			"update %s set spe_id = identifier";
+	private static final String UPDATE_SPE_ID_SQL = "update %s set spe_id = identifier";
 	
-	private static final String CREATE_IDX_SQL =
-			"create index %s on %s(%s)";
+	private static final String CREATE_IDX_SQL = "create index %s on %s(%s)";
 }
