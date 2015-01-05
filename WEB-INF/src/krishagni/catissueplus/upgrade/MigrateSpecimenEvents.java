@@ -137,7 +137,7 @@ public class MigrateSpecimenEvents {
 		eventName = eventInfo.get("name");
 		eventFormDef = eventInfo.get("form");
 		eventTable = eventInfo.get("dbTable");
-		createTables = StringUtils.isNotBlank(eventTable);
+		createTables = StringUtils.isBlank(eventTable);
 		String systemEventStr = eventInfo.get("systemEvent");
 		if (systemEventStr != null && systemEventStr.trim().equalsIgnoreCase("true")) {
 			systemEvent = true;
