@@ -1,21 +1,12 @@
 
 package com.krishagni.catissueplus.core.common.errors;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.krishagni.catissueplus.core.common.events.ResponseEvent;
 
 public class OpenSpecimenException extends RuntimeException {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -1473557909717365251L;
 
 	private ResponseEvent response;
-
-	private List<ErroneousField> fields = new ArrayList<ErroneousField>();
 
 	public OpenSpecimenException(ResponseEvent response) {
 		this.response = response;
@@ -30,12 +21,13 @@ public class OpenSpecimenException extends RuntimeException {
 	}
 
 	public String getMessage() {
-		StringBuilder str = new StringBuilder();
-		for (ErroneousField field : fields) {
-			str.append(field.getFieldName() + ":" + field.getErrorMessage()).append("\n");
+		if (response.getMessage() != null) {
+			return response.getMessage();
+		} else if (response.getException() != null) {
+			return response.getException().getMessage();
 		}
-
-		return str.toString();
+		
+		return "";
 	}
 
 }

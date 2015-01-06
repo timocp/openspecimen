@@ -53,9 +53,17 @@ public class FormDataEvent extends ResponseEvent {
 		return resp;		
 	}
 	
-	public static FormDataEvent badRequest() {
+	public static FormDataEvent badRequest(String message) {
 		FormDataEvent resp = new FormDataEvent();
 		resp.setStatus(EventStatus.BAD_REQUEST);
+		resp.setMessage(message);
+		return resp;
+	}
+	
+	public static FormDataEvent serverError(Exception e) {
+		FormDataEvent resp = new FormDataEvent();
+		resp.setStatus(EventStatus.INTERNAL_SERVER_ERROR);
+		resp.setException(e);
 		return resp;
 	}
 }

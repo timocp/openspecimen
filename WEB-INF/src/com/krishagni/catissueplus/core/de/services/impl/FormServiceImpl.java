@@ -72,7 +72,6 @@ import edu.common.dynamicextensions.napi.FormData;
 import edu.common.dynamicextensions.napi.FormDataManager;
 import edu.common.dynamicextensions.napi.impl.FormDataManagerImpl;
 import edu.common.dynamicextensions.nutility.FileUploadMgr;
-import edu.wustl.cab2b.common.exception.RuntimeException;
 import edu.wustl.catissuecore.action.bulkOperations.BOTemplateGeneratorUtil;
 import edu.wustl.common.beans.SessionDataBean;
 
@@ -291,8 +290,10 @@ public class FormServiceImpl implements FormService {
 			FormData formData = saveOrUpdateFormData(req.getSessionDataBean(), req.getRecordId(), req.getFormData());
 			return FormDataEvent.ok(formData.getContainer().getId(), formData.getRecordId(), formData);
 		} catch(IllegalArgumentException ex) {
-			return FormDataEvent.badRequest();
-		} 
+			return FormDataEvent.badRequest(ex.getMessage());
+		} catch (Exception e ) {
+			return FormDataEvent.serverError(e);
+		}
 	}
 
 	@Override
@@ -331,11 +332,11 @@ public class FormServiceImpl implements FormService {
 		formData.setRecordId(recordId);
 		boolean isInsert = (recordId == null);
 		
-		if(isInsert) {
-			if(!formContext.isMultiRecord()) {
+		if (isInsert) {
+			if (!formContext.isMultiRecord()) {
 				Long noOfRecords = formDao.getRecordsCount(formContext.getIdentifier(), objectId);
-				if(noOfRecords >= 1L) {
-					throw new RuntimeException("Form is single record ");
+				if (noOfRecords >= 1L) {
+					throw new IllegalArgumentException("Multiple records cannot be saved for this form");
 				}
 			}
 		}
