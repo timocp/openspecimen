@@ -281,6 +281,33 @@
             length="50"
         />
         
+        <property
+            name="labNumber"
+            type="string"
+            update="true"
+            insert="true"
+            column="LAB_NUMBER"
+            length="255"
+        />
+        
+        <property
+            name="quality"
+            type="string"
+            update="true"
+            insert="true"
+            column="QUALITY"
+            length="50"
+        />
+        
+        <property
+            name="venesectionTime"
+            type="timestamp"
+            update="true"
+            insert="true"
+            column="VENESECTION_TIME"
+            length="50"
+        />
+        
         <!--  set
             name="specimenRecordEntryCollection"
             table="CATISSUE_SPECIMEN_REC_NTRY"

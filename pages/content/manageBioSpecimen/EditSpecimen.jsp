@@ -417,7 +417,7 @@ req.onreadystatechange = function() {
                                 </td>
                              
 								<td width="30%" class="black_ar" >
-									<bean:write name="specimenDTO" property="labNumber" scope="request"/>
+								    <html:text styleClass="black_ar" size="30" maxlength="255"  styleId="labNumber" name="specimenDTO" property="labNumber" onmouseover="showTip(this.id)" onmouseout="hideTip(this.id)" onblur="processData(this)"  />
                                 </td>
 								
                                 <td width="20%" class="black_ar align_right_style">
@@ -432,7 +432,66 @@ req.onreadystatechange = function() {
                                 </td>
 
                             </tr>
-							
+							<c:if test="${specimenDTO.lineage=='New' and specimenDTO.type=='Serum' or specimenDTO.type=='Buffy Coat'}">
+							<tr class="tr_alternate_color_white">
+								<td width="20%" class="black_ar align_right_style">
+                                    <label for="createdDate">
+									Quality
+                                    </label>
+                                </td>
+                             
+								<td width="30%" class="black_ar" >
+									<c:choose>
+										<c:when test="${specimenDTO.quality=='Good'}">
+											<input type="radio" value="Good" id="dnaQualityGood" name="specimenQuality" onclick="onCheckboxButtonClick(this)" style="vertical-align: middle;" checked="true"/>
+										</c:when>
+										<c:otherwise>
+											<input type="radio" value="Good" id="dnaQualityGood" name="specimenQuality" onclick="onCheckboxButtonClick(this)" style="vertical-align: middle;"/>
+										</c:otherwise>
+									</c:choose>
+											<span class="black_ar" style="vertical-align: middle;">
+											<bean:message key="participant.dnaQuality.good"/>&nbsp;
+											</span>
+									<c:choose>
+										<c:when test="${specimenDTO.quality!='Good'}">
+											<input type="radio" value="Poor" id="dnaQualityPoor" name="specimenQuality" onclick="onCheckboxButtonClick(this)" style="vertical-align: middle;" checked="true"/>
+										</c:when>
+										<c:otherwise>
+											<input type="radio" value="Poor" id="dnaQualityPoor" name="specimenQuality" onclick="onCheckboxButtonClick(this)" style="vertical-align: middle;" />
+										</c:otherwise>
+									</c:choose>
+										<span class="black_ar" style="vertical-align: middle;">
+											<bean:message key="participant.dnaQuality.poor"/>&nbsp;
+										</span>
+                                </td>
+								
+                                <td width="20%" class="black_ar align_right_style">
+                                 
+                                    <label for="tissueSite">
+                                        Venesection Date
+                                    </label>
+                                </td>
+							  <td  class="black_ar" >
+									<input type="text" name="venesectionDate" class="black_ar"
+                                   id="venesectionDate" size="10" onblur="processData(this)" value='<fmt:formatDate value="${specimenDTO.venesectionDate}" pattern="${datePattern}" />'/>
+                               		&nbsp;
+		
+								<html:select property="venesectionHours" name="specimenDTO" styleClass="black_ar" styleId="venesectionHours" size="1">
+										<logic:iterate name="hourList" id="listhoursId">
+											<html:option  value="${listhoursId}"> ${listhoursId} </html:option>
+										</logic:iterate>
+								</html:select> &nbsp;
+				
+								<html:select property="venesectionMins" name="specimenDTO" styleClass="black_ar" styleId="venesectionMins" size="1">
+										<logic:iterate name="minutesList" id="listminutesId">
+											<html:option  value="${listminutesId}"> ${listminutesId} </html:option>
+										</logic:iterate>
+								</html:select>
+                              
+                                </td>
+
+                            </tr>
+							</c:if>
 							<c:if test="${specimenDTO.lineage=='Derived' and specimenDTO.type=='DNA'}">
 								<tr class="tr_alternate_color_lightGrey">
 									<td width="20%" class="black_ar align_right_style">
@@ -912,6 +971,9 @@ var showImagesTab="EditSpecimenImage.do?id="+specimenId;
 
 setLabelBarcodeVisibility('${isSpecimenLabelGeneratorAvl}', '${isSpecimenBarcodeGeneratorAvl}', '${specimenDTO.collectionStatus}','${requestScope.operation}');
 doInitCal('createdDate',false,'${uiDatePattern}');
+<c:if test="${specimenDTO.lineage=='New' and specimenDTO.type=='Serum' or specimenDTO.type=='Buffy Coat'}">
+doInitCal('venesectionDate',false,'${uiDatePattern}');
+</c:if>
 var nodeId= "Specimen_"+document.getElementById("id").value;
 //refreshTree(null,null,null,null,nodeId);
                 
@@ -1038,5 +1100,6 @@ document.getElementById('disbDiv').style.display ="block";
 }
 
 }
+
 </script>
 </body>

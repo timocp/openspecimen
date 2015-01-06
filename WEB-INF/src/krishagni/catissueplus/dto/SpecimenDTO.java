@@ -61,8 +61,44 @@ private String siteName;
   private String dnaMethod;
   private Double dna260;
   private Long thawCycle;
-  
-  public Long getThawCycle()
+  private String quality;
+  private Date venesectionDate;
+  private String venesectionHours;
+	private String venesectionMins;
+
+	public Date getVenesectionDate() {
+		return venesectionDate;
+	}
+	
+	public void setVenesectionDate(Date venesectionDate) {
+		this.venesectionDate = venesectionDate;
+	}
+	
+	public String getVenesectionHours() {
+		return venesectionHours;
+	}
+
+	public void setVenesectionHours(String venesectionHours) {
+		this.venesectionHours = venesectionHours;
+	}
+	
+	public String getVenesectionMins() {
+		return venesectionMins;
+	}
+	
+	public void setVenesectionMins(String venesectionMins) {
+		this.venesectionMins = venesectionMins;
+	}
+
+	public String getQuality() {
+		return quality;
+	}
+	
+	public void setQuality(String quality) {
+		this.quality = quality;
+	}
+	
+	public Long getThawCycle()
   {
     return thawCycle;
   }

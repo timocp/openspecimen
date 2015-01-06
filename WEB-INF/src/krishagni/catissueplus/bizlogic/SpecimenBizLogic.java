@@ -41,6 +41,7 @@ import edu.wustl.catissuecore.domain.ConsentTierStatus;
 import edu.wustl.catissuecore.domain.DisposalEventParameters;
 import edu.wustl.catissuecore.domain.ExternalIdentifier;
 import edu.wustl.catissuecore.domain.ParticipantMedicalIdentifier;
+import edu.wustl.catissuecore.domain.Site;
 import edu.wustl.catissuecore.domain.Specimen;
 import edu.wustl.catissuecore.domain.SpecimenCollectionGroup;
 import edu.wustl.catissuecore.domain.SpecimenEventParameters;
@@ -55,6 +56,7 @@ import edu.wustl.catissuecore.namegenerator.LabelGenException;
 import edu.wustl.catissuecore.namegenerator.LabelGenerator;
 import edu.wustl.catissuecore.namegenerator.LabelGeneratorFactory;
 import edu.wustl.catissuecore.namegenerator.NameGeneratorException;
+import edu.wustl.catissuecore.util.EventsUtil;
 import edu.wustl.catissuecore.util.StorageContainerUtil;
 import edu.wustl.catissuecore.util.global.AppUtility;
 import edu.wustl.catissuecore.util.global.Constants;
@@ -63,6 +65,7 @@ import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.exception.ApplicationException;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.exception.ErrorKey;
+import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.global.Status;
 import edu.wustl.common.util.global.Validator;
@@ -205,6 +208,12 @@ public class SpecimenBizLogic {
 		if (!Validator.isEmpty(specimenDTO.getLabel())) {
 			oldSpecimenObj.setLabel(specimenDTO.getLabel());
 		}
+		if(!Validator.isEmpty(specimenDTO.getLabNumber())){
+			oldSpecimenObj.setLabNumber(specimenDTO.getLabNumber());
+		}
+		oldSpecimenObj.setQuality(specimenDTO.getQuality());
+		String date = Utility.parseDateToString(specimenDTO.getVenesectionDate(), ApplicationProperties.getValue("date.pattern"));
+		oldSpecimenObj.setVenesectionTime(EventsUtil.setTimeStamp(date, specimenDTO.getVenesectionHours(), specimenDTO.getVenesectionMins()));
 		Double quantityDiff = 0.0;
 		if (specimenDTO.getQuantity() != null) {
 			if (specimenDTO.getQuantity() > oldSpecimenObj.getInitialQuantity()) {
@@ -988,6 +997,11 @@ public class SpecimenBizLogic {
 			Iterator<ParticipantMedicalIdentifier> itr = mrnColl.iterator();
 			ParticipantMedicalIdentifier mrn = itr.next();
 			scg.setSpecimenCollectionSite(mrn.getSite());
+		}
+		else{
+			Site site = new Site();
+			site.setName("In Transit");
+			scg.setSpecimenCollectionSite(site);
 		}
 		User user = new User();
 		user.setLoginName(specimenDTO.getUserName());

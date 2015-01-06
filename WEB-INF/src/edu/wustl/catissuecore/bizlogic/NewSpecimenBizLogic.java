@@ -2362,6 +2362,13 @@ public class NewSpecimenBizLogic extends CatissueDefaultBizLogic {
 				if (specimen.getSpecimenCollectionGroup() == null) {
 					specimen.setSpecimenCollectionGroup(new SpecimenCollectionGroup());
 				}
+				if(Validator.isEmpty(specimen.getQuality())){
+					specimen.setQuality(Constants.SPECIMEN_QUALITY_GOOD);
+				}
+				else if(!Constants.SPECIMEN_QUALITY_GOOD.equals(specimen.getQuality()) && !Constants.SPECIMEN_QUALITY_POOR.equals(specimen.getQuality())){
+					throw this.getBizLogicException(null, "errors.item", "Invalid quality.");
+				}
+				
 				final Long scgId = specimen.getSpecimenCollectionGroup().getId();
 				final CollectionProtocol collectionProtocol = new CollectionProtocol();
 

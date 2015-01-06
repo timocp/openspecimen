@@ -848,6 +848,31 @@ function submitTabData(operation)
 		{
 			tabDataJSON["concentration"] = document.getElementById("concentration").value; 
 		}
+		var labNmbr = document.getElementById("labNumber").value;
+		if(labNmbr != null && labNmbr != "")
+		{
+			tabDataJSON["labNumber"] = document.getElementById("labNumber").value; 
+		}
+		var quality = document.getElementsByName("specimenQuality");
+		if(quality != null && quality != "")
+		{
+			var radios = document.getElementsByName("specimenQuality");
+			var checkedRadio;
+			for (var i = 0; i < radios.length; i++) {       
+				if (radios[i].checked) {
+					checkedRadio=radios[i].value;
+					break;
+				}
+			}
+			tabDataJSON["quality"] = checkedRadio; 
+		}
+		var vDate = document.getElementById("venesectionDate");
+		if(vDate != null && vDate != "")
+		{
+			tabDataJSON["venesectionDate"] = document.getElementById("venesectionDate").value; 
+			tabDataJSON["venesectionHours"] = document.getElementById("venesectionHours").value; 
+			tabDataJSON["venesectionMins"] = document.getElementById("venesectionMins").value; 
+		}
 		
 		createRESTSpec(tabDataJSON,printFlag,operation);
 		

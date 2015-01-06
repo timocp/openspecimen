@@ -3,6 +3,7 @@ package edu.wustl.catissuecore.bizlogic;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,6 +15,7 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 
 import edu.wustl.catissuecore.domain.Biohazard;
+import edu.wustl.catissuecore.domain.CollectionEventParameters;
 import edu.wustl.catissuecore.domain.CollectionProtocolRegistration;
 import edu.wustl.catissuecore.domain.ConsentTierResponse;
 import edu.wustl.catissuecore.domain.ContainerPosition;
@@ -44,6 +46,8 @@ import edu.wustl.common.exception.ApplicationException;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.exception.ErrorKey;
 import edu.wustl.common.util.global.ApplicationProperties;
+import edu.wustl.common.util.global.CommonServiceLocator;
+import edu.wustl.common.util.global.CommonUtilities;
 import edu.wustl.common.util.global.Validator;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.dao.DAO;
@@ -723,9 +727,18 @@ public class SpecimenBizlogic
             .getParentContainer().getLocatedAtPosition().getParentContainer().getName() : "");
       }
     }
-    specimenDTO.setLabNumber(specimen.getSpecimenCollectionGroup().getCollectionProtocolRegistration().getParticipant()
-        .getLabNumber());
+    specimenDTO.setLabNumber(specimen.getLabNumber());
+    specimenDTO.setQuality(StringUtils.isBlank(specimen.getQuality())?Constants.SPECIMEN_QUALITY_GOOD:Constants.SPECIMEN_QUALITY_POOR);
+    if(specimen.getVenesectionTime()!=null){
+    	final Calendar calender = Calendar.getInstance();
 
+				calender.setTime(specimen.getVenesectionTime());
+				specimenDTO.setVenesectionDate(specimen.getVenesectionTime());
+				specimenDTO.setVenesectionHours(CommonUtilities.toString(Integer
+						.toString(calender.get(Calendar.HOUR_OF_DAY))));
+				specimenDTO.setVenesectionMins(CommonUtilities.toString(Integer
+						.toString(calender.get(Calendar.MINUTE))));
+    }
     Collection<ConsentTierResponse> ctr = specimen.getSpecimenCollectionGroup().getCollectionProtocolRegistration()
         .getConsentTierResponseCollection();
     if (ctr != null && ctr.size() > 0)
