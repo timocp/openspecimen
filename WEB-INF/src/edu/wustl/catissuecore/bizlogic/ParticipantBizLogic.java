@@ -1851,7 +1851,7 @@ public class ParticipantBizLogic extends CatissueDefaultBizLogic
 
 			String hql = "select participant.lastName,participant.firstName,participant.middleName,"
 					+ "participant.birthDate,participant.gender,participant.socialSecurityNumber,"
-					+ "participant.ethnicity,participant.deathDate,participant.vitalStatus from "
+					+ "participant.ethnicity,participant.deathDate,participant.vitalStatus, participant.dnaQuality from "
 					+ Participant.class.getName()
 					+ " as participant where participant.id = ?";
 			List participants = dao.executeQuery(hql, columnValueBeans);
@@ -1870,6 +1870,7 @@ public class ParticipantBizLogic extends CatissueDefaultBizLogic
 			participantDTO.setCpId(cpId);
 			participantDTO.setDethOfDate(participantInfo[7]!=null? (Date) participantInfo[7]:null);
 			participantDTO.setVitalStatus((String)participantInfo[8]);
+			participantDTO.setDnaQuality((String)participantInfo[9]);
 			String mrnhql = "select pmi.medicalRecordNumber ,site.name from "
 					+ ParticipantMedicalIdentifier.class.getName() + " as pmi, "
 					+ Site.class.getName()

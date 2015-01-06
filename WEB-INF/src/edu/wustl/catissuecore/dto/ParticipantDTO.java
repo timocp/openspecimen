@@ -35,9 +35,18 @@ public class ParticipantDTO
     String siteName;
     String urNumber;
     String consentBlood;
-
+    String dnaQuality;
     
-    public String getConsentBlood()
+		public String getDnaQuality() {
+			return dnaQuality;
+		}
+		
+		public void setDnaQuality(String dnaQuality) {
+			this.dnaQuality = dnaQuality;
+		}
+
+
+		public String getConsentBlood()
     {
         return consentBlood;
     }

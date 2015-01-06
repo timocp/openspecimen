@@ -179,6 +179,15 @@
             column="LNAME_METAPHONE"
             length="50"
         />
+        
+        <property
+            name="dnaQuality"
+            type="string"
+            update="true"
+            insert="true"
+            column="DNA_QUALITY"
+            length="50"
+        />
 
 		
         <set

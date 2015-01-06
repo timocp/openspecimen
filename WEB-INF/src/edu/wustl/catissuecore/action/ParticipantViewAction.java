@@ -7,6 +7,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -136,6 +137,11 @@ public class ParticipantViewAction  extends CatissueBaseAction
 				    participantDTO.getMrns().clear();
 				}
 				request.setAttribute("participantDto", participantDTO);
+				String dnaQlty = participantDTO.getDnaQuality();
+				if(StringUtils.isBlank(dnaQlty)){
+					dnaQlty = Constants.SPECIMEN_QUALITY_GOOD;
+				}
+				request.setAttribute("dnaQlty", dnaQlty);
 				request.setAttribute("datePattern", CommonServiceLocator.getInstance().getDatePattern());
 			}
 			  finally

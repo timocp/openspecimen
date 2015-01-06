@@ -48,12 +48,14 @@
             </td>
     </tr>
     <tr>
-        <td class="bottomtd"></td>
+        <td class="bottomtd"><div id="msgDiv" style="display:none" class="alert alert-success">Participant updated successfully.</div><div id="errDiv" style="display:none" class="alert alert-error">Error while updating participant, please try again later.</div></td>
     </tr>
     
 </table>
 
 <div id="participantDetails" class="align_left_style">
+<div>
+</div>
 <fieldset class="field_set"> 
   <legend class="blue_ar_b legend_font_size"> <bean:message key="participant.view.participant.details"/></legend>
     <table width="100%" border="0"  cellpadding="5px" cellspacing="0"   class="whitetable_bg">
@@ -101,12 +103,93 @@
              <bean:write name="participantDto" property="siteName" />
         </td>
       </tr>
+	  <tr>
+         <td  align="right" class="black_ar bottomtd  padding_right_style" width="20%"> 
+            <b><bean:message key="participant.dnaQuality"/></b>
+         </td> 
+         <td class="black_ar bottomtd" width="20%">
+		 
+		 
+			<input type="radio" value="Good" id="dnaQualityGood" name="specimenChild" onclick="onCheckboxButtonClick(this)" style="vertical-align: middle;"/>
+					<span class="black_ar" style="vertical-align: middle;">
+					<bean:message key="participant.dnaQuality.good"/>&nbsp;
+					</span>
+			<input type="radio" value="Poor" id="dnaQualityPoor" name="specimenChild" onclick="onCheckboxButtonClick(this)" style="vertical-align: middle;"/>
+			<span class="black_ar" style="vertical-align: middle;">
+				<bean:message key="participant.dnaQuality.poor"/>&nbsp;
+			</span>
+         
+		 
+        </td>
+        <td  align="left" class="black_ar bottomtd" width="30%"> 
+					 <input type="button" value="Update" onclick="updateParticipant()"/>
+        </td>
+        <td class="black_ar bottomtd" width="30%"> 
+            
+        </td>
+      </tr>
     
 	</table>
 </fieldset>
 </div>
 
-
+<script>
+var dnaQlty = '${requestScope.dnaQlty}';
+if(dnaQlty == 'Good'){
+document.getElementById('dnaQualityGood').checked=true;
+}
+else{
+document.getElementById('dnaQualityPoor').checked=true;
+}
+function createRequest() {
+  var result = null;
+  if (window.XMLHttpRequest) {
+    // FireFox, Safari, etc.
+    result = new XMLHttpRequest();
+   
+  }
+  else if (window.ActiveXObject) {
+    // MSIE
+    result = new ActiveXObject("Microsoft.XMLHTTP");
+  } 
+  else {
+    // No known mechanism -- consider aborting the application
+  }
+  return result;
+}
+function updateParticipant(){
+var partId = document.getElementById('pId').value;
+var req = createRequest(); 
+var radios = document.getElementsByName("specimenChild");
+	var checkedRadio;
+    for (var i = 0; i < radios.length; i++) {       
+        if (radios[i].checked) {
+            checkedRadio=radios[i].value;
+            break;
+        }
+    }
+// defined above
+	// Create the callback:
+	req.onreadystatechange = function() {
+		if (req.readyState != 4) return; // Not there yet
+		var response = eval('('+ req.responseText+')');
+		var msgDiv = document.getElementById('msgDiv');
+		if(response.success == "success")
+		{
+			msgDiv.style.display='block';
+			errDiv.style.display='none';
+		}
+		else
+		{
+			msgDiv.style.display='none';
+			errDiv.style.display='block';
+		}
+	}
+	var param =  "pId="+partId+"&dnaQlty="+checkedRadio;
+	req.open("GET", "CatissueCommonAjaxAction.do?type=updateParticipant&"+param);
+	req.send();
+}
+</script>
  
 </body>
 </html>

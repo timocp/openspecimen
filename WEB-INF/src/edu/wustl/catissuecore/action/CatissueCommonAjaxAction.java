@@ -56,6 +56,7 @@ import edu.wustl.catissuecore.bizlogic.UserBizLogic;
 import edu.wustl.catissuecore.cpSync.SyncCPThreadExecuterImpl;
 import edu.wustl.catissuecore.dao.UserDAO;
 import edu.wustl.catissuecore.domain.Capacity;
+import edu.wustl.catissuecore.domain.Participant;
 import edu.wustl.catissuecore.domain.Site;
 import edu.wustl.catissuecore.domain.Specimen;
 import edu.wustl.catissuecore.domain.StorageContainer;
@@ -1072,4 +1073,58 @@ public ActionForward swapContainerUsingDrag(ActionMapping mapping, ActionForm fo
         response.getWriter().write(returnedJObject.toString());
         return null;
     }
+    
+    public ActionForward updateParticipant(ActionMapping mapping, ActionForm form,
+  			HttpServletRequest request, HttpServletResponse response) throws ApplicationException,
+  			IOException
+  	{
+
+    	String pId = request.getParameter("pId");
+    	String dnaQlty = request.getParameter("dnaQlty");
+  		SessionDataBean sessionDataBean = (SessionDataBean) request.getSession().getAttribute(
+  				Constants.SESSION_DATA);
+  		HashMap<String, String> returnMap = new HashMap<String, String>();
+  		DAO dao = null;
+  		try
+  		{
+  		dao = AppUtility.openDAOSession(sessionDataBean);
+  		String hql = "from "+Participant.class.getName()+" p where p.id="+pId; 
+  		List<Participant> participants = dao.executeQuery(hql);
+  		
+  		if(participants != null && participants.size() > 0){
+  			Participant participant = participants.get(0);
+  			participant.setDnaQuality(dnaQlty);
+  			dao.update(participant);
+  			dao.commit(); 
+  			returnMap.put("msg", ""); 
+  			returnMap.put("success", "success");
+  		}
+    	
+  		}
+  		catch (DAOException ex)
+  		{
+  			returnMap.put("msg", ex.getMsgValues());
+  			returnMap.put("success", "failure");
+  		}
+  		catch (ApplicationException ex)
+  		{
+  			returnMap.put("msg", ex.getMsgValues());
+  			returnMap.put("success", "failure");
+  		}
+  		catch (Exception ex)
+  		{
+  			returnMap.put("msg", "Error occured at server side.");
+  			returnMap.put("success", "failure");
+  		}
+  		finally
+  		{
+  			AppUtility.closeDAOSession(dao);
+  		}
+  		GsonBuilder gsonBuilder = AppUtility.initGSONBuilder();
+  		Gson gson = gsonBuilder.create();
+  		response.setContentType("application/json");
+  		response.getWriter().write(gson.toJson(returnMap));
+
+  		return null;
+  	}
 }

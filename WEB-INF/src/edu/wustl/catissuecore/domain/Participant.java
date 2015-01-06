@@ -166,9 +166,18 @@ public class Participant extends AbstractDomainObject
 	// * empiId : EMPI id of the participant.
 	// */
 	// protected String empiId = "";
-
 	
-    public String getLabNumber()
+	protected String dnaQuality;
+	
+	public String getDnaQuality() {
+		return dnaQuality;
+	}
+	
+	public void setDnaQuality(String dnaQuality) {
+		this.dnaQuality = dnaQuality;
+	}
+
+		public String getLabNumber()
     {
         return labNumber;
     }
