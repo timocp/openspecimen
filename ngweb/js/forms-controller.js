@@ -75,38 +75,25 @@ angular.module('plus.forms', [])
           }
         });
 
-        formCtxtsModal.result.then(function(newCpCnt) {
-          form.cpCount = newCpCnt;
+        formCtxtsModal.result.then(function(reloadForms) {
+          if (reloadForms) {
+            loadAllForms();
+          }
         });
       });
     };
 
     var FormCtxtsCtrl = function($scope, $modalInstance, args) {
-      var map = {};
-      for (var i = 0; i < args.formCtxts.length; ++i) {
-        var cp = args.formCtxts[i].collectionProtocol;
-        var cpId = cp.id, title = cp.shortTitle;
-        var level = args.formCtxts[i].level;
-        var multiRecord = args.formCtxts[i].multiRecord;
-        var cpFormCtxt = map[cpId];
-        if (cpFormCtxt) {
-          cpFormCtxt.levels.push(level);
-        } else {
-          map[cpId] = {title: title ? title : "ALL", levels: [level], multiRecord: multiRecord};
+      $scope.formCtxts = args.formCtxts;
+      angular.forEach(args.formCtxts, function(formCtx) {
+        if (!formCtx.collectionProtocol.id) {
+          formCtx.collectionProtocol.shortTitle = 'ALL';
         }
-      }
+      });
 
-      var result = [];
-      for (var k in map) {
-        result.push(map[k]);
-      }
+      var reloadForms = false;
 
-      var existingCpCount = result.length;
-      if (map["-1"]) {
-        existingCpCount = -1;
-      }
-
-      $scope.cpFormCtxts = result;
+      $scope.showFormCtxts = true;
       $scope.form = args.form;
       $scope.cpList = args.cpList;
       $scope.extnEntities = args.extnEntities;
@@ -132,33 +119,50 @@ angular.module('plus.forms', [])
          } else {
            for (var i = 0; i < selectedCps.length; ++i) {
              cpIds.push(selectedCps[i].id);
-             if (!map[selectedCps[i].id + ""]) {
-               ++newCpCnt;
-             }
            }
          }
 
          FormsService.addFormContexts($scope.form.formId, cpIds, selectedEntity.entity, isMultiRecord).then(
            function(data) {
-             var cpCnt = -1;
-             if (existingCpCount != -1 && !allProtocols) {
-               cpCnt = existingCpCount + newCpCnt;
-             } 
-               
              Utility.notify($("#notifications"), "Form Successfully Attached", "success", true);
-             $modalInstance.close(cpCnt);
+             $modalInstance.close(true);
            },
  
            function() {
              Utility.notify($("#notifications"), "Error in attaching form. Contact administrator", "error", true);
-             $modalInstance.dismiss('cancel');
+             $modalInstance.close(reloadForms);
            }
          );
       }
 
       $scope.cancel = function() {
-        $modalInstance.dismiss('cancel');
+        $modalInstance.close(reloadForms);
       }
+
+      $scope.confirmRemoveCtx = function(formCtx, $index) {
+        $scope.showFormCtxts = false;
+        $scope.removeCtxData = {ctx: formCtx, idx: $index};
+      };
+
+      $scope.removeCtx = function() {
+        var cpId = $scope.removeCtxData.ctx.collectionProtocol.id || -1;
+        var entity = $scope.removeCtxData.ctx.level;
+
+        FormsService.removeFormContext($scope.form.formId, cpId, entity).then(
+          function(ctxIds) {
+            $scope.formCtxts.splice($scope.removeCtxData.idx, 1);
+            $scope.showFormCtxts = true;
+            $scope.removeCtxData = {};
+            reloadForms = true;
+            Utility.notify($("#ctx-alerts"), "Deleted!", "success", true);
+          }
+        );
+      };
+
+      $scope.cancelRemoveCtx = function() {
+        $scope.showFormCtxts = true;
+        $scope.removeCtxData = {};
+      };
     };
 
     $scope.attachForm = function() {

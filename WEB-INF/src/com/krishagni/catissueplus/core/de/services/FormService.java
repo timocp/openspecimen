@@ -14,7 +14,7 @@ import com.krishagni.catissueplus.core.de.events.EntityFormRecordsEvent;
 import com.krishagni.catissueplus.core.de.events.EntityFormsEvent;
 import com.krishagni.catissueplus.core.de.events.FileDetailEvent;
 import com.krishagni.catissueplus.core.de.events.FileUploadedEvent;
-import com.krishagni.catissueplus.core.de.events.FormContextRemovedEvent;
+import com.krishagni.catissueplus.core.de.events.FormContextsRemovedEvent;
 import com.krishagni.catissueplus.core.de.events.FormContextsAddedEvent;
 import com.krishagni.catissueplus.core.de.events.FormContextsEvent;
 import com.krishagni.catissueplus.core.de.events.FormDataEvent;
@@ -47,7 +47,7 @@ public interface FormService {
 	
 	public FormContextsAddedEvent addFormContexts(AddFormContextsEvent req);
 	
-	public FormContextRemovedEvent removeFormContext(RemoveFormContextEvent req);
+	public FormContextsRemovedEvent removeFormContext(RemoveFormContextEvent req);
 	
 	public EntityFormsEvent getEntityForms(ReqEntityFormsEvent req);
 	

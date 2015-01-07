@@ -29,9 +29,9 @@ import com.krishagni.catissueplus.core.de.events.FileDetail;
 import com.krishagni.catissueplus.core.de.events.FileDetailEvent;
 import com.krishagni.catissueplus.core.de.events.FileUploadedEvent;
 import com.krishagni.catissueplus.core.de.events.FormContextDetail;
-import com.krishagni.catissueplus.core.de.events.FormContextRemovedEvent;
 import com.krishagni.catissueplus.core.de.events.FormContextsAddedEvent;
 import com.krishagni.catissueplus.core.de.events.FormContextsEvent;
+import com.krishagni.catissueplus.core.de.events.FormContextsRemovedEvent;
 import com.krishagni.catissueplus.core.de.events.FormCtxtSummary;
 import com.krishagni.catissueplus.core.de.events.FormDataEvent;
 import com.krishagni.catissueplus.core.de.events.FormDefinitionEvent;
@@ -72,7 +72,6 @@ import edu.common.dynamicextensions.napi.FormData;
 import edu.common.dynamicextensions.napi.FormDataManager;
 import edu.common.dynamicextensions.napi.impl.FormDataManagerImpl;
 import edu.common.dynamicextensions.nutility.FileUploadMgr;
-import edu.wustl.cab2b.common.exception.RuntimeException;
 import edu.wustl.catissuecore.action.bulkOperations.BOTemplateGeneratorUtil;
 import edu.wustl.common.beans.SessionDataBean;
 
@@ -291,8 +290,10 @@ public class FormServiceImpl implements FormService {
 			FormData formData = saveOrUpdateFormData(req.getSessionDataBean(), req.getRecordId(), req.getFormData());
 			return FormDataEvent.ok(formData.getContainer().getId(), formData.getRecordId(), formData);
 		} catch(IllegalArgumentException ex) {
-			return FormDataEvent.badRequest();
-		} 
+			return FormDataEvent.badRequest(ex.getMessage());
+		} catch (Exception e ) {
+			return FormDataEvent.serverError(e);
+		}
 	}
 
 	@Override
@@ -331,11 +332,11 @@ public class FormServiceImpl implements FormService {
 		formData.setRecordId(recordId);
 		boolean isInsert = (recordId == null);
 		
-		if(isInsert) {
-			if(!formContext.isMultiRecord()) {
+		if (isInsert) {
+			if (!formContext.isMultiRecord()) {
 				Long noOfRecords = formDao.getRecordsCount(formContext.getIdentifier(), objectId);
-				if(noOfRecords >= 1L) {
-					throw new RuntimeException("Form is single record ");
+				if (noOfRecords >= 1L) {
+					throw new IllegalArgumentException("Multiple records cannot be saved for this form");
 				}
 			}
 		}
@@ -416,28 +417,37 @@ public class FormServiceImpl implements FormService {
 	
 	@Override
 	@PlusTransactional
-	public FormContextRemovedEvent removeFormContext(RemoveFormContextEvent req) {
+	public FormContextsRemovedEvent removeFormContext(RemoveFormContextEvent req) {
+		List<FormContextBean> formCtxts = formDao.getFormContexts(
+				req.getFormId(), 
+				req.getCpId(), 
+				req.getEntityTypes());
+		
 		try {
-			switch (req.getFormType()) {
-			case DATA_ENTRY_FORMS: 
-				return FormContextRemovedEvent.badRequest("Deletion of data entry forms not supported!", null);
+			switch (req.getRemoveType()) {
+				case SOFT_REMOVE:
+					for (FormContextBean formCtx : formCtxts) {
+						formCtx.setDeletedOn(Calendar.getInstance().getTime());
+					}
+					
+					return FormContextsRemovedEvent.ok(
+							req.getFormId(), 
+							FormContextDetail.from(formCtxts)); 
 				
-			case QUERY_FORMS:
-				Long formId = req.getFormId();
-				FormContextBean queryForm = formDao.getQueryFormContext(formId);
-				
-				if (queryForm == null) { 
-					return FormContextRemovedEvent.notFound(formId);
-				}
-				
-				formDao.delete(queryForm);
-				return FormContextRemovedEvent.ok(formId);
-				
-			default:
-				return FormContextRemovedEvent.badRequest("Invalid Entry Parameters!", null);
+				case HARD_REMOVE:				
+					for (FormContextBean formCtx : formCtxts) {
+						formDao.delete(formCtx);
+					}
+					
+					return FormContextsRemovedEvent.ok(
+							req.getFormId(), 
+							FormContextDetail.from(formCtxts));
+					
+				default:
+					return FormContextsRemovedEvent.badRequest("Invalid Entry Parameters!", null);
 			}
 		} catch (Exception e) {
-			return FormContextRemovedEvent.serverError(e.getMessage(), e);
+			return FormContextsRemovedEvent.serverError(e.getMessage(), e);
 		}
 	}
 		

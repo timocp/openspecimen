@@ -3,14 +3,18 @@ package com.krishagni.catissueplus.core.de.events;
 import com.krishagni.catissueplus.core.common.events.RequestEvent;
 
 public class RemoveFormContextEvent extends RequestEvent {
-	public static enum FormType {
-		DATA_ENTRY_FORMS,
-		QUERY_FORMS
+	public static enum RemoveType {
+		SOFT_REMOVE,
+		HARD_REMOVE
 	}
 	
 	private Long formId;
 	
-	private FormType formType;
+	private RemoveType removeType = RemoveType.SOFT_REMOVE;
+	
+	private String[] entityTypes;
+	
+	private Long cpId;
 	
 	public Long getFormId() {
 		return formId;
@@ -20,11 +24,27 @@ public class RemoveFormContextEvent extends RequestEvent {
 		this.formId = formId;
 	}
 	
-	public FormType getFormType() {
-		return formType;
+	public RemoveType getRemoveType() {
+		return removeType;
 	}
 
-	public void setFormType(FormType formType) {
-		this.formType = formType;
+	public void setRemoveType(RemoveType formType) {
+		this.removeType = formType;
+	}
+
+	public String[] getEntityTypes() {
+		return entityTypes;
+	}
+
+	public void setEntityTypes(String[] entityTypes) {
+		this.entityTypes = entityTypes;
+	}
+
+	public Long getCpId() {
+		return cpId;
+	}
+
+	public void setCpId(Long cpId) {
+		this.cpId = cpId;
 	}
 }

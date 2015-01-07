@@ -30,7 +30,10 @@ import com.krishagni.catissueplus.core.de.events.BOTemplateGeneratedEvent;
 import com.krishagni.catissueplus.core.de.events.BOTemplateGenerationEvent;
 import com.krishagni.catissueplus.core.de.events.BulkFormDataSavedEvent;
 import com.krishagni.catissueplus.core.de.events.DeleteFormEvent;
+import com.krishagni.catissueplus.core.de.events.FormContextsRemovedEvent;
 import com.krishagni.catissueplus.core.de.events.FormDeletedEvent;
+import com.krishagni.catissueplus.core.de.events.RemoveFormContextEvent;
+import com.krishagni.catissueplus.core.de.events.RemoveFormContextEvent.RemoveType;
 import com.krishagni.catissueplus.core.de.events.SaveBulkFormDataEvent;
 import com.krishagni.catissueplus.core.de.events.DeleteRecordEntriesEvent;
 import com.krishagni.catissueplus.core.de.events.FormContextDetail;
@@ -142,14 +145,17 @@ public class FormsController {
 	@RequestMapping(method = RequestMethod.GET, value="{id}/data/{recordId}")
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
-	public String getFormData(@PathVariable("id") Long formId, @PathVariable("recordId") Long recordId) {
+	public String getFormData(
+			@PathVariable("id") Long formId, 
+			@PathVariable("recordId") Long recordId,
+			@RequestParam(value = "includeUdn", required = false, defaultValue = "false") boolean includeUdn) {
 		ReqFormDataEvent req = new ReqFormDataEvent();
 		req.setFormId(formId);
 		req.setRecordId(recordId);
 		
 		FormDataEvent resp = formSvc.getFormData(req);
 		if (resp.getStatus() == EventStatus.OK) {
-			return resp.getFormData().toJson();
+			return resp.getFormData().toJson(includeUdn);
 		}
 		
 		return null;
@@ -216,6 +222,28 @@ public class FormsController {
 		
 		return null;
 	}
+
+	@RequestMapping(method = RequestMethod.DELETE, value="{id}/contexts")
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody	
+	public List<FormContextDetail> removeFormContexts(
+			@PathVariable("id") Long formId,
+			@RequestParam(value = "entityType", required = true) String[] entityTypes,
+			@RequestParam(value = "cpId", required = true) Long cpId) {
+		
+		RemoveFormContextEvent req = new RemoveFormContextEvent();
+		req.setCpId(cpId);
+		req.setFormId(formId);
+		req.setEntityTypes(entityTypes);
+		req.setRemoveType(RemoveType.SOFT_REMOVE);
+		
+		FormContextsRemovedEvent resp = formSvc.removeFormContext(req);
+		if (resp.getStatus() == EventStatus.OK) {
+			return resp.getFormCtxts();
+		}
+		
+		return null;
+	}
 	
 	@RequestMapping(method = RequestMethod.DELETE, value="{id}/data")
 	@ResponseStatus(HttpStatus.OK)
@@ -234,31 +262,41 @@ public class FormsController {
 	}
 
 	private String saveOrUpdateFormData(Long formId, String formDataJson) {
+		JsonElement formDataJsonEle = null; 
+		
 		try {
 			formDataJson = URLDecoder.decode(formDataJson,"UTF-8");
 			if (formDataJson.endsWith("=")) {
-				formDataJson = formDataJson.substring(0, formDataJson.length() -1);
+				formDataJson = formDataJson.substring(0, formDataJson.length() - 1);
 			}	        			
+			
+			formDataJsonEle = new JsonParser().parse(formDataJson);
 		} catch (Exception e) {
-			throw new RuntimeException("Error parsing input JSON", e);
+			FormDataEvent.badRequest(e.getMessage()).raiseException();
 		}
 		
-		JsonElement formDataJsonEle = new JsonParser().parse(formDataJson);
-		if (formDataJsonEle.isJsonArray()) {
-			return bulkSaveFormData(formId, formDataJson);
-		} else {
-			FormData formData = FormData.fromJson(formDataJson, formId);
+		
+		try {
+			if (formDataJsonEle.isJsonArray()) {
+				return bulkSaveFormData(formId, formDataJson);
+			} else {
+				FormData formData = FormData.fromJson(formDataJson, formId);
 
-			SaveFormDataEvent req = new SaveFormDataEvent();
-			req.setFormData(formData);
-			req.setFormId(formId);
-			req.setSessionDataBean(getSession());
-			req.setRecordId(formData.getRecordId());
+				SaveFormDataEvent req = new SaveFormDataEvent();
+				req.setFormData(formData);
+				req.setFormId(formId);
+				req.setSessionDataBean(getSession());
+				req.setRecordId(formData.getRecordId());
 
-			FormDataEvent resp = formSvc.saveFormData(req);
-			if (resp.getStatus() == EventStatus.OK) {
-				return resp.getFormData().toJson();
-			}
+				FormDataEvent resp = formSvc.saveFormData(req);
+				if (resp.getStatus() == EventStatus.OK) {
+					return resp.getFormData().toJson();
+				}
+				
+				resp.raiseException();
+			}			
+		} catch (IllegalArgumentException iae) {
+			FormDataEvent.badRequest(iae.getMessage()).raiseException();
 		}
 
 		return null;		

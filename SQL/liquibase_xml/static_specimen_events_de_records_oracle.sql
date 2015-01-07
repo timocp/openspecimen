@@ -18,7 +18,7 @@ begin
    dyextn_containers c 
    inner join catissue_form_context fc on fc.container_id = c.identifier
  where 
-   c.name = event_name;
+   c.name = event_name and fc.deleted_on is null;
 
  insert into 
    catissue_form_record_entry(identifier, form_ctxt_id, object_id, record_id, updated_by, update_time, activity_status) 

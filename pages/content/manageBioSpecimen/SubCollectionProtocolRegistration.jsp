@@ -126,7 +126,10 @@
 		</script>
 	<%}%>
 
-	
+	<script>
+		//alert('<%=form.getId()%>');
+		parent.handleCpViewForSubCP('<%=form.getId()%>','Registered','','${requestScope.cpType}');
+	</script>
 </head>
 <%
 %>

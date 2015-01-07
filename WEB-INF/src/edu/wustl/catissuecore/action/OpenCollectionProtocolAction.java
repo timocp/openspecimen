@@ -56,7 +56,8 @@ public class OpenCollectionProtocolAction extends BaseAction
 		}
 			UserDAO userDAO = new UserDAO();
 			String piName = userDAO.getUserNameById(formName.getPrincipalInvestigatorId());
-		request.setAttribute("piName", piName);
+			request.setAttribute("piName", piName);
+		
 		final String operation = request.getParameter(Constants.OPERATION);
 		final String pageOf = request.getParameter(Constants.PAGE_OF);
 		final HttpSession session = request.getSession();

@@ -175,12 +175,16 @@ public class SpecimenInfo  implements Comparable<SpecimenInfo>{
 		if (this == obj) {
 			return true;
 		}
-		if (obj == null) {
+		if (obj == null) { 
 			return false;
 		}
 
 		if (obj instanceof SpecimenInfo) {
 			SpecimenInfo specimenInfo = (SpecimenInfo) obj;
+			if(specimenInfo.getId()!=null && specimenInfo.getRequirementId() !=null &&
+					this.id!=null && this.requirementId!=null){
+				return (this.requirementId+"_"+this.id).equals(specimenInfo.getRequirementId()+"_"+specimenInfo.getId());
+			}
 			if (specimenInfo.getId() == null && specimenInfo.getRequirementId() == null) {
 				return false;
 			}
@@ -210,6 +214,10 @@ public class SpecimenInfo  implements Comparable<SpecimenInfo>{
 	
 	@Override
 	public int compareTo(SpecimenInfo specimenInfo) {
+		if(specimenInfo.getId()!=null && specimenInfo.getRequirementId() !=null &&
+				this.id!=null && this.requirementId!=null){
+			return (this.requirementId+"_"+this.id).compareTo(specimenInfo.getRequirementId()+"_"+specimenInfo.getId());
+		}
 		if (requirementId != null && specimenInfo.getRequirementId() == null) {
 			return -1;
 		} else if (requirementId == null && specimenInfo.getRequirementId() != null) {
