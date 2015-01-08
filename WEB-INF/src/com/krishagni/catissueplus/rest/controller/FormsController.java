@@ -290,7 +290,7 @@ public class FormsController {
 
 				FormDataEvent resp = formSvc.saveFormData(req);
 				if (resp.getStatus() == EventStatus.OK) {
-					return resp.getFormData().toJson();
+					return resp.getFormData().toJson(formData.isUsingUdn());
 				}
 				
 				resp.raiseException();
