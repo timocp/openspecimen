@@ -987,8 +987,6 @@ Helpdesk Phone : @@contact.number@@</value>
 		<name>NoOfAttemptsForFailNotifications</name>
 		<value>3</value>
 	</property>
-
-    
 	<property>
 	   <name>participant.list.count</name>
 	   <value>200</value>
@@ -1025,5 +1023,13 @@ Helpdesk Phone : @@contact.number@@</value>
     <property>
       <name>appserver.home.dir</name>
       <value>@@appserver.home.dir@@</value>
+    </property>
+    <property>
+      <name>PPID_prefix</name>
+      <value>B</value>
+    </property>
+    <property>
+      <name>PPID_postfix</name>
+      <value></value>
     </property>
 </properties>
