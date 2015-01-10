@@ -352,6 +352,7 @@ public class AppUtility
 				final String tmpInnerStr = pv1.getValue();
 				innerList.add(new NameValueBean(tmpInnerStr, tmpInnerStr));
 			}
+			Collections.sort(innerList);
 			subTypeMap.put(permissibleVal.getValue(), innerList);
 		}
 		return subTypeMap;
