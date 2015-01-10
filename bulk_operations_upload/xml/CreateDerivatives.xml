@@ -31,32 +31,6 @@
 					<attribute name="name" csvColumnName="Container Name"   />
 				</referenceAssociation>			
 		</containmentAssociation>
-		<containmentAssociation
-			className="edu.wustl.catissuecore.domain.CollectionEventParameters"
-			   parentRoleName="specimen"  cardinality="*" roleName="specimenEventCollection">
-				<referenceAssociation
-				className="edu.wustl.catissuecore.domain.User"
-				      roleName="user">
-					<attribute name="loginName" csvColumnName="Collected User Login Name"   />
-				</referenceAssociation>
-				<attribute name="comment" csvColumnName="Collected Comments"    />								
-				<attribute name="collectionProcedure" csvColumnName="Procedure"   />
-				<attribute name="container" csvColumnName="Container"   />
-				<attribute name="timestamp" csvColumnName="Collected Date"   />
-		</containmentAssociation>
-		<containmentAssociation
-			className="edu.wustl.catissuecore.domain.ReceivedEventParameters"
-			   parentRoleName="specimen"  cardinality="*" roleName="specimenEventCollection">
-				<referenceAssociation
-				className="edu.wustl.catissuecore.domain.User"
-				      roleName="user">
-					<attribute name="loginName" csvColumnName="Received User Login Name"   />
-				</referenceAssociation>
-				<attribute name="comment" csvColumnName="Received Comments"   />								
-				<attribute name="receivedQuality" csvColumnName="Quality"   />				
-				<attribute name="timestamp" csvColumnName="Received Date"   />
-		</containmentAssociation>
-		
 		<!--attribute name="tissueSite" csvColumnName="Tissue Site"   /-->
 		<!--attribute name="tissueSide" csvColumnName="Tissue Side"   /-->
 		<attribute name="label" csvColumnName="Label"   />
