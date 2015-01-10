@@ -485,7 +485,10 @@ public class CreateSpecimenTemplateForm extends AbstractActionForm
 	@Override
 	protected void reset()
 	{
-
+		this.receivedEventUserId=0l;
+		this.receivedUserName="";
+		this.collectionEventUserId=0l;
+		this.collectionUserName="";
 	}
 
 	/* (non-Javadoc)
