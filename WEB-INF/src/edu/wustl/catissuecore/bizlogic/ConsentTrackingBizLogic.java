@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,6 +27,7 @@ import edu.wustl.catissuecore.domain.User;
 import edu.wustl.catissuecore.dto.ConsentTierDTO;
 import edu.wustl.catissuecore.dto.ConsentResponseDto;
 import edu.wustl.catissuecore.dto.ParticipantConsentFileDTO;
+import edu.wustl.catissuecore.util.IdComparator;
 import edu.wustl.catissuecore.util.global.AppUtility;
 import edu.wustl.catissuecore.util.global.Constants;
 import edu.wustl.common.beans.SessionDataBean;
@@ -111,6 +113,7 @@ public class ConsentTrackingBizLogic
 		}
 
 		ConsentResponseDto consentsDto = new ConsentResponseDto();
+		Collections.sort(consentTierList, new IdComparator());
 		consentsDto.setConsentTierList(consentTierList);
 		consentsDto.setConsentUrl(signedConsentURL);
 		consentsDto.setConsentDate(consentSignDate);
