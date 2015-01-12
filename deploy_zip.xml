@@ -5568,7 +5568,7 @@
 
     <target name="upgrade_db_os_v1.1">
       <antcall target="upgrade_de_db"/>
-
+      
       <updateDatabase 
         changeLogFile="${base.dir}/SQL/liquibase_xml/db-os-changelog-1.1.xml" 
         driver="${final.database.driver}" 
@@ -5579,6 +5579,7 @@
         classpathref="liquibaseClasspath" />
 
       <antcall target="migrate_specimen_events"/>
+      <antcall target="import_queries"/>
     </target>
 
 	<target name="upgrade_db_os_v1.2">
@@ -5590,7 +5591,19 @@
         password="${database.password}" 
         dropFirst="false" 
         classpathref="liquibaseClasspath" />
+		<antcall target="import_queries"/>
     </target>
+	
+	<target name="upgrade_vcb">
+	      <updateDatabase 
+	        changeLogFile="${base.dir}/SQL/liquibase_xml/db-os-changelog-vcb.xml" 
+	        driver="${final.database.driver}" 
+	        url="${final.database.url}" 
+	        username="${database.username}" 
+	        password="${database.password}" 
+	        dropFirst="false" 
+	        classpathref="liquibaseClasspath" />
+	    </target>
 
 
 		<target name="upgrade_de_db">
