@@ -65,6 +65,9 @@ public class SpecimenAddAction extends CatissueBaseAction
 						identifier);
 				specimenDTO = new krishagni.catissueplus.dto.SpecimenDTO();
 				specimenDTO.setSpecimenCollectionGroupId(scg.getId());
+				specimenDTO.setCpId(scg.getCollectionProtocolRegistration().getCollectionProtocol().getId());
+				specimenDTO.setCprID(scg.getCollectionProtocolRegistration().getId());
+				specimenDTO.setParticipantID(scg.getCollectionProtocolRegistration().getParticipant().getId());
 				specimenDTO.setSpecimenCollectionGroupName(scg.getName());
 				specimenDTO.setLineage(Constants.NEW_SPECIMEN);
 				specimenDTO.setCollectionStatus(Constants.COLLECTION_STATUS_COLLECTED);
@@ -78,6 +81,7 @@ public class SpecimenAddAction extends CatissueBaseAction
 				specimenDTO.setTissueSite(Constants.NOT_SPECIFIED);
 				
 				specimenDTO.setUserId(((SessionDataBean)request.getSession().getAttribute(Constants.SESSION_DATA)).getUserId());
+				specimenDTO.setUserName(((SessionDataBean)request.getSession().getAttribute(Constants.SESSION_DATA)).getUserName());
 				Calendar cal = Calendar.getInstance();
 				specimenDTO.setDisposalDate(cal.getTime());
 				specimenDTO.setDisposalHours(Integer.toString(cal
@@ -114,7 +118,13 @@ public class SpecimenAddAction extends CatissueBaseAction
 			List<NameValueBean> specimenClassList = new ArrayList<NameValueBean>();
 			specimenClassList.add(new NameValueBean(Constants.SELECT_OPTION,
 					Constants.SELECT_OPTION_VALUE));
-			request.setAttribute(Constants.SPECIMEN_TYPE_LIST, specimenClassList);
+//			if (!specimenDTO.getClassName().equals(Constants.SELECT_OPTION))
+//			{
+//				specimenClassList.clear();
+//				specimenClassList.addAll(AppUtility.getSpecimenTypes(specimenDTO.getClassName()));
+//			}
+			request.setAttribute(Constants.SPECIMEN_TYPE_LIST, AppUtility.getSpecTypes());
+//			request.setAttribute(Constants.SPECIMEN_TYPE_LIST, specimenClassList);
 
 			request.setAttribute(Constants.TISSUE_TYPE_LIST_JSON,
 					gson.toJson(AppUtility.getSpecimenTypes(Constants.TISSUE)));

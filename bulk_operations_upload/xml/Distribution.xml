@@ -15,7 +15,7 @@
 	</containmentAssociation>
 
 	<attribute name="distributionTitle" csvColumnName="Order Name"/>
-	<attribute name="status" csvColumnName="Ditstribution Status"/>
+	<attribute name="status" csvColumnName="Distribution Status"/>
 	<attribute name="sentDate" csvColumnName="Sent Date"/>
 	<attribute name="comments" csvColumnName="Comments"/>
 	<attribute name="quantity" csvColumnName="Distributed Quantity"/>

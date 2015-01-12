@@ -6061,6 +6061,9 @@ public class Constants
     public static final String THROTTLING_TIME_INTERVAL= "throttlingTimeIntervalInMinutes";
   	
   	public static final String THROTTLING_MAX_LIMIT="throttlingMaxLimits";
+  	
+  	public static final String SPECIMEN_QUALITY_GOOD = "Good";
+  	public static final String SPECIMEN_QUALITY_POOR = "Poor";
     
 
 }

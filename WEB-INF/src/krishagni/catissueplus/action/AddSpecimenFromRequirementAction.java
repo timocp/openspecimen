@@ -96,6 +96,7 @@ public class AddSpecimenFromRequirementAction extends CatissueBaseAction {
 			specimenDTO.setAvailable(Boolean.FALSE);
 			specimenDTO.setIsVirtual(Boolean.TRUE);
 			specimenDTO.setAvailableQuantity(0.0);
+			specimenDTO.setQuality(Constants.SPECIMEN_QUALITY_GOOD);
 			specimenDTO.setQuantity(requirement.getInitialQuantity());
 			
 			specimenDTO.setPathologicalStatus(requirement.getPathologicalStatus());
