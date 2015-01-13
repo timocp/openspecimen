@@ -341,23 +341,9 @@ Ext.onReady(function(){
                     ]
                 }
             },
-			  {
-                text: 'Distribution',
-				tooltip:'Specimen Report',
-				href:'SimpleQueryInterface.do?pageOf=pageOfDistribution&aliasName=Distribution',
-                menu: {        // <-- submenu by nested config object
-					width:170,
-                    items: [
-                        // stick any markup in a menu
-						{
-                            text: 'Array Report',
-                            href:'SimpleQueryInterface.do?pageOf=pageOfArrayDistribution&aliasName=Distribution_array'
-                        }
-                    ]
-                }
-            },
+			  
 
-                                      {
+              {
 
                             text: 'Order View',
 							tooltip:'Order View',
