@@ -16,7 +16,7 @@ specimenEvent.controller('SpecimenEventController',
           return;
         }
 
-        for (var i = 0; i < events.length; ++i) {
+        for (var i = events.length-1; i>=0; --i) {
           if (events[i].sysForm) {
             events.splice(i, 1);
           }
@@ -25,7 +25,7 @@ specimenEvent.controller('SpecimenEventController',
         $scope.specimenEvents = events;
       }
     );
-
+    
     var renderDataTable = function(formId, formDef) {
       var dataTable = new edu.common.de.DataTable({
         formId           : formId,
