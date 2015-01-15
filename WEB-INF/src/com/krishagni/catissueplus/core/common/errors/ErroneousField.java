@@ -9,7 +9,6 @@ public class ErroneousField {
 
 	public ErroneousField(CatissueErrorCode error, String field) {
 		this.error = error;
-
 		this.fieldName = field;
 	}
 
@@ -21,8 +20,8 @@ public class ErroneousField {
 		return error.message();
 	}
 
-	public int getErrorCode() {
-		return error.code();
+	public Integer getErrorCode() {
+		return error == null ? null : error.code();
 	}
 
 	public String getFieldName() {

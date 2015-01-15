@@ -54,6 +54,7 @@ import com.krishagni.catissueplus.core.de.events.ReqFormFieldsEvent;
 import com.krishagni.catissueplus.core.de.events.SaveFormDataEvent;
 import com.krishagni.catissueplus.core.de.services.FormService;
 
+import edu.common.dynamicextensions.domain.nui.ValidationErrors;
 import edu.common.dynamicextensions.napi.FormData;
 import edu.common.dynamicextensions.nutility.ContainerJsonSerializer;
 import edu.common.dynamicextensions.nutility.ContainerSerializer;
@@ -85,7 +86,6 @@ public class FormsController {
 			return resp.getForms();
 		}
 		
-		// TODO: Return appropriate error codes
 		return null;
 	}
 	
@@ -281,6 +281,7 @@ public class FormsController {
 				return bulkSaveFormData(formId, formDataJson);
 			} else {
 				FormData formData = FormData.fromJson(formDataJson, formId);
+				formData.validate();
 
 				SaveFormDataEvent req = new SaveFormDataEvent();
 				req.setFormData(formData);
@@ -295,6 +296,8 @@ public class FormsController {
 				
 				resp.raiseException();
 			}			
+		} catch (ValidationErrors ve) {
+			FormDataEvent.badRequest(ve).raiseException();
 		} catch (IllegalArgumentException iae) {
 			FormDataEvent.badRequest(iae.getMessage()).raiseException();
 		}
@@ -310,6 +313,7 @@ public class FormsController {
   		for (int i = 0; i < records.size(); i++) {
   			String formDataJson = records.get(i).toString();
   			FormData formData = FormData.fromJson(formDataJson, formId);
+  			formData.validate();
   			formDataList.add(formData);
   		}
 				
