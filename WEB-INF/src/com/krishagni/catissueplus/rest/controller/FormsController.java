@@ -158,6 +158,7 @@ public class FormsController {
 			return resp.getFormData().toJson(includeUdn);
 		}
 		
+		resp.raiseException();
 		return null;
 	}
 	
