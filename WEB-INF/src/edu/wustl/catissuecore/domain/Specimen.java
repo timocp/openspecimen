@@ -1446,9 +1446,7 @@ public class Specimen extends AbstractSpecimen implements Serializable, IActivit
 							collEventParam);
 					collectionEventParameters.setSpecimen(this);
 					collectionEventParameters.setTimestamp(collTimestamp);
-					if(collectionEventParameters.getUser() == null){
-						collectionEventParameters.setUser(collEventUser);
-					}
+					collectionEventParameters.setUser(collEventUser);
 					if (!Constants.CP_DEFAULT.equals(collProcedure))
 					{
 						collectionEventParameters.setCollectionProcedure(collProcedure);
@@ -1477,9 +1475,7 @@ public class Specimen extends AbstractSpecimen implements Serializable, IActivit
 							recEventParam);
 					receivedEventParameters.setSpecimen(this);
 					receivedEventParameters.setTimestamp(recTimestamp);
-					if(receivedEventParameters.getUser() == null){
-						receivedEventParameters.setUser(recEventUser);
-					}
+					receivedEventParameters.setUser(recEventUser);
 					if (!Constants.CP_DEFAULT.equals(recQty))
 					{
 						receivedEventParameters.setReceivedQuality(recQty);

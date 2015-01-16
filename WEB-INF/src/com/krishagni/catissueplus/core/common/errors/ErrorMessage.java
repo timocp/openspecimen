@@ -1,13 +1,17 @@
 
 package com.krishagni.catissueplus.core.common.errors;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+@JsonInclude(Include.NON_NULL)
 public class ErrorMessage {
 
 	private String errorUrl;
 
 	private String attributeName;
 
-	private int errorCode;
+	private Integer errorCode;
 
 	private String message;
 
@@ -27,11 +31,11 @@ public class ErrorMessage {
 		this.attributeName = attributeName;
 	}
 
-	public int getErrorCode() {
+	public Integer getErrorCode() {
 		return errorCode;
 	}
 
-	public void setErrorCode(int errorCode) {
+	public void setErrorCode(Integer errorCode) {
 		this.errorCode = errorCode;
 	}
 

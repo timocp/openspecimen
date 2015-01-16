@@ -75,7 +75,7 @@ function submitOrderNew(consentVerifiedValues)
 
 	if(distributionProtocolNameCombo.getActualValue()=="" || distributionProtocolNameCombo.getActualValue()=="-1")
 	{
-		if(!orderRejected)
+		//if(!orderRejected)
 		{
                   alert("Please select distribution protocol.");
                   return;	

@@ -223,14 +223,19 @@ angular.module('plus.cpview', [])
   };
 
   $scope.handleSubCPScenario = function(displayNode) {//alert('here for status update');
+  $scope.$apply(function(){
     $scope.selectedNode.collectionStatus=$scope.getStatusIcon(displayNode.collectionStatus,displayNode.cpType);
 	$scope.selectedNode.nodes=[];
 	$scope.selectedNode.state='closed';
-	$scope.selectedNode.regId='';
-	if($scope.selectedNode.type != 'childCP' && displayNode.name){
+	if($scope.selectedNode.type == 'childCP'){
+		$scope.selectedNode.regId=displayNode.id;
+	}
+	$scope.selectedNode.childrenProbed='';
+	if($scope.selectedNode.type == 'specimen' && displayNode.name){
       $scope.selectedNode.name=displayNode.name;
 	  $scope.selectedNode.specimenId=displayNode.id;
 	}
+	});
   };
   
   $scope.getSpecimenTree = function(specimens,parentType) {
@@ -347,7 +352,7 @@ angular.module('plus.cpview', [])
     if (data.state == 'closed') {
       data.state = 'opened';
 
-      if (data.childrenProbed == undefined) {
+      if (data.childrenProbed == "" || data.childrenProbed == undefined) {
     	  var scgId = data.scgId;
           if (data.type == 'scg') {
   		  var objectType="";

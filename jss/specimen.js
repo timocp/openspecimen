@@ -868,6 +868,7 @@ req.onreadystatechange = function() {
   var updatedSpecimenDTO = eval('('+resp+')')
 	
   parent.handleCpView(null, updatedSpecimenDTO.specimenCollectionGroupId, updatedSpecimenDTO.id);
+  parent.handleCpViewForSubCP(updatedSpecimenDTO.id,updatedSpecimenDTO.collectionStatus,updatedSpecimenDTO.label,'');
 
 				document.getElementById('available').disabled = false;
 				document.getElementById('available').checked = updatedSpecimenDTO.available;
@@ -1402,6 +1403,7 @@ req.onreadystatechange = function() {
 					document.forms[0].submit();
 				}
 				parent.handleCpView(null, specimenDto.specimenCollectionGroupId, specimenDto.id);
+				parent.handleCpViewForSubCP(specimenDto.id,specimenDto.collectionStatus,specimenDto.label,'');
 
 			/*}
 			else
