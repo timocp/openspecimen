@@ -18,7 +18,8 @@
            http://www.springframework.org/schema/context/spring-context-3.2.xsd
            http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
-  <bean class="com.krishagni.catissueplus.core.common.RestErrorController" /> 
+
+  <context:component-scan base-package="com.krishagni.catissueplus.core"/>
 
   <!-- Beans for caCORE starts -->
   <bean id="remoteService" class="gov.nih.nci.system.comm.server.ApplicationServiceServerImpl" />
@@ -216,9 +217,14 @@
   <bean id="formDao" class="com.krishagni.catissueplus.core.de.repository.impl.FormDaoImpl">
     <property name="sessionFactory" value="#{sessionFactoryBuilder.getSessionFactory()}"/> 
   </bean>
-  
+
+  <bean id="formDataMgr" class="edu.common.dynamicextensions.napi.impl.FormDataManagerImpl">
+    <constructor-arg value="false"/>
+  </bean>
+
   <bean id="formSvc" class="com.krishagni.catissueplus.core.de.services.impl.FormServiceImpl">
     <property name="formDao" ref="formDao"/>
+    <property name="formDataMgr" ref="formDataMgr"/>
   </bean>
   
   <bean id="specimenEventsSvc" class="com.krishagni.catissueplus.core.biospecimen.services.impl.SpecimenEventsServiceImpl">
@@ -401,6 +407,12 @@
        
        <bean id="commonValidatorSvc" class="com.krishagni.catissueplus.core.common.CommonValidator">
        <property name="pvManager" ref="pvMangeerSvc"/>
+  </bean>
+
+  <bean class="com.krishagni.catissueplus.core.common.RestErrorController" /> 
+
+  <bean id="initializer" class="com.krishagni.catissueplus.core.common.AppInitializer">
+    <property name="formDataMgr" ref="formDataMgr"/>
   </bean>
 
   <bean id="appCtxProvider" class="com.krishagni.catissueplus.core.common.OpenSpecimenAppCtxProvider">

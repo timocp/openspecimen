@@ -70,7 +70,6 @@ import edu.common.dynamicextensions.domain.nui.SubFormControl;
 import edu.common.dynamicextensions.napi.FileControlValue;
 import edu.common.dynamicextensions.napi.FormData;
 import edu.common.dynamicextensions.napi.FormDataManager;
-import edu.common.dynamicextensions.napi.impl.FormDataManagerImpl;
 import edu.common.dynamicextensions.nutility.FileUploadMgr;
 import edu.wustl.catissuecore.action.bulkOperations.BOTemplateGeneratorUtil;
 import edu.wustl.common.beans.SessionDataBean;
@@ -94,6 +93,8 @@ public class FormServiceImpl implements FormService {
 	
 	private FormDao formDao;
 	
+	private FormDataManager formDataMgr;
+	
 	public FormDao getFormDao() {
 		return formDao;
 	}
@@ -102,7 +103,15 @@ public class FormServiceImpl implements FormService {
 		this.formDao = formDao;
 	}
 	
-    @Override
+	public FormDataManager getFormDataMgr() {
+		return formDataMgr;
+	}
+
+	public void setFormDataMgr(FormDataManager formDataMgr) {
+		this.formDataMgr = formDataMgr;
+	}
+
+	@Override
     @PlusTransactional
 	public AllFormsSummaryEvent getForms(ReqAllFormsSummaryEvent req) {
 		switch (req.getFormType()) {
@@ -273,8 +282,6 @@ public class FormServiceImpl implements FormService {
 	@PlusTransactional
 	public FormDataEvent getFormData(ReqFormDataEvent req) {
 		Long formId = req.getFormId(), recordId = req.getRecordId();
-		FormDataManager formDataMgr = new FormDataManagerImpl(false);
-		
 		FormData formData = formDataMgr.getFormData(formId, recordId);		
 		if (formData == null) {
 			return FormDataEvent.notFound(formId, recordId);
@@ -341,7 +348,6 @@ public class FormServiceImpl implements FormService {
 			}
 		}
 
-		FormDataManager formDataMgr = new FormDataManagerImpl(false);
 		recordId = formDataMgr.saveOrUpdateFormData(null, formData);
 
 		FormRecordEntryBean recordEntry = null;
@@ -371,7 +377,6 @@ public class FormServiceImpl implements FormService {
 	@Override
 	@PlusTransactional
 	public FileDetailEvent getFileDetail(ReqFileDetailEvent req) {
-		FormDataManager formDataMgr = new FormDataManagerImpl(false);
 		FileControlValue fcv = formDataMgr.getFileControlValue(req.getFormId(), req.getRecordId(), req.getCtrlName());
 		if (fcv == null) {
 			return FileDetailEvent.notFound();
