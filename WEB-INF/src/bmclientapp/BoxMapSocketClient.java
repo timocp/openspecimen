@@ -900,7 +900,7 @@ private void LogString(String strLog) {
     }
 
     // Test and demonstrate the API calls
-    public ScanStorageContainerDetails getStorageContainerDetails() {
+    public ScanStorageContainerDetails getStorageContainerDetails(String containerName) {
 
         int ret;
         
@@ -974,7 +974,7 @@ private void LogString(String strLog) {
         }
         
         ScanStorageContainerDetails scanStorageContainerDetails = new ScanStorageContainerDetails();
-        scanStorageContainerDetails.setContainerName("HeadAndNeck_WholeBloodBox_9x9");
+        scanStorageContainerDetails.setContainerName(containerName);
         scanStorageContainerDetails.setOneDimensionCapacity(Integer.parseInt(Byte.toString(g1.uNumRows)));
         scanStorageContainerDetails.setTwoDimensionCapacity(Integer.parseInt(Byte.toString(g1.uNumCols)));
         for (vx = 0; vx < r1.u16; vx++) {

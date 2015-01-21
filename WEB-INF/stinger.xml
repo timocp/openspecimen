@@ -76,6 +76,7 @@ the Stinger project lead at eric.sheridan@owasp.org
 		<exclude>/openspecimen/CreateAliquotsFromSpecimen.do*</exclude>
 		<exclude>/openspecimen/GetAliquotInfoAjax.do*</exclude>
 		<exclude>/openspecimen/CPQueryParticipantEdit.do*</exclude>
+		<exclude>/openspecimen/ResolveScanConflicts.do*</exclude>
 		<exclude>.*.jss</exclude>
 		<exclude>.*.css</exclude>
 	</exclude-set>

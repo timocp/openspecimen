@@ -35,7 +35,7 @@ public class BMClientApp {
         if (0 != ret) {
             return null;
         }
-        ScanStorageContainerDetails scanStorageContainerDetails = client.getStorageContainerDetails();
+        ScanStorageContainerDetails scanStorageContainerDetails = client.getStorageContainerDetails("");
         
         client.Close();
         

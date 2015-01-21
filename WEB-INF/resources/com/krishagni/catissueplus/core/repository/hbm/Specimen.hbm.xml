@@ -80,6 +80,8 @@
 		<property name="collectionStatus" type="string" column="COLLECTION_STATUS" />
 
 		<property name="barcode" type="string" column="BARCODE" />
+		
+		<property name="rfId" type="string" column="RF_ID" />
 
 		<property name="createdOn" type="date" column="CREATED_ON_DATE" />
 
@@ -106,6 +108,12 @@
 		<query name="getSpecimenIdByBarcode">
 			select sp.id from Specimen sp where
 			sp.barcode=:barcode
+		</query>
+		<query name="getSpecimenByBarcode">
+			select sp from com.krishagni.catissueplus.core.biospecimen.domain.Specimen sp where sp.barcode=:barcode
+		</query>
+		<query name="getSpecimenByRfId">
+			select sp from com.krishagni.catissueplus.core.biospecimen.domain.Specimen sp where sp.rfId=:rfId
 		</query>
 		<query name="getSpecimenByLabel">
 			select sp from com.krishagni.catissueplus.core.biospecimen.domain.Specimen sp where sp.label=:label

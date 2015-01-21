@@ -1,6 +1,12 @@
 <!doctype html>
 <html lang="en">
 <head>
+<%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic" %>
+<%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean" %>
+<%@ page import="org.apache.struts.action.ActionErrors"%>
+<%@ page import="org.apache.struts.action.Action"%>
+<%@ page import="org.apache.struts.action.ActionError"%>
+<%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
 <meta charset="utf-8">
     <script language="JavaScript" type="text/javascript" src="dhtmlxSuite_v35/dhtmlxGrid/codebase/dhtmlxcommon.js"></script>
 	<script  language="JavaScript" type="text/javascript"src="dhtmlxSuite_v35/dhtmlxGrid/codebase/dhtmlxgrid.js"></script> 
@@ -28,38 +34,64 @@
 
 </head>
 <body>
-  <table border="0" width="100%">
-    <form name="containerScan" id="containerScan" action="DisplayScanContainerDetails.do">
-	<tr height="20%">
-	  <td>
-		&nbsp;
-	  </td>
-	</tr>
-    <tr>
-      <td width="5%">
-        
-      </td>
-      <td class="black_ar_b" width="15%">
-        IP Address: &nbsp;<input type="text" id="ipAddress" name="ipAddress"/>
-      </td>
-	  <td align="left" width="15%">
-	  <select name="contName" class="black_ar" id="contName"></select>
-	  </td>
-	  <td align="left" width="1%">
-         <input type="button" name="submit1" value="scan" onClick="getScanDataFromIP()"/>
-		 <input type="hidden" name="selCont" id="selCont"/>
-      </td>
-	  <td align="left" width="30%">
-        
-      </td>
-    </tr>
-    <tr>
-      <td colspan="3">
-      
-      </td>
-    </tr>
-    </form>
-  </table>
+
+
+	<table width="100%" border="0" cellpadding="3" cellspacing="6">
+		<form name="containerScan" id="containerScan" action="DisplayScanContainerDetails.do">
+		<tr>
+                    <td colspan="7" align="left" class="bottomtd"><%@ include
+                        file="/pages/content/common/ActionErrors.jsp"%>
+                    </td>
+                </tr>
+                        <tr>
+                            <td width="1%" align="center" class="black_ar"><span
+                                class="blue_ar_b"></span></td>
+                            <td width="17%" align="left" class="black_ar">Container Name</td>
+                            <td width="19%" align="left"><input type="text" id="containerName" name="containerName" size="29"/></td>
+                            <td width="13%" align="left">&nbsp;</td>
+
+                            
+                                
+                                <td width="32%" align="left" colspan="3" valign="top">&nbsp;</td>
+                            
+                        </tr>
+						<tr>
+                            <td width="1%" align="center" class="black_ar"><span
+                                class="blue_ar_b"></span></td>
+                            <td width="17%" align="left" class="black_ar">Choose Scanner</td>
+                            <td width="19%" align="left">
+								<select  tabindex="13" name="boxScanner"  id="boxScanner" class="black_ar">
+									<logic:iterate id="scannerList" name="scannerList">
+										<logic:notEqual name="scannerList"  property='name' value="-- Select --">
+											<option value="<bean:write name='scannerList' property='value'/>"><bean:write name="scannerList" property="name"/></option>
+										</logic:notEqual>
+									</logic:iterate>
+								</select>
+							</td>
+                            <td width="13%" align="left">&nbsp;</td>
+							<td width="32%" align="left" colspan="3" valign="top">&nbsp;</td>
+                        </tr>
+						<tr>
+                            <td width="1%" align="center" class="black_ar"><span
+                                class="blue_ar_b"></span></td>
+                            <td width="17%" align="left" class="black_ar"><input type="button" name="submit1" value="scan" onClick="getScanDataFromIP()"/></td>
+                            <td width="19%" align="left">
+								
+		 <input type="hidden" name="scannerName" id="scannerName"/>
+							</td>
+                            <td width="13%" align="left">&nbsp;</td>
+
+                            
+                                
+                                <td width="32%" align="left" colspan="3" valign="top">&nbsp;</td>
+                            
+                        </tr>
+						</form>
+				</table>
+
+
+
+  
 </body>
 </html>
 <script>
@@ -67,46 +99,24 @@
 </script>
 <script>
   function getScanDataFromIP(){
-	  var ipAdd = document.getElementById('ipAddress').value;
-	  var contName = collectionEventUserIdCombo.getSelectedText();
-	  if(!ipAdd){
-	  alert("Please specify the IP address.");
+	  var containerName = document.getElementById('containerName').value;
+	  var boxScanner = collectionEventUserIdCombo.getSelectedText();
+	  if(!containerName){
+	  alert("Please specify Container Name.");
 	  return;
-	  }alert(contName);
-	  document.getElementById('selCont').value=collectionEventUserIdCombo.getSelectedText();
-	  document.forms["containerScan"].action="DisplayScanContainerDetails.do?ctName='"+contName+"'";
+	  }
+	  document.getElementById('scannerName').value=collectionEventUserIdCombo.getSelectedText();
+	  document.forms["containerScan"].action="DisplayScanContainerDetails.do?scannerName="+boxScanner+"&ctName="+containerName;
+	  
 	  document.forms["containerScan"].submit();
   }
   var collUserName='';
   var collUserId='';
-  var collectionEventUserIdCombo = new dhtmlXCombo("contName","contName","100px");;
-	collectionEventUserIdCombo.setOptionWidth(200);
-	collectionEventUserIdCombo.setSize(200);
-	collectionEventUserIdCombo.loadXML('/openspecimen/CatissueCommonAjaxAction.do?type=getContainerNames',function(){
-		collectionEventUserIdCombo.setComboText(collUserName);
-		collectionEventUserIdCombo.setComboValue(collUserId);
-		collectionEventUserIdCombo.DOMelem_input.title=collUserName;
+  var collectionEventUserIdCombo = dhtmlXComboFromSelect("boxScanner");
+		collectionEventUserIdCombo.setSize(203);
+		//collectionEventUserIdCombo.attachEvent("onChange", function(){onSpecimenTypeChange(this);validateAndProcessDeriveComboData(this);});
+		collectionEventUserIdCombo.attachEvent("onOpen",onComboClick);
+		collectionEventUserIdCombo.attachEvent("onKeyPressed",onComboKeyPress);
 	
-	});
 	
-	collectionEventUserIdCombo.attachEvent("onKeyPressed",function(){
-		collectionEventUserIdCombo.enableFilteringMode(true,'/openspecimen/CatissueCommonAjaxAction.do?type=getContainerNames',false);
-		collectionEventUserIdCombo.attachEvent("onChange", function(){collectionEventUserIdCombo.DOMelem_input.focus();});
-		});
-	//collectionEventUserIdCombo.attachEvent("onOpen",onComboClick);
-	collectionEventUserIdCombo.attachEvent("onSelectionChange",function(){
-var diagnosisVal = collectionEventUserIdCombo.getSelectedText();
-		if(diagnosisVal)
-			collectionEventUserIdCombo.DOMelem_input.title=collectionEventUserIdCombo.getSelectedText();
-		else
-			collectionEventUserIdCombo.DOMelem_input.title='Start typing to see values';
-});
-	collectionEventUserIdCombo.attachEvent("onXLE",function (){collectionEventUserIdCombo.addOption(collUserId,collUserName);});
-	dhtmlxEvent(collectionEventUserIdCombo.DOMelem_input,"mouseover",function(){
-var diagnosisVal = collectionEventUserIdCombo.getSelectedText();
-		if(diagnosisVal){
-			collectionEventUserIdCombo.DOMelem_input.title=collectionEventUserIdCombo.getSelectedText();}
-		else
-			collectionEventUserIdCombo.DOMelem_input.title='Start typing to see values';
-});
 </script>

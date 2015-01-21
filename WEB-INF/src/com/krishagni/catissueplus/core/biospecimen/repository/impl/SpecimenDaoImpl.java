@@ -149,6 +149,15 @@ public class SpecimenDaoImpl extends AbstractDao<Specimen> implements SpecimenDa
 	  return results.isEmpty()? null: results.get(0);
 	 }
 
+	@SuppressWarnings("unchecked")
+	 @Override
+	 public Specimen getSpecimenByRfId(String rfId) {
+	  Query query = sessionFactory.getCurrentSession().getNamedQuery(GET_SPECIMEN_BY_RFID);
+	  query.setString("rfId", rfId);
+	  List<Specimen> results = query.list();
+	  return results.isEmpty()? null: results.get(0);
+	 }
+
 	private static final String FQN = Specimen.class.getName();
 
 	private static final String GET_SCG_ID_BY_SPECIMEN_ID = FQN + ".getScgIdBySpecimenId";
@@ -160,6 +169,8 @@ public class SpecimenDaoImpl extends AbstractDao<Specimen> implements SpecimenDa
 	private static final String GET_SPECIMENS_BY_LABEL = FQN + ".getSpecimensByLabel";
 	
 	private static final String GET_SPECIMEN_BY_BARCODE = FQN+".getSpecimenByBarcode";
+	
+	private static final String GET_SPECIMEN_BY_RFID = FQN + ".getSpecimenByRfId";
 
 
 }

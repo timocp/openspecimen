@@ -28,14 +28,54 @@
 
 </head>
 <body onload="getScanData()">
-<div align="left" style="width:99%;margin-top: 10px; height:20px;margin-left:auto;margin-right:auto;" class="tr_bg_blue1">
-<span class="black_ar" style="font-size: 15px; margin-left: 7px; font-weight: 600;">Container Name : </span> <span  style="font-size: 15px;" class="black_ar" id="containerName"></span>
+<div align="left" style="width:99%;margin-top: 10px; height:22px;margin-left:auto;margin-right:auto;" class="tr_bg_blue1">
+<span class="black_ar" style="font-size: 15px; margin-left: 7px; font-weight: 600;">Container Name : </span> <span  style="font-size: 15px;" class="black_ar" id="containerName"></span><span align="right" style="margin-left: 7px"><input type="button" value="Fix all errors" onclick="resolveErrors()"/></span>
 </div>
-<div id="containerGrid" style="width:99%; height:100%;margin-left:auto;margin-right:auto;margin-top: 10px;"></div>
+<div id="containerGrid" style="width:99%; height:99%;margin-left:auto;margin-right:auto;margin-top: 10px;"></div>
 <div id="containerPositionPopUp"></div>
 </body>
 </html>
 <script>
+var globalContData;
+function createRequest() {
+  var result = null;
+  if (window.XMLHttpRequest) {
+    // FireFox, Safari, etc.
+    result = new XMLHttpRequest();
+   
+  }
+  else if (window.ActiveXObject) {
+    // MSIE
+    result = new ActiveXObject("Microsoft.XMLHTTP");
+  } 
+  else {
+    // No known mechanism -- consider aborting the application
+  }
+  return result;
+}
+function resolveErrors(){
+	var param = "result="+JSON.stringify(globalContData);
+	var req = createRequest(); // defined above
+	// Create the callback:
+	req.onreadystatechange = function() {
+		if (req.readyState != 4) return; // Not there yet
+		var response = eval('('+ req.responseText+')');
+		init(response);
+		if(response.success == "success")
+		{
+			//init(init);
+		}
+		else
+		{
+			document.getElementById('error').style.display='block';
+			document.getElementById('errorMsg').innerHTML=response.msg;
+		}
+	}
+	req.open("POST", "rest/ng/container-scanners/resolve", false);
+	req.setRequestHeader("Content-Type","application/json");
+	
+	req.send(JSON.stringify(globalContData));
+}
 function getScanData(){
 <logic:equal name="ipAddress" value="SINGLE_VIAL">
 	document.location = "/openspecimen/SearchObject.do?pageOf=pageOfNewSpecimen&operation=search&id=2";
@@ -53,7 +93,7 @@ req.onreadystatechange = function() {
 	  validateContainerData(containerDTO);
 	}
 
-req.open("GET", "rest/ng/storage-containers/scanContainer?ipAddress="+ipAddress+"&selCont="+selCont, false);
+req.open("GET", "rest/ng/container-scanners/scanContainer?ipAddress="+ipAddress+"&selCont="+selCont, false);
 req.setRequestHeader("Content-Type","application/json");
 req.send();
 
@@ -68,7 +108,7 @@ function validateContainerData(containerData){
 	  init(updatedContainerDTO);
 	}
 
-	req.open("POST", "rest/ng/storage-containers/validateScanData/", false);
+	req.open("POST", "rest/ng/container-scanners/validateScanData/", false);
 	req.setRequestHeader("Content-Type","application/json");
 	
 	/*var containerData = {
@@ -91,7 +131,7 @@ function validateContainerData(containerData){
 	req.send(JSON.stringify(containerData));
 }
 function init(containerDTO){
-	
+	globalContData = containerDTO;
 	var columnWidth;
 	var widthString = "";
 	var alignString = "";
@@ -172,10 +212,11 @@ function init(containerDTO){
 			cellVal = "<a href='#'  id='"+occupiedPositionArr[i].sepcimenLable+"_anchor' title='"+tooltipStr+"' ><span>"+occupiedPositionArr[i].sepcimenLable+"</span></a>";
 			
 		}else if(occupiedPositionArr[i].conflict && !occupiedPositionArr[i].notPresent){
-			cellVal = "<a href='#' id='"+occupiedPositionArr[i].sepcimenLable+"_anchor' title='Error! Different specimen stored in OpenSpecimen DB.'><img src='images/uIEnhancementImages/alert.png' alt='Unused' align='middle' border='0'></img></a>";
+			cellVal = "<a href='#' id='"+occupiedPositionArr[i].sepcimenLable+"_anchor' title='Error! Different specimen stored in OpenSpecimen database.'><img src='images/uIEnhancementImages/alert.png' alt='Unused' align='middle' border='0'></img></a>";
 		}
 		else if(occupiedPositionArr[i].notPresent){
-			cellVal = "<a href='/openspecimen/NewSpecimenFromScan.do?rfId="+occupiedPositionArr[i].barCode+"&contName="+occupiedPositionArr[i].containerName+"&pos1="+occupiedPositionArr[i].posX+"&pos2="+occupiedPositionArr[i].posX+"' id='"+occupiedPositionArr[i].sepcimenLable+"_anchor' >Add</a>";
+			var tooltipStr = 'Specimen with RFID "<'+occupiedPositionArr[i].barCode+'>" not present in OpenSpecimen database.';
+			cellVal = "<span title='"+tooltipStr+"'><img src='images/Action-close.png' alt='Not available' align='middle' border='0'></img></span>";
 		}
 		cellObj.setValue(cellVal);
 		cellObj.setAttribute("title","new title");
