@@ -2552,6 +2552,19 @@ PUBLIC
 			<forward name="pageOfSpecimenCollectionRequirementGroup"
 				path=".catissuecore.SpecimenCollectionRequirementGroupEditDef" />
 		</action>
+		
+		<action path="/DisplayScanContainerDetails" type="krishagni.catissueplus.action.DisplayScanContainerDetailAction"
+		  validate="false" scope="request">
+		  <forward name="success" path=".catissuecore.scanContainer"/> 
+		</action>
+		
+		<action path="/ScanContainer"
+			scope="request" forward=".catissuecore.scanContainerConfig">
+		</action>
+		
+		<action path="/ScanContainerNew"
+			scope="request" forward=".catissuecore.scanContainerNewConfig">
+		</action>
 
 		<action path="/NewSpecimenAdd" type="edu.wustl.common.action.CommonAddEditAction"
 			name="newSpecimenForm" validate="true"
@@ -6192,7 +6205,7 @@ PUBLIC
 		key="msg.shippingtracking" null="false" />
 
 	<plug-in className="org.apache.struts.tiles.TilesPlugin">
-		<set-property property="definitions-config" value="/WEB-INF/tiles-defs.xml, /WEB-INF/bulkoperation-tiles-defs.xml, /WEB-INF/ShippingTracking-tiles-defs.xml" />
+		<set-property property="definitions-config" value="/WEB-INF/tiles-defs.xml, /WEB-INF/bulkoperation-tiles-defs.xml, /WEB-INF/bulkoperation-tiles-defs.xml, /WEB-INF/bulkoperation-tiles-defs.xml, /WEB-INF/bulkoperation-tiles-defs.xml, /WEB-INF/bulkoperation-tiles-defs.xml, /WEB-INF/bulkoperation-tiles-defs.xml, /WEB-INF/bulkoperation-tiles-defs.xml, /WEB-INF/bulkoperation-tiles-defs.xml, /WEB-INF/bulkoperation-tiles-defs.xml, /WEB-INF/bulkoperation-tiles-defs.xml, /WEB-INF/bulkoperation-tiles-defs.xml, /WEB-INF/bulkoperation-tiles-defs.xml, /WEB-INF/bulkoperation-tiles-defs.xml, /WEB-INF/bulkoperation-tiles-defs.xml, /WEB-INF/bulkoperation-tiles-defs.xml, /WEB-INF/bulkoperation-tiles-defs.xml, /WEB-INF/bulkoperation-tiles-defs.xml, /WEB-INF/bulkoperation-tiles-defs.xml, /WEB-INF/bulkoperation-tiles-defs.xml, /WEB-INF/bulkoperation-tiles-defs.xml, /WEB-INF/bulkoperation-tiles-defs.xml, /WEB-INF/bulkoperation-tiles-defs.xml, /WEB-INF/bulkoperation-tiles-defs.xml, /WEB-INF/bulkoperation-tiles-defs.xml, /WEB-INF/ShippingTracking-tiles-defs.xml" />
 		<set-property property="moduleAware" value="true" />
 		<set-property property="definitions-parser-validate"
 			value="true" />

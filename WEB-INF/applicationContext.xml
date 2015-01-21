@@ -104,6 +104,10 @@
 	<property name="scgBarcodeGenerator" ref="scgBarcodeGenerator"/>
   </bean>
   
+  <bean id="scannerSvc" class="com.krishagni.catissueplus.core.administrative.services.impl.BoxScanServiceImpl">
+    <property name="daoFactory" ref="biospecimenDaoFactory"/>
+  </bean>
+  
   <bean id="cpSvc" class="com.krishagni.catissueplus.core.biospecimen.services.impl.CollectionProtocolServiceImpl">
     <property name="daoFactory" ref="biospecimenDaoFactory"/>
     <property name="privilegeSvc" ref="privSvc"/>

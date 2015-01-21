@@ -133,6 +133,8 @@ public class Specimen extends AbstractSpecimen implements Serializable, IActivit
 	 * Barcode assigned to the specimen.
 	 */
 	protected String barcode;
+	
+	private String rfId;
 	/**
 	 * Comment on specimen.
 	 */
@@ -284,6 +286,13 @@ public class Specimen extends AbstractSpecimen implements Serializable, IActivit
 		this.isAvailable = isAvailable;
 	}
 
+	public String getRfId() {
+         return rfId;
+  }
+		
+   public void setRfId(String rfId) {
+	      this.rfId = rfId;
+	 }
 	/**
 	 * Returns the barcode assigned to the specimen.
 	 * @hibernate.property name="barcode" type="string" column="BARCODE" length="255" unique="true"

@@ -22,6 +22,7 @@ public class SpecimenDTO
 	private String parentSpecimenName;
 	private String lineage;
 	private String barcode;
+	private String rfId;
 	private String tissueSite;
 	private String tissueSide;
 	private String pathologicalStatus;
@@ -314,5 +315,14 @@ public class SpecimenDTO
 	public void setDisposalMins(String disposalMins) {
 		this.disposalMins = disposalMins;
 	}
+
+	public String getRfId() {
+		return rfId;
+	}
+
+	public void setRfId(String rfId) {
+		this.rfId = rfId;
+	}
+	
 }
  

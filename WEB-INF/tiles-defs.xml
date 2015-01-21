@@ -44,6 +44,18 @@
 	<definition name=".catissuecore.reportProblemSuccessDef" extends=".catissuecore.homePageDef">
 		<put name="content" value="/pages/content/common/success.jsp" />
 	</definition>
+	
+	<definition name=".catissuecore.scanContainer" extends=".catissuecore.homePageDef">
+		<put name="content" value="/pages/content/manageAdministrativeData/scanContainer.jsp" />
+	</definition>
+	
+	<definition name=".catissuecore.scanContainerConfig" extends=".catissuecore.homePageDef">
+		<put name="content" value="/pages/content/manageAdministrativeData/ScanContainerConfig.jsp" />
+	</definition>
+	
+	<definition name=".catissuecore.scanContainerNewConfig" extends=".catissuecore.homePageDef">
+		<put name="content" value="/pages/content/manageAdministrativeData/ScanContainerNewConfig.jsp" />
+	</definition>
 
 	<definition name=".catissuecore.forgotPasswordDef" extends=".catissuecore.mainTitlePageDef">
 

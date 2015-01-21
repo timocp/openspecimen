@@ -53,6 +53,8 @@ public class ParticipantViewAction  extends CatissueBaseAction
     		 {
 		    	 cpId = (String)request.getAttribute(Constants.CP_SEARCH_CP_ID);
     		 }
+		     boolean isPPIDAuto = edu.wustl.catissuecore.util.global.Variables.isProtocolParticipantIdentifierLabelGeneratorAvl;
+		     request.setAttribute("isPPIDAuto", isPPIDAuto);
 		       HibernateDAO hibernateDao = null;
 		      try{ 
 		       hibernateDao = (HibernateDAO)AppUtility.openDAOSession(sessionData);

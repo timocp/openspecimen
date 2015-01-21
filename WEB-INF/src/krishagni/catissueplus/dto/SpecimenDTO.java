@@ -37,6 +37,8 @@ public class SpecimenDTO {
 	private String lineage;
 
 	private String barcode;
+	
+	private String rfId;
 
 	private String tissueSite;
 
@@ -411,4 +413,12 @@ public class SpecimenDTO {
 		this.disposalMins = disposalMins;
 	}
 
+	public String getRfId() {
+		return rfId;
+	}
+
+	public void setRfId(String rfId) {
+		this.rfId = rfId;
+	}
+	
 }

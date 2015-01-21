@@ -9,11 +9,20 @@
   <property name="boolean.type" value="number(1,0)" dbms="oracle" />
   <property name="text.type" value="varchar" dbms="mysql" />
   <property name="text.type" value="varchar2" dbms="oracle" />
+  <property name="int.type" value="bigint(20)" dbms="mysql" />
+  <property name="int.type" value="number(19,0)" dbms="oracle" />
 
 
   <changeSet id="Added column for morphological hierarchy" author="dpatil">
     <addColumn tableName="catissue_specimen">
       <column name="MORPHOLOGICAL_ABNORMALITY" type="${text.type}(255)">
+      </column>
+    </addColumn>
+  </changeSet>
+  
+  <changeSet id="Added column for rf Id" author="marwahan">
+    <addColumn tableName="catissue_specimen">
+      <column name="RF_ID" type="${text.type}(255)">
       </column>
     </addColumn>
   </changeSet>
@@ -30,5 +39,20 @@
       <column name="CONCEPT_CODE" type="String"/>           
     </loadUpdateData>
   </changeSet>
+  
+  <changeSet author="marwahan" id="Create table CATISSUE_BOX_SCANNER " failOnError="true">
+      <createTable tableName="CATISSUE_BOX_SCANNER">
+        <column name="IDENTIFIER" type="${int.type}">
+        </column>
+        
+        <column name="SCANNER_NAME" type="${text.type}(255)">
+        </column>
+        
+        <column name="IP_ADDRESS" type="${text.type}(255)">
+        </column>
+        
+      </createTable>
+      
+    </changeSet>
 
 </databaseChangeLog>

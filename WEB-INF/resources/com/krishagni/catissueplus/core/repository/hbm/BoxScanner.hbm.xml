@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping auto-import="false">
+	<class name="com.krishagni.catissueplus.core.biospecimen.domain.BoxScanner"
+		table="CATISSUE_BOX_SCANNER" lazy="true">
+		<id name="id" column="IDENTIFIER" type="long">
+			<generator class="native">
+				<param name="sequence">CATISSUE_BOX_SCNR_SEQ</param>
+			</generator>
+		</id>
+
+		<property name="name" type="string" column="SCANNER_NAME" />
+
+		<property name="ipAddress" type="string" column="IP_ADDRESS" />
+		<query name="getAllBoxScanners">
+			from com.krishagni.catissueplus.core.biospecimen.domain.BoxScanner
+		</query>
+	</class>
+</hibernate-mapping>

@@ -646,11 +646,11 @@
 
 						<td valign="middle"  class="black_ar"> 
 						<c:choose>
-							<c:when  test="${(empty ppIdFormat && operation eq 'add' ) or (operation eq 'edit' && empty ppIdFormat)}">
+							<c:when  test="${(empty ppIdFormat && operation eq 'add' && isPPIAuto eq 'false') or (operation eq 'edit' && empty ppIdFormat)}">
 								<html:text property="ppId" styleClass="black_ar" styleId="ppId" size="27" />			
 							</c:when>
 							<c:otherwise>
-								<c:if test="${operation eq 'edit' && not empty ppIdFormat}">
+								<c:if test="${(operation eq 'edit' && not empty ppIdFormat) or (empty ppIdFormat && isPPIAuto eq 'true')}">
 									<html:text property="ppId" styleClass="black_ar" styleId="ppId" size="27"  disabled="true"/>	
 									<html:hidden property="ppId"/>
 						

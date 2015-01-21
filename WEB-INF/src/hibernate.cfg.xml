@@ -189,6 +189,7 @@
 		<mapping resource="com/krishagni/catissueplus/core/repository/hbm/SpecimenPrintRule.hbm.xml" />
 		<mapping resource="com/krishagni/catissueplus/core/repository/hbm/Equipment.hbm.xml" />
 		<mapping resource="com/krishagni/catissueplus/core/repository/hbm/Image.hbm.xml" />
+		<mapping resource="com/krishagni/catissueplus/core/repository/hbm/BoxScanner.hbm.xml" />
 		<mapping resource="com/krishagni/catissueplus/core/repository/hbm/PermissibleValue.hbm.xml"/>
 		
 		<mapping resource="com/krishagni/rbac/resources/Group.hbm.xml"/>
