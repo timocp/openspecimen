@@ -217,6 +217,10 @@ public class SpecimenBizLogic
 		{
 			oldSpecimenObj.setLabel(specimenDTO.getLabel());
 		}
+		if (!Validator.isEmpty(specimenDTO.getRfId()))
+		{
+			oldSpecimenObj.setRfId(specimenDTO.getRfId());
+		}
 		Double quantityDiff = 0.0;
 		if (specimenDTO.getQuantity() != null)
 		{
@@ -616,6 +620,7 @@ public class SpecimenBizLogic
 		SpecimenDTO specimenDTO = new SpecimenDTO();
 		specimenDTO.setId(specimen.getId());
 		specimenDTO.setLabel(specimen.getLabel());
+		specimenDTO.setRfId(specimen.getRfId());
 		specimenDTO.setActivityStatus(specimen.getActivityStatus());
 		specimenDTO.setAvailable(specimen.getIsAvailable());
 		specimenDTO.setAvailableQuantity(specimen.getAvailableQuantity());
