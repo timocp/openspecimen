@@ -10,6 +10,8 @@ import edu.wustl.catissuecore.domain.StorageContainer;
 
 public interface StorageContainerDao extends Dao<StorageContainer> {
 	public StorageContainer getStorageContainer(Long id);
+	
+	public StorageContainer getStorageContainer(String name);
 
 	public List<StorageContainerSummary> getStorageContainers(String name, int maxResults, Long specimenId, boolean onlyFreeContainers);
 	

@@ -53,12 +53,11 @@ public class BoxScanServiceImpl implements BoxScanService {
 	@PlusTransactional
 	public ScanStorageContainerDetailsEvents validateAndPopulateScanContainerData(ScanStorageContainerDetails details) {
 		try {
-			List<StorageContainer> containers = daoFactory.getStorageContainerDao().getAllStorageContainers(
-					details.getContainerName(), 1);
-			details.setOneDimensionCapacity(containers.get(0).getCapacity().getOneDimensionCapacity());
-			details.setTwoDimensionCapacity(containers.get(0).getCapacity().getTwoDimensionCapacity());
-			details.setOneDimensionLabellingScheme(containers.get(0).getOneDimensionLabellingScheme());
-			details.setTwoDimensionLabellingScheme(containers.get(0).getTwoDimensionLabellingScheme());
+			StorageContainer container = daoFactory.getStorageContainerDao().getStorageContainer(details.getContainerName());
+			details.setOneDimensionCapacity(container.getCapacity().getOneDimensionCapacity());
+			details.setTwoDimensionCapacity(container.getCapacity().getTwoDimensionCapacity());
+			details.setOneDimensionLabellingScheme(container.getOneDimensionLabellingScheme());
+			details.setTwoDimensionLabellingScheme(container.getTwoDimensionLabellingScheme());
 			for (ScanContainerSpecimenDetails specDetails : details.getSpecimenList()) {
 				Specimen spec = daoFactory.getSpecimenDao().getSpecimenByBarcode(specDetails.getBarCode());
 				if (spec == null) {

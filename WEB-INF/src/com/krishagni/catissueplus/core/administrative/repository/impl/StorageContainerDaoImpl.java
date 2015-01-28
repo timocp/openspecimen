@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.util.CollectionUtils;
 
 import com.krishagni.catissueplus.core.administrative.events.StorageContainerSummary;
@@ -22,7 +23,17 @@ public class StorageContainerDaoImpl extends AbstractDao<StorageContainer> imple
 	public StorageContainer getStorageContainer(Long id) {
 		return (StorageContainer) sessionFactory.getCurrentSession().get(StorageContainer.class, id);
 	}
-
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public StorageContainer getStorageContainer(String name) {
+		List<StorageContainer> containers = sessionFactory.getCurrentSession().createCriteria(StorageContainer.class)
+				.add(Restrictions.eq("name", name))
+				.list();
+		
+		return containers == null || containers.isEmpty() ? null : containers.iterator().next();
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<StorageContainerSummary> getStorageContainers(
