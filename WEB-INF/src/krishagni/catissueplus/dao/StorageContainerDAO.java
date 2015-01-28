@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import krishagni.catissueplus.bizlogic.SpecimenBizLogic;
-
 import edu.wustl.catissuecore.domain.Capacity;
+import edu.wustl.catissuecore.domain.StorageContainer;
 import edu.wustl.catissuecore.util.global.AppUtility;
 import edu.wustl.common.exception.ApplicationException;
 import edu.wustl.common.exception.BizLogicException;
@@ -171,5 +171,15 @@ public class StorageContainerDAO
         }
         	
         return Boolean.FALSE;
+    }
+    
+    public Long getContainerId(HibernateDAO hibernateDAO, String containerName) throws BizLogicException, DAOException{
+    	String hql = "select id from "+StorageContainer.class.getName()+" cont where cont.name='"+containerName+"'";
+    	List result = hibernateDAO.executeQuery(hql);
+    	if(result == null || result.isEmpty()){
+//    		LOGGER.error(e);
+  			throw new BizLogicException(null, null, "Invalid container name");
+    	}
+    	return Long.valueOf(result.get(0).toString());
     }
 }

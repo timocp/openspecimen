@@ -662,6 +662,7 @@ public class SpecimenBizlogic
 		//Specimen specimen = (Specimen) dao.retrieveById(Specimen.class.getName(), identifier);
 		specimenDTO.setId(specimen.getId());
 		specimenDTO.setLabel(specimen.getLabel());
+		specimenDTO.setRfId(specimen.getRfId());
 		specimenDTO.setActivityStatus(specimen.getActivityStatus());
 		specimenDTO.setAvailable(specimen.getIsAvailable());
 		specimenDTO.setAvailableQuantity(specimen.getAvailableQuantity());

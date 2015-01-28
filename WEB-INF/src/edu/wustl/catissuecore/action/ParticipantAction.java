@@ -491,6 +491,11 @@ public class ParticipantAction extends CatissueBaseAction
 		String collectionProtocolId = cpid == null ? request
 				.getParameter("cpId") : cpid;
 
+		boolean isPPIAuto = false;
+		if (edu.wustl.catissuecore.util.global.Variables.isProtocolParticipantIdentifierLabelGeneratorAvl){
+			isPPIAuto = true;
+		}
+		request.setAttribute("isPPIAuto", isPPIAuto);
 		if (collectionProtocolId != null)
 		{
 			request.setAttribute("ppIdFormat", cprBizLogic.getPPIdformat(Long

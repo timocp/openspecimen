@@ -6,6 +6,6 @@
         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
   <changeSet id="add entry in cde table for morph tree" author="dpatil">
-    <sql>insert into catissue_cde values (3, 'SYS_PPID', 400000, 'Unique PPID')</sql>
+    <sql>insert into key_seq_generator values (3, 'SYS_PPID', 400000, 'Unique PPID')</sql>
   </changeSet>
 </databaseChangeLog>

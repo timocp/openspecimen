@@ -117,6 +117,8 @@ public class SpecimenForm extends AbstractActionForm
 	 * Barcode assigned to the specimen.
 	 */
 	protected String barcode;
+	
+	protected String rfId;
 
 	/**
 	 * Comments on specimen.
@@ -1269,4 +1271,13 @@ public class SpecimenForm extends AbstractActionForm
 		// TODO Auto-generated method stub
 
 	}
+
+	public String getRfId() {
+		return rfId;
+	}
+
+	public void setRfId(String rfId) {
+		this.rfId = rfId;
+	}
+	
 }

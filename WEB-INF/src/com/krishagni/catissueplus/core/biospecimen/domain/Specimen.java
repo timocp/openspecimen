@@ -43,6 +43,8 @@ public class Specimen {
 
 	private String barcode;
 
+	private String rfId;
+
 	private String comment;
 
 	private Date createdOn;
@@ -180,6 +182,14 @@ public class Specimen {
 
 	public void setBarcode(String barcode) {
 		this.barcode = barcode;
+	}
+
+	public String getRfId() {
+		return rfId;
+	}
+
+	public void setRfId(String rfId) {
+		this.rfId = rfId;
 	}
 
 	public String getComment() {
@@ -321,7 +331,6 @@ public class Specimen {
 
 	}
 
-	
 	@Override
 	public int hashCode() {
 		return 31 * 1 + ((id == null) ? 0 : id.hashCode());
@@ -332,21 +341,22 @@ public class Specimen {
 		if (this == obj) {
 			return true;
 		}
-		
+
 		if (obj == null) {
 			return false;
 		}
-		
+
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		
+
 		Specimen other = (Specimen) obj;
 		if (id == null) {
 			if (other.id != null) {
 				return false;
 			}
-		} else if (!id.equals(other.id)) {
+		}
+		else if (!id.equals(other.id)) {
 			return false;
 		}
 		return true;

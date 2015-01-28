@@ -37,6 +37,8 @@ public class SpecimenDetail {
 	private Boolean isAvailable;
 
 	private String barcode;
+	
+	private String rfId;
 
 	private String comment;
 
@@ -281,12 +283,21 @@ public class SpecimenDetail {
 	public void setEnablePrintLabels(Boolean enablePrintLabels) {
 		this.enablePrintLabels = enablePrintLabels;
 	}
+	
+	public String getRfId() {
+		return rfId;
+	}
+	
+	public void setRfId(String rfId) {
+		this.rfId = rfId;
+	}
 
 	public static SpecimenDetail fromDomain(Specimen specimen) {
 		SpecimenDetail detail = new SpecimenDetail();
 		detail.setActivityStatus(specimen.getActivityStatus());
 		detail.setAvailableQuantity(specimen.getAvailableQuantity());
 		detail.setBarcode(specimen.getBarcode());
+		detail.setRfId(specimen.getRfId());
 		detail.setBiohazardDetails(getBiohazardDetail(specimen.getBiohazardCollection()));
 		detail.setCollectionStatus(specimen.getCollectionStatus());
 		detail.setComment(specimen.getComment());

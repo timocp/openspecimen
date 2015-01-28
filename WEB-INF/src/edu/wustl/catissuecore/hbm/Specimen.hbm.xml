@@ -248,6 +248,16 @@
             length="255"
             unique="true"
         />
+        
+        <property
+            name="rfId"
+            type="string"
+            update="true"
+            insert="true"
+            column="RF_ID"
+            length="255"
+            unique="true"
+        />
 
         <property
             name="createdOn"
