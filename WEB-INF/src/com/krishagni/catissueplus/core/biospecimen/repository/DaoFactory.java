@@ -70,6 +70,8 @@ public interface DaoFactory {
 	public BiohazardDao getBiohazardDao();
 
 	public StorageContainerDao getStorageContainerDao();
+	
+	public SpecimenPositionDao getSpecimenPositionDao();
 
 	public DistributionProtocolDao getDistributionProtocolDao();
 

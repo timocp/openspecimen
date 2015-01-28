@@ -286,10 +286,14 @@
   clear: both;
 }
 
+.ka-modal-header > button.ka-close, 
 .ka-modal-header > div.ka-close {
   float: right;
   font-size: 30px;
   margin-top: -7px;
+  padding: 0;
+  border: 0;
+  background: transparent;
 }
 
 .ka-close {
@@ -354,4 +358,34 @@
 .ka-list-box .list-group-item {
   border: none;
   padding: 5px 10px;
+}
+
+/** Container position control **/
+.os-container-pos {
+  min-width: 40px;
+  text-align: center;
+}
+  
+td.os-container-pos {
+  cursor: pointer;
+}
+  
+.os-circle {
+  display: inline-block;
+  height: 14px;
+  width: 14px;
+  background: #5cb85c;
+  border-radius: 100%;
+}
+  
+td.os-container-pos.occupied > .os-circle {
+  background: #d9534f!important;
+}
+
+td.os-container-pos.occupied {
+  cursor: auto!important;
+}
+  
+td.os-container-pos.selected {
+  background: #d5d5d5;
 }

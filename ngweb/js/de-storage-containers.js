@@ -21,7 +21,7 @@ openspecimen.ui.fancy.StorageContainers = edu.common.de.LookupSvc.extend({
   },
 
   formatResult: function(container) {
-    return {id: container.id, text: container.name};
+    return {id: container.id, text: container.name, actual: container};
   },
 
   getDefaultValue: function() {

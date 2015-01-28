@@ -29,6 +29,8 @@ import org.apache.commons.io.FilenameUtils;
 import titli.model.util.TitliResultGroup;
 import au.com.bytecode.opencsv.CSVReader;
 
+import com.krishagni.catissueplus.core.de.ui.SpecimenPositionControlFactory;
+import com.krishagni.catissueplus.core.de.ui.SpecimenPositionMapper;
 import com.krishagni.catissueplus.core.de.ui.StorageContainerControlFactory;
 import com.krishagni.catissueplus.core.de.ui.StorageContainerMapper;
 import com.krishagni.catissueplus.core.de.ui.UserControlFactory;
@@ -199,10 +201,12 @@ public class CatissueCoreServletContextListener implements ServletContextListene
  		ControlManager ctrlMgr = ControlManager.getInstance();
 		ctrlMgr.registerFactory(UserControlFactory.getInstance());
 		ctrlMgr.registerFactory(StorageContainerControlFactory.getInstance());
+		ctrlMgr.registerFactory(SpecimenPositionControlFactory.getInstance());
 		
 		ControlMapper ctrlMapper = ControlMapper.getInstance();
 		ctrlMapper.registerControlMapper("userField", new UserFieldMapper());
 		ctrlMapper.registerControlMapper("storageContainer", new StorageContainerMapper());
+		ctrlMapper.registerControlMapper("specimenPosition", new SpecimenPositionMapper());
  	}
 
 	/**

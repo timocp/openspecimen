@@ -14,7 +14,7 @@ import com.krishagni.catissueplus.core.administrative.domain.factory.ContainerLa
 import com.krishagni.catissueplus.core.administrative.domain.factory.StorageContainerErrorCode;
 import com.krishagni.catissueplus.core.administrative.domain.factory.StorageContainerFactory;
 import com.krishagni.catissueplus.core.administrative.domain.factory.UserErrorCode;
-import com.krishagni.catissueplus.core.administrative.events.StorageContainerDetails;
+import com.krishagni.catissueplus.core.administrative.events.StorageContainerDetail;
 import com.krishagni.catissueplus.core.administrative.events.StorageContainerPatchDetails;
 import com.krishagni.catissueplus.core.administrative.events.UserInfo;
 import com.krishagni.catissueplus.core.biospecimen.domain.CollectionProtocol;
@@ -22,6 +22,9 @@ import com.krishagni.catissueplus.core.biospecimen.repository.DaoFactory;
 import com.krishagni.catissueplus.core.common.CommonValidator;
 import com.krishagni.catissueplus.core.common.errors.ObjectCreationException;
 
+//
+// TODO: Non functional until OSv2.0
+//
 public class StorageContainerFactoryImpl implements StorageContainerFactory {
 
 	private static final String SITE = "site";
@@ -49,20 +52,20 @@ public class StorageContainerFactoryImpl implements StorageContainerFactory {
 	}
 
 	@Override
-	public StorageContainer createStorageContainer(StorageContainerDetails details) {
+	public StorageContainer createStorageContainer(StorageContainerDetail details) {
 		ObjectCreationException exceptionHandler = new ObjectCreationException();
 		StorageContainer storageContainer = new StorageContainer();
 		setComments(storageContainer, details.getComments());
 		setActivityStatus(storageContainer, details.getActivityStatus(), exceptionHandler);
-		setSiteOrParent(storageContainer, details.getSiteName(), details.getParentContainerName(), exceptionHandler);
-		setCollectionProtocols(storageContainer, details.getHoldsCPTitles(), exceptionHandler);
-		setCreatedByUser(storageContainer, details.getCreatedBy(), exceptionHandler);
-		setHoldsSpecimenTypes(storageContainer, details.getHoldsSpecimenTypes(), exceptionHandler);
-		setOneDimensionCapacity(storageContainer, details.getOneDimensionCapacity(), exceptionHandler);
-		setTwoDimensionCapacity(storageContainer, details.getTwoDimensionCapacity(), exceptionHandler);
+		//setSiteOrParent(storageContainer, details.getSiteName(), details.getParentContainerName(), exceptionHandler);
+		setCollectionProtocols(storageContainer, details.getAllowedCollectionProtocols(), exceptionHandler);
+		//setCreatedByUser(storageContainer, details.getCreatedBy(), exceptionHandler);
+		setHoldsSpecimenTypes(storageContainer, details.getAllowedSpecimenTypes(), exceptionHandler);
+		setOneDimensionCapacity(storageContainer, details.getDimensionOneCapacity(), exceptionHandler);
+		setTwoDimensionCapacity(storageContainer, details.getDimensionTwoCapacity(), exceptionHandler);
 		setTempratureInCentigrade(storageContainer, details.getTempratureInCentigrade());
-		setOneDimensionLabelingScheme(storageContainer, details.getOneDimentionLabelingScheme(), exceptionHandler);
-		setTwoDimensionLabelingScheme(storageContainer, details.getTwoDimentionLabelingScheme(), exceptionHandler);
+		setOneDimensionLabelingScheme(storageContainer, details.getDimensionOneLabelingScheme(), exceptionHandler);
+		setTwoDimensionLabelingScheme(storageContainer, details.getDimensionTwoLabelingScheme(), exceptionHandler);
 		exceptionHandler.checkErrorAndThrow();
 		return storageContainer;
 	}

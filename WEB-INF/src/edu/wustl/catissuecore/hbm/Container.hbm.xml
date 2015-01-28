@@ -11,7 +11,7 @@
         lazy="true"
         table="CATISSUE_CONTAINER" >
 
-        <cache usage="read-write" />
+        <!-- cache usage="read-write" / -->
 
         <id
             name="id"
@@ -52,7 +52,7 @@ CATISSUE_CONTAINER_SEQ
             sort="unsorted"
             table="CATISSUE_CONTAINER_POSITION" >
 
-            <cache usage="read-write" />
+            <!-- cache usage="read-write" / -->
 
             <key column="PARENT_CONTAINER_ID" />
 
@@ -122,7 +122,7 @@ CATISSUE_CONTAINER_SEQ
                 sort="unsorted"
                 table="CATISSUE_NEW_SP_AR_ORDER_ITEM" >
 
-                <cache usage="read-write" />
+                <!-- cache usage="read-write" / -->
 
                 <key column="SPECIMEN_ARRAY_ID" />
 
@@ -147,7 +147,7 @@ CATISSUE_CONTAINER_SEQ
                 sort="unsorted"
                 table="CATISSUE_SPECI_ARRAY_CONTENT" >
 
-                <cache usage="read-write" />
+                <!-- cache usage="read-write" / -->
 
                 <key column="SPECIMEN_ARRAY_ID" />
 
@@ -183,13 +183,13 @@ CATISSUE_CONTAINER_SEQ
 
             <set
                 name="specimenPositionCollection"
-                cascade="none"
+                cascade="delete-orphan"
                 inverse="true"
                 lazy="true"
                 sort="unsorted"
                 table="CATISSUE_SPECIMEN_POSITION" >
 
-                <cache usage="read-write" />
+                <!-- cache usage="read-write" / -->
 
                 <key column="CONTAINER_ID" />
 
@@ -205,7 +205,7 @@ CATISSUE_CONTAINER_SEQ
                 sort="unsorted"
                 table="CATISSUE_ST_CONT_COLL_PROT_REL" >
 
-                <cache usage="read-write" />
+                <!-- cache usage="read-write" / -->
 
                 <key column="STORAGE_CONTAINER_ID" />
 
@@ -224,7 +224,7 @@ CATISSUE_CONTAINER_SEQ
                 sort="unsorted"
                 table="CATISSUE_STOR_CONT_SPEC_CLASS" >
 
-                <cache usage="read-write" />
+                <!-- cache usage="read-write" / -->
 
                 <key column="STORAGE_CONTAINER_ID" />
 
@@ -243,7 +243,7 @@ CATISSUE_CONTAINER_SEQ
                 sort="unsorted"
                 table="CATISSUE_STOR_CONT_SPEC_TYPE" >
 
-                <cache usage="read-write" />
+                <!-- cache usage="read-write" / -->
 
                 <key column="STORAGE_CONTAINER_ID" />
 
@@ -262,7 +262,7 @@ CATISSUE_CONTAINER_SEQ
                 sort="unsorted"
                 table="CATISSUE_ST_CONT_ST_TYPE_REL" >
 
-                <cache usage="read-write" />
+                <!-- cache usage="read-write" / -->
 
                 <key column="STORAGE_CONTAINER_ID" />
 
@@ -282,7 +282,7 @@ CATISSUE_CONTAINER_SEQ
                 sort="unsorted"
                 table="CATISSUE_CONT_HOLDS_SPARRTYPE" >
 
-                <cache usage="read-write" />
+                <!-- cache usage="read-write" / -->
 
                 <key column="STORAGE_CONTAINER_ID" />
 

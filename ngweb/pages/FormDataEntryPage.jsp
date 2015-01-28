@@ -174,7 +174,6 @@
       var specimenLabel = "<%= request.getAttribute("specimenLabel") %>"
       var userName =  "<%= request.getAttribute("userName") %>"
       var dateFormat = <%= "'" + edu.wustl.common.util.global.CommonServiceLocator.getInstance().getDatePattern().toLowerCase()  + "'"%>
-
     </script>
     <script src="ngweb/js/utility.js" type="text/javascript"></script>
     <script src="ngweb/js/wrapper.js" type="text/javascript"></script>
@@ -187,5 +186,6 @@
 
     <script src="ngweb/js/de-users.js" type="text/javascript"></script>
     <script src="ngweb/js/de-storage-containers.js" type="text/javascript"></script>
+    <script src="ngweb/js/de-specimen-position.js" type="text/javascript"></script>
   </body>
 </html>

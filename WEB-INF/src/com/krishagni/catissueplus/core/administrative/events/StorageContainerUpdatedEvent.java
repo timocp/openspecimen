@@ -6,15 +6,15 @@ import com.krishagni.catissueplus.core.common.events.ResponseEvent;
 
 public class StorageContainerUpdatedEvent extends ResponseEvent {
 
-	private StorageContainerDetails storageContainerDetails;
+	private StorageContainerDetail storageContainerDetails;
 
 	private Long storageContainerId;
 
-	public StorageContainerDetails getStorageContainerDetails() {
+	public StorageContainerDetail getStorageContainerDetails() {
 		return storageContainerDetails;
 	}
 
-	public void setStorageContainerDetails(StorageContainerDetails storageContainerDetails) {
+	public void setStorageContainerDetails(StorageContainerDetail storageContainerDetails) {
 		this.storageContainerDetails = storageContainerDetails;
 	}
 
@@ -26,7 +26,7 @@ public class StorageContainerUpdatedEvent extends ResponseEvent {
 		this.storageContainerId = storageContainerId;
 	}
 
-	public static StorageContainerUpdatedEvent ok(StorageContainerDetails details) {
+	public static StorageContainerUpdatedEvent ok(StorageContainerDetail details) {
 		StorageContainerUpdatedEvent event = new StorageContainerUpdatedEvent();
 		event.setStorageContainerDetails(details);
 		event.setStatus(EventStatus.OK);

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <databaseChangeLog 
   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd
         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
@@ -19,7 +20,9 @@
   </changeSet>
 
   <changeSet id="add entry in cde table for morph tree" author="dpatil">
-    <sql>insert into catissue_cde values ('Morphological_Abnormalitiy_PID', 'Morphological Abnormalitiy PID', 'Morphological Abnormalitiy PID', '1.1', NULL)</sql>
+    <sql>
+      insert into catissue_cde values ('Morphological_Abnormalitiy_PID', 'Morphological Abnormalitiy PID', 'Morphological Abnormalitiy PID', '1.1', NULL)
+    </sql>
   </changeSet>
   
   <changeSet id="Permissible_values csv file upload" author="dpatil">
@@ -31,4 +34,19 @@
     </loadUpdateData>
   </changeSet>
 
+  <changeSet author="vpawar" id="Specimen position view" runOnChange="true">
+    <sql>
+      create or replace view SPECIMEN_POS_VIEW as (
+        select
+          SPPOS.IDENTIFIER as IDENTIFIER, SPPOS.SPECIMEN_ID as SPECIMEN_ID,
+          CONTAINER.IDENTIFIER AS CONTAINER_ID, CONTAINER.NAME AS CONTAINER_NAME, 
+          ABP.POSITION_DIMENSION_ONE_STRING AS POSITION_DIMENSION_ONE_STRING,
+          ABP.POSITION_DIMENSION_TWO_STRING AS POSITION_DIMENSION_TWO_STRING
+        from
+          CATISSUE_SPECIMEN_POSITION SPPOS
+          inner join CATISSUE_CONTAINER CONTAINER on SPPOS.CONTAINER_ID = CONTAINER.IDENTIFIER
+          inner join CATISSUE_ABSTRACT_POSITION ABP on SPPOS.IDENTIFIER = ABP.IDENTIFIER
+      );
+    </sql>
+  </changeSet>
 </databaseChangeLog>

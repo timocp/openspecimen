@@ -12,6 +12,10 @@ public class StorageContainerSummary {
 	private String activityStatus;
 
 	private String siteName;
+	
+	private Long capacity;
+	
+	private Long occupied;
 
 	public Long getId() {
 		return id;
@@ -51,6 +55,22 @@ public class StorageContainerSummary {
 
 	public void setSiteName(String siteName) {
 		this.siteName = siteName;
+	}
+
+	public Long getCapacity() {
+		return capacity;
+	}
+
+	public void setCapacity(Long capacity) {
+		this.capacity = capacity;
+	}
+
+	public Long getOccupied() {
+		return occupied;
+	}
+
+	public void setOccupied(Long occupied) {
+		this.occupied = occupied;
 	}
 
 	public static StorageContainerSummary fromDomain(StorageContainer storageContainer) {

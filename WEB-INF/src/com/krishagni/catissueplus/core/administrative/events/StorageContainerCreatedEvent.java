@@ -7,17 +7,17 @@ import com.krishagni.catissueplus.core.common.events.ResponseEvent;
 
 public class StorageContainerCreatedEvent extends ResponseEvent {
 
-	private StorageContainerDetails storageContainerDetails;
+	private StorageContainerDetail storageContainerDetails;
 
-	public StorageContainerDetails getStorageContainerDetails() {
+	public StorageContainerDetail getStorageContainerDetails() {
 		return storageContainerDetails;
 	}
 
-	public void setStorageContainerDetails(StorageContainerDetails storageContainerDetails) {
+	public void setStorageContainerDetails(StorageContainerDetail storageContainerDetails) {
 		this.storageContainerDetails = storageContainerDetails;
 	}
 
-	public static StorageContainerCreatedEvent ok(StorageContainerDetails details) {
+	public static StorageContainerCreatedEvent ok(StorageContainerDetail details) {
 		StorageContainerCreatedEvent event = new StorageContainerCreatedEvent();
 		event.setStorageContainerDetails(details);
 		event.setStatus(EventStatus.OK);
