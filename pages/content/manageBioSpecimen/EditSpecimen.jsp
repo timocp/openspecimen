@@ -492,7 +492,7 @@ req.onreadystatechange = function() {
 
                             </tr>
 							</c:if>
-							<c:if test="${specimenDTO.lineage=='Derived' and specimenDTO.type=='DNA'}">
+							<c:if test="${!(specimenDTO.lineage=='Aliquot') and specimenDTO.type=='DNA'}">
 								<tr class="tr_alternate_color_lightGrey">
 									<td width="20%" class="black_ar align_right_style">
 										<label for="createdDate">
