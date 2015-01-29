@@ -848,7 +848,12 @@ function submitTabData(operation)
 		{
 			tabDataJSON["concentration"] = document.getElementById("concentration").value; 
 		}
-		var labNmbr = document.getElementById("labNumber").value;
+		
+		var labNmbr = null;
+		if(document.getElementById("labNumber") != null) {
+		  labNmbr = document.getElementById("labNumber").value;
+		}
+		
 		if(labNmbr != null && labNmbr != "")
 		{
 			tabDataJSON["labNumber"] = document.getElementById("labNumber").value; 

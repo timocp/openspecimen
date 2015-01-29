@@ -409,16 +409,18 @@ req.onreadystatechange = function() {
                                 </td>
                         </tr>
 						
-						<tr class="tr_alternate_color_white">
-								<td width="20%" class="black_ar align_right_style">
-                                    <label for="createdDate">
-									Lab Number
-                                    </label>
-                                </td>
-                             
-								<td width="30%" class="black_ar" >
-								    <html:text styleClass="black_ar" size="30" maxlength="255"  styleId="labNumber" name="specimenDTO" property="labNumber" onmouseover="showTip(this.id)" onmouseout="hideTip(this.id)" onblur="processData(this)"  />
-                                </td>
+		        <tr class="tr_alternate_color_white">
+			  <c:if test="${specimenDTO.lineage=='New'}">
+                            <td width="20%" class="black_ar align_right_style">
+			      <label for="createdDate">	Lab Number </label>
+			    </td>
+			   			    
+			    <td width="30%" class="black_ar">
+			      <html:text styleClass="black_ar" size="30" maxlength="255"  styleId="labNumber" name="specimenDTO" 
+		                property="labNumber" onmouseover="showTip(this.id)" onmouseout="hideTip(this.id)" onblur="processData(this)" />
+                            </td>
+		          </c:if>
+		          
 								
                                 <td width="20%" class="black_ar align_right_style">
                                  
