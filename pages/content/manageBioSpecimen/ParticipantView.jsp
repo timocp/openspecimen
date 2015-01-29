@@ -107,40 +107,46 @@
          <td  align="right" class="black_ar bottomtd  padding_right_style" width="20%"> 
             <b><bean:message key="participant.dnaQuality"/></b>
          </td> 
-         <td class="black_ar bottomtd" width="20%">
-		 
-		 
-			<input type="radio" value="Good" id="dnaQualityGood" name="specimenChild" onclick="onCheckboxButtonClick(this)" style="vertical-align: middle;"/>
-					<span class="black_ar" style="vertical-align: middle;">
-					<bean:message key="participant.dnaQuality.good"/>&nbsp;
-					</span>
-			<input type="radio" value="Poor" id="dnaQualityPoor" name="specimenChild" onclick="onCheckboxButtonClick(this)" style="vertical-align: middle;"/>
-			<span class="black_ar" style="vertical-align: middle;">
-				<bean:message key="participant.dnaQuality.poor"/>&nbsp;
-			</span>
-         
-		 
-        </td>
-        <td  align="left" class="black_ar bottomtd" width="30%"> 
-					 <input type="button" value="Update" onclick="updateParticipant()"/>
-        </td>
-        <td class="black_ar bottomtd" width="30%"> 
+         <td class="black_ar bottomtd" width="25%">
+           <input type="radio" value="Good" id="dnaQualityGood" name="specimenChild" onclick="onCheckboxButtonClick(this)" 
+             style="vertical-align: middle;"/>
+	   <span class="black_ar" style="vertical-align: middle;">
+	     <bean:message key="participant.dnaQuality.good"/>&nbsp;
+	   </span>
+	   <input type="radio" value="Poor" id="dnaQualityPoor" name="specimenChild" onclick="onCheckboxButtonClick(this)" 
+             style="vertical-align: middle;"/>
+	   <span class="black_ar" style="vertical-align: middle;">
+	     <bean:message key="participant.dnaQuality.poor"/>&nbsp;
+	   </span>
+           <input type="radio" value="Unknown" id="dnaQualityUnknown" name="specimenChild" onclick="onCheckboxButtonClick(this)" 
+             style="vertical-align: middle;"/>
+	   <span class="black_ar" style="vertical-align: middle;">
+	     <bean:message key="participant.dnaQuality.unknown"/>&nbsp;
+	   </span>   	 
+         </td>
+         <td  align="left" class="black_ar bottomtd" width="30%"> 
+           <input type="button" value="Update" onclick="updateParticipant()"/>
+         </td>
+         <td class="black_ar bottomtd" width="30%"> 
             
         </td>
       </tr>
-    
-	</table>
+    </table>
 </fieldset>
 </div>
 
 <script>
 var dnaQlty = '${requestScope.dnaQlty}';
-if(dnaQlty == 'Good'){
-document.getElementById('dnaQualityGood').checked=true;
+if(dnaQlty == 'Good') {
+  document.getElementById('dnaQualityGood').checked=true;
 }
-else{
-document.getElementById('dnaQualityPoor').checked=true;
+else if(dnaQlty == 'Poor') {
+  document.getElementById('dnaQualityPoor').checked=true;
 }
+else {
+  document.getElementById('dnaQualityUnknown').checked=true;
+}
+
 function createRequest() {
   var result = null;
   if (window.XMLHttpRequest) {
@@ -157,17 +163,18 @@ function createRequest() {
   }
   return result;
 }
+
 function updateParticipant(){
 var partId = document.getElementById('pId').value;
 var req = createRequest(); 
 var radios = document.getElementsByName("specimenChild");
-	var checkedRadio;
-    for (var i = 0; i < radios.length; i++) {       
-        if (radios[i].checked) {
-            checkedRadio=radios[i].value;
-            break;
-        }
-    }
+var checkedRadio;
+for (var i = 0; i < radios.length; i++) {       
+  if (radios[i].checked) {
+    checkedRadio=radios[i].value;
+    break;
+  }
+}
 // defined above
 	// Create the callback:
 	req.onreadystatechange = function() {
