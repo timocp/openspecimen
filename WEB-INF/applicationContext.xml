@@ -415,8 +415,18 @@
 
   <bean class="com.krishagni.catissueplus.core.common.RestErrorController" /> 
 
+  <bean id="returnEventPostFilter" class="com.krishagni.catissueplus.core.biospecimen.services.impl.SpecimenReturnEventFilter">
+    <property name="daoFactory" ref="biospecimenDaoFactory"/>
+  </bean>
+
   <bean id="initializer" class="com.krishagni.catissueplus.core.common.AppInitializer">
     <property name="formDataMgr" ref="formDataMgr"/>
+ 
+    <property name="postFormSaveFilters">
+      <map>
+        <entry key="SpecimenReturnEvent" value-ref="returnEventPostFilter"/>
+      </map>
+    </property>
   </bean>
 
   <bean id="appCtxProvider" class="com.krishagni.catissueplus.core.common.OpenSpecimenAppCtxProvider">

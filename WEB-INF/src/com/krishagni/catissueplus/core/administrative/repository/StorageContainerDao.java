@@ -7,9 +7,12 @@ import com.krishagni.catissueplus.core.common.repository.Dao;
 
 import edu.wustl.catissuecore.domain.Specimen;
 import edu.wustl.catissuecore.domain.StorageContainer;
+import edu.wustl.catissuecore.domain.TransferEventParameters;
 
 public interface StorageContainerDao extends Dao<StorageContainer> {
 	public StorageContainer getStorageContainer(Long id);
+	
+	public StorageContainer getStorageContainer(Long id, boolean refresh);
 	
 	public StorageContainer getStorageContainer(String name);
 
@@ -21,5 +24,12 @@ public interface StorageContainerDao extends Dao<StorageContainer> {
 	// object, i thought it is better to have this method here
 	//
 	public Specimen getSpecimen(Long specimenId);
+	
+	public Specimen getSpecimen(Long specimenId, boolean refresh);
+	
+	//
+	// TODO: This should go away too. Same as above
+	//
+	public void saveTransferEvent(TransferEventParameters transferEvent);
 }
 	

@@ -205,4 +205,13 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
 		return userSummary;		
 	}
 
+	//
+	// Legacy
+	//
+	
+	@Override
+	public edu.wustl.catissuecore.domain.User getLegacyUser(Long userId) {
+		return (edu.wustl.catissuecore.domain.User)sessionFactory.getCurrentSession()
+				.get(edu.wustl.catissuecore.domain.User.class, userId);
+	}
 }

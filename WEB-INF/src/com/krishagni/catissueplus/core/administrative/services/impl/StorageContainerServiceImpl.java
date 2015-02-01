@@ -1,9 +1,13 @@
 
 package com.krishagni.catissueplus.core.administrative.services.impl;
 
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import krishagni.catissueplus.rest.AuthenticatedSessionCtx;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -31,6 +35,8 @@ import edu.wustl.catissuecore.domain.ContainerPosition;
 import edu.wustl.catissuecore.domain.Specimen;
 import edu.wustl.catissuecore.domain.SpecimenPosition;
 import edu.wustl.catissuecore.domain.StorageContainer;
+import edu.wustl.catissuecore.domain.TransferEventParameters;
+import edu.wustl.catissuecore.domain.User;
 
 public class StorageContainerServiceImpl implements StorageContainerService {
 	private DaoFactory daoFactory;
@@ -56,7 +62,7 @@ public class StorageContainerServiceImpl implements StorageContainerService {
 	public StorageContainerEvent getStorageContainer(ReqStorageContainerEvent req) {
 		try {
 			Long containerId = req.getId();
-			StorageContainer container = daoFactory.getStorageContainerDao().getStorageContainer(containerId);
+			StorageContainer container = daoFactory.getStorageContainerDao().getStorageContainer(containerId, true);
 			if (container == null) {
 				StorageContainerEvent.notFound(containerId);
 			}
@@ -85,9 +91,25 @@ public class StorageContainerServiceImpl implements StorageContainerService {
 	@Override
 	@PlusTransactional
 	public SpecimenPositionAllocatedEvent assignSpecimenPosition(AllocateSpecimenPositionEvent req) {
-		try {
+		SpecimenPositionDetail input = req.getPosition();
+		
+		try {	
+			Specimen specimen = daoFactory.getStorageContainerDao().getSpecimen(input.getSpecimenId());
+			
+			//
+			// create new position
+			//
 			SpecimenPosition position = createSpecimenPosition(req.getPosition());
-			daoFactory.getSpecimenPositionDao().saveOrUpdate(position);
+			
+			//
+			// create transfer event
+			// 
+			createTransferEvent(specimen, null, position);
+						
+			//
+			// save new position
+			//
+			daoFactory.getSpecimenPositionDao().saveOrUpdate(position);			
 			return SpecimenPositionAllocatedEvent.ok(SpecimenPositionDetail.from(position));
 		} catch (ObjectCreationException oce) {
 			return SpecimenPositionAllocatedEvent.badRequest(oce);			
@@ -101,19 +123,45 @@ public class StorageContainerServiceImpl implements StorageContainerService {
 	@Override
 	@PlusTransactional
 	public SpecimenPositionUpdatedEvent updateSpecimenPosition(UpdateSpecimenPositionEvent req) {
+		SpecimenPositionDetail input = req.getPosition();
+		
 		try {
-			Long posId = req.getPosition().getId();
-			SpecimenPosition existing = daoFactory.getSpecimenPositionDao().getPosition(posId);
+			Specimen specimen = daoFactory.getStorageContainerDao().getSpecimen(input.getSpecimenId(), true);
+			
+			//
+			// get existing position
+			//
+//			Long posId = req.getPosition().getId();			
+//			SpecimenPosition existing = daoFactory.getSpecimenPositionDao().getPosition(posId);
+			SpecimenPosition existing = specimen.getSpecimenPosition();
 			if (existing == null) {
 				ObjectCreationException oce = new ObjectCreationException();
 				oce.addError(StorageContainerErrorCode.INVALID_ATTR_VALUE, "positionId");
 				throw oce;
 			}
 			
+			//
+			// create new position
+			//
 			SpecimenPosition position = createSpecimenPosition(req.getPosition());
-			updateSpecimenPosition(existing, position);						
-			daoFactory.getSpecimenPositionDao().saveOrUpdate(existing);
-			return SpecimenPositionUpdatedEvent.ok(SpecimenPositionDetail.from(position));
+			
+			//
+			// create transfer event
+			//
+			createTransferEvent(specimen, existing, position);
+					
+			//
+			// update specimen position and save
+			//
+			if (position != null) {
+				updateSpecimenPosition(existing, position);				
+				daoFactory.getSpecimenPositionDao().saveOrUpdate(existing);
+			} else {
+				removePosition(specimen, existing);
+				existing = null;
+			}
+			
+			return SpecimenPositionUpdatedEvent.ok(SpecimenPositionDetail.from(existing));
 		} catch (ObjectCreationException oce) {
 			return SpecimenPositionUpdatedEvent.badRequest(oce);			
 		} catch (IllegalArgumentException iae) {
@@ -126,8 +174,14 @@ public class StorageContainerServiceImpl implements StorageContainerService {
 	private SpecimenPosition createSpecimenPosition(SpecimenPositionDetail requestedPosition) {
 		ObjectCreationException oce = new ObjectCreationException();
 		
+		if (requestedPosition.getStorageContainerId() == null || requestedPosition.getStorageContainerId().equals(-1L)) {
+			//
+			// Virtually located
+			//
+			return null;			
+		}
+		
 		SpecimenPosition position = new SpecimenPosition();
-		position.setId(requestedPosition.getId());
 		setContainer(position, requestedPosition, oce);
 		setSpecimen(position, requestedPosition, oce);
 		setCoordinates(position, requestedPosition, oce);
@@ -144,7 +198,7 @@ public class StorageContainerServiceImpl implements StorageContainerService {
 			return;
 		}
 		
-		StorageContainer container = daoFactory.getStorageContainerDao().getStorageContainer(containerId);
+		StorageContainer container = daoFactory.getStorageContainerDao().getStorageContainer(containerId, true);
 		if (container == null) {
 			oce.addError(StorageContainerErrorCode.INVALID_ATTR_VALUE, "storageContainerId");
 			return;
@@ -264,7 +318,63 @@ public class StorageContainerServiceImpl implements StorageContainerService {
 		existing.setPositionDimensionTwo(newPos.getPositionDimensionTwo());
 		existing.setPositionDimensionOneString(newPos.getPositionDimensionOneString());
 		existing.setPositionDimensionTwoString(newPos.getPositionDimensionTwoString());
-		existing.setId(newPos.getId());
+	}
+	
+	private TransferEventParameters createTransferEvent(Specimen specimen, SpecimenPosition oldPos, SpecimenPosition newPos) {
+		if (!isPositionChanged(oldPos, newPos)) {
+			return null;
+		}
+		
+		TransferEventParameters transferEvent = new TransferEventParameters();
+		transferEvent.setSpecimen(specimen);
+		transferEvent.setTimestamp(Calendar.getInstance().getTime());
+		
+		Long userId = AuthenticatedSessionCtx.getSession().getUserId();
+		User user = daoFactory.getUserDao().getLegacyUser(userId);		
+		transferEvent.setUser(user);
+		
+		if (oldPos != null) {
+			transferEvent.setFromStorageContainer(oldPos.getStorageContainer());
+			transferEvent.setFromPositionDimensionOne(oldPos.getPositionDimensionOne());
+			transferEvent.setFromPositionDimensionTwo(oldPos.getPositionDimensionTwo());
+		}
+		
+		if (newPos != null) {
+			transferEvent.setToStorageContainer(newPos.getStorageContainer());
+			transferEvent.setToPositionDimensionOne(newPos.getPositionDimensionOne());
+			transferEvent.setToPositionDimensionTwo(newPos.getPositionDimensionTwo());
+		}
+		
+		daoFactory.getStorageContainerDao().saveTransferEvent(transferEvent);		
+		return transferEvent;
+	}
+	
+	private boolean isPositionChanged(SpecimenPosition oldPos, SpecimenPosition newPos) {
+		if (oldPos == newPos) {
+			return false;
+		}
+		
+		if (oldPos == null && newPos != null) {
+			return true;
+		}
+		
+		if (oldPos != null && newPos == null) {
+			return true;
+		}
+		
+		if (!oldPos.getStorageContainer().getId().equals(newPos.getStorageContainer().getId())) {
+			return true;
+		}
+		
+		if (!oldPos.getPositionDimensionOne().equals(newPos.getPositionDimensionOne())) {
+			return true;
+		}
+		
+		if (!oldPos.getPositionDimensionTwo().equals(newPos.getPositionDimensionTwo())) {
+			return true;
+		}
+		
+		return false;
 	}
 	
 	private void toLabelingSchemePositions(SpecimenPosition position) {
@@ -283,6 +393,24 @@ public class StorageContainerServiceImpl implements StorageContainerService {
 		} catch (Exception e) {
 			throw new IllegalArgumentException("Invalid position: " + pos + " for " + labelingScheme);
 		}
+	}
+	
+	private void removePosition(Specimen specimen, SpecimenPosition position) {
+		specimen.setSpecimenPosition(null);
+		
+//		Long containerId = position.getStorageContainer().getId();
+		StorageContainer container = position.getStorageContainer(); //daoFactory.getStorageContainerDao().getStorageContainer(containerId, true);
+		
+		Iterator<SpecimenPosition> iter = container.getSpecimenPositionCollection().iterator();		
+		while (iter.hasNext()) {
+			if (iter.next().getId().equals(position.getId())) {
+				iter.remove();
+				break;
+			}
+		}
+		
+		daoFactory.getStorageContainerDao().saveOrUpdate(container, true);
+		daoFactory.getStorageContainerDao().clear();
 	}
 	
 	private Map<String, Converter> converters = new HashMap<String, Converter>() {
@@ -326,6 +454,8 @@ public class StorageContainerServiceImpl implements StorageContainerService {
 	
 	private class RomanConverter implements Converter {
 		private final Map<String, Integer> romanLiterals = new HashMap<String, Integer>() {
+			private static final long serialVersionUID = 932703127289106288L;
+
 			{
 				put("m", 1000);
 				put("cm", 900);

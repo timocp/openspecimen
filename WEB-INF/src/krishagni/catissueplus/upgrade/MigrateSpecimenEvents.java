@@ -18,12 +18,14 @@ import java.util.Set;
 
 import javax.sql.DataSource;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import au.com.bytecode.opencsv.CSVWriter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.krishagni.catissueplus.core.de.ui.SpecimenPositionControlFactory;
 import com.krishagni.catissueplus.core.de.ui.StorageContainerControlFactory;
 import com.krishagni.catissueplus.core.de.ui.UserControlFactory;
 
@@ -90,6 +92,7 @@ public class MigrateSpecimenEvents {
 		
 		ControlManager.getInstance().registerFactory(UserControlFactory.getInstance());
 		ControlManager.getInstance().registerFactory(StorageContainerControlFactory.getInstance());
+		ControlManager.getInstance().registerFactory(SpecimenPositionControlFactory.getInstance());
 		
 		List<Map<String, String>> eventsInfo = 
 				new ObjectMapper().readValue(new File(args[1]), List.class);		
@@ -157,18 +160,23 @@ public class MigrateSpecimenEvents {
 				return;
 			}
 
-			if (!systemEvent) {
-				logger.info("Deleting old event entries from parent table");
-				deleteParentEventEntries(eventTable);				
-			}
-
 			logger.info("Creating form for event: " + eventName);
-			Long formId = createForm(ctx, eventFormDef);
+			Long formId = createForm(ctx, eventFormDef, StringUtils.isBlank(eventTable));
 			if (formId == null) {
 				logger.error("Error creating form for event: " + eventName);
 				throw new RuntimeException("Error creating form for event: " + eventName);
 			}
 
+			if (StringUtils.isBlank(eventTable)) {
+				return;				
+			}
+
+			if (!systemEvent) {
+				logger.info("Deleting old event entries from parent table");
+				deleteParentEventEntries(eventTable);				
+			}
+
+			
 			logger.info("Migrating records for event: " + eventName);
 			migrateRecords(ctx, formId, eventTable);
 
@@ -208,10 +216,10 @@ public class MigrateSpecimenEvents {
 		JdbcDaoFactory.getJdbcDao().executeDDL(String.format(DELETE_EVENT_ENTRIES_SQL, table));
 	}
 
-	private Long createForm(UserContext ctx, String formFile) throws Exception {
+	private Long createForm(UserContext ctx, String formFile, boolean createTables) throws Exception {
 		Transaction txn = TransactionManager.getInstance().newTxn();
 		try {
-			Long formId = Container.createContainer(ctx, formFile, ".", false);
+			Long formId = Container.createContainer(ctx, formFile, ".", createTables);
 			Long formCtxId = insertFormCtx(formId);
 			new BOTemplateGeneratorUtil().generateAndUploadTemplate(formId, "SpecimenEvent");
 			TransactionManager.getInstance().commit(txn);

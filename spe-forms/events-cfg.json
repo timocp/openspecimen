@@ -98,5 +98,10 @@
     "name"   : "SpecimenTissueReviewEvent",
     "form"   : "spe-forms/tissue-review-event.xml",
     "dbTable": "CATISSUE_TIS_SPE_EVENT_PARAM"
+  },
+
+  {
+    "name"   : "SpecimenReturnEvent",
+    "form"   : "spe-forms/return-event.xml"
   }
 ]

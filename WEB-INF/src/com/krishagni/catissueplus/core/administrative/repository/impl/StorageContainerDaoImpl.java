@@ -16,6 +16,7 @@ import com.krishagni.catissueplus.core.common.repository.AbstractDao;
 
 import edu.wustl.catissuecore.domain.Specimen;
 import edu.wustl.catissuecore.domain.StorageContainer;
+import edu.wustl.catissuecore.domain.TransferEventParameters;
 
 public class StorageContainerDaoImpl extends AbstractDao<StorageContainer> implements StorageContainerDao {
 	
@@ -23,6 +24,17 @@ public class StorageContainerDaoImpl extends AbstractDao<StorageContainer> imple
 	public StorageContainer getStorageContainer(Long id) {
 		return (StorageContainer) sessionFactory.getCurrentSession().get(StorageContainer.class, id);
 	}
+	
+	@Override
+	public StorageContainer getStorageContainer(Long id, boolean refresh) {
+		StorageContainer container = getStorageContainer(id);
+		if (refresh && container != null) {
+			sessionFactory.getCurrentSession().refresh(container);
+		}
+		
+		return container;
+	}
+	
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -77,6 +89,20 @@ public class StorageContainerDaoImpl extends AbstractDao<StorageContainer> imple
 		return (Specimen)getSessionFactory().getCurrentSession().get(Specimen.class, specimenId);
 	}
 	
+	@Override
+	public Specimen getSpecimen(Long specimenId, boolean refresh) {
+		Specimen specimen = getSpecimen(specimenId);
+		if (refresh && specimen != null) {
+			getSessionFactory().getCurrentSession().refresh(specimen);
+		}
+		
+		return specimen;
+	}
+	
+	@Override
+	public void saveTransferEvent(TransferEventParameters transferEvent) {
+		getSessionFactory().getCurrentSession().saveOrUpdate(transferEvent);		
+	}	
 	
 	@SuppressWarnings("unchecked")
 	private Object[] getCpAndSpecimenType(Long specimenId) {

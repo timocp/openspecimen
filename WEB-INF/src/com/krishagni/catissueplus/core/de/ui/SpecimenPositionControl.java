@@ -12,6 +12,8 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.krishagni.catissueplus.core.administrative.events.AllocateSpecimenPositionEvent;
 import com.krishagni.catissueplus.core.administrative.events.SpecimenPositionAllocatedEvent;
 import com.krishagni.catissueplus.core.administrative.events.SpecimenPositionDetail;
@@ -209,10 +211,16 @@ public class SpecimenPositionControl extends SubFormControl implements ControlVa
 		}		
 		detail.setSpecimenId(specimenId.longValue());
 		 		
- 		ControlValue containerCtrlVal = position.getFieldValue(storageContainerCtrl.getName());
- 		Number containerId = (Number)storageContainerCtrl.fromString(containerCtrlVal.getValue().toString());
-		detail.setStorageContainerId(containerId.longValue());
-		
+ 		Object containerCtrlVal = position.getFieldValue(storageContainerCtrl.getName()).getValue();
+ 		Long containerId = null;
+ 		if (containerCtrlVal != null && StringUtils.isNotEmpty(containerCtrlVal.toString())) {
+ 			containerId = ((Number)storageContainerCtrl.fromString(containerCtrlVal.toString())).longValue();
+ 		}
+ 		
+ 		if (containerId != null && !containerId.equals(-1L)) {
+ 			detail.setStorageContainerId(containerId.longValue());
+ 		}
+				
 		return detail;		
 	}
 	

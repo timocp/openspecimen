@@ -31,4 +31,9 @@ public interface UserDao extends Dao<User> {
 			List<String> sortBy, String ... searchString);
 
 	Long getUsersCount(String ... searchString);
+	
+	//
+	// Legacy; should go away
+	//
+	edu.wustl.catissuecore.domain.User getLegacyUser(Long userId);
 }

@@ -13,7 +13,11 @@ openspecimen.ui.fancy.SpecimenPosition = function(params) {
 
   var that = this;
 
+  this.minWidth = 400;
+
   this.render = function() {
+    this.specimenId = params.args.appData.objectId;
+
     this.containerPositionsEl = addModalToDom();
 
     this.inputEl = $("<div/>").addClass("clearfix");
@@ -67,10 +71,16 @@ openspecimen.ui.fancy.SpecimenPosition = function(params) {
       .append("Lookup");
     this.lookupEl.append(this.lookupBtn);
 
+    
     this.lookupBtn.on('click', function() {
+      if (!that.storageContainer.getValue().value) {
+        alert("Virtual storage containers do not have positions map");
+        return;
+      }
+
       that.containerPositionsEl.attr(
         {
-          'data-specimen-id': params.args.appData.objectId,
+          'data-specimen-id': that.specimenId,
           'data-container-id': that.storageContainer.getValue().value,
           'data-pos-x': posXId,
           'data-pos-y': posYId
@@ -82,7 +92,29 @@ openspecimen.ui.fancy.SpecimenPosition = function(params) {
   };
 
   this.postRender = function() {
-    this.storageContainer.postRender();
+    if (!this.posId) {
+      $.ajax({
+        type: 'GET',
+        url: '/openspecimen/rest/ng/specimens/' + this.specimenId + '/position'
+      }).done(function(position) {
+        var value = {storageContainer: -1};
+        if (position) {
+          value = {
+            storageContainer: position.storageContainerId,
+            posX: position.posX,
+            posY: position.posY,
+            id: position.id
+          };
+        }
+
+        that.setValue(that.recId, value);
+        that.storageContainer.postRender();
+      }).fail(function() {
+        alert("Failed to load specimen position for specimen: " + that.specimenId);
+      });
+    } else {
+      this.storageContainer.postRender();
+    }
   };
 
   this.getName = function() {
@@ -116,7 +148,9 @@ openspecimen.ui.fancy.SpecimenPosition = function(params) {
       return;
     }
 
-    this.posId = value.id;
+    if (!this.posId) { // to make it work for apply first to all
+      this.posId = value.id;
+    }
     this.storageContainer.setValue(recId, value.storageContainer);
     this.posX.setValue(recId, value.posX);
     this.posY.setValue(recId, value.posY);

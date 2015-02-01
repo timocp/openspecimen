@@ -87,7 +87,7 @@ specimenEvent.controller('SpecimenEventController',
         for (var i = 0; i < specimenLabels.length; i++) {
           var specimen = $scope.specimenMap[specimenLabels[i]];
           var tableRec = {
-            key            : {id : specimen.label, label : specimen.label},
+            key            : {objectId : specimen.id, label : specimen.label},
             appColumnsData : {cpName: specimen.cpShortTitle, specimenType: specimen.specimenType },
             records        : []
           };

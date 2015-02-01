@@ -16,6 +16,14 @@ public class SpecimenPositionDaoImpl extends AbstractDao<SpecimenPosition> imple
 		super.saveOrUpdate(position);
 		getSessionFactory().getCurrentSession().flush();
 	}
+	
+	@Override
+	public void delete(SpecimenPosition position) {
+		super.delete(position);
+		getSessionFactory().getCurrentSession().evict(position.getSpecimen());
+		getSessionFactory().getCurrentSession().evict(position.getStorageContainer());
+		getSessionFactory().getCurrentSession().flush();
+	}
 
 
 	@Override

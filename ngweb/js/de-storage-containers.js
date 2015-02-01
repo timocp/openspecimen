@@ -11,8 +11,13 @@ openspecimen.ui.fancy.StorageContainers = edu.common.de.LookupSvc.extend({
     return {name: searchTerm};
   },
 
-  formatResults: function(containers) {
+  formatResults: function(containers, queryTerm) {
     var result = [];
+  
+    if (!queryTerm || "virtual".indexOf(queryTerm.toLowerCase()) >= 0) {
+      result.push({id: null, text: 'Virtual'});
+    }
+
     for (var i = 0; i < containers.length; ++i) {
       result.push({id: containers[i].id, text: containers[i].name});
     }
@@ -26,7 +31,7 @@ openspecimen.ui.fancy.StorageContainers = edu.common.de.LookupSvc.extend({
 
   getDefaultValue: function() {
     var deferred = $.Deferred();
-    deferred.resolve({id: -1, text: 'Virtual'});
+    deferred.resolve({id: null, name: 'Virtual'});
     return deferred.promise();
   }
 });

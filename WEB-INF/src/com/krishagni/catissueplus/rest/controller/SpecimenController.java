@@ -22,6 +22,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import com.krishagni.catissueplus.core.administrative.events.ReqSpecimenPositionEvent;
+import com.krishagni.catissueplus.core.administrative.events.SpecimenPositionDetail;
+import com.krishagni.catissueplus.core.administrative.events.SpecimenPositionEvent;
+import com.krishagni.catissueplus.core.administrative.services.StorageContainerService;
 import com.krishagni.catissueplus.core.biospecimen.events.AliquotCreatedEvent;
 import com.krishagni.catissueplus.core.biospecimen.events.AliquotDetail;
 import com.krishagni.catissueplus.core.biospecimen.events.CreateAliquotEvent;
@@ -56,12 +60,15 @@ public class SpecimenController {
 
 	@Autowired
 	private SpecimenService specimenSvc;
-
+	
 	@Autowired
 	private FormService formSvc;
 
 	@Autowired
 	private PrintService specimenLabelPrintSvc;
+	
+	@Autowired
+	private StorageContainerService storageContainerSvc;
 
 	@Autowired
 	private HttpServletRequest httpServletRequest;
@@ -95,6 +102,21 @@ public class SpecimenController {
 			result.put("specimens", resp.getSpecimensSummary());
 			
 			return result;
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value="{id}/position")
+	@ResponseBody
+	public SpecimenPositionDetail getSpecimenPosition(@PathVariable("id") Long specimenId) {
+		ReqSpecimenPositionEvent req = new ReqSpecimenPositionEvent();
+		req.setSpecimenId(specimenId);
+		req.setSessionDataBean(getSession());
+		
+		SpecimenPositionEvent resp = storageContainerSvc.getSpecimenPosition(req);
+		if (!resp.isSuccess()) {
+			resp.raiseException();
+		}
+		
+		return resp.getPosition();
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}/forms")
