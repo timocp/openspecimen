@@ -101,14 +101,20 @@
   },
   
   {
-    "name"   : "DerivativeEvent",
+    "name"   : "SpecimenDerivativeEvent",
     "form"   : "spe-forms/derivative-event.xml",
     "systemEvent": "true"
   },
   
   {
-    "name"   : "AliquotEvent",
+    "name"   : "SpecimenAliquotEvent",
     "form"   : "spe-forms/aliquot-event.xml",
     "systemEvent": "true"
+  },
+
+  {
+    "name"   : "SpecimenReturnEvent",
+    "form"   : "spe-forms/return-event.xml"
   }
+
 ]

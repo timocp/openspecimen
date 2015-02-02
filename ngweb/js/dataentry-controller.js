@@ -165,7 +165,11 @@ angular.module('plus.dataentry', [])
           },
 
           onValidationError: function() {
-            Utility.notify($("#notifications"), "There are some errors on form. Please rectify them before saving", "error", true);
+            Utility.notify(
+              $("#notifications"), 
+              "There are some errors on form (hover mouse over highlighted fields to know details). Please rectify them before saving", 
+              "error", 
+              true);
           },
 
           onCancel: function() {

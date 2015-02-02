@@ -5,5 +5,11 @@ public interface Dao<T> {
 
 	public void saveOrUpdate(T t);
 	
+	public void saveOrUpdate(T t, boolean flush);
+	
 	public void delete(T t);
+	
+	public void refresh(T t);
+	
+	public void clear();
 }

@@ -5,17 +5,17 @@ import com.krishagni.catissueplus.core.common.events.RequestEvent;
 
 public class CreateStorageContainerEvent extends RequestEvent {
 
-	private StorageContainerDetails details;
+	private StorageContainerDetail details;
 	
-	public CreateStorageContainerEvent(StorageContainerDetails details) {
+	public CreateStorageContainerEvent(StorageContainerDetail details) {
 		setDetails(details);
 	}
 
-	public StorageContainerDetails getDetails() {
+	public StorageContainerDetail getDetails() {
 		return details;
 	}
 
-	public void setDetails(StorageContainerDetails details) {
+	public void setDetails(StorageContainerDetail details) {
 		this.details = details;
 	}
 

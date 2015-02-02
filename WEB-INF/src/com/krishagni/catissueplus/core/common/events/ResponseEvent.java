@@ -14,7 +14,7 @@ public class ResponseEvent {
 
 	private Throwable exception;
 
-	private ErroneousField[] erroneousFields;
+	private ErroneousField[] erroneousFields = new ErroneousField[0];
 
 	public EventStatus getStatus() {
 		return status;

@@ -49,14 +49,23 @@ public class SpecimenEventsServiceImpl implements SpecimenEventService {
 		Long formCtxtId = formDao.getFormCtxtId(req.getFormId(), "SpecimenEvent", -1L);
 		List<FormData> formDataList = req.getFormDataList();
 		for (FormData formData : formDataList) {
-			String specimenLabel = formData.getAppData().get("id").toString();
-			Specimen specimen = daoFactory.getSpecimenDao().getSpecimenByLabel(specimenLabel);
+			Specimen specimen = null;
+			
+			Number specimenId = (Number)formData.getAppData().get("objectId");
+			String label = (String)formData.getAppData().get("label");
+			
+			if (specimenId != null) {
+				specimen = daoFactory.getSpecimenDao().getSpecimen(specimenId.longValue());
+			} else if (label != null) {
+				specimen = daoFactory.getSpecimenDao().getSpecimenByLabel(label);
+			}
+			
 			if(specimen == null) {
-				return SpecimenEventsSavedEvent.badRequest(new IllegalArgumentException("Specimen with label"+ specimenLabel+ "does not exist"));
+				return SpecimenEventsSavedEvent.badRequest(new IllegalArgumentException("Specimen with label"+ label+ "does not exist"));
 			}
 			Long cpId = specimen.getSpecimenCollectionGroup().getCollectionProtocolRegistration().getCollectionProtocol().getId();
 			if(!privilegeSvc.hasPrivilege(req.getSessionDataBean().getUserId(), cpId, Permissions.SPECIMEN_PROCESSING)) {
-				return SpecimenEventsSavedEvent.notAuthorized(new IllegalAccessException("Does not have access for data entry on specimen" + specimenLabel));
+				return SpecimenEventsSavedEvent.notAuthorized(new IllegalAccessException("Does not have access for data entry on specimen" + label));
 			}
 			
 			Map<String, Object> appData = formData.getAppData();

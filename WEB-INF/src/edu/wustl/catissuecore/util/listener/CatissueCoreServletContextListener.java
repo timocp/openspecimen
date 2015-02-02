@@ -29,17 +29,12 @@ import org.apache.commons.io.FilenameUtils;
 import titli.model.util.TitliResultGroup;
 import au.com.bytecode.opencsv.CSVReader;
 
-import com.krishagni.catissueplus.core.de.ui.DistributionProtocolControlFactory;
-import com.krishagni.catissueplus.core.de.ui.DistributionProtocolFieldMapper;
-import com.krishagni.catissueplus.core.de.ui.SiteControlFactory;
-import com.krishagni.catissueplus.core.de.ui.SiteFieldMapper;
+import com.krishagni.catissueplus.core.de.ui.SpecimenPositionControlFactory;
+import com.krishagni.catissueplus.core.de.ui.SpecimenPositionMapper;
 import com.krishagni.catissueplus.core.de.ui.StorageContainerControlFactory;
 import com.krishagni.catissueplus.core.de.ui.StorageContainerMapper;
-
 import com.krishagni.catissueplus.core.de.ui.UserControlFactory;
 import com.krishagni.catissueplus.core.de.ui.UserFieldMapper;
-import com.krishagni.catissueplus.core.notification.schedular.ExternalAppFailNotificationSchedular;
-import com.krishagni.catissueplus.core.notification.schedular.ExternalAppNotificationSchedular;
 
 import edu.common.dynamicextensions.domain.nui.factory.ControlManager;
 import edu.common.dynamicextensions.nutility.BOUtil;
@@ -184,9 +179,9 @@ public class CatissueCoreServletContextListener implements ServletContextListene
 			}
 						
 			DEApp.init(ds, dir, dateFomat,timeFormat);
-
 			initQueryPathsConfig();
 			initFancyControls();
+			
 			logger.info("Initialization complete");									
 		}
 		catch (final Exception e)
@@ -206,14 +201,12 @@ public class CatissueCoreServletContextListener implements ServletContextListene
  		ControlManager ctrlMgr = ControlManager.getInstance();
 		ctrlMgr.registerFactory(UserControlFactory.getInstance());
 		ctrlMgr.registerFactory(StorageContainerControlFactory.getInstance());
-		ctrlMgr.registerFactory(SiteControlFactory.getInstance());
-		ctrlMgr.registerFactory(DistributionProtocolControlFactory.getInstance());
+		ctrlMgr.registerFactory(SpecimenPositionControlFactory.getInstance());
 		
 		ControlMapper ctrlMapper = ControlMapper.getInstance();
 		ctrlMapper.registerControlMapper("userField", new UserFieldMapper());
 		ctrlMapper.registerControlMapper("storageContainer", new StorageContainerMapper());
-		ctrlMapper.registerControlMapper("siteField", new SiteFieldMapper());
-		ctrlMapper.registerControlMapper("distributionProtocolField", new DistributionProtocolFieldMapper());
+		ctrlMapper.registerControlMapper("specimenPosition", new SpecimenPositionMapper());
  	}
 
 	/**

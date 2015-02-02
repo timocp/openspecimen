@@ -9,7 +9,7 @@
         name="edu.wustl.catissuecore.domain.Specimen" table="CATISSUE_SPECIMEN"
         lazy="true"
     >
-        <cache usage="read-write" />
+        <!-- cache usage="read-write" / -->
         <id
             name="id"
             column="IDENTIFIER"
@@ -39,7 +39,7 @@
             cascade="all"
             sort="unsorted"
         >
-             <cache usage="read-write" />
+             <!-- cache usage="read-write" / -->
             <key
                 column="PARENT_SPECIMEN_ID"
             >
@@ -125,7 +125,7 @@
             cascade="all"
             sort="unsorted"
         >
-         <cache usage="read-write" />
+         <!-- cache usage="read-write" / -->
             <key
                 column="SPECIMEN_ID"
             >
@@ -145,7 +145,7 @@
             cascade="none"
             sort="unsorted"
         >
-             <cache usage="read-write" />
+             <!-- cache usage="read-write" / -->
             <key
                 column="SPECIMEN_ID"
             >

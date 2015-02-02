@@ -5,15 +5,15 @@ import com.krishagni.catissueplus.core.common.events.ResponseEvent;
 
 public class StorageContainerEvent extends ResponseEvent {
 
-	private StorageContainerSummary container;
+	private StorageContainerDetail container;
 
 	private Long id;
 
-	public StorageContainerSummary getContainer() {
+	public StorageContainerDetail getContainer() {
 		return container;
 	}
 
-	public void setContainer(StorageContainerSummary container) {
+	public void setContainer(StorageContainerDetail container) {
 		this.container = container;
 	}
 
@@ -25,9 +25,9 @@ public class StorageContainerEvent extends ResponseEvent {
 		this.id = id;
 	}
 
-	public static StorageContainerEvent ok(StorageContainerSummary details) {
+	public static StorageContainerEvent ok(StorageContainerDetail detail) {
 		StorageContainerEvent event = new StorageContainerEvent();
-		event.setContainer(details);
+		event.setContainer(detail);
 		event.setStatus(EventStatus.OK);
 		return event;
 	}

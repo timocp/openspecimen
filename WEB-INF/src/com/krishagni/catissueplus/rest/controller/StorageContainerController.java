@@ -1,4 +1,3 @@
-
 package com.krishagni.catissueplus.rest.controller;
 
 import java.util.List;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.krishagni.catissueplus.core.administrative.events.ReqStorageContainerEvent;
 import com.krishagni.catissueplus.core.administrative.events.ReqStorageContainersEvent;
+import com.krishagni.catissueplus.core.administrative.events.StorageContainerDetail;
 import com.krishagni.catissueplus.core.administrative.events.StorageContainerEvent;
 import com.krishagni.catissueplus.core.administrative.events.StorageContainerSummary;
 import com.krishagni.catissueplus.core.administrative.events.StorageContainersEvent;
@@ -23,6 +23,7 @@ import com.krishagni.catissueplus.core.administrative.services.StorageContainerS
 @Controller
 @RequestMapping("/storage-containers")
 public class StorageContainerController {
+	
 	@Autowired
 	private StorageContainerService storageContainerSvc;
 
@@ -30,11 +31,23 @@ public class StorageContainerController {
 	@ResponseBody
 	@ResponseStatus(HttpStatus.OK)
 	public List<StorageContainerSummary> getStorageContainers(
-			@RequestParam(value = "name", required = false, defaultValue = "") String name,
-			@RequestParam(value = "maxResults", required = false, defaultValue = "100") int maxResults) {
+			@RequestParam(value = "name", required = false, defaultValue = "") 
+			String name,
+			
+			@RequestParam(value = "maxResults", required = false, defaultValue = "100") 
+			int maxResults,
+			
+			@RequestParam(value = "specimenId", required = false) 
+			Long specimenId,
+			
+			@RequestParam(value = "onlyFreeContainers", required = false, defaultValue = "false") 
+			Boolean onlyFreeContainers) {
+		
 		ReqStorageContainersEvent req = new ReqStorageContainersEvent();
 		req.setMaxResults(maxResults);
 		req.setName(name);
+		req.setSpecimenId(specimenId);
+		req.setOnlyFreeContainers(onlyFreeContainers);
 		
 		StorageContainersEvent resp = storageContainerSvc.getStorageContainers(req);
 		if (!resp.isSuccess()) {
@@ -47,9 +60,17 @@ public class StorageContainerController {
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}")
 	@ResponseBody
 	@ResponseStatus(HttpStatus.OK)
-	public StorageContainerSummary getStorageContainerById(@PathVariable Long id) {
+	public StorageContainerDetail getStorageContainerById(
+			@PathVariable 
+			Long id,
+			
+			@RequestParam(value = "includeOccupiedPositions", required = false, defaultValue = "false") 
+			Boolean includeOccupiedPositions) {
+		
 		ReqStorageContainerEvent req = new ReqStorageContainerEvent();
 		req.setId(id);
+		req.setIncludeOccupiedPositions(includeOccupiedPositions);
+		
 		StorageContainerEvent resp = storageContainerSvc.getStorageContainer(req);
 		if (!resp.isSuccess()) {
 			resp.raiseException();

@@ -1,0 +1,49 @@
+<form>
+  <view>
+    <name>SpecimenReturnEvent</name>
+    <caption>Return Event</caption>
+    <row>
+      <userField>
+        <name>user</name>
+        <udn>user</udn>
+        <caption>User</caption>
+        <mandatory>true</mandatory>
+      </userField>
+    </row>
+    <row>
+      <datePicker>
+        <name>time</name>
+        <udn>time</udn>
+        <caption>Date and Time</caption>
+        <format>MM-dd-yyyy HH:mm</format>
+        <mandatory>true</mandatory>
+      </datePicker>
+    </row>
+    <row>
+      <specimenPosition>
+        <name>storagePosition</name>
+        <udn>storagePosition</udn>
+        <caption>Storage Position</caption>
+        <mandatory>true</mandatory>
+      </specimenPosition>
+    </row>
+    <row>
+      <numberField>
+        <name>returnedQuantity</name>
+        <udn>returnedQuantity</udn>
+        <caption>Returned Quantity</caption>
+        <mandatory>true</mandatory>
+        <noOfDigitsAfterDecimal>4</noOfDigitsAfterDecimal>
+      </numberField>
+    </row>
+    <row>
+      <textArea>
+        <name>comments</name>
+        <udn>comments</udn>
+        <caption>Comments</caption>
+        <column>COMMENTS</column>
+        <height>2</height>
+      </textArea>
+    </row>
+  </view>
+</form>

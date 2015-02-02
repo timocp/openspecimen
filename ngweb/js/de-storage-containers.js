@@ -7,12 +7,17 @@ openspecimen.ui.fancy.StorageContainers = edu.common.de.LookupSvc.extend({
     return '/openspecimen/rest/ng/storage-containers/';
   },
 
-  searchRequest: function(searchTerm) {
-    return {name: searchTerm};
+  searchRequest: function(searchTerm, searchFilters) {
+    return $.extend({name: searchTerm}, searchFilters);
   },
 
-  formatResults: function(containers) {
+  formatResults: function(containers, queryTerm) {
     var result = [];
+  
+    if (!queryTerm || "virtual".indexOf(queryTerm.toLowerCase()) >= 0) {
+      result.push({id: null, text: 'Virtual'});
+    }
+
     for (var i = 0; i < containers.length; ++i) {
       result.push({id: containers[i].id, text: containers[i].name});
     }
@@ -21,12 +26,12 @@ openspecimen.ui.fancy.StorageContainers = edu.common.de.LookupSvc.extend({
   },
 
   formatResult: function(container) {
-    return {id: container.id, text: container.name};
+    return {id: container.id, text: container.name, actual: container};
   },
 
   getDefaultValue: function() {
     var deferred = $.Deferred();
-    deferred.resolve({id: -1, name: 'Virtual'});
+    deferred.resolve({id: null, name: 'Virtual'});
     return deferred.promise();
   }
 });

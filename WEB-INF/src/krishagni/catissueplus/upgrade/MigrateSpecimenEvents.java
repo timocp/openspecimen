@@ -25,6 +25,7 @@ import org.apache.log4j.Logger;
 import au.com.bytecode.opencsv.CSVWriter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.krishagni.catissueplus.core.de.ui.SpecimenPositionControlFactory;
 import com.krishagni.catissueplus.core.de.ui.StorageContainerControlFactory;
 import com.krishagni.catissueplus.core.de.ui.UserControlFactory;
 
@@ -55,8 +56,6 @@ public class MigrateSpecimenEvents {
 	private String eventTable;
 	
 	private boolean systemEvent;
-	
-	private boolean createTables; 
 	
 	private static final Set<String> NCI_SPP_FORMS = new HashSet<String>(
 			Arrays.asList("SpecimenEmbeddedEvent", "SpecimenTissueReviewEvent")
@@ -93,6 +92,7 @@ public class MigrateSpecimenEvents {
 		
 		ControlManager.getInstance().registerFactory(UserControlFactory.getInstance());
 		ControlManager.getInstance().registerFactory(StorageContainerControlFactory.getInstance());
+		ControlManager.getInstance().registerFactory(SpecimenPositionControlFactory.getInstance());
 		
 		List<Map<String, String>> eventsInfo = 
 				new ObjectMapper().readValue(new File(args[1]), List.class);		
@@ -137,7 +137,7 @@ public class MigrateSpecimenEvents {
 		eventName = eventInfo.get("name");
 		eventFormDef = eventInfo.get("form");
 		eventTable = eventInfo.get("dbTable");
-		createTables = StringUtils.isBlank(eventTable);
+		
 		String systemEventStr = eventInfo.get("systemEvent");
 		if (systemEventStr != null && systemEventStr.trim().equalsIgnoreCase("true")) {
 			systemEvent = true;
@@ -160,21 +160,23 @@ public class MigrateSpecimenEvents {
 				return;
 			}
 
-			if (!systemEvent) {
-				logger.info("Deleting old event entries from parent table");
-				deleteParentEventEntries(eventTable);				
-			}
-
 			logger.info("Creating form for event: " + eventName);
-			Long formId = createForm(ctx, eventFormDef);
+			Long formId = createForm(ctx, eventFormDef, StringUtils.isBlank(eventTable));
 			if (formId == null) {
 				logger.error("Error creating form for event: " + eventName);
 				throw new RuntimeException("Error creating form for event: " + eventName);
 			}
 
-			if(createTables){
-				return;
+			if (StringUtils.isBlank(eventTable)) {
+				return;				
 			}
+
+			if (!systemEvent) {
+				logger.info("Deleting old event entries from parent table");
+				deleteParentEventEntries(eventTable);				
+			}
+
+			
 			logger.info("Migrating records for event: " + eventName);
 			migrateRecords(ctx, formId, eventTable);
 
@@ -187,6 +189,7 @@ public class MigrateSpecimenEvents {
 				adjustSystemEventIdColumn(eventTable);
 			}
 			logger.info("Adjusting identifier column for event: " + eventName + " took " + timeDiff(t2));
+			
 			logger.info("Migrated : " + eventName + " in " + timeDiff(t1) + " ms");
 		} catch (Exception e) {
 			logger.error("Error migrating data for event: " + eventName, e);
@@ -213,7 +216,7 @@ public class MigrateSpecimenEvents {
 		JdbcDaoFactory.getJdbcDao().executeDDL(String.format(DELETE_EVENT_ENTRIES_SQL, table));
 	}
 
-	private Long createForm(UserContext ctx, String formFile) throws Exception {
+	private Long createForm(UserContext ctx, String formFile, boolean createTables) throws Exception {
 		Transaction txn = TransactionManager.getInstance().newTxn();
 		try {
 			Long formId = Container.createContainer(ctx, formFile, ".", createTables);
@@ -424,7 +427,9 @@ public class MigrateSpecimenEvents {
 	private static final String DELETE_EVENT_ENTRIES_SQL = 
 			"delete from catissue_specimen_event_param where identifier in (select identifier from %s)";
 	
-	private static final String UPDATE_SPE_ID_SQL = "update %s set spe_id = identifier";
+	private static final String UPDATE_SPE_ID_SQL = 
+			"update %s set spe_id = identifier";
 	
-	private static final String CREATE_IDX_SQL = "create index %s on %s(%s)";
+	private static final String CREATE_IDX_SQL =
+			"create index %s on %s(%s)";
 }

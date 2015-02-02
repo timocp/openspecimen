@@ -27,22 +27,16 @@ import edu.wustl.common.exception.ApplicationException;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.domain.LoginCredentials;
 import edu.wustl.domain.LoginResult;
-import edu.wustl.processor.LoginProcessor;
 import edu.wustl.security.global.Roles;
 import edu.wustl.security.privilege.PrivilegeManager;
 
-/**
- * @author Ali Ranalvi
- *
- */
 public class RestApiAuthFilter implements Filter
 {
 
-	private static final Logger logger = Logger
-			.getCommonLogger(RestApiAuthFilter.class);
+	private static final Logger logger = Logger.getCommonLogger(RestApiAuthFilter.class);
 
 	private static final String BASIC_AUTH = "Basic ";
-
+	
 	@Override
 	public void destroy()
 	{
@@ -53,6 +47,8 @@ public class RestApiAuthFilter implements Filter
 	public void doFilter(ServletRequest req, ServletResponse resp,
 			FilterChain chain) throws IOException, ServletException
 	{
+		AuthenticatedSessionCtx.clear();
+		
 		HttpServletRequest httpReq = (HttpServletRequest) req;
 		HttpServletResponse httpResp = (HttpServletResponse) resp;
 
@@ -96,11 +92,11 @@ public class RestApiAuthFilter implements Filter
 				SessionDataBean sessionDataBean = new SessionDataBean();
 
 				//			httpReq.setAttribute(Constants.CATISSUE_USER_OBJ, authenticatedUser);
-				sessionDataBean = setSessionDataBean(authenticatedUser,
-						httpReq.getRemoteAddr(), authenticatedUser.getRoleId());
-				httpReq.getSession().setAttribute(Constants.SESSION_DATA,
-						sessionDataBean);
-
+				sessionDataBean = setSessionDataBean(
+						authenticatedUser,
+						httpReq.getRemoteAddr(), 
+						authenticatedUser.getRoleId());
+				httpReq.getSession().setAttribute(Constants.SESSION_DATA, sessionDataBean);
 			}
 			catch (AuthenticationException authenticationException)
 			{
@@ -123,9 +119,12 @@ public class RestApiAuthFilter implements Filter
 				sendInternalErrorResp(httpResp);
 				return;
 			}
-		}
+		} 
 
+		SessionDataBean sdb = (SessionDataBean)httpReq.getSession().getAttribute(Constants.SESSION_DATA);
+		AuthenticatedSessionCtx.setCtx(sdb);		
 		chain.doFilter(req, resp);
+		AuthenticatedSessionCtx.clear();
 	}
 
 	private SessionDataBean setSessionDataBean(final User validUser,

@@ -70,9 +70,7 @@ import edu.common.dynamicextensions.domain.nui.SubFormControl;
 import edu.common.dynamicextensions.napi.FileControlValue;
 import edu.common.dynamicextensions.napi.FormData;
 import edu.common.dynamicextensions.napi.FormDataManager;
-import edu.common.dynamicextensions.napi.impl.FormDataManagerImpl;
 import edu.common.dynamicextensions.nutility.FileUploadMgr;
-import edu.wustl.cab2b.common.exception.RuntimeException;
 import edu.wustl.catissuecore.action.bulkOperations.BOTemplateGeneratorUtil;
 import edu.wustl.common.beans.SessionDataBean;
 
@@ -95,6 +93,8 @@ public class FormServiceImpl implements FormService {
 	
 	private FormDao formDao;
 	
+	private FormDataManager formDataMgr;
+	
 	public FormDao getFormDao() {
 		return formDao;
 	}
@@ -103,7 +103,15 @@ public class FormServiceImpl implements FormService {
 		this.formDao = formDao;
 	}
 	
-    @Override
+	public FormDataManager getFormDataMgr() {
+		return formDataMgr;
+	}
+
+	public void setFormDataMgr(FormDataManager formDataMgr) {
+		this.formDataMgr = formDataMgr;
+	}
+
+	@Override
     @PlusTransactional
 	public AllFormsSummaryEvent getForms(ReqAllFormsSummaryEvent req) {
 		switch (req.getFormType()) {
@@ -274,8 +282,6 @@ public class FormServiceImpl implements FormService {
 	@PlusTransactional
 	public FormDataEvent getFormData(ReqFormDataEvent req) {
 		Long formId = req.getFormId(), recordId = req.getRecordId();
-		FormDataManager formDataMgr = new FormDataManagerImpl(false);
-		
 		FormData formData = formDataMgr.getFormData(formId, recordId);		
 		if (formData == null) {
 			return FormDataEvent.notFound(formId, recordId);
@@ -291,8 +297,10 @@ public class FormServiceImpl implements FormService {
 			FormData formData = saveOrUpdateFormData(req.getSessionDataBean(), req.getRecordId(), req.getFormData());
 			return FormDataEvent.ok(formData.getContainer().getId(), formData.getRecordId(), formData);
 		} catch(IllegalArgumentException ex) {
-			return FormDataEvent.badRequest();
-		} 
+			return FormDataEvent.badRequest(ex.getMessage());
+		} catch (Exception e ) {
+			return FormDataEvent.serverError(e);
+		}
 	}
 
 	@Override
@@ -331,16 +339,15 @@ public class FormServiceImpl implements FormService {
 		formData.setRecordId(recordId);
 		boolean isInsert = (recordId == null);
 		
-		if(isInsert) {
-			if(!formContext.isMultiRecord()) {
+		if (isInsert) {
+			if (!formContext.isMultiRecord()) {
 				Long noOfRecords = formDao.getRecordsCount(formContext.getIdentifier(), objectId);
-				if(noOfRecords >= 1L) {
-					throw new RuntimeException("Form is single record ");
+				if (noOfRecords >= 1L) {
+					throw new IllegalArgumentException("Multiple records cannot be saved for this form");
 				}
 			}
 		}
 
-		FormDataManager formDataMgr = new FormDataManagerImpl(false);
 		recordId = formDataMgr.saveOrUpdateFormData(null, formData);
 
 		FormRecordEntryBean recordEntry = null;
@@ -370,7 +377,6 @@ public class FormServiceImpl implements FormService {
 	@Override
 	@PlusTransactional
 	public FileDetailEvent getFileDetail(ReqFileDetailEvent req) {
-		FormDataManager formDataMgr = new FormDataManagerImpl(false);
 		FileControlValue fcv = formDataMgr.getFileControlValue(req.getFormId(), req.getRecordId(), req.getCtrlName());
 		if (fcv == null) {
 			return FileDetailEvent.notFound();

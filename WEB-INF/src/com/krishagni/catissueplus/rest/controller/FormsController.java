@@ -54,6 +54,7 @@ import com.krishagni.catissueplus.core.de.events.ReqFormFieldsEvent;
 import com.krishagni.catissueplus.core.de.events.SaveFormDataEvent;
 import com.krishagni.catissueplus.core.de.services.FormService;
 
+import edu.common.dynamicextensions.domain.nui.ValidationErrors;
 import edu.common.dynamicextensions.napi.FormData;
 import edu.common.dynamicextensions.nutility.ContainerJsonSerializer;
 import edu.common.dynamicextensions.nutility.ContainerSerializer;
@@ -85,7 +86,6 @@ public class FormsController {
 			return resp.getForms();
 		}
 		
-		// TODO: Return appropriate error codes
 		return null;
 	}
 	
@@ -145,16 +145,20 @@ public class FormsController {
 	@RequestMapping(method = RequestMethod.GET, value="{id}/data/{recordId}")
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
-	public String getFormData(@PathVariable("id") Long formId, @PathVariable("recordId") Long recordId) {
+	public String getFormData(
+			@PathVariable("id") Long formId, 
+			@PathVariable("recordId") Long recordId,
+			@RequestParam(value = "includeUdn", required = false, defaultValue = "false") boolean includeUdn) {
 		ReqFormDataEvent req = new ReqFormDataEvent();
 		req.setFormId(formId);
 		req.setRecordId(recordId);
 		
 		FormDataEvent resp = formSvc.getFormData(req);
 		if (resp.getStatus() == EventStatus.OK) {
-			return resp.getFormData().toJson();
+			return resp.getFormData().toJson(includeUdn);
 		}
 		
+		resp.raiseException();
 		return null;
 	}
 	
@@ -259,31 +263,44 @@ public class FormsController {
 	}
 
 	private String saveOrUpdateFormData(Long formId, String formDataJson) {
+		JsonElement formDataJsonEle = null; 
+		
 		try {
 			formDataJson = URLDecoder.decode(formDataJson,"UTF-8");
 			if (formDataJson.endsWith("=")) {
-				formDataJson = formDataJson.substring(0, formDataJson.length() -1);
+				formDataJson = formDataJson.substring(0, formDataJson.length() - 1);
 			}	        			
+			
+			formDataJsonEle = new JsonParser().parse(formDataJson);
 		} catch (Exception e) {
-			throw new RuntimeException("Error parsing input JSON", e);
+			FormDataEvent.badRequest(e.getMessage()).raiseException();
 		}
 		
-		JsonElement formDataJsonEle = new JsonParser().parse(formDataJson);
-		if (formDataJsonEle.isJsonArray()) {
-			return bulkSaveFormData(formId, formDataJson);
-		} else {
-			FormData formData = FormData.fromJson(formDataJson, formId);
+		
+		try {
+			if (formDataJsonEle.isJsonArray()) {
+				return bulkSaveFormData(formId, formDataJson);
+			} else {
+				FormData formData = FormData.fromJson(formDataJson, formId);
+				formData.validate();
 
-			SaveFormDataEvent req = new SaveFormDataEvent();
-			req.setFormData(formData);
-			req.setFormId(formId);
-			req.setSessionDataBean(getSession());
-			req.setRecordId(formData.getRecordId());
+				SaveFormDataEvent req = new SaveFormDataEvent();
+				req.setFormData(formData);
+				req.setFormId(formId);
+				req.setSessionDataBean(getSession());
+				req.setRecordId(formData.getRecordId());
 
-			FormDataEvent resp = formSvc.saveFormData(req);
-			if (resp.getStatus() == EventStatus.OK) {
-				return resp.getFormData().toJson();
-			}
+				FormDataEvent resp = formSvc.saveFormData(req);
+				if (resp.getStatus() == EventStatus.OK) {
+					return resp.getFormData().toJson(formData.isUsingUdn());
+				}
+				
+				resp.raiseException();
+			}			
+		} catch (ValidationErrors ve) {
+			FormDataEvent.badRequest(ve).raiseException();
+		} catch (IllegalArgumentException iae) {
+			FormDataEvent.badRequest(iae.getMessage()).raiseException();
 		}
 
 		return null;		
@@ -297,6 +314,7 @@ public class FormsController {
   		for (int i = 0; i < records.size(); i++) {
   			String formDataJson = records.get(i).toString();
   			FormData formData = FormData.fromJson(formDataJson, formId);
+  			formData.validate();
   			formDataList.add(formData);
   		}
 				

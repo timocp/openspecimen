@@ -28,7 +28,7 @@
     </sql>
   </changeSet> 
 
-
+  
   <!-- Commenting for now, will uncomment once get the updated PV file from QA -->
   <!-- <changeSet id="Permissible_values csv file upload" author="asamgir">
     <loadUpdateData encoding="UTF-8"
@@ -212,4 +212,21 @@
       splitStatements="true"
       stripComments="true"/>
   </changeSet>
+
+  <changeSet author="vpawar" id="Specimen position view" runOnChange="true">
+    <sql>
+      create or replace view SPECIMEN_POS_VIEW as (
+        select
+          SPPOS.IDENTIFIER as IDENTIFIER, SPPOS.SPECIMEN_ID as SPECIMEN_ID,
+          CONTAINER.IDENTIFIER AS CONTAINER_ID, CONTAINER.NAME AS CONTAINER_NAME,
+          ABP.POSITION_DIMENSION_ONE_STRING AS POSITION_DIMENSION_ONE_STRING,
+          ABP.POSITION_DIMENSION_TWO_STRING AS POSITION_DIMENSION_TWO_STRING
+        from
+          CATISSUE_SPECIMEN_POSITION SPPOS
+          inner join CATISSUE_CONTAINER CONTAINER on SPPOS.CONTAINER_ID = CONTAINER.IDENTIFIER
+          inner join CATISSUE_ABSTRACT_POSITION ABP on SPPOS.IDENTIFIER = ABP.IDENTIFIER
+      );
+    </sql>
+  </changeSet>
+
 </databaseChangeLog>
