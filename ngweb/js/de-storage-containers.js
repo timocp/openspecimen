@@ -7,8 +7,8 @@ openspecimen.ui.fancy.StorageContainers = edu.common.de.LookupSvc.extend({
     return '/openspecimen/rest/ng/storage-containers/';
   },
 
-  searchRequest: function(searchTerm) {
-    return {name: searchTerm};
+  searchRequest: function(searchTerm, searchFilters) {
+    return $.extend({name: searchTerm}, searchFilters);
   },
 
   formatResults: function(containers, queryTerm) {

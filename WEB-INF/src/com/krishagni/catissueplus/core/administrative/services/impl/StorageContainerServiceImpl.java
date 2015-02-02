@@ -109,7 +109,8 @@ public class StorageContainerServiceImpl implements StorageContainerService {
 			//
 			// save new position
 			//
-			daoFactory.getSpecimenPositionDao().saveOrUpdate(position);			
+			daoFactory.getSpecimenPositionDao().saveOrUpdate(position, true);
+			daoFactory.getStorageContainerDao().clear();
 			return SpecimenPositionAllocatedEvent.ok(SpecimenPositionDetail.from(position));
 		} catch (ObjectCreationException oce) {
 			return SpecimenPositionAllocatedEvent.badRequest(oce);			
@@ -155,12 +156,13 @@ public class StorageContainerServiceImpl implements StorageContainerService {
 			//
 			if (position != null) {
 				updateSpecimenPosition(existing, position);				
-				daoFactory.getSpecimenPositionDao().saveOrUpdate(existing);
+				daoFactory.getSpecimenPositionDao().saveOrUpdate(existing, true);
 			} else {
 				removePosition(specimen, existing);
 				existing = null;
 			}
 			
+			daoFactory.getStorageContainerDao().clear();
 			return SpecimenPositionUpdatedEvent.ok(SpecimenPositionDetail.from(existing));
 		} catch (ObjectCreationException oce) {
 			return SpecimenPositionUpdatedEvent.badRequest(oce);			
@@ -410,7 +412,6 @@ public class StorageContainerServiceImpl implements StorageContainerService {
 		}
 		
 		daoFactory.getStorageContainerDao().saveOrUpdate(container, true);
-		daoFactory.getStorageContainerDao().clear();
 	}
 	
 	private Map<String, Converter> converters = new HashMap<String, Converter>() {

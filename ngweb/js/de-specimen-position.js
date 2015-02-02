@@ -28,8 +28,10 @@ openspecimen.ui.fancy.SpecimenPosition = function(params) {
       .css("padding-right", "15px");
     this.inputEl.append(this.containerEl);
 
-    var p1 = $.extend({}, params);
-    p1.field = {name: 'storageContainer'};
+    var p1 = $.extend({searchFilters: {specimenId: this.specimenId}}, params);
+    p1.field = {
+      name: 'storageContainer'
+    };
     this.storageContainer = new openspecimen.ui.fancy.StorageContainer(p1, clearPositions);
     this.containerEl.append(this.storageContainer.render());
 
