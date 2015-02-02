@@ -16,6 +16,8 @@ public class AppInitializer implements InitializingBean {
 	@Autowired
 	private FormDataManager formDataMgr;
 	
+	private Map<String, FormDataFilter> preFormSaveFilters = new HashMap<String, FormDataFilter>();
+	
 	private Map<String, FormDataFilter> postFormSaveFilters = new HashMap<String, FormDataFilter>();
 	
 	public FormDataManager getFormDataMgr() {
@@ -25,6 +27,10 @@ public class AppInitializer implements InitializingBean {
 	public void setFormDataMgr(FormDataManager formDataMgr) {
 		this.formDataMgr = formDataMgr;
 	}
+
+	public void setPreFormSaveFilters(Map<String, FormDataFilter> preFormSaveFilters) {
+		this.preFormSaveFilters = preFormSaveFilters;
+	}
 	
 	public void setPostFormSaveFilters(Map<String, FormDataFilter> postFormSaveFilters) {
 		this.postFormSaveFilters = postFormSaveFilters;
@@ -32,6 +38,14 @@ public class AppInitializer implements InitializingBean {
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
+		for (Map.Entry<String, FormDataFilter> filterEntry : preFormSaveFilters.entrySet()) {
+			if (filterEntry.getKey().equals("all")) {
+				formDataMgr.getFilterMgr().addPreFilter(filterEntry.getValue());
+			} else {
+				formDataMgr.getFilterMgr().addPreFilter(filterEntry.getKey(), filterEntry.getValue());
+			}
+		}
+		
 		for (Map.Entry<String, FormDataFilter> filterEntry : postFormSaveFilters.entrySet()) {
 			if (filterEntry.getKey().equals("all")) {
 				formDataMgr.getFilterMgr().addPostFilter(filterEntry.getValue());
