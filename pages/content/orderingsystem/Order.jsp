@@ -641,7 +641,7 @@ function createReturnEvent()
   var dpId = distributionProtocolNameCombo.getActualValue();
   var siteId = site_combo.getActualValue();
   var url = "specimenEventsBulkDataEntry.do?specimenLabels="+specimenLabels
-      +"&formName=specimenReturnEvent"+"&ST6="+orderName;
+      +"&formName=SpecimenReturnEvent"+"&ST6="+orderName;
   if (dpId != -1) {
     url = url.concat("&distributionProtocol=" + dpId);
   }

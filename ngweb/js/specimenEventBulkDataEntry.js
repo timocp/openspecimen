@@ -16,18 +16,18 @@ specimenEvent.controller('SpecimenEventController',
           return;
         }
 
-        for (var i = events.length; i >= 0; --i) {
+        for (var i = events.length - 1; i >= 0; --i) {
           if (events[i].sysForm) {
             events.splice(i, 1);
           }
         }
 
         $scope.specimenEvents = events;
-        if(globalSelectedEventFormName) {
-          for (i=0; i<$scope.specimenEvents.length; i++) {
-            if ($scope.specimenEvents[i].name == globalSelectedEventFormName) {
-              $scope.selectedEvent = $scope.specimenEvents[i];
-              $scope.onEventSelect($scope.specimenEvents[i]);
+        if (globalSelectedEventFormName) {
+          for (i = 0; i < events.length; i++) {
+            if (events[i].name == globalSelectedEventFormName) {
+              $scope.selectedEvent = events[i];
+              $scope.onEventSelect(events[i]);
               return;
             }
           }
