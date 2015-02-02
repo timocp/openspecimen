@@ -105,11 +105,14 @@ public class StorageContainerServiceImpl implements StorageContainerService {
 			// create transfer event
 			// 
 			createTransferEvent(specimen, null, position);
-						
+
 			//
 			// save new position
 			//
-			daoFactory.getSpecimenPositionDao().saveOrUpdate(position, true);
+			if (position != null) {
+				daoFactory.getSpecimenPositionDao().saveOrUpdate(position, true);
+			}
+
 			daoFactory.getStorageContainerDao().clear();
 			return SpecimenPositionAllocatedEvent.ok(SpecimenPositionDetail.from(position));
 		} catch (ObjectCreationException oce) {

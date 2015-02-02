@@ -150,9 +150,10 @@ openspecimen.ui.fancy.SpecimenPosition = function(params) {
       return;
     }
 
-    if (!this.posId) { // to make it work for apply first to all
+    if (!this.posId && value.storageContainer) { // to make it work for apply first to all
       this.posId = value.id;
     }
+
     this.storageContainer.setValue(recId, value.storageContainer);
     this.posX.setValue(recId, value.posX);
     this.posY.setValue(recId, value.posY);
