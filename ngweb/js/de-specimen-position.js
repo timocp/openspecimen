@@ -131,9 +131,8 @@ openspecimen.ui.fancy.SpecimenPosition = function(params) {
     return field.toolTip ? field.toolTip : field.caption;
   };
 	  
-  this.getValue = function() {
+  this.getValue = function(clone) {
     var value = {
-      id: this.posId,
       storageContainer: this.storageContainer.getValue().value,
       posX: this.posX.getValue().value,
       posY: this.posY.getValue().value,
@@ -141,6 +140,11 @@ openspecimen.ui.fancy.SpecimenPosition = function(params) {
         specimenId: params.args.appData.objectId
       }
     };
+
+    if (!clone) { // when cloning, we do not want to copy position identifiers
+      value.id = this.posId;
+    }
+
     return {name: field.name, value: value};
   };
 
@@ -150,7 +154,7 @@ openspecimen.ui.fancy.SpecimenPosition = function(params) {
       return;
     }
 
-    if (!this.posId && value.storageContainer) { // to make it work for apply first to all
+    if (!this.posId && !!value.id) { // to make it work for apply first to all
       this.posId = value.id;
     }
 
