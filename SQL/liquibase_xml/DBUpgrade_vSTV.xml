@@ -65,7 +65,7 @@
   <changeSet id="3" author="catissue" failOnError="false"  dbms="oracle" >
     <sql>INSERT INTO CATISSUE_CDE VALUES ( 'Dna_Method','DNA Method','DNA Method',1.0,null)</sql>
     <sql>INSERT INTO CATISSUE_PERMISSIBLE_VALUE (IDENTIFIER,VALUE, PARENT_IDENTIFIER, PUBLIC_ID) VALUES((select max(IDENTIFIER)+1 from CATISSUE_PERMISSIBLE_VALUE),'Myomethod',NULL,'Dna_Method')</sql>
-    <sql>INSERT INTO CATISSUE_PERMISSIBLE_VALUE (IDENTIFIER,VALUE, PARENT_IDENTIFIER, PUBLIC_ID) VALUES((select max(IDENTIFIER)+1 from CATISSUE_PERMISSIBLE_VALUE),'OiaGen Salt Precipitation',NULL,'Dna_Method')</sql>
+    <sql>INSERT INTO CATISSUE_PERMISSIBLE_VALUE (IDENTIFIER,VALUE, PARENT_IDENTIFIER, PUBLIC_ID) VALUES((select max(IDENTIFIER)+1 from CATISSUE_PERMISSIBLE_VALUE),'QiaGen Salt Precipitation',NULL,'Dna_Method')</sql>
     <sql>INSERT INTO CATISSUE_PERMISSIBLE_VALUE (IDENTIFIER,VALUE, PARENT_IDENTIFIER, PUBLIC_ID) VALUES((select max(IDENTIFIER)+1 from CATISSUE_PERMISSIBLE_VALUE),'Not Specified',NULL,'Dna_Method')</sql>
 	<sql>insert into catissue_permissible_value (IDENTIFIER,VALUE, PARENT_IDENTIFIER, PUBLIC_ID) VALUES((select max(IDENTIFIER)+1 from CATISSUE_PERMISSIBLE_VALUE),'Buffy Coat',3,null);</sql>
   </changeSet>
@@ -73,7 +73,7 @@
   <changeSet id="3" author="catissue" failOnError="false"  dbms="mysql" >
     <sql>INSERT INTO CATISSUE_CDE VALUES ( 'Dna_Method','DNA Method','DNA Method',1.0,null)</sql>
     <sql>INSERT INTO CATISSUE_PERMISSIBLE_VALUE (VALUE, PARENT_IDENTIFIER, PUBLIC_ID) VALUES('Myomethod',NULL,'Dna_Method')</sql>
-    <sql>INSERT INTO CATISSUE_PERMISSIBLE_VALUE (VALUE, PARENT_IDENTIFIER, PUBLIC_ID) VALUES('OiaGen Salt Precipitation',NULL,'Dna_Method')</sql>
+    <sql>INSERT INTO CATISSUE_PERMISSIBLE_VALUE (VALUE, PARENT_IDENTIFIER, PUBLIC_ID) VALUES('QiaGen Salt Precipitation',NULL,'Dna_Method')</sql>
     <sql>INSERT INTO CATISSUE_PERMISSIBLE_VALUE (VALUE, PARENT_IDENTIFIER, PUBLIC_ID) VALUES('Not Specified',NULL,'Dna_Method')</sql>
 	<sql>insert into catissue_permissible_value (VALUE, PARENT_IDENTIFIER, PUBLIC_ID) VALUES('Buffy Coat',3,null);</sql>
 		
