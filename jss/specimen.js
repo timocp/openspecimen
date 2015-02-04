@@ -391,11 +391,12 @@ function prepareSpecimenTypeOptions(cellTypeJSON,molecularTypeJSON,tissueTypeJSO
 
 function createTypeOptionsFromJSON(jsonObject,array)
 {
+  if(jsonObject != null) {
 	for(var i=0;i<jsonObject.length;i++) {
-		array.push([jsonObject[i].value,jsonObject[i].name]);
-	}
+	  array.push([jsonObject[i].value,jsonObject[i].name]);
+	 }
+  }
 }
-
 
 function onSpecimenTypeChange(selectedElement)
 {
@@ -1388,15 +1389,20 @@ function submitDeriveData()
 		deriveDataJSON["createdOn"]= document.getElementById('createdOn').value;
 		deriveDataJSON["initialQuantity"]= document.getElementById('initialQuantity').value;
 		deriveDataJSON["externalIdentifiers"] = [];// deriveExtidJSON;
-		if(deriveDataJSON['type']=="DNA"){
-			deriveDataJSON["dnaMethod"] = dnaMethodCombo.getSelectedText();
-			var dna260val = document.getElementById("260-280").value;
-		if(dna260val != null && dna260val != "")
-		{
-			deriveDataJSON["dna260"] = document.getElementById("260-280").value;
-		}
-			
-		}
+				
+		if(deriveDataJSON['type']=="DNA") {
+			if(dnaMethodCombo != undefined) {
+				deriveDataJSON["dnaMethod"] = dnaMethodCombo.getSelectedText();
+			}
+				
+			if(document.getElementById("260-280") != null) {
+				var dna260val = document.getElementById("260-280").value;
+				if(dna260val != null && dna260val != "")
+				{
+					deriveDataJSON["dna260"] = document.getElementById("260-280").value;
+				}
+			}
+			}
 	
 //		var loader1 =""; dhtmlxAjax.postSync("rest/specimen/createDerive/",JSON.stringify(deriveDataJSON));
 		var loader = testREST(deriveDataJSON);

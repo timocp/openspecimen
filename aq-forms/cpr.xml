@@ -14,58 +14,15 @@
 			</numberField>
 		</row>
 		<row>
-			<textField>
-				<name>firstName</name>
-				<udn>firstName</udn>
-				<caption>First Name</caption>
-				<column>FIRST_NAME</column>
-				<maxLength>50</maxLength>
-				<phi>true</phi>
-			</textField>
-
-			<textField>
-				<name>middleName</name>
-				<udn>middleName</udn>
-				<caption>Middle Name</caption>
-				<column>MIDDLE_NAME</column>
-				<maxLength>50</maxLength>
-				<phi>true</phi>
-			</textField>
-
-			<textField>
-				<name>lastName</name>
-				<udn>lastName</udn>
-				<caption>Last Name</caption>
-				<column>LAST_NAME</column>
-				<phi>true</phi>
-			</textField>
-		</row>
-		<row>
-			<datePicker>
-				<name>dateOfBirth</name>
-				<udn>dateOfBirth</udn>
-				<caption>Date Of Birth</caption>
-				<column>DOB</column>
-				<format>MM-dd-yyyy</format>
-				<phi>true</phi>
-			</datePicker>
-		</row>
-		<row>
-			<textField>
-				<name>ssn</name>
-				<udn>ssn</udn>
-				<caption>Social Security Number</caption>
-				<column>SSN</column>
-				<phi>true</phi>
-			</textField>
-		</row>
-		<row>
-			<textField>
-				<name>vitalStatus</name>
-				<udn>vitalStatus</udn>
-				<caption>Vital Status</caption>
-				<column>VITAL_STATUS</column>
-			</textField>
+			<dropDown>
+      				<name>vitalStatus</name>
+                                <udn>vitalStatus</udn>
+                                <caption>Status In Research</caption>
+                                <column>VITAL_STATUS</column>
+                                <options>
+					<sql>select value from catissue_permissible_value where public_id=2004001</sql>
+                                </options>
+			</dropDown>
 		</row>
 		<row>
 			<dropDown>
@@ -81,84 +38,33 @@
 			</dropDown>
 		</row>
 		<row>
-			<radioButton>
-				<name>gender</name>
-				<udn>gender</udn>
-				<caption>Gender</caption>
-				<column>GENDER</column>
-				<options>
-					<sql>select value from catissue_permissible_value where public_id = '2003989' order by value</sql>
-				</options>
-			</radioButton>
-		</row>
-		<row>
-			<dropDown>
-				<name>genotype</name>
-				<udn>genotype</udn>
-				<caption>Genotype</caption>
-				<column>GENOTYPE</column>
-				<options>
-					<sql>select value from catissue_permissible_value where public_id = '2003990' order by value</sql>
-				</options>
-			</dropDown>
-		</row>
-		<row>
-			<checkBox>
-				<name>race</name>
-				<udn>race</udn>
-				<caption>Race</caption>
-				<multiSelect>true</multiSelect>
-				<table>CATISSUE_RACE</table>
-				<column>RACE_NAME</column>
-				<foreignKey>PARTICIPANT_ID</foreignKey>
-				<parentKey>PARTICIPANT_ID</parentKey>
-				<options>
-					<sql>select value from catissue_permissible_value where public_id = 'Race_PID' order by sortorder</sql>
-				</options>
-			</checkBox>
-		</row>
-		<row>
-			<textField>
-				<name>ethnicity</name>
-				<udn>ethnicity</udn>
-				<caption>Ethnicity</caption>
-				<column>ETHNICITY</column>
-			</textField>
-		</row>
-		<row>
-			<textField>
-				<name>barcode</name>
-				<udn>barcode</udn>
-				<caption>Barcode</caption>
-				<column>BARCODE</column>
-			</textField>
-		</row>
-		<row>
-			<datePicker>
-				<name>regDate</name>
-				<udn>regDate</udn>
-				<caption>Registration Date</caption>
-				<column>REGISTRATION_DATE</column>
-				<format>MM-dd-yyyy</format>
-				<phi>true</phi>
-			</datePicker>
-
-		</row>
-		<row>
 			<datePicker>
 				<name>deathDate</name>
 				<udn>deathDate</udn>
-				<caption>Death Date</caption>
+				<caption>Last Contact Date</caption>
 				<column>DEATH_DATE</column>
 				<format>MM-dd-yyyy</format>
 				<phi>true</phi>
 			</datePicker>
 		</row>
 		<row>
+			<dropDown>
+				<name>dnaQuality</name>
+				<udn>dnaQuality</udn>
+				<caption>DNA Quality</caption>
+				<column>DNA_QUALITY</column>
+				<options>
+					<option><value>Poor</value></option>
+					<option><value>Good</value></option>
+					<option><value>Unknown</value></option>
+				</options>
+			</dropDown>
+		</row>
+		<row>
 			<textField>
 				<name>ppid</name>
 				<udn>ppid</udn>
-				<caption>Protocol Participant ID</caption>
+				<caption>ASIG ID</caption>
 				<column>PPID</column>
 			</textField>
 		</row>
@@ -236,7 +142,7 @@
 					<textField>
 						<name>medicalRecordNumber</name>
 						<udn>medicalRecordNumber</udn>
-						<caption>Medical Record Number</caption>
+						<caption>UR Number</caption>
 						<column>MEDICAL_RECORD_NUMBER</column>
 						<maxLength>255</maxLength>
 						<phi>true</phi>
@@ -245,85 +151,14 @@
 					<dropDown>
 						<name>mrnSiteName</name>
 						<udn>mrnSiteName</udn>
-						<caption>MRN Site</caption>
+						<caption>Site</caption>
 						<column>SITE_NAME</column>
 						<options>
 							<sql>select distinct name from CATISSUE_SITE</sql>
 						</options>
 					</dropDown>
 				</row>
-			</subForm>
-		</row>
-		<row>
-			<subForm>
-				<name>consentTier</name>
-				<udn>consentTier</udn>
-				<caption>Consent Tier</caption>
-				<table>CONSENT_TIER_VIEW</table>
-				<foreignKey>CPR_ID</foreignKey>
-				<parentKey>CPR_ID</parentKey>
-				<row>
-					<textField>
-						<name>consentTierStatement</name>
-						<udn>consentTierStatement</udn>
-						<caption>Consent Tier Statement</caption>
-						<column>STATEMENT</column>
-					</textField>
-
-					<dropDown>
-						<name>consentResponseStatement</name>
-						<udn>consentResponseStatement</udn>
-						<caption>Consent Response</caption>
-						<column>RESPONSE</column>
-						<options>
-							<option><value>Yes</value></option>
-							<option><value>No</value></option>
-							<option><value>Not Specified</value></option>
-						</options>
-					</dropDown>
-				</row>
-			</subForm>
-		</row>
-		<row>
-			<datePicker>
-				<name>consentSignDate</name>
-				<udn>consentSignDate</udn>
-				<caption>Consent Sign Date</caption>
-				<column>CONSENT_SIGN_DATE</column>
-				<format>MM-dd-yyyy</format>
-			</datePicker>
-		</row>
-		<row>
-			<textField>
-				<name>consentDocUrl</name>
-				<udn>consentDocUrl</udn>
-				<caption>Consent Document Url</caption>
-				<column>CONSENT_DOC_URL</column>
-			</textField>
-		</row>
-		<row>
-			<subForm>
-				<name>consentWitness</name>
-				<udn>consentWitness</udn>
-				<caption>Consent Witness</caption>
-				<table>USER_VIEW</table>
-				<foreignKey>IDENTIFIER</foreignKey>
-				<parentKey>CONSENT_WITNESS</parentKey>
-				<row>	
-					<textField>
-						<name>firstName</name>
-						<udn>firstName</udn>
-						<caption>Consent Witness First Name</caption>
-						<column>FIRST_NAME</column>
-					</textField>
-					
-					<textField>
-						<name>lastName</name>
-						<udn>lastName</udn>
-						<caption>Consent Witness Last Name</caption>
-						<column>LAST_NAME</column>
-					</textField>
-				</row>
+				
 			</subForm>
 		</row>
 		<row>
