@@ -7,6 +7,8 @@ public class UpdateRegistrationEvent extends RequestEvent {
 
 	private Long id;
 
+	private Long cpId;
+
 	private CollectionProtocolRegistrationDetail cprDetail;
 
 	public CollectionProtocolRegistrationDetail getCprDetail() {
@@ -23,6 +25,14 @@ public class UpdateRegistrationEvent extends RequestEvent {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public Long getCpId() {
+		return cpId;
+	}
+
+	public void setCpId(Long cpId) {
+		this.cpId = cpId;
 	}
 
 }

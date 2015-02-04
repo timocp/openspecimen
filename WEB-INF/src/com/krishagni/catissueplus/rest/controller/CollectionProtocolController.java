@@ -27,9 +27,11 @@ import com.krishagni.catissueplus.core.biospecimen.events.ParticipantInfo;
 import com.krishagni.catissueplus.core.biospecimen.events.ParticipantSummaryEvent;
 import com.krishagni.catissueplus.core.biospecimen.events.ParticipantsSummaryEvent;
 import com.krishagni.catissueplus.core.biospecimen.events.RegistrationCreatedEvent;
+import com.krishagni.catissueplus.core.biospecimen.events.RegistrationUpdatedEvent;
 import com.krishagni.catissueplus.core.biospecimen.events.ReqAllCollectionProtocolsEvent;
 import com.krishagni.catissueplus.core.biospecimen.events.ReqParticipantSummaryEvent;
 import com.krishagni.catissueplus.core.biospecimen.events.ReqParticipantsSummaryEvent;
+import com.krishagni.catissueplus.core.biospecimen.events.UpdateRegistrationEvent;
 import com.krishagni.catissueplus.core.biospecimen.services.CollectionProtocolRegistrationService;
 import com.krishagni.catissueplus.core.biospecimen.services.CollectionProtocolService;
 
@@ -64,13 +66,13 @@ public class CollectionProtocolController {
 		}
 		return resp.getCpList();
 	}
-	
-	@RequestMapping(method = RequestMethod.GET, value="/{id}/childProtocols")
+
+	@RequestMapping(method = RequestMethod.GET, value = "/{id}/childProtocols")
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
 	public List<CollectionProtocolSummary> getChildProtocolsList(@PathVariable("id") Long id) {
 		ReqChildProtocolEvent req = new ReqChildProtocolEvent();
-		req.setSessionDataBean(getSession()); 
+		req.setSessionDataBean(getSession());
 		req.setCpId(id);
 
 		ChildCollectionProtocolsEvent result = cpSvc.getChildProtocols(req);
@@ -132,6 +134,23 @@ public class CollectionProtocolController {
 		event.setCprDetail(cprDetails);
 		event.setSessionDataBean(getSession());
 		RegistrationCreatedEvent resp = cprSvc.createRegistration(event);
+		if (!resp.isSuccess()) {
+			resp.raiseException();
+		}
+		return resp.getCprDetail();
+	}
+
+	@RequestMapping(method = RequestMethod.PUT, value = "/{id}/registrations/{pId}")
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody
+	public CollectionProtocolRegistrationDetail update(@PathVariable("id") Long cpId, @PathVariable("pId") Long pId,
+			@RequestBody CollectionProtocolRegistrationDetail cprDetails) {
+		UpdateRegistrationEvent event = new UpdateRegistrationEvent();
+		event.setCpId(cpId);
+		cprDetails.setCpId(cpId);
+		event.setCprDetail(cprDetails);
+		event.setSessionDataBean(getSession());
+		RegistrationUpdatedEvent resp = cprSvc.updateRegistration(event);
 		if (!resp.isSuccess()) {
 			resp.raiseException();
 		}
