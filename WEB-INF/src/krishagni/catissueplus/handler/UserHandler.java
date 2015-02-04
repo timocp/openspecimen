@@ -4,7 +4,7 @@ import krishagni.catissueplus.bizlogic.UserBizlogic;
 import krishagni.catissueplus.dto.UserDetails;
 import krishagni.catissueplus.util.CommonUtil;
 import krishagni.catissueplus.util.DAOUtil;
-import edu.wustl.catissuecore.domain.Specimen;
+import edu.wustl.catissuecore.domain.User;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.exception.ApplicationException;
 import edu.wustl.common.exception.BizLogicException;
@@ -21,11 +21,12 @@ public class UserHandler {
 		try {
 			hibernateDao = DAOUtil.openDAOSession(sessionDataBean);
 			UserBizlogic bizlogic = new UserBizlogic();
+			details.setId(null);
 			details = bizlogic.insert(details, hibernateDao, sessionDataBean);
 			hibernateDao.commit();
 		}
 		catch (ApplicationException exception) {
-			String errMssg = CommonUtil.getErrorMessage(exception, new Specimen(), "Inserting");
+			String errMssg = CommonUtil.getErrorMessage(exception, new User(), "Inserting");
 			LOGGER.error(errMssg, exception);
 			throw new BizLogicException(exception.getErrorKey(), exception, exception.getMsgValues(), errMssg);
 
@@ -38,24 +39,8 @@ public class UserHandler {
 	}
 
 	public UserDetails update(UserDetails userDetails, SessionDataBean sessionDataBean) throws BizLogicException {
-		HibernateDAO hibernateDao = null;
-		try {
-			hibernateDao = DAOUtil.openDAOSession(sessionDataBean);
 			UserBizlogic bizlogic = new UserBizlogic();
-
-			userDetails = bizlogic.update(hibernateDao, userDetails, sessionDataBean);
-			hibernateDao.commit();
-		}
-		catch (ApplicationException exception) {
-			String errMssg = CommonUtil.getErrorMessage(exception, new Specimen(), "Updating");
-			LOGGER.error(errMssg, exception);
-			throw new BizLogicException(exception.getErrorKey(), exception, exception.getMsgValues(), errMssg);
-
-		}
-		finally {
-			DAOUtil.closeDAOSession(hibernateDao);
-		}
-
+			userDetails = bizlogic.update(userDetails, sessionDataBean);
 		return userDetails;
 	}
 

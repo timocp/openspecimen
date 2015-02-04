@@ -3294,7 +3294,7 @@ public class SpecimenCollectionGroupBizLogic extends CatissueDefaultBizLogic
 				List collResult = dao.executeQuery(retrieveCollector);
 				if(collResult.isEmpty()){
 					String message = ApplicationProperties
-							.getValue("specimenCollectionGroup.site");
+							.getValue("eventparameters.user");
 					throw this.getBizLogicException(null,
 							"errors.item.invalid", message);
 				}

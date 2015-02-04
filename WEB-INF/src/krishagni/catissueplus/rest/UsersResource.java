@@ -72,6 +72,7 @@ public class UsersResource {
       try
       {
           UserDetails details = gson.fromJson(userDetails, UserDetails.class);
+          details.setId(Long.valueOf(id));
           UserHandler userHandler = new UserHandler();
           details = userHandler.update(details, getSessionDataBean());
 
