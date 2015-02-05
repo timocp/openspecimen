@@ -633,13 +633,11 @@ req.onreadystatechange = function() {
                                         </label>
                                     </span>
                                 </td>
-								 <td width="20%" class="black_ar align_right_style">
-                                    <label for="availableQuantity">
-                                     Shelf
-                                    </label>
+                                <td width="20%" class="black_ar align_right_style">
+                                  <label for="availableQuantity"> Rack </label>
                                 </td>
                                 <td width="30%" align="left" class="black_ar">
-									<bean:write name="specimenDTO" property="shelf" scope="request"/>
+				  <bean:write name="specimenDTO" property="shelf" scope="request"/>
                                 </td>
                             </tr>
 							<tr class="tr_alternate_color_lightGrey">
