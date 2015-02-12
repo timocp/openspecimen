@@ -28,7 +28,7 @@
     </addColumn>
   </changeSet>
 	
-  <changeSet id="2" author="mosin" failOnError="false">
+  <changeSet id="2" author="mosin" failOnError="false" runOnChange="true">
     <addColumn tableName="CATISSUE_SPECIMEN">
       <column name="DNA_METHOD" type="${text.type}(255)" />
     </addColumn>
@@ -44,9 +44,14 @@
     <addColumn tableName="CATISSUE_SPECIMEN">
       <column name="QUALITY" type="${text.type}(50)" />
     </addColumn>
-    <addColumn tableName="CATISSUE_SPECIMEN">
-      <column name="VENESECTION_TIME" type="${timestamp.type}" />
-    </addColumn>
+  </changeSet>
+  
+  <changeSet author="nitesh" id="Add column for VENESECTION_TIME in specimen" dbms="mysql">
+    <sql>alter table CATISSUE_SPECIMEN add column VENESECTION_TIME TIMESTAMP NULL DEFAULT NULL</sql>
+  </changeSet>
+
+  <changeSet author="nitesh" id="Add column for VENESECTION_TIME in specimen" dbms="oracle">
+    <sql>alter table CATISSUE_SPECIMEN add VENESECTION_TIME TIMESTAMP DEFAULT NULL</sql>
   </changeSet>
   
   <changeSet id="adding unique constraint for LAB_NUMBER" author="nitesh" dbms="mysql">
@@ -68,6 +73,12 @@
     <sql>INSERT INTO CATISSUE_PERMISSIBLE_VALUE (IDENTIFIER,VALUE, PARENT_IDENTIFIER, PUBLIC_ID) VALUES((select max(IDENTIFIER)+1 from CATISSUE_PERMISSIBLE_VALUE),'QiaGen Salt Precipitation',NULL,'Dna_Method')</sql>
     <sql>INSERT INTO CATISSUE_PERMISSIBLE_VALUE (IDENTIFIER,VALUE, PARENT_IDENTIFIER, PUBLIC_ID) VALUES((select max(IDENTIFIER)+1 from CATISSUE_PERMISSIBLE_VALUE),'Not Specified',NULL,'Dna_Method')</sql>
 	<sql>insert into catissue_permissible_value (IDENTIFIER,VALUE, PARENT_IDENTIFIER, PUBLIC_ID) VALUES((select max(IDENTIFIER)+1 from CATISSUE_PERMISSIBLE_VALUE),'Buffy Coat',3,null);</sql>
+	
+	<sql>delete from catissue_permissible_value where PUBLIC_ID = '2004001'</sql>
+	<sql>insert into catissue_permissible_value (IDENTIFIER,VALUE, PARENT_IDENTIFIER, PUBLIC_ID) VALUES((select max(IDENTIFIER)+1 from CATISSUE_PERMISSIBLE_VALUE),'Alive',NULL,2004001);</sql>
+	<sql>insert into catissue_permissible_value (IDENTIFIER,VALUE, PARENT_IDENTIFIER, PUBLIC_ID) VALUES((select max(IDENTIFIER)+1 from CATISSUE_PERMISSIBLE_VALUE),'Dead',NULL,2004001);</sql>
+	<sql>insert into catissue_permissible_value (IDENTIFIER,VALUE, PARENT_IDENTIFIER, PUBLIC_ID) VALUES((select max(IDENTIFIER)+1 from CATISSUE_PERMISSIBLE_VALUE),'Withdrawn',NULL,2004001);</sql>	
+	<sql>insert into catissue_permissible_value (IDENTIFIER,VALUE, PARENT_IDENTIFIER, PUBLIC_ID) VALUES((select max(IDENTIFIER)+1 from CATISSUE_PERMISSIBLE_VALUE),'Unable to Contact',NULL,2004001);</sql>
   </changeSet>
 
   <changeSet id="3" author="catissue" failOnError="false"  dbms="mysql" >
@@ -76,7 +87,12 @@
     <sql>INSERT INTO CATISSUE_PERMISSIBLE_VALUE (VALUE, PARENT_IDENTIFIER, PUBLIC_ID) VALUES('QiaGen Salt Precipitation',NULL,'Dna_Method')</sql>
     <sql>INSERT INTO CATISSUE_PERMISSIBLE_VALUE (VALUE, PARENT_IDENTIFIER, PUBLIC_ID) VALUES('Not Specified',NULL,'Dna_Method')</sql>
 	<sql>insert into catissue_permissible_value (VALUE, PARENT_IDENTIFIER, PUBLIC_ID) VALUES('Buffy Coat',3,null);</sql>
-		
+
+	<sql>delete from catissue_permissible_value where PUBLIC_ID = '2004001'</sql>
+	<sql>insert into catissue_permissible_value (VALUE, PARENT_IDENTIFIER, PUBLIC_ID) VALUES('Alive',NULL,2004001);</sql>
+	<sql>insert into catissue_permissible_value (VALUE, PARENT_IDENTIFIER, PUBLIC_ID) VALUES('Dead',NULL,2004001);</sql>
+	<sql>insert into catissue_permissible_value (VALUE, PARENT_IDENTIFIER, PUBLIC_ID) VALUES('Withdrawn',NULL,2004001);</sql>	
+	<sql>insert into catissue_permissible_value (VALUE, PARENT_IDENTIFIER, PUBLIC_ID) VALUES('Unable to Contact',NULL,2004001);</sql>		
   </changeSet>
 			
   <changeSet id="4" author="catissue" failOnError="false"  dbms="mysql" >

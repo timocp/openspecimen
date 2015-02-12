@@ -12,6 +12,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.springframework.util.StringUtils;
 
 import com.google.gson.Gson;
 
@@ -70,6 +71,9 @@ public class SpecimenEditAction extends CatissueBaseAction
 						.get(Calendar.HOUR_OF_DAY)));
 				specimenDTO.setDisposalMins(Integer.toString(cal
 						.get(Calendar.MINUTE)));
+				if(StringUtils.isEmpty(specimenDTO.getDnaMethod())){
+					specimenDTO.setDnaMethod(Constants.NOT_SPECIFIED);
+				}
 				
 				request.setAttribute("specimenDTO", specimenDTO);
 
@@ -122,10 +126,12 @@ public class SpecimenEditAction extends CatissueBaseAction
 
 			request.setAttribute(Constants.MOLECULAR_TYPE_LIST_JSON,
 					gson.toJson(AppUtility.getSpecimenTypes(Constants.MOLECULAR)));
-			
-			request.setAttribute("DNAMethodList",
-                    CDEManager.getCDEManager().getPermissibleValueList(
-                            "DNA Method", null));
+			List<NameValueBean> dnaMethodList = CDEManager.getCDEManager().getPermissibleValueList(
+          "DNA Method", null);
+			dnaMethodList.remove(0);
+			request.setAttribute("DNAMethodList",dnaMethodList);
+//                    CDEManager.getCDEManager().getPermissibleValueList(
+//                            "DNA Method", null));
 
 			request.setAttribute(Constants.PATHOLOGICAL_STATUS_LIST,
 					AppUtility.getListFromCDE(Constants.CDE_NAME_PATHOLOGICAL_STATUS));

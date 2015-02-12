@@ -2,6 +2,7 @@
 package krishagni.catissueplus.action;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,6 +20,7 @@ import edu.wustl.catissuecore.bizlogic.SpecimenBizlogic;
 import edu.wustl.catissuecore.util.global.AppUtility;
 import edu.wustl.catissuecore.util.global.Constants;
 import edu.wustl.catissuecore.util.global.Variables;
+import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.cde.CDEManager;
 import edu.wustl.common.exception.BizLogicException;
@@ -45,6 +47,7 @@ public class DisplayDeriveAction extends CatissueBaseAction
 			Long parentId = 0l;
 
 			DerivedDTO derivedDTO = new DerivedDTO();
+			derivedDTO.setDnaMethod(Constants.NOTSPECIFIED);
 			if (Validator.isEmpty(request.getParameter("parentSpecimenId")))
 			{
 				derivedDTO.setClassName(Constants.CELL);
@@ -105,9 +108,10 @@ public class DisplayDeriveAction extends CatissueBaseAction
 						? Constants.CELL
 						: className));*/
 
-        request.setAttribute("DNAMethodList",
-                CDEManager.getCDEManager().getPermissibleValueList(
-                        "DNA Method", null));
+		List<NameValueBean> dnaMethodList = CDEManager.getCDEManager().getPermissibleValueList(
+        "DNA Method", null);
+		dnaMethodList.remove(0);
+		request.setAttribute("DNAMethodList",dnaMethodList);
 
 		request.setAttribute("isSpecimenBarcodeGeneratorAvl",
 				Variables.isSpecimenBarcodeGeneratorAvl);

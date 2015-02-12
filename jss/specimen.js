@@ -803,9 +803,9 @@ function submitTabData(operation)
 			tabDataJSON["dnaMethod"] = dnaMethodCombo.getSelectedText();
 			var dna260val = document.getElementById("260-280").value;
 			if(dna260val != null && dna260val != "")
-		{
-			tabDataJSON["dna260"] = document.getElementById("260-280").value;
-		}
+			{
+				tabDataJSON["dna260"] = document.getElementById("260-280").value;
+			}
 		
 		}
 		var thawCycleVal = document.getElementById("thawCycle").value;
