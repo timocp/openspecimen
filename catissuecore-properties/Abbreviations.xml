@@ -185,4 +185,8 @@
 		<NAME>Whole Genome Amplified DNA</NAME>
 		<ABBRIVIATION>WGAD</ABBRIVIATION>
 	</TYPE>
+	<TYPE>
+		<NAME>Buffy Coat</NAME>
+		<ABBRIVIATION>Buffy</ABBRIVIATION>
+	</TYPE>
 </TYPES>
