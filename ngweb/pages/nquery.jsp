@@ -1716,6 +1716,7 @@
     <script src="../js/filters.js" type="text/javascript"></script>
     <script src="../js/services.js" type="text/javascript"></script>
     <script src="../js/forms-service.js" type="text/javascript"></script>
+    <script src="../js/query-defaults.js" type="text/javascript"></script>
     <script src="../js/ncontrollers.js" type="text/javascript"></script>
     <script src="../js/directives.js" type="text/javascript"></script>
     <script src="../js/query-directives.js" type="text/javascript"></script>

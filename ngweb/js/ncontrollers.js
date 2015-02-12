@@ -730,12 +730,7 @@ angular.module('plus.controllers', ['checklist-model', 'ui.app'])
     };
 
     var getDefaultSelectedFields = function() {
-      return [
-        "Participant.id", "Participant.firstName", "Participant.lastName", 
-        "Participant.dateOfBirth", "Participant.ssn", "Participant.gender",
-        "Participant.genotype", "Participant.race", "Participant.regDate",
-        "Participant.ppid", "Participant.activityStatus"
-      ];
+      return com.krishagni.openspecimen.query.defaults.resultViewFields;
     }
 
     $scope.formatDate = function(timeInMs) {
