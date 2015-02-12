@@ -85,4 +85,23 @@
     <sql>delete from catissue_permissible_value where parent_identifier in (2,4)</sql>
     <sql>delete from catissue_permissible_value where identifier in (2,4)</sql>
   </changeSet>
+
+  <changeSet id="CPR_VIEW for SVH" author="mibrahim" runOnChange="true" failOnError="true">
+    <sql>
+      create or replace view CPR_VIEW as (
+            select 
+              cpr.identifier as cpr_id, cpr.collection_protocol_id as cp_id, cpr.participant_id as participant_id,
+              p.first_name as first_name, p.middle_name as middle_name, p.last_name as last_name,
+              p.birth_date as dob, p.social_security_number as ssn,
+              cpr.activity_status as activity_status, p.gender as gender, p.genotype as genotype,
+              cpr.registration_date as registration_date, cpr.protocol_participant_id as ppid,
+              p.vital_status as vital_status, p.death_date as death_date, p.ethnicity as ethnicity,
+              cpr.barcode as barcode, cpr.consent_sign_date as consent_sign_date, cpr.consent_witness as consent_witness,
+              cpr.consent_doc_url AS consent_doc_url, p.DNA_QUALITY as dna_quality
+            from 
+              catissue_coll_prot_reg cpr 
+              inner join catissue_participant p on cpr.participant_id = p.identifier
+          );
+    </sql>
+  </changeSet>
 </databaseChangeLog>         

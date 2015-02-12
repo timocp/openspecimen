@@ -6,7 +6,7 @@ com.krishagni.openspecimen.query = com.krishagni.openspecimen.query || {};
 
 com.krishagni.openspecimen.query.defaults = {
   resultViewFields: [
-    "Participant.id", "Participant.vitalStatus", "Participant.ppid", 
+    "Participant.id", "Participant.vitalStatus", "Participant.ppid", "Participant.dnaQuality",
     "Participant.medicalRecord.medicalRecordNumber", "Participant.medicalRecord.mrnSiteName"
   ]
 };
