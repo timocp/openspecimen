@@ -17,5 +17,6 @@ public interface UserCPRoleDao extends Dao<UserCPRole> {
 	List<Long> getCpIdBySiteId(Long siteId);
 	List<Long> getSiteIdsByCpId(Long cpId);
 	UserPrivDetail getUserPrivDetail(Long userId);
+	List<Long> getAllSiteIds();
 
 }

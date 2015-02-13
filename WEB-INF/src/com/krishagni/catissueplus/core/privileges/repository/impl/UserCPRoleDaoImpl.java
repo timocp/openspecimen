@@ -110,6 +110,16 @@ public class UserCPRoleDaoImpl extends AbstractDao<UserCPRole> implements UserCP
 		return detail;
 	}
 	
+	public List<Long> getAllSiteIds() {
+		Query query = sessionFactory.getCurrentSession().getNamedQuery(GET_ALL_SITE_IDS_CONST);
+		List result = query.list(); 
+		List<Long> res = new ArrayList<Long>();
+		for (Object object : result) {
+			res.add(Long.valueOf(object.toString()));
+		}
+		return res;
+	}
+	
 	private static final String FQN = UserCPRole.class.getName();
 
 	private static final String GET_USERCPROLE_BY_CP_AND_USER = FQN + ".getUserCPRoleByCpAndUser";
@@ -126,7 +136,6 @@ public class UserCPRoleDaoImpl extends AbstractDao<UserCPRole> implements UserCP
 	
 	private static final String GET_CP_IDS_BY_USER_ID_CONST = FQN + ".getCPIdsByUserId";
 	
-	
-	
+	private static final String GET_ALL_SITE_IDS_CONST = FQN + ".getAllSiteIds";
 	
 }

@@ -13,4 +13,6 @@ public interface PrivilegeService {
 	
 	public boolean hasPrivilege(Long userId, Long cpId,String privilegeConstant);
 	
+	public List<Long> getSiteList(Long userId, String privilegeConst);
+	
 }

@@ -189,4 +189,50 @@ public class PrivilegeServiceImpl implements PrivilegeService {
 		return "";
 	}
 
+	@Override
+	public List<Long> getSiteList(Long userId, String privilegeConst) {
+    Set<Long> siteList = new HashSet<Long>();
+    Set<Long> readDeniedList = new HashSet<Long>();
+    UserPrivDetail privDetail = daoFactory.getCPUserRoleDao().getUserPrivDetail(userId);
+    String roleId = getRole(privDetail.getCsmUserId());
+    if (Constants.ADMIN_USER.equalsIgnoreCase(roleId)){
+      siteList.addAll(daoFactory.getCPUserRoleDao().getAllCpIds());
+      return new ArrayList<Long>(siteList);
+    }
+		
+    PrivilegeManager privilegeManager;
+    try {
+      privilegeManager = PrivilegeManager.getInstance();
+      final PrivilegeCache privilegeCache = privilegeManager.getPrivilegeCache(privDetail.getLoginName());
+      List<Long> siteIds = daoFactory.getCPUserRoleDao().getSiteIdsByUserId(userId);
+      if (siteIds != null && !siteIds.isEmpty()){
+        boolean hasViewPrivilege = false; // This checks if user has Registration and/or Specimen_Processing privilege
+        for (final Long siteId : siteIds){
+          final String peName = Constants.getCurrentAndFuturePGAndPEName(siteId);
+          if(privilegeCache.hasPrivilege(peName,PrivilegeType.READ_DENIED.name())){
+            hasViewPrivilege = false;
+            readDeniedList.add(siteId);
+          }
+          else if(privilegeCache.hasPrivilege(peName,privilegeConst)){
+            hasViewPrivilege = true;
+          }
+          else if(privilegeCache.hasPrivilege(peName,PrivilegeType.SPECIMEN_PROCESSING.name())){
+            hasViewPrivilege = true;
+          }
+          if(hasViewPrivilege){
+            siteList.add(siteId);
+          }
+        }
+	    }
+		
+      siteList.removeAll(readDeniedList);
+    }
+    catch (SMException e) {
+			// TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+
+    return new ArrayList<Long>(siteList);
+   }
+
 }

@@ -73,6 +73,10 @@
 		  select cp.identifier from catissue_collection_protocol cp where cp.activity_status = 'Active'
 		</sql-query>
 		
+		<sql-query name="getAllSiteIds">
+		  select site.identifier from catissue_site site where site.activity_status = 'Active'
+		</sql-query>
+		
 		<sql-query name="getCPIdsByUserId">
 		  select collection_protocol_id from CATISSUE_COLL_COORDINATORS where user_id = :userId 
 		      union 
