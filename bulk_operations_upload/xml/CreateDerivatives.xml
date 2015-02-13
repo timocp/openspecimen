@@ -1,80 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<BulkOperationMetadata templateName="createDerivatives" batchSize="5">
+<BulkOperationMetadata templateName="createDNADerivatives" batchSize="5">
 	<BulkOperationClass className="edu.wustl.catissuecore.domain.Specimen"
 		     
 		 >
 		<referenceAssociation
 					className="edu.wustl.catissuecore.domain.Specimen" 
 					roleName="parentSpecimen"  parentRoleName="specimen" >
-					<attribute name="label" csvColumnName="Parent Specimen Label"   />
+					<attribute name="label" csvColumnName="Parent Label"   />
 		</referenceAssociation>
-		
-			<containmentAssociation
-			className="edu.wustl.catissuecore.domain.ExternalIdentifier" cardinality="*"
-			      roleName="externalIdentifierCollection" parentRoleName="specimen">
-				<attribute name="name" csvColumnName="External ID Name"   />
-				<attribute name="value" csvColumnName="External ID Value"   />
-		</containmentAssociation>
-
-		
-		
 		<containmentAssociation
 			className="edu.wustl.catissuecore.domain.SpecimenPosition"
 			  
 			 roleName="specimenPosition"   >
-				<attribute name="positionDimensionOneString" csvColumnName="Position One"   />
-				<attribute name="positionDimensionTwoString" csvColumnName="Position Two"   />
+				<attribute name="positionDimensionOneString" csvColumnName="Position 1"   />
+				<attribute name="positionDimensionTwoString" csvColumnName="Position 2"   />
 				<referenceAssociation
 				className="edu.wustl.catissuecore.domain.StorageContainer"
 				  
 				 roleName="storageContainer"    >
-					<attribute name="name" csvColumnName="Container Name"   />
+					<attribute name="name" csvColumnName="Sample Box Name"/>
 				</referenceAssociation>			
 		</containmentAssociation>
-		<containmentAssociation
-			className="edu.wustl.catissuecore.domain.CollectionEventParameters"
-			   parentRoleName="specimen"  cardinality="*" roleName="specimenEventCollection">
-				<referenceAssociation
-				className="edu.wustl.catissuecore.domain.User"
-				      roleName="user">
-					<attribute name="loginName" csvColumnName="Collected User Login Name"   />
-				</referenceAssociation>
-				<attribute name="comment" csvColumnName="Collected Comments"    />								
-				<attribute name="collectionProcedure" csvColumnName="Procedure"   />
-				<attribute name="container" csvColumnName="Container"   />
-				<attribute name="timestamp" csvColumnName="Collected Date"   />
-		</containmentAssociation>
-		<containmentAssociation
-			className="edu.wustl.catissuecore.domain.ReceivedEventParameters"
-			   parentRoleName="specimen"  cardinality="*" roleName="specimenEventCollection">
-				<referenceAssociation
-				className="edu.wustl.catissuecore.domain.User"
-				      roleName="user">
-					<attribute name="loginName" csvColumnName="Received User Login Name"   />
-				</referenceAssociation>
-				<attribute name="comment" csvColumnName="Received Comments"   />								
-				<attribute name="receivedQuality" csvColumnName="Quality"   />				
-				<attribute name="timestamp" csvColumnName="Received Date"   />
-		</containmentAssociation>
-		
-		<!--attribute name="tissueSite" csvColumnName="Tissue Site"   /-->
-		<!--attribute name="tissueSide" csvColumnName="Tissue Side"   /-->
-		<attribute name="label" csvColumnName="Label"   />
-		<attribute name="barcode" csvColumnName="Barcode"   />
-		<attribute name="createdOn" csvColumnName="Created On"   />
-		<attribute name="activityStatus" csvColumnName="Activity Status"   />
-		<attribute name="comment" csvColumnName="Comment"   />
-		<attribute name="isAvailable" csvColumnName="Is Available"   />
-		<attribute name="collectionStatus" csvColumnName="Collection Status"   />
-		<attribute name="specimenClass" csvColumnName="Specimen Class"   >
+
+		<attribute name="tissueSite" csvColumnName="Tissue Site" defaultValue="Not Specified" />
+		<attribute name="tissueSide" csvColumnName="Tissue Side" defaultValue="Not Specified" />
+		<attribute name="label" csvColumnName="Label"/>
+		<attribute name="createdOn" csvColumnName="Extraction Date" />
+		<attribute name="activityStatus" csvColumnName="Activity Status" defaultValue="Active"/>
+		<attribute name="comment" csvColumnName="Comments" />
+		<attribute name="isAvailable" csvColumnName="Is Available" defaultValue="True" />
+		<attribute name="collectionStatus" csvColumnName="Collection Status" defaultValue="Collected" />
+		<attribute name="specimenClass" csvColumnName="Specimen Class" defaultValue="Molecular" >
 
 		</attribute>
-		<attribute name="specimenType" csvColumnName="Type"   />
-		<attribute name="initialQuantity" csvColumnName="Initial Quantity"   />
-		<attribute name="availableQuantity" csvColumnName="Available Quantity"   />
-		<attribute name="lineage" csvColumnName="Lineage"   />
-		<attribute name="pathologicalStatus" csvColumnName="Pathological Status"   />
+		<attribute name="specimenType" csvColumnName="Type" defaultValue="DNA" />
+		<attribute name="initialQuantity" csvColumnName="DNA Quantity" />
+		<attribute name="availableQuantity" csvColumnName="DNA Quantity" />
+		<attribute name="lineage" csvColumnName="Lineage" defaultValue="Derived" />
+		<attribute name="pathologicalStatus" csvColumnName="Pathological Status" defaultValue="Not Specified" />
 		<attribute name="concentrationInMicrogramPerMicroliter" csvColumnName="Concentration"   />
+		
+		<attribute name="dnaMethod" csvColumnName="Method"/>
+		<attribute name="dna260" csvColumnName="260-280" />
 
 	</BulkOperationClass>
 </BulkOperationMetadata>

@@ -1,11 +1,8 @@
-createSite,Create Site,CreateSite.csv,CreateSite.xml
-createStorageType,Create Storage Type,CreateStorageType.csv,CreateStorageType.xml
-addContainer,Create Container,addContainer.csv,addContainer.xml
-CreateCP,Create Collection Protocol,CreateCollectionProtocol.csv,CreateCollectionProtocol.xml
-createParticipantWithConsents,Register Participants,CreateParticipants.csv,CreateParticipants.xml
-createSCG,Create Specimen Collection Group,CreateSpecimenCollectionGroup.csv,CreateSpecimenCollectionGroup.xml
-createSpecimens,Create Parent Specimens,CreateSpecimens.csv,CreateSpecimens.xml
+CreateChildContainer,Create Child Container,AddChildContainer.csv,AddChildContainer.xml
 CreateAliquots,Create Aliquots,CreateAliquot.csv,CreateAliquot.xml
-createDerivatives,Create Derivatives,CreateDerivatives.csv,CreateDerivatives.xml
-EditSpecimen,Edit Specimen,EditSpecimen.csv,EditSpecimen.xml
-Distribution,Distribute Specimen,Distribution.csv,Distribution.xml
+createDNADerivatives,Create Derivatives,CreateDerivatives.csv,CreateDerivatives.xml
+CreateDNAparent,Create DNA Parent,CreateDNAparent.csv,CreateDNAparent.xml
+createParticipant,Create Participant,CreateParticipants.csv,CreateParticipants.xml
+CreateNewSpecimens,Create Specimen,CreateSpecimens.csv,CreateSpecimens.xml
+Distribution,Distribution,Distribution.csv,Distribution.xml
+UpdateSpecimen,Update Specimen,UpdateSpecimen.csv,UpdateSpecimen.xml

@@ -1,17 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<BulkOperationMetadata templateName="addContainer" batchSize="5">
+<BulkOperationMetadata templateName="CreateChildContainer" batchSize="5">
 	<BulkOperationClass className="edu.wustl.catissuecore.domain.StorageContainer"       >
 
 		<referenceAssociation className="edu.wustl.catissuecore.domain.StorageType"       roleName="storageType">
-			<attribute name="id" csvColumnName="Storage Type id"   />
+			<attribute name="name" csvColumnName="Storage Type name"   />
 		</referenceAssociation>
-
-		<referenceAssociation className="edu.wustl.catissuecore.domain.Site"       roleName="site">
-			<attribute name="id" csvColumnName="Site id"   />
-		</referenceAssociation>
-	
+		
 		<referenceAssociation className="edu.wustl.catissuecore.domain.CollectionProtocol"   maxNoOfRecords="2"   cardinality="*" roleName="collectionProtocolCollection">
-			<attribute name="title" csvColumnName="CP title"   />
+			<attribute name="id" csvColumnName="CP id"   />
 		</referenceAssociation>
         
     	<containmentAssociation className="edu.wustl.catissuecore.domain.Capacity"       roleName="capacity">
@@ -25,21 +21,25 @@
 
 			<referenceAssociation className="edu.wustl.catissuecore.domain.Container"       roleName="parentContainer">
 				<attribute name="name" csvColumnName="Parent Container Name"   />
-			</referenceAssociation>
+				</referenceAssociation>
 		</referenceAssociation>
+		
+			<attribute name="oneDimensionLabellingScheme" csvColumnName="Dimension one Labelling Scheme" />
+			<attribute name="twoDimensionLabellingScheme" csvColumnName="Dimension two Labelling Scheme" />
 
 		<attribute name="activityStatus" csvColumnName="Activity Status"   />
 		<attribute name="full" csvColumnName="Full"   />
 		<attribute name="comment" csvColumnName="Comments"   />
 		<attribute name="name" csvColumnName="container name"   />
-		<!--<attribute name="noOfContainers" csvColumnName="No Of Containers"   />-->
+		<attribute name="noOfContainers" csvColumnName="No Of Containers"   />
+		<attribute name="barcode" csvColumnName="Barcode"   />
 
-		<containmentAssociation className="java.lang.String"	  maxNoOfRecords="4"   cardinality="*" roleName="holdsSpecimenClassCollection">
+		<containmentAssociation className="java.lang.String"	  maxNoOfRecords="2"   cardinality="*" roleName="holdsSpecimenClassCollection">
 			<attribute name="holdsSpecimenClassCollection" csvColumnName="holdsSpecimenClass"    />
 		</containmentAssociation>
 
 		<containmentAssociation className="edu.wustl.catissuecore.domain.StorageType"   maxNoOfRecords="2"   cardinality="*" roleName="holdsStorageTypeCollection">
-			<attribute name="id" csvColumnName="holdsStorageType"   />
+			<attribute name="name" csvColumnName="holdsStorageType"   />
 		</containmentAssociation>
 
 	</BulkOperationClass>
