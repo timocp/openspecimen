@@ -63,13 +63,13 @@
             <td  align="right" class="black_ar  padding_right_style" width="20%">
                 <b>ASIG ID</b> 
             </td>
-            <td class="black_ar" width="20%">
+            <td class="black_ar" width="30%">
 				<bean:write name="participantDto" property="ppid" />
 			</td>
             <td align="right" class="black_ar padding_right_style" width="30%"> 
                 <b>Last Contact Date</b>
 			</td>
-            <td class="black_ar" width="30%"> 
+            <td class="black_ar" width="20%"> 
                       <fmt:formatDate value="${participantDto.dethOfDate}" pattern="${datePattern}" />
 			</td>
        </tr>
@@ -78,13 +78,13 @@
          <td  align="right" class="black_ar bottomtd  padding_right_style" width="20%"> 
             <b>UR Number</b>
          </td> 
-         <td class="black_ar bottomtd" width="20%">
+         <td class="black_ar bottomtd" width="30%">
               <bean:write name="participantDto" property="urNumber" />
         </td>
         <td  align="right" class="black_ar bottomtd  padding_right_style" width="30%"> 
             <b>Consent To Use Of Blood</b>
         </td>
-        <td class="black_ar bottomtd" width="30%"> 
+        <td class="black_ar bottomtd" width="20%"> 
              <bean:write name="participantDto" property="consentBlood" />
         </td>
       </tr>
@@ -93,13 +93,13 @@
          <td  align="right" class="black_ar bottomtd  padding_right_style" width="20%"> 
             <b>Status In Research</b>
          </td> 
-         <td class="black_ar bottomtd" width="20%">
+         <td class="black_ar bottomtd" width="30%">
                         <bean:write name="participantDto" property="vitalStatus" />
         </td>
         <td  align="right" class="black_ar bottomtd  padding_right_style" width="30%"> 
             <b>Site</b>
         </td>
-        <td class="black_ar bottomtd" width="30%"> 
+        <td class="black_ar bottomtd" width="20%"> 
              <bean:write name="participantDto" property="siteName" />
         </td>
       </tr>
@@ -107,7 +107,7 @@
          <td  align="right" class="black_ar bottomtd  padding_right_style" width="20%"> 
             <b><bean:message key="participant.dnaQuality"/></b>
          </td> 
-         <td class="black_ar bottomtd" width="25%">
+         <td class="black_ar bottomtd" width="30%">
            <input type="radio" value="Good" id="dnaQualityGood" name="specimenChild" onclick="onCheckboxButtonClick(this)" 
              style="vertical-align: middle;"/>
 	   <span class="black_ar" style="vertical-align: middle;">
@@ -124,11 +124,9 @@
 	     <bean:message key="participant.dnaQuality.unknown"/>&nbsp;
 	   </span>   	 
          </td>
-         <td  align="left" class="black_ar bottomtd" width="30%"> 
-           <input type="button" value="Update" onclick="updateParticipant()"/>
-         </td>
-         <td class="black_ar bottomtd" width="30%"> 
-            
+         
+         <td class="black_ar bottomtd" width="50%" colspan="2"> 
+            <input type="button" value="Update" onclick="updateParticipant()"/>
         </td>
       </tr>
     </table>

@@ -318,10 +318,8 @@ function hideCursor(){
                 </ka-search>
             </div>
             <div class="btn-group" style="margin-top: 10px; width: 100%;">
-              <button class="btn btn-default btn-sm" ng-click="registerParticipant()" ng-disabled="selectedCp.id == -1" style="width: 50%">
-                <span class="glyphicon glyphicon-plus"></span> Register Participant
-              </button>
-              <button class="btn btn-default btn-sm" ng-click="viewParticipant()" style="width: 50%">
+              
+              <button class="btn btn-default btn-sm" ng-click="viewParticipant()" style="width: 100%">
                 <span class="glyphicon glyphicon-eye-open"></span> View Participant
               </button>
             </div>
