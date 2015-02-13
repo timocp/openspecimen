@@ -164,7 +164,7 @@ public class AliquotBizLogic
         	DisposalEventParameters eventParameters = SpecimenUtil.createDisposeEvent(sessionDataBean, parentSpecimen, Constants.SPECIMEN_DISPOSAL_REASON);
             specimenBizLogic.disposeSpecimen(hibernateDao, sessionDataBean, parentSpecimen, eventParameters);
         }
-        specimenDAO.reduceQuantity(totalDistributedQuantity, parentSpecimen.getId(), hibernateDao);
+        specimenDAO.updateParentSpecimen(totalDistributedQuantity, parentSpecimen.getId(), hibernateDao);
         aliquotDetailsDTO.setCurrentAvailableQuantity(parentSpecimen.getAvailableQuantity());
 
     }

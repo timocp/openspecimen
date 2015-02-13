@@ -192,8 +192,9 @@ public class NewSpecimenBizLogic extends CatissueDefaultBizLogic {
 			specimen.doRoundOff();
 			checkLabel(specimen);
 			dao.insert(specimen);
-
+			
 			if (Constants.DERIVED_SPECIMEN.equals(specimen.getLineage())) {
+				updateParentSpecimen(dao,specimen.getParentSpecimen());
 				ApplicationContext applicationContext = OpenSpecimenAppCtxProvider.getAppCtx();
 				FormRecordSaveServiceImpl formRecSvc = (FormRecordSaveServiceImpl) applicationContext.getBean("formRecordSvc");
 
@@ -223,6 +224,17 @@ public class NewSpecimenBizLogic extends CatissueDefaultBizLogic {
 			throw new BizLogicException(exp.getErrorKey(), exp, exp.getMsgValues(), errMssg);
 			//			throw this.getBizLogicException(exp, exp.getErrorKeyName(), exp.getMsgValues());
 		}
+	}
+
+	private void updateParentSpecimen(DAO dao, AbstractSpecimen parentSpecimen) throws DAOException {
+		Specimen spec = (Specimen)parentSpecimen;
+		if(spec.getThawCycle()==null){
+			spec.setThawCycle(1l);
+		}
+		else{
+			spec.setThawCycle(spec.getThawCycle()+1);
+		}
+		dao.update(spec);
 	}
 
 	private void checkLabel(Specimen specimen) throws BizLogicException {
@@ -464,6 +476,9 @@ public class NewSpecimenBizLogic extends CatissueDefaultBizLogic {
 		this.generateLabel(specimen);
 		this.generateBarCode(specimen);
 		this.insertChildSpecimens(specimen, dao, sessionDataBean, pos1, pos2);
+		if (Constants.DERIVED_SPECIMEN.equals(specimen.getLineage()) || Constants.ALIQUOT_SPECIMEN.equals(specimen.getLineage())) {
+			specimen.setThawCycle(1l);
+		}
 	}
 
 	/**
@@ -2167,8 +2182,13 @@ public class NewSpecimenBizLogic extends CatissueDefaultBizLogic {
 	private StorageContainer setStorageContainerId(DAO dao, Specimen specimen) throws BizLogicException {
 		try {
 			final String sourceObjectName = StorageContainer.class.getName();
-			final List list = dao.retrieve(sourceObjectName, "name", specimen.getSpecimenPosition().getStorageContainer()
-					.getName());
+			String hql = "from "+StorageContainer.class.getName()+" sc where sc.name=?";
+			ColumnValueBean bean = new ColumnValueBean(specimen.getSpecimenPosition().getStorageContainer().getName());
+			List<ColumnValueBean> beans = new ArrayList<ColumnValueBean>();
+			beans.add(bean);
+			final List list = dao.executeQuery(hql, beans);
+//			final List list = dao.retrieve(sourceObjectName, "name", specimen.getSpecimenPosition().getStorageContainer()
+//					.getName());
 			if (!list.isEmpty()) {
 				return (StorageContainer) list.get(0);
 			}

@@ -1729,7 +1729,7 @@ public class UserBizLogic extends CatissueDefaultBizLogic
 			if (!authenticationSuccesful)
 			{
 				LOGGER.debug("Authentication of user against " + user.getTargetIdp() + " failed.");
-				throw getBizLogicException(null, "app.target.idp.auth.error", "");
+				throw getBizLogicException(null, "errors.incorrectLoginIDPassword", "");
 			}
 		}
 		catch (final AuthenticationException e)

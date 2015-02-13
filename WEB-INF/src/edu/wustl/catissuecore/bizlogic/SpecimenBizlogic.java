@@ -765,7 +765,7 @@ public class SpecimenBizlogic
     specimenDTO.setCprID(specimen.getSpecimenCollectionGroup().getCollectionProtocolRegistration().getId());
     specimenDTO.setParticipantID(specimen.getSpecimenCollectionGroup().getCollectionProtocolRegistration()
         .getParticipant().getId());
-    if (specimen.getSpecimenType().equals("DNA") && specimen.getLineage().equals("Derived"))
+    if (specimen.getSpecimenType().equals("DNA"))
     {
       specimenDTO.setDnaMethod(specimen.getDnaMethod());
       specimenDTO.setDna260(specimen.getDna260());

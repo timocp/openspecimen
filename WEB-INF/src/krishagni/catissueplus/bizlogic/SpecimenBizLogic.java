@@ -974,8 +974,8 @@ public class SpecimenBizLogic {
 		if (specimenDTO.getThawCycle() != null && specimenDTO.getThawCycle() > 0) {
 			specimen.setThawCycle(specimenDTO.getThawCycle());
 		}
-		else if ("Aliquot".equals(specimenDTO.getLineage())) {
-			specimen.setThawCycle(((Specimen)specimen.getParentSpecimen()).getThawCycle() + 1);
+		else if ("Aliquot".equals(specimenDTO.getLineage()) || "Derived".equals(specimenDTO.getLineage())) {
+			specimen.setThawCycle(1l);
 		}
 		else {
 			specimen.setThawCycle(0l);

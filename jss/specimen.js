@@ -799,7 +799,8 @@ function submitTabData(operation)
 		tabDataJSON["isToPrintLabel"]=printFlag;
 		tabDataJSON["lineage"]=document.getElementById("lineage").value;
 		tabDataJSON["collectionStatus"]=collectionStatusCombo.getSelectedText();
-		if("Derived"==tabDataJSON["lineage"] && tabDataJSON['type']=="DNA"){
+		
+		if(typeCombo.getComboText()=="DNA"){
 			tabDataJSON["dnaMethod"] = dnaMethodCombo.getSelectedText();
 			var dna260val = document.getElementById("260-280").value;
 			if(dna260val != null && dna260val != "")

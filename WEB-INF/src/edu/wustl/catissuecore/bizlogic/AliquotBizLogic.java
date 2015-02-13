@@ -154,8 +154,10 @@ public class AliquotBizLogic extends CatissueDefaultBizLogic
 		}
 		Object pSpec =  dao.retrieveById(Specimen.class.getName(),
 				parentSpecimen.getId());
-		((Specimen)pSpec).setAvailableQuantity(totalAliquotQty);
-		dao.update(pSpec);
+		Specimen spec = (Specimen)pSpec;
+		spec.setAvailableQuantity(totalAliquotQty);
+		spec.setThawCycle(spec.getThawCycle()+1);
+		dao.update(spec);
 //		dao.commit();
 	}
 

@@ -85,11 +85,16 @@ public class SiteDAO
 		{
 			siteName = siteName==null?"":siteName;
 			siteId = siteId == null?0l:siteId;
-			String hql = "select count(*) from "+Site.class.getName()+" where id="+siteId+" or name ='"+siteName+"'";
+			String hql = "select count(*) from "+Site.class.getName()+" where id=? or name =?";
+			ColumnValueBean siteIdBean = new ColumnValueBean(siteId);
+			ColumnValueBean siteNameBean = new ColumnValueBean(siteName);
+			List<ColumnValueBean> siteHqlParams = new ArrayList<ColumnValueBean>();
+			siteHqlParams.add(siteIdBean);
+			siteHqlParams.add(siteNameBean);
 //			Map<String, NamedQueryParam> params = new HashMap<String, NamedQueryParam>();
 //			params.put("0", new NamedQueryParam(DBTypes.STRING, siteName));
 //			List<Long> idList = hibenrateDAO.executeNamedQuery("getSiteIdByName", params);
-			List result = hibenrateDAO.executeQuery(hql);
+			List result = hibenrateDAO.executeQuery(hql,siteHqlParams);
 			if(result == null || result.isEmpty())
 			{
 				String message = ApplicationProperties

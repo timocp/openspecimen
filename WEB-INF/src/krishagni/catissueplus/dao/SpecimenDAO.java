@@ -224,7 +224,7 @@ public class SpecimenDAO
 
 	}
 
-	public String reduceQuantity(Double quantityReducedBy, Long specimenId, HibernateDAO hibernateDAO) throws DAOException
+	public String updateParentSpecimen(Double quantityReducedBy, Long specimenId, HibernateDAO hibernateDAO) throws DAOException
 	{
 		ColumnValueBean columnValueBean = new ColumnValueBean(specimenId);
 		columnValueBean.setColumnName("id");
@@ -262,7 +262,7 @@ public class SpecimenDAO
 		{
 			specimen.setIsAvailable(true);
 		}
-
+		specimen.setThawCycle(specimen.getThawCycle()+1);
 		hibernateDAO.update(specimen);
 		return Constants.SUCCESS;
 	}

@@ -3263,10 +3263,14 @@ public class SpecimenCollectionGroupBizLogic extends CatissueDefaultBizLogic
 				absScg = (SpecimenCollectionGroup)scgList.get(0);
 			}
 			else{
-				String retrieveCPR = "from "+CollectionProtocolRegistration.class.getName()+" cpr where cpr.protocolParticipantIdentifier='"
-						+scg.getCollectionProtocolRegistration().getProtocolParticipantIdentifier()
-						+ "' and cpr.collectionProtocol.shortTitle='"+scg.getCollectionProtocolRegistration().getCollectionProtocol().getShortTitle()+"'";
-				List result = dao.executeQuery(retrieveCPR);
+				String retrieveCPR = "from "+CollectionProtocolRegistration.class.getName()+" cpr where cpr.protocolParticipantIdentifier=?"
+						+ " and cpr.collectionProtocol.shortTitle=?";
+				ColumnValueBean ppIdBean = new ColumnValueBean(scg.getCollectionProtocolRegistration().getProtocolParticipantIdentifier());
+				ColumnValueBean cpShortTitleBean = new ColumnValueBean(scg.getCollectionProtocolRegistration().getCollectionProtocol().getShortTitle());
+				List<ColumnValueBean> cprHqlParams = new ArrayList<ColumnValueBean>();
+				cprHqlParams.add(ppIdBean);
+				cprHqlParams.add(cpShortTitleBean);
+				List result = dao.executeQuery(retrieveCPR,cprHqlParams);
 				if(result.isEmpty()){
 					String message = ApplicationProperties
 							.getValue("specimenCollectionGroup.studyCalenderEventPointAndPPID");
@@ -3279,8 +3283,11 @@ public class SpecimenCollectionGroupBizLogic extends CatissueDefaultBizLogic
 				  CollectionProtocolEvent cpe = (CollectionProtocolEvent)cpr.getCollectionProtocol().getCollectionProtocolEventCollection().iterator().next();
 				  scg.setCollectionProtocolEvent(cpe);
 				}
-				String retrieveSite = "from "+Site.class.getName()+" site where name='"+scg.getSpecimenCollectionSite().getName()+"'";
-				List siteResult = dao.executeQuery(retrieveSite);
+				String retrieveSite = "from "+Site.class.getName()+" site where name=?";
+				ColumnValueBean siteName = new ColumnValueBean(scg.getSpecimenCollectionSite().getName());
+				List<ColumnValueBean> siteHqlParams = new ArrayList<ColumnValueBean>();
+				siteHqlParams.add(siteName);
+				List siteResult = dao.executeQuery(retrieveSite,siteHqlParams);
 				if(siteResult.isEmpty()){
 					String message = ApplicationProperties
 							.getValue("specimenCollectionGroup.site");
