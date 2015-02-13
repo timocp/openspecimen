@@ -1042,7 +1042,7 @@ dhxWins.window("containerPositionPopUp").setModal(true);
 dhxWins.window("containerPositionPopUp").setText("");    //it's the title for the popup
 }
 initSpecimenCombo();
-initializeSpecimenPage('${biohazardTypeNameListJSON}');
+//initializeSpecimenPage('${biohazardTypeNameListJSON}');
 prepareSpecimenTypeOptions('${cellTypeListJSON}','${molecularTypeListJSON}','${tissueTypeListJSON}','${fluidTypeListJSON}');
 
 <c:if test="${specimenDTO.collectionStatus=='Collected' and operation=='edit'}">
