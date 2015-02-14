@@ -941,6 +941,10 @@ req.onreadystatechange = function() {
 					barcodeElement.value = updatedSpecimenDTO.barcode;
 					document.getElementById('barcode').disabled = false;
 				}
+				var thawCycle = document.getElementById('thawCycle');
+				if(thawCycle != null && thawCycle && updatedSpecimenDTO.thawCycle != null){
+					thawCycle.value = updatedSpecimenDTO.thawCycle;
+				}
 				var specimenIdElem = document.getElementById('id');
 				document.getElementById('id').value=updatedSpecimenDTO.id;
 					specimenIdElem.value = updatedSpecimenDTO.id;

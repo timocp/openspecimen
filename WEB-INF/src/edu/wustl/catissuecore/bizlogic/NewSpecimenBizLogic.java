@@ -474,9 +474,10 @@ public class NewSpecimenBizLogic extends CatissueDefaultBizLogic {
 		this.setStorageLocationToNewSpecimen(dao, specimen, sessionDataBean, true, pos1, pos2);
 		this.setSpecimenAttributes(dao, specimen, sessionDataBean);
 		this.generateLabel(specimen);
-		this.generateBarCode(specimen);
+		this.generateBarCode(specimen); 
 		this.insertChildSpecimens(specimen, dao, sessionDataBean, pos1, pos2);
-		if (Constants.DERIVED_SPECIMEN.equals(specimen.getLineage()) || Constants.ALIQUOT.equals(specimen.getLineage())) {
+		if ((Constants.DERIVED_SPECIMEN.equals(specimen.getLineage()) || Constants.ALIQUOT.equals(specimen.getLineage())) && 
+				Constants.COLLECTION_STATUS_COLLECTED.equals(specimen.getCollectionStatus())) {
 			specimen.setThawCycle(1l);
 		}
 	}

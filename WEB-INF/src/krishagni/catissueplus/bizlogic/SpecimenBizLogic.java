@@ -103,6 +103,7 @@ public class SpecimenBizLogic {
 			//object retrieval for auditing purpose
 			SpecimenDAO specimenDAO = new SpecimenDAO();
 			oldSpecimenObj = specimenDAO.getSpecimenById(specimenDTO.getId(), hibernateDao);
+			String oldCollStatus = oldSpecimenObj.getCollectionStatus(); 
 			if (!isAuthorizedForSpecimenProcessing(hibernateDao, specimenDTO, sessionDataBean)) {
 				throw AppUtility.getUserNotAuthorizedException("SPECIMEN_PROCESSING", "", Specimen.class.getSimpleName());
 			}
@@ -112,7 +113,18 @@ public class SpecimenBizLogic {
 			generateBarCode(oldSpecimenObj);
 			validateSpecimen(oldSpecimenObj, hibernateDao, oldSpecimenObj);
 			//updating the specimen in database
+			if ((Constants.DERIVED_SPECIMEN.equals(oldSpecimenObj.getLineage()) || Constants.ALIQUOT.equals(oldSpecimenObj.getLineage()))
+					&& Constants.COLLECTION_STATUS_PENDING.equals(oldCollStatus) && Constants.COLLECTION_STATUS_COLLECTED.equals(oldSpecimenObj.getCollectionStatus())) {
+				oldSpecimenObj.setThawCycle(1l);
+			}
 			hibernateDao.update(oldSpecimenObj);
+			
+			if ((Constants.DERIVED_SPECIMEN.equals(oldSpecimenObj.getLineage()) || Constants.ALIQUOT.equals(oldSpecimenObj.getLineage()))
+					&& Constants.COLLECTION_STATUS_PENDING.equals(oldCollStatus) && Constants.COLLECTION_STATUS_COLLECTED.equals(oldSpecimenObj.getCollectionStatus())) {
+				updateParent(hibernateDao,oldSpecimenObj);
+				createEvent(hibernateDao,oldSpecimenObj,sessionDataBean);
+			}
+			
 		}
 		catch (ApplicationException e) {
 			LOGGER.error(e.getMessage(), e);
@@ -128,6 +140,29 @@ public class SpecimenBizLogic {
 		//			throw new CatissueException(SpecimenErrorCodeEnum.INTERNAL_SERVER_ERROR.getCode());
 		//		}
 		return this.getSpecimenDTOFromSpecimen(oldSpecimenObj);
+	}
+
+	private void createEvent(HibernateDAO hibernateDao, Specimen oldSpecimenObj, SessionDataBean sessionDataBean) throws BizLogicException {
+		ApplicationContext applicationContext = OpenSpecimenAppCtxProvider.getAppCtx();
+		FormRecordSaveServiceImpl formRecSvc = (FormRecordSaveServiceImpl) applicationContext.getBean("formRecordSvc");
+		SpecimenDTO dto = getSpecimenDTOFromSpecimen(oldSpecimenObj);
+		if(Constants.DERIVED_SPECIMEN.equals(dto.getLineage())){
+			formRecSvc.saveDerivativeEvent(dto, sessionDataBean);
+		}else{
+			formRecSvc.saveAliquotEvent(dto,1, sessionDataBean);
+		}
+		
+	}
+
+	private void updateParent(HibernateDAO hibernateDao, Specimen oldSpecimenObj) throws DAOException {
+		Specimen parent = (Specimen)hibernateDao.retrieveById(Specimen.class.getName(), oldSpecimenObj.getParentSpecimen().getId());
+		if(parent.getThawCycle()==null){
+			parent.setThawCycle(1l);
+		}
+		else{
+			parent.setThawCycle(parent.getThawCycle()+1);
+		}
+		hibernateDao.update(parent);
 	}
 
 	/**
