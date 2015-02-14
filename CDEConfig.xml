@@ -44,6 +44,17 @@
 	</XMLCDE>
 	
 	<XMLCDE cache="true" lazyLoading="false">
+		<name>DNA Quality</name>
+		<publicId>Dna_Quality</publicId>
+		<XMLPermissibleValues>
+			<evsTerminology>NCI-THESAURAUS</evsTerminology>
+			<conceptCode>PV</conceptCode> 
+			<parentConceptCode></parentConceptCode>
+			<depthOfHierarchyTree>6</depthOfHierarchyTree> 
+		</XMLPermissibleValues>
+	</XMLCDE>
+	
+	<XMLCDE cache="true" lazyLoading="false">
 		<name>Gender</name>
 		<publicId>2003989</publicId>
 		<XMLPermissibleValues>

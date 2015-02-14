@@ -476,7 +476,7 @@ public class NewSpecimenBizLogic extends CatissueDefaultBizLogic {
 		this.generateLabel(specimen);
 		this.generateBarCode(specimen);
 		this.insertChildSpecimens(specimen, dao, sessionDataBean, pos1, pos2);
-		if (Constants.DERIVED_SPECIMEN.equals(specimen.getLineage()) || Constants.ALIQUOT_SPECIMEN.equals(specimen.getLineage())) {
+		if (Constants.DERIVED_SPECIMEN.equals(specimen.getLineage()) || Constants.ALIQUOT.equals(specimen.getLineage())) {
 			specimen.setThawCycle(1l);
 		}
 	}
@@ -1005,25 +1005,26 @@ public class NewSpecimenBizLogic extends CatissueDefaultBizLogic {
 		try {
 			String value = parentSpecimen.getLabel();
 			String column = "label";
+			String hql = "from "+Specimen.class.getName()+" sp where sp.label = ?";
+			
 			if ((value == null) || (value != null && value.equals(""))) {
 				column = "barcode";
 				value = parentSpecimen.getBarcode();
+				hql = "from "+Specimen.class.getName()+" sp where sp.barcode = ?";
 			}
-			final String sourceObjectName = Specimen.class.getName();
-			final String[] selectColumnName = {"activityStatus", "createdOn", "specimenCollectionGroup.id",
-					"specimenCollectionGroup.activityStatus", "id", "pathologicalStatus", "tissueSide", "tissueSite",
-					"availableQuantity", "collectionStatus", "barcode"};
-			final QueryWhereClause queryWhereClause = new QueryWhereClause(sourceObjectName);
-			queryWhereClause.addCondition(new EqualClause(column, value));
-			final List list = dao.retrieve(sourceObjectName, selectColumnName, queryWhereClause);
+			ColumnValueBean bean = new ColumnValueBean(value);
+			List<ColumnValueBean> beans = new ArrayList<ColumnValueBean>();
+			beans.add(bean);
+			List list = dao.executeQuery(hql, beans);
 			if (!list.isEmpty()) {
-				if (Status.ACTIVITY_STATUS_DISABLED.toString().equals(((Object[]) list.get(0))[0])) {
+				parentSpecimen = (Specimen)list.get(0);
+				if (Status.ACTIVITY_STATUS_DISABLED.toString().equals(parentSpecimen.getActivityStatus())) {
 					throw this.getBizLogicException(null, "error.object.disabled", Constants.SPECIMEN);
 				}
-				final Object[] valArr = (Object[]) list.get(0);
-				if (valArr != null) {
-					this.getParentSpecimenObjectByLabel(dao, parentSpecimen, valArr);
-				}
+//				final Object[] valArr = (Object[]) list.get(0);
+//				if (valArr != null) {
+//					this.getParentSpecimenObjectByLabel(dao, parentSpecimen, valArr);
+//				}
 			}
 			else {
 				throw this.getBizLogicException(null, "invalid.label.barcode", value);
@@ -2941,13 +2942,12 @@ public class NewSpecimenBizLogic extends CatissueDefaultBizLogic {
 					&& specimen.getSpecimenPosition().getStorageContainer().getName() != null
 					&& specimen.getSpecimenPosition().getStorageContainer().getId() != null) {
 				final StorageContainer storageContainerObj = specimen.getSpecimenPosition().getStorageContainer();
-				final String sourceObjectName = StorageContainer.class.getName();
-				final String[] selectColumnName = {"id"};
 				final String storageContainerName = specimen.getSpecimenPosition().getStorageContainer().getName();
-
-				final QueryWhereClause queryWhereClause = new QueryWhereClause(sourceObjectName);
-				queryWhereClause.addCondition(new EqualClause("name", storageContainerName));
-				final List list = dao.retrieve(sourceObjectName, selectColumnName, queryWhereClause);
+				String hql = " select sc.id from "+StorageContainer.class.getName()+" sc where sc.name=?";
+				ColumnValueBean bean = new ColumnValueBean(storageContainerName);
+				List<ColumnValueBean> beans = new ArrayList<ColumnValueBean>();
+				beans.add(bean);
+				final List list = dao.executeQuery(hql, beans);
 
 				if (!list.isEmpty()) {
 					storageContainerObj.setId((Long) list.get(0));

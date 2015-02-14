@@ -41,6 +41,7 @@ import edu.wustl.dao.DAO;
 import edu.wustl.dao.QueryWhereClause;
 import edu.wustl.dao.condition.EqualClause;
 import edu.wustl.dao.exception.DAOException;
+import edu.wustl.dao.query.generator.ColumnValueBean;
 import edu.wustl.security.manager.SecurityManagerFactory;
 
 /**
@@ -282,7 +283,7 @@ public class AliquotBizLogic extends CatissueDefaultBizLogic
 	{
 		final Aliquot aliquot = (Aliquot) obj;
 		if (aliquot == null)
-		{
+		{ 
 			final String message = ApplicationProperties.getValue("app.aliquots");
 			throw this.getBizLogicException(null, "domain.object.null.err.msg", message);
 		}
@@ -369,12 +370,12 @@ public class AliquotBizLogic extends CatissueDefaultBizLogic
 				&& specimenPosition.getStorageContainer().getName() != null)
 		{
 			final StorageContainer storageContainerObj = specimenPosition.getStorageContainer();
-			final String sourceObjectName = StorageContainer.class.getName();
-			final String[] selectColumnName = {"id"};
 			final String storageContainerName = specimenPosition.getStorageContainer().getName();
-			final QueryWhereClause queryWhereClause = new QueryWhereClause(sourceObjectName);
-			queryWhereClause.addCondition(new EqualClause("name", storageContainerName));
-			final List list = dao.retrieve(sourceObjectName, selectColumnName, queryWhereClause);
+			String hql = " select sc.id from "+StorageContainer.class.getName()+" sc where sc.name=?";
+			ColumnValueBean bean = new ColumnValueBean(storageContainerName);
+			List<ColumnValueBean> beans = new ArrayList<ColumnValueBean>();
+			beans.add(bean);
+			final List list = dao.executeQuery(hql, beans);
 			if (list.isEmpty())
 			{
 				final String message = ApplicationProperties.getValue("specimen.storageContainer");

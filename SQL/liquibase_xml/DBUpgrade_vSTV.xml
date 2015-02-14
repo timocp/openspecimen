@@ -120,4 +120,18 @@
           );
     </sql>
   </changeSet>
+  
+  <changeSet id="DNA quality PV's" author="catissue" failOnError="false"  dbms="oracle" >
+    <sql>INSERT INTO CATISSUE_CDE VALUES ( 'Dna_Quality','DNA Quality','DNA Quality',1.0,null)</sql>
+    <sql>INSERT INTO CATISSUE_PERMISSIBLE_VALUE (IDENTIFIER,VALUE, PARENT_IDENTIFIER, PUBLIC_ID) VALUES((select max(IDENTIFIER)+1 from CATISSUE_PERMISSIBLE_VALUE),'Good',NULL,'Dna_Quality')</sql>
+    <sql>INSERT INTO CATISSUE_PERMISSIBLE_VALUE (IDENTIFIER,VALUE, PARENT_IDENTIFIER, PUBLIC_ID) VALUES((select max(IDENTIFIER)+1 from CATISSUE_PERMISSIBLE_VALUE),'Poor',NULL,'Dna_Quality')</sql>
+    <sql>INSERT INTO CATISSUE_PERMISSIBLE_VALUE (IDENTIFIER,VALUE, PARENT_IDENTIFIER, PUBLIC_ID) VALUES((select max(IDENTIFIER)+1 from CATISSUE_PERMISSIBLE_VALUE),'Unknown',NULL,'Dna_Quality')</sql>
+  </changeSet>
+  
+  <changeSet id="DNA quality PV's" author="catissue" failOnError="false"  dbms="mysql" >
+    <sql>INSERT INTO CATISSUE_CDE VALUES ( 'Dna_Quality','DNA Quality','DNA Quality',1.0,null)</sql>
+    <sql>INSERT INTO CATISSUE_PERMISSIBLE_VALUE (VALUE, PARENT_IDENTIFIER, PUBLIC_ID) VALUES('Good',NULL,'Dna_Quality')</sql>
+    <sql>INSERT INTO CATISSUE_PERMISSIBLE_VALUE (VALUE, PARENT_IDENTIFIER, PUBLIC_ID) VALUES('Poor',NULL,'Dna_Quality')</sql>
+    <sql>INSERT INTO CATISSUE_PERMISSIBLE_VALUE (VALUE, PARENT_IDENTIFIER, PUBLIC_ID) VALUES('Unknown',NULL,'Dna_Quality')</sql>
+  </changeSet>
 </databaseChangeLog>         
