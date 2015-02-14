@@ -6,7 +6,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ page import="edu.wustl.catissuecore.dto.SpecimenDTO"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-
+<%@ page import="edu.wustl.common.beans.NameValueBean"%>
 <script>
     var imgsrc="images/";
     window.dhx_globalImgPath = "dhtmlxSuite_v35/dhtmlxWindows/codebase/imgs/";
@@ -443,28 +443,20 @@ req.onreadystatechange = function() {
                                 </td>
                              
 								<td width="30%" class="black_ar" >
-									<c:choose>
-										<c:when test="${specimenDTO.quality=='Good'}">
-											<input type="radio" value="Good" id="dnaQualityGood" name="specimenQuality" onclick="onCheckboxButtonClick(this)" style="vertical-align: middle;" checked="true"/>
-										</c:when>
-										<c:otherwise>
-											<input type="radio" value="Good" id="dnaQualityGood" name="specimenQuality" onclick="onCheckboxButtonClick(this)" style="vertical-align: middle;"/>
-										</c:otherwise>
-									</c:choose>
-											<span class="black_ar" style="vertical-align: middle;">
-											<bean:message key="participant.dnaQuality.good"/>&nbsp;
-											</span>
-									<c:choose>
-										<c:when test="${specimenDTO.quality!='Good'}">
-											<input type="radio" value="Poor" id="dnaQualityPoor" name="specimenQuality" onclick="onCheckboxButtonClick(this)" style="vertical-align: middle;" checked="true"/>
-										</c:when>
-										<c:otherwise>
-											<input type="radio" value="Poor" id="dnaQualityPoor" name="specimenQuality" onclick="onCheckboxButtonClick(this)" style="vertical-align: middle;" />
-										</c:otherwise>
-									</c:choose>
-										<span class="black_ar" style="vertical-align: middle;">
-											<bean:message key="participant.dnaQuality.poor"/>&nbsp;
-										</span>
+									<logic:iterate id="nvb"
+							name="dnaQualityList">
+							<%
+								NameValueBean nameValueBean = (NameValueBean) nvb;
+							%>
+							<html:radio name="specimenDTO" property="quality"
+								onclick="onVitalStatusRadioButtonClick(this)"
+								value="<%=nameValueBean.getValue()%>">
+								<span class="align_radio_buttons">
+								<%=nameValueBean.getName()%>
+								</span>	
+							</html:radio>&nbsp;&nbsp;&nbsp;
+								</logic:iterate>
+									
                                 </td>
 								
                                 <td width="20%" class="black_ar align_right_style">

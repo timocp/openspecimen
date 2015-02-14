@@ -130,9 +130,12 @@ public class SpecimenEditAction extends CatissueBaseAction
           "DNA Method", null);
 			dnaMethodList.remove(0);
 			request.setAttribute("DNAMethodList",dnaMethodList);
-//                    CDEManager.getCDEManager().getPermissibleValueList(
-//                            "DNA Method", null));
-
+			
+			List<NameValueBean> dnaQualityList = CDEManager.getCDEManager().getPermissibleValueList(
+          "DNA Quality", null);
+			dnaQualityList.remove(0);
+			request.setAttribute("dnaQualityList",dnaQualityList);
+			
 			request.setAttribute(Constants.PATHOLOGICAL_STATUS_LIST,
 					AppUtility.getListFromCDE(Constants.CDE_NAME_PATHOLOGICAL_STATUS));
 			request.setAttribute(Constants.TISSUE_SITE_LIST, AppUtility.tissueSiteList());

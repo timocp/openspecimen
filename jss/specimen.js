@@ -801,12 +801,13 @@ function submitTabData(operation)
 		tabDataJSON["collectionStatus"]=collectionStatusCombo.getSelectedText();
 		
 		if(typeCombo.getComboText()=="DNA"){
+			if(dnaMethodCombo){
 			tabDataJSON["dnaMethod"] = dnaMethodCombo.getSelectedText();
 			var dna260val = document.getElementById("260-280").value;
 			if(dna260val != null && dna260val != "")
 			{
 				tabDataJSON["dna260"] = document.getElementById("260-280").value;
-			}
+			}}
 		
 		}
 		var thawCycleVal = document.getElementById("thawCycle").value;
@@ -860,10 +861,10 @@ function submitTabData(operation)
 		{
 			tabDataJSON["labNumber"] = document.getElementById("labNumber").value; 
 		}
-		var quality = document.getElementsByName("specimenQuality");
+		var quality = document.getElementsByName("quality");
 		if(quality != null && quality != "")
 		{
-			var radios = document.getElementsByName("specimenQuality");
+			var radios = document.getElementsByName("quality");
 			var checkedRadio;
 			for (var i = 0; i < radios.length; i++) {       
 				if (radios[i].checked) {

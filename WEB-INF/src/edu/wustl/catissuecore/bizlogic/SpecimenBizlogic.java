@@ -728,7 +728,7 @@ public class SpecimenBizlogic
       }
     }
     specimenDTO.setLabNumber(specimen.getLabNumber());
-    specimenDTO.setQuality(StringUtils.isBlank(specimen.getQuality())?Constants.SPECIMEN_QUALITY_GOOD:Constants.SPECIMEN_QUALITY_POOR);
+    specimenDTO.setQuality(StringUtils.isBlank(specimen.getQuality())?Constants.SPECIMEN_QUALITY_GOOD:specimen.getQuality());
     if(specimen.getVenesectionTime()!=null){
     	final Calendar calender = Calendar.getInstance();
 
