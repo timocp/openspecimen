@@ -213,7 +213,9 @@ public class SpecimenBizLogic {
 		}
 		oldSpecimenObj.setQuality(specimenDTO.getQuality());
 		String date = Utility.parseDateToString(specimenDTO.getVenesectionDate(), ApplicationProperties.getValue("date.pattern"));
-		oldSpecimenObj.setVenesectionTime(EventsUtil.setTimeStamp(date, specimenDTO.getVenesectionHours(), specimenDTO.getVenesectionMins()));
+		if(!Validator.isEmpty(date)){
+			oldSpecimenObj.setVenesectionTime(EventsUtil.setTimeStamp(date, specimenDTO.getVenesectionHours(), specimenDTO.getVenesectionMins()));
+		}
 		Double quantityDiff = 0.0;
 		if (specimenDTO.getQuantity() != null) {
 			if (specimenDTO.getQuantity() > oldSpecimenObj.getInitialQuantity()) {
