@@ -31,7 +31,7 @@ public class LabelTokenForDateOfcollection implements LabelTokens
 				dayOfcoll = cal.get(Calendar.DAY_OF_MONTH);
 			}
 		}
-		valToReplace = monthOfcoll+"/"+dayOfcoll+"/"+yearOfcoll+Constants.DOUBLE_QUOTES;
+		valToReplace = dayOfcoll+"-"+monthOfcoll+"-"+yearOfcoll+Constants.DOUBLE_QUOTES;
 		return valToReplace;
 	}
 }
