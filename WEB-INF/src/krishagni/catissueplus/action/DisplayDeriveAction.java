@@ -112,6 +112,11 @@ public class DisplayDeriveAction extends CatissueBaseAction
         "DNA Method", null);
 		dnaMethodList.remove(0);
 		request.setAttribute("DNAMethodList",dnaMethodList);
+		
+		List<NameValueBean> dnaQualityList = CDEManager.getCDEManager().getPermissibleValueList(
+        "DNA Quality", null);
+		dnaQualityList.remove(0);
+		request.setAttribute("dnaQualityList",dnaQualityList);
 
 		request.setAttribute("isSpecimenBarcodeGeneratorAvl",
 				Variables.isSpecimenBarcodeGeneratorAvl);

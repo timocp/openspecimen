@@ -123,7 +123,14 @@ public class AddSpecimenFromRequirementAction extends CatissueBaseAction {
         	specimenDTO.setSiteName(mrn.getSite().getName());
         }
       }
-      request.setAttribute("DNAMethodList", CDEManager.getCDEManager().getPermissibleValueList("DNA Method", null));
+      List<NameValueBean> dnaMethodList = CDEManager.getCDEManager().getPermissibleValueList(
+          "DNA Method", null);
+			dnaMethodList.remove(0);
+			request.setAttribute("DNAMethodList",dnaMethodList);
+      List<NameValueBean> dnaQualityList = CDEManager.getCDEManager().getPermissibleValueList(
+          "DNA Quality", null);
+			dnaQualityList.remove(0);
+			request.setAttribute("dnaQualityList",dnaQualityList);
 
 			request.setAttribute("specimenDTO", specimenDTO);
 
