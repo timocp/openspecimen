@@ -21,12 +21,14 @@ import org.springframework.context.ApplicationContext;
 import edu.wustl.catissuecore.bizlogic.NewSpecimenBizLogic;
 import edu.wustl.catissuecore.domain.AbstractSpecimen;
 import edu.wustl.catissuecore.domain.DisposalEventParameters;
+
 import com.krishagni.catissueplus.core.biospecimen.services.impl.FormRecordSaveServiceImpl;
 import com.krishagni.catissueplus.core.common.OpenSpecimenAppCtxProvider;
 
 import edu.wustl.catissuecore.domain.Specimen;
 import edu.wustl.catissuecore.domain.User;
 import edu.wustl.catissuecore.util.PrintUtil;
+import edu.wustl.catissuecore.util.global.Constants;
 import edu.wustl.catissuecore.util.global.Variables;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.exception.ApplicationException;
@@ -46,6 +48,7 @@ public class SpecimenHandler {
 			SpecimenBizLogic specimenBizLogic = new SpecimenBizLogic();
 			specimenDTO = specimenBizLogic.insert(specimenDTO, hibernateDao, sessionDataBean);
 			hibernateDao.commit();
+			createEvent(specimenDTO, sessionDataBean);
 			if (printFlag) {
 				specimenDTO.setToPrintLabel(PrintUtil.printSpecimenLabel(null, null, sessionDataBean, specimenDTO.getId()));
 			}
@@ -63,6 +66,17 @@ public class SpecimenHandler {
 		return specimenDTO;
 	}
 
+	private void createEvent(SpecimenDTO specimenDTO, SessionDataBean sessionDataBean) throws BizLogicException {
+		ApplicationContext applicationContext = OpenSpecimenAppCtxProvider.getAppCtx();
+		FormRecordSaveServiceImpl formRecSvc = (FormRecordSaveServiceImpl) applicationContext.getBean("formRecordSvc");
+		if(Constants.DERIVED_SPECIMEN.equals(specimenDTO.getLineage())){
+			formRecSvc.saveDerivativeEvent(specimenDTO, sessionDataBean);
+		}else if(Constants.ALIQUOT.equals(specimenDTO.getLineage())){
+			formRecSvc.saveAliquotEvent(specimenDTO,1, sessionDataBean);
+		}
+		
+	}
+	
 	public SpecimenDTO updateSpecimen(SpecimenDTO specimenDTO, SessionDataBean sessionDataBean) throws BizLogicException {
 		HibernateDAO hibernateDao = null;
 		try {
@@ -97,11 +111,10 @@ public class SpecimenHandler {
 			DeriveBizLogic deriveBizlogic = new DeriveBizLogic();
 			specimenDTO = deriveBizlogic.insertDeriveSpecimen(hibernateDao, derivedDTO, sessionDataBean);
 
+			hibernateDao.commit();
 			ApplicationContext applicationContext = OpenSpecimenAppCtxProvider.getAppCtx();
 			FormRecordSaveServiceImpl formRecSvc = (FormRecordSaveServiceImpl) applicationContext.getBean("formRecordSvc");
 			formRecSvc.saveDerivativeEvent(specimenDTO, sessionDataBean);
-
-			hibernateDao.commit();
 			if (derivedDTO.getIsToPrintLabel()) {
 				specimenDTO.setToPrintLabel(PrintUtil.printSpecimenLabel(null, null, sessionDataBean, specimenDTO.getId()));
 			}

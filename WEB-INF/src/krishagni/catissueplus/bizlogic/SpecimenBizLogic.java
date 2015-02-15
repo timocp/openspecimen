@@ -740,7 +740,10 @@ public class SpecimenBizLogic {
 			generateBarCode(specimen);
 			validateSpecimen(specimen, hibernateDao, null);
 			hibernateDao.insert(specimen);
-
+			if ((Constants.DERIVED_SPECIMEN.equals(specimen.getLineage()) || Constants.ALIQUOT.equals(specimen.getLineage())))	{
+				updateParent(hibernateDao,specimen);
+//				createEvent(hibernateDao,specimen,sessionDataBean);
+			}
 		}
 		catch (ApplicationException e) {
 			LOGGER.error(e.getMessage(), e);

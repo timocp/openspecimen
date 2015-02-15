@@ -581,8 +581,9 @@ public class NewSpecimenBizLogic extends CatissueDefaultBizLogic {
 		try {
 			Map<String, NamedQueryParam> params = new HashMap<String, NamedQueryParam>();
 			params.put("0", new NamedQueryParam(DBTypes.LONG, scgId));
-			List eventList = ((HibernateDAO) dao).executeNamedQuery("getSpecimenEventCollFromSCGID", params);
-			final User user = new User();
+			 SpecimenCollectionGroup scg = (SpecimenCollectionGroup)((HibernateDAO) dao).retrieveById(SpecimenCollectionGroup.class.getName(), scgId);//executeNamedQuery("getSpecimenEventCollFromSCGID", params);
+			 Collection eventList = scg.getSpecimenEventParametersCollection();
+			 final User user = new User();
 			user.setId(sessionDataBean.getUserId());
 			final Collection<SpecimenEventParameters> specimenEventColl = new HashSet<SpecimenEventParameters>();
 			if (eventList != null && !eventList.isEmpty()) {
@@ -597,6 +598,7 @@ public class NewSpecimenBizLogic extends CatissueDefaultBizLogic {
 							newCollectionEventParameters.setContainer(collectionEventParameters.getContainer());
 						}
 						newCollectionEventParameters.setComment(collectionEventParameters.getComment());
+						newCollectionEventParameters.setTimestamp(collectionEventParameters.getTimestamp());
 						newCollectionEventParameters.setSpecimen(specimen);
 						specimenEventColl.add(newCollectionEventParameters);
 					}
@@ -607,6 +609,7 @@ public class NewSpecimenBizLogic extends CatissueDefaultBizLogic {
 							newReceivedEventParameters.setReceivedQuality(receivedEventParameters.getReceivedQuality());
 						}
 						newReceivedEventParameters.setComment(receivedEventParameters.getComment());
+						newReceivedEventParameters.setTimestamp(receivedEventParameters.getTimestamp());
 						newReceivedEventParameters.setSpecimen(specimen);
 						newReceivedEventParameters.setUser(receivedEventParameters.getUser());
 						specimenEventColl.add(newReceivedEventParameters);
