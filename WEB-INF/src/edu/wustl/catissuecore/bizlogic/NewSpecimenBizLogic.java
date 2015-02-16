@@ -78,6 +78,7 @@ import edu.wustl.catissuecore.util.global.AppUtility;
 import edu.wustl.catissuecore.util.global.Constants;
 import edu.wustl.catissuecore.util.global.Variables;
 import edu.wustl.common.actionForm.IValueObject;
+import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.cde.CDEManager;
 import edu.wustl.common.domain.AbstractDomainObject;
@@ -193,7 +194,7 @@ public class NewSpecimenBizLogic extends CatissueDefaultBizLogic {
 			checkLabel(specimen);
 			dao.insert(specimen);
 			
-			if (Constants.DERIVED_SPECIMEN.equals(specimen.getLineage())) {
+			if (Constants.DERIVED_SPECIMEN.equals(specimen.getLineage()) || Constants.ALIQUOT.equals(specimen.getLineage())) {
 				updateParentSpecimen(dao,specimen.getParentSpecimen());
 				ApplicationContext applicationContext = OpenSpecimenAppCtxProvider.getAppCtx();
 				FormRecordSaveServiceImpl formRecSvc = (FormRecordSaveServiceImpl) applicationContext.getBean("formRecordSvc");
@@ -201,8 +202,12 @@ public class NewSpecimenBizLogic extends CatissueDefaultBizLogic {
 				krishagni.catissueplus.dto.SpecimenDTO specimenDTO = new krishagni.catissueplus.dto.SpecimenDTO();
 				specimenDTO.setParentSpecimenId(specimen.getParentSpecimen().getId());
 				specimenDTO.setType(specimen.getSpecimenType());
-
-				formRecSvc.saveDerivativeEvent(specimenDTO, sessionDataBean);
+				if(Constants.ALIQUOT.equals(specimen.getLineage())){
+					formRecSvc.saveAliquotEvent(specimenDTO, 1, sessionDataBean);
+				}else{
+					formRecSvc.saveDerivativeEvent(specimenDTO, sessionDataBean);
+				}
+				
 			}
 
 			if (specimen.getSpecimenPosition() != null) {
@@ -2390,9 +2395,23 @@ public class NewSpecimenBizLogic extends CatissueDefaultBizLogic {
 				if(Validator.isEmpty(specimen.getQuality())){
 					specimen.setQuality(Constants.SPECIMEN_QUALITY_GOOD);
 				}
-				else if(!Constants.SPECIMEN_QUALITY_GOOD.equals(specimen.getQuality()) && !Constants.SPECIMEN_QUALITY_POOR.equals(specimen.getQuality())){
+				List<NameValueBean> dnaQualityList = CDEManager.getCDEManager().getPermissibleValueList(
+	          "DNA Quality", null);
+				dnaQualityList.remove(0);
+				boolean qualityMatch = false;
+				for (NameValueBean quality : dnaQualityList) {
+					qualityMatch = quality.getValue().equals(specimen.getQuality());
+					if(qualityMatch){
+						break;
+					}
+				}
+				if(!qualityMatch){
 					throw this.getBizLogicException(null, "errors.item", "Invalid quality.");
 				}
+				
+//				else if(!Constants.SPECIMEN_QUALITY_GOOD.equals(specimen.getQuality()) && !Constants.SPECIMEN_QUALITY_POOR.equals(specimen.getQuality())){
+//					throw this.getBizLogicException(null, "errors.item", "Invalid quality.");
+//				}
 				
 				final Long scgId = specimen.getSpecimenCollectionGroup().getId();
 				final CollectionProtocol collectionProtocol = new CollectionProtocol();

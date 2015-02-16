@@ -3247,7 +3247,7 @@ public class SpecimenCollectionGroupBizLogic extends CatissueDefaultBizLogic
 			startDate.setMinutes(0);
 			startDate.setSeconds(0);
 			Date endDate = scg.getCollectionTimestamp();
-			endDate.setHours(20);
+			endDate.setHours(23);
 			endDate.setMinutes(59);
 			endDate.setSeconds(59);
    

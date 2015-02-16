@@ -10,6 +10,7 @@ import edu.wustl.catissuecore.util.global.Constants;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.exception.ErrorKey;
+import edu.wustl.common.util.global.Validator;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.dao.HibernateDAO;
 import edu.wustl.dao.exception.DAOException;
@@ -46,7 +47,11 @@ public class DeriveBizLogic
 		specimenDTO.setType(derivedDTO.getType());
 		specimenDTO.setSpecimenCollectionGroupId(derivedDTO.getSpecimenCollGroupId());
 		specimenDTO.setDna260(derivedDTO.getDna260());
-		specimenDTO.setDnaMethod(derivedDTO.getDnaMethod());
+		if(Validator.isEmpty(derivedDTO.getDnaMethod())){
+			specimenDTO.setDnaMethod(Constants.NOT_SPECIFIED);
+		}else {
+			specimenDTO.setDnaMethod(derivedDTO.getDnaMethod());
+		}
 		return specimenDTO;
 	}
 

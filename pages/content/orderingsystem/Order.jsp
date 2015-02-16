@@ -278,13 +278,13 @@ function switchToOlderView()
 						distributionProtocolNameCombo = dhtmlXComboFromSelect("distributionProtocolName");
 						distributionProtocolNameCombo.setSize(330);
 						distributionProtocolNameCombo.enableFilteringMode(true);
-						if(distributionProtocolNameCombo.getOptionByLabel('${requestScope.DisplayOrderDTO.distributionProtocolName}')==null)
+						if(distributionProtocolNameCombo.getOptionByLabel("${requestScope.DisplayOrderDTO.distributionProtocolName}")==null)
 						{
 						  distributionProtocolNameCombo.setComboValue("-1");		
 						}
 						else
 						{
-						 distributionProtocolNameCombo.setComboValue(distributionProtocolNameCombo.getOptionByLabel('${requestScope.DisplayOrderDTO.distributionProtocolName}').value);
+						 distributionProtocolNameCombo.setComboValue(distributionProtocolNameCombo.getOptionByLabel("${requestScope.DisplayOrderDTO.distributionProtocolName}").value);
 						}
     					</script>
 					<td width="10%" class="black_ar align_right_style"></td>						
@@ -306,13 +306,13 @@ function switchToOlderView()
 								  user_combo.setSize(330);
 								  user_combo.enableFilteringMode(true);
 								  
- 							  	  if(user_combo.getOptionByLabel('${requestScope.DisplayOrderDTO.requestorName}')==null)
+ 							  	  if(user_combo.getOptionByLabel("${requestScope.DisplayOrderDTO.requestorName}")==null)
 								  {
  							  		user_combo.setComboValue("-1");		
 								  }
 								  else
 								  {
-									  user_combo.setComboValue(user_combo.getOptionByLabel('${requestScope.DisplayOrderDTO.requestorName}').value);
+									  user_combo.setComboValue(user_combo.getOptionByLabel("${requestScope.DisplayOrderDTO.requestorName}").value);
 								  }
     					</script>					
               </tr>
@@ -337,13 +337,13 @@ function switchToOlderView()
 								  site_combo = new dhtmlXComboFromSelect("siteName");
 								  site_combo.setSize(330);
 								  site_combo.enableFilteringMode(true);
- 							  	  if(site_combo.getOptionByLabel('${requestScope.DisplayOrderDTO.siteName}')==null)
+ 							  	  if(site_combo.getOptionByLabel("${requestScope.DisplayOrderDTO.siteName}")==null)
 								  {
  							  		site_combo.setComboValue("-1");		
 								  }
 								  else
 								  {
-									  site_combo.setComboValue(site_combo.getOptionByLabel('${requestScope.DisplayOrderDTO.siteName}').value);
+									  site_combo.setComboValue(site_combo.getOptionByLabel("${requestScope.DisplayOrderDTO.siteName}").value);
 								  }
     					</script>	
 		<td width="10%" class="black_ar align_right_style"></td>

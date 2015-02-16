@@ -107,7 +107,7 @@ String confirmDisableFuncName = "confirmDisable('" + formName +"',document.forms
             document.getElementById("receivedEventDateOfEvent").value=newReceivedDate;
          }
          var adhocSelect = false;
-         var cpSelect = true;
+         var cpSelect = false;
     
     </script>
     <div style="width:100%">
@@ -424,19 +424,14 @@ String confirmDisableFuncName = "confirmDisable('" + formName +"',document.forms
                   <div id="myinnercontainer">
                     &nbsp;
                              
-                     <input type="radio" value="1" id="multipleChk" name="specimenChild" onclick="disableButtonsOnCheck(this)" checked="true" style="vertical-align:middle;"/>
-                                <span style="display:inline-block; vertical-align:middle;font-family: verdana;font-size: 11px;">
-                                <bean:message key="label.collect.perCP"/>
-                                </span>
-                                </span>
-                                <span style="margin-left:30px;">
+                     
                         <input type="radio" value="2" id="multipleChk" name="specimenChild" onclick="disableButtonsOnCheck(this)" style="vertical-align:middle;"/>
                                 <span style="display:inline-block; vertical-align:middle;font-family: verdana;font-size: 11px;">
                                 <bean:message key="label.adhocSpecimen"/>
                         </span></span>
                         &nbsp;<input type="text" class="black_ar countTxt" maxlength="3" size="1" id="numberOfSpecimens" name="numberOfSpecimens" readonly="true" onblur="isNumeric(this)"/>   <span style="margin-left:30px;">  
                             
-                        <input type="radio" value="3" id="multipleChk" name="specimenChild" onclick="disableButtonsOnCheck(this)" style="vertical-align:middle;"/>
+                        <input type="radio" value="3" id="multipleChk" name="specimenChild" onclick="disableButtonsOnCheck(this)" checked="true" style="vertical-align:middle;"/>
                                 <span style="display:inline-block; vertical-align:middle;font-family: verdana;font-size: 11px;">
                                 <bean:message key="label.justSubmit"/>
                                 </span>
