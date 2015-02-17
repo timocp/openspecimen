@@ -61,6 +61,7 @@ public class CollectionProtocol extends SpecimenProtocol
 	 */
 	private static final long serialVersionUID = 1234567890L;
 
+	protected Long id;
 	/**
 	 * Patch Id : Collection_Event_Protocol_Order_3 (Changed From HashSet to
 	 * LinkedHashSet) Description : To get the specimen requirement in order
@@ -69,6 +70,16 @@ public class CollectionProtocol extends SpecimenProtocol
 	 * Collection of studies associated with the CollectionProtocol.
 	 */
 	protected Collection distributionProtocolCollection = new LinkedHashSet();
+
+	
+	public Long getId() {
+		return id;
+	}
+
+	
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	/**
 	 * Collection of users associated with the CollectionProtocol.

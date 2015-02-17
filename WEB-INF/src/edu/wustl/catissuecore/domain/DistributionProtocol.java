@@ -53,6 +53,8 @@ public class DistributionProtocol extends SpecimenProtocol
 	 * Serial Version ID.
 	 */
 	private static final long serialVersionUID = 1234567890L;
+	
+	protected Long id;
 
 	/**
 	 * Collection of specimenRequirements associated with the DistributionProtocol.
@@ -496,6 +498,16 @@ public class DistributionProtocol extends SpecimenProtocol
 	public void setActivityStatus(String activityStatus)
 	{
 		this.activityStatus = activityStatus;
+	}
+
+	
+	public Long getId() {
+		return id;
+	}
+
+	
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 

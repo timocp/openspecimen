@@ -41,7 +41,6 @@ public abstract class SpecimenProtocol extends AbstractDomainObject implements j
 	/**
 	 * System generated unique id.
 	 */
-	protected Long id = null;
 
 	//Change for API Search   --- Ashwin 04/10/2006
 	
@@ -93,19 +92,13 @@ public abstract class SpecimenProtocol extends AbstractDomainObject implements j
 	 * @return Returns the id.
 	 */
 	@Override
-	public Long getId()
-	{
-		return this.id;
-	}
+	public abstract Long getId();
 
 	/**
 	 * @param identifier The id to set.
 	 */
 	@Override
-	public void setId(Long identifier)
-	{
-		this.id = identifier;
-	}
+	public abstract void setId(Long identifier);
 
 	/**
 	 * Returns the principal investigator of the protocol.

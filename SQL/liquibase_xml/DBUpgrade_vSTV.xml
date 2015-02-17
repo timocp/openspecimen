@@ -54,18 +54,18 @@
     <sql>alter table CATISSUE_SPECIMEN add VENESECTION_TIME TIMESTAMP DEFAULT NULL</sql>
   </changeSet>
   
-  <changeSet id="adding unique constraint for LAB_NUMBER" author="nitesh" dbms="mysql">
+  <!-- <changeSet id="adding unique constraint for LAB_NUMBER" author="nitesh" dbms="mysql">
         <sql>ALTER TABLE CATISSUE_SPECIMEN ADD CONSTRAINT idx_specimen_lab_nmbr UNIQUE (LAB_NUMBER(255))</sql>
-     </changeSet>
+     </changeSet> -->
      
-    <changeSet id="adding unique constraint for LAB_NUMBER" author="nitesh" dbms="oracle">
+    <!-- <changeSet id="adding unique constraint for LAB_NUMBER" author="nitesh" dbms="oracle">
         <createIndex 
                 indexName="idx_specimen_lab_nmbr"
                 tableName="CATISSUE_SPECIMEN"
                 unique="true">
             <column name="LAB_NUMBER" type="varchar(255)"/>
         </createIndex>
-    </changeSet>
+    </changeSet> -->
 	
   <changeSet id="3" author="catissue" failOnError="false"  dbms="oracle" >
     <sql>INSERT INTO CATISSUE_CDE VALUES ( 'Dna_Method','DNA Method','DNA Method',1.0,null)</sql>

@@ -2,7 +2,9 @@
 package com.krishagni.catissueplus.core.administrative.services.impl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import krishagni.catissueplus.util.CommonUtil;
 
@@ -26,6 +28,8 @@ import com.krishagni.catissueplus.core.biospecimen.repository.DaoFactory;
 import com.krishagni.catissueplus.core.common.PlusTransactional;
 import com.krishagni.catissueplus.core.common.errors.ObjectCreationException;
 import com.krishagni.catissueplus.core.common.util.Status;
+
+import edu.wustl.security.privilege.PrivilegeManager;
 
 public class SiteServiceImpl implements SiteService {
 
@@ -86,6 +90,18 @@ public class SiteServiceImpl implements SiteService {
 			exceptionHandler.checkErrorAndThrow();
 
 			daoFactory.getSiteDao().saveOrUpdate(site);
+			edu.wustl.catissuecore.domain.Site oldSite = new edu.wustl.catissuecore.domain.Site();
+			oldSite.setActivityStatus(site.getActivityStatus());
+			oldSite.setEmailAddress(site.getEmailAddress());
+			oldSite.setId(site.getId());
+			oldSite.setType(site.getType());
+			oldSite.setName(site.getName());
+			final Set protectionObjects = new HashSet();
+			protectionObjects.add(oldSite);
+
+			final PrivilegeManager privilegeManager = PrivilegeManager.getInstance();
+
+			privilegeManager.insertAuthorizationData(null, protectionObjects, null, oldSite.getObjectId());
 			return SiteCreatedEvent.ok(SiteDetails.fromDomain(site));
 		}
 		catch (ObjectCreationException ex) {
