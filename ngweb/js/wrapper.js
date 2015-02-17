@@ -152,6 +152,12 @@ var Select2Search = function(element, opts) {
       },
       initSelection: function(element, callback) {
         that.initSelectionFn(element,callback);
+      },
+      formatResult: function(item) {
+        return '<span title="' + item.text + '">' + item.text + '</span>';
+      },
+      formatSelection: function(item) {
+        return '<span title="' + item.text + '">' + item.text + '</span>';
       }
     });
 
