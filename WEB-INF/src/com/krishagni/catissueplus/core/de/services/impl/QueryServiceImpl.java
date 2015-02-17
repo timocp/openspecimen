@@ -972,7 +972,12 @@ public class QueryServiceImpl implements QueryService {
 			nameList.append("\"").append(site.getName()).append("\", ");
 		}
 		
-		nameList.delete(nameList.length() - 2, nameList.length());
+		if (nameList.length() > 0) {
+			nameList.delete(nameList.length() - 2, nameList.length());
+		} else {
+			nameList.append("\"\"");
+		}
+		
 		return mrnSite + " in (" + nameList.toString() + ")";		
 	}
 	
