@@ -27,7 +27,9 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import com.krishagni.catissueplus.core.administrative.domain.Site;
 import com.krishagni.catissueplus.core.administrative.domain.User;
+import com.krishagni.catissueplus.core.administrative.repository.SiteDao;
 import com.krishagni.catissueplus.core.administrative.repository.UserDao;
 import com.krishagni.catissueplus.core.common.PlusTransactional;
 import com.krishagni.catissueplus.core.common.email.EmailHandler;
@@ -108,6 +110,8 @@ public class QueryServiceImpl implements QueryService {
 	private static final String cpForm = "CollectionProtocol";
 
 	private static final String cprForm = "Participant";
+	
+	private static final String mrnSite = cprForm + ".medicalRecord.mrnSiteName"; 
 
 	private static final String dateFormat = CommonServiceLocator.getInstance().getDatePattern();
 
@@ -124,6 +128,8 @@ public class QueryServiceImpl implements QueryService {
 	private DaoFactory daoFactory;
 
 	private UserDao userDao;
+	
+	private SiteDao siteDao;
 	
 	private QueryFolderFactory queryFolderFactory;
 	
@@ -149,6 +155,14 @@ public class QueryServiceImpl implements QueryService {
 		this.userDao = userDao;
 	}
 	
+
+	public SiteDao getSiteDao() {
+		return siteDao;
+	}
+
+	public void setSiteDao(SiteDao siteDao) {
+		this.siteDao = siteDao;
+	}
 
 	public QueryFolderFactory getQueryFolderFactory() {
 		return queryFolderFactory;
@@ -898,9 +912,16 @@ public class QueryServiceImpl implements QueryService {
 				throw new IllegalAccessError("User does not have access to any CP");
 			}
 			
+			List<Long> siteIds = privilegeSvc.getSiteList(sdb.getUserId(), PrivilegeType.READ.value());
+			if (siteIds == null || siteIds.isEmpty()) {
+				throw new IllegalAccessError("User does not have access to any site");
+			}
+			
+			String siteRestriction = getSiteRestriction(siteIds);
+			
 			if (cpId != null && cpId != -1) {
 				if (cpIds.contains(cpId)) {
-					return cpForm + ".id = " + cpId; 
+					return cpForm + ".id = " + cpId + " and " + siteRestriction; 
 				}
 				
 				throw new IllegalAccessError("Access to cp is not permitted: " + cpId);
@@ -919,7 +940,7 @@ public class QueryServiceImpl implements QueryService {
 					startIdx = endIdx;
 				}
 				
-				return "(" + StringUtils.join(restrictions, " or ") + ")";
+				return "(" + StringUtils.join(restrictions, " or ") + ") and " + siteRestriction;
 			}
 		}
 		
@@ -941,6 +962,18 @@ public class QueryServiceImpl implements QueryService {
 			String afterSelect = aql.trim().substring(6);
 			return adjustCrossTabColIndices("select " + cpForm + ".id, " + afterSelect);
 		}
+	}
+	
+	private String getSiteRestriction(List<Long> siteIds) {
+		List<Site> sites = siteDao.getSites(siteIds);
+		
+		StringBuilder nameList = new StringBuilder();
+		for (Site site : sites) {
+			nameList.append("\"").append(site.getName()).append("\", ");
+		}
+		
+		nameList.delete(nameList.length() - 2, nameList.length());
+		return mrnSite + " in (" + nameList.toString() + ")";		
 	}
 	
 	

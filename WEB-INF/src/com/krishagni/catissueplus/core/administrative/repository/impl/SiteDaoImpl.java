@@ -60,4 +60,12 @@ public class SiteDaoImpl extends AbstractDao<Site> implements SiteDao {
 
 		return query.list();
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Site> getSites(List<Long> siteIds) {
+		return sessionFactory.getCurrentSession().createCriteria(Site.class)
+				.add(Restrictions.in("id", siteIds))
+				.list();
+	}
 }

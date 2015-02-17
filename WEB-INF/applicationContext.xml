@@ -242,6 +242,10 @@
     <property name="sessionFactory" value="#{sessionFactoryBuilder.getSessionFactory()}"/>
   </bean>
   
+  <bean id="siteDao" class="com.krishagni.catissueplus.core.administrative.repository.impl.SiteDaoImpl">
+    <property name="sessionFactory" value="#{sessionFactoryBuilder.getSessionFactory()}"/>
+  </bean>
+  
   <bean id="queryFolderFactory" class="com.krishagni.catissueplus.core.de.domain.factory.impl.QueryFolderFactoryImpl">
     <property name="daoFactory" ref="deDaoFactory"/>
     <property name="userDao" ref="userDao"/>
@@ -250,6 +254,7 @@
   <bean id="querySvc" class="com.krishagni.catissueplus.core.de.services.impl.QueryServiceImpl">
     <property name="daoFactory" ref="deDaoFactory"/>
     <property name="userDao" ref="userDao"/>
+    <property name="siteDao" ref="siteDao"/>
     <property name="queryFolderFactory" ref="queryFolderFactory"/>
     <property name="privilegeSvc" ref="privSvc"/>
   </bean>
