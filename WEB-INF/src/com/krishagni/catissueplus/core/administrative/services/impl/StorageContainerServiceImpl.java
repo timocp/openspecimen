@@ -4,6 +4,7 @@ package com.krishagni.catissueplus.core.administrative.services.impl;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -266,7 +267,7 @@ public class StorageContainerServiceImpl implements StorageContainerService {
 		Specimen specimen = position.getSpecimen();
 		
 		Integer posXInt = fromLabelingScheme(container.getOneDimensionLabellingScheme(), posX);
-		Integer posYInt = fromLabelingScheme(container.getOneDimensionLabellingScheme(), posY);
+		Integer posYInt = fromLabelingScheme(container.getTwoDimensionLabellingScheme(), posY);
 		if (!isAvailable(container, specimen, posXInt, posYInt)) {
 			oce.addError(StorageContainerErrorCode.NO_FREE_POSITION, "posX/posY");
 			return;
@@ -457,7 +458,7 @@ public class StorageContainerServiceImpl implements StorageContainerService {
 	}
 	
 	private class RomanConverter implements Converter {
-		private final Map<String, Integer> romanLiterals = new HashMap<String, Integer>() {
+		private final Map<String, Integer> romanLiterals = new LinkedHashMap<String, Integer>() {
 			private static final long serialVersionUID = 932703127289106288L;
 
 			{
