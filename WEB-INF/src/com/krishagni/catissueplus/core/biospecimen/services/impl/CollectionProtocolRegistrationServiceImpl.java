@@ -112,8 +112,8 @@ public class CollectionProtocolRegistrationServiceImpl implements CollectionProt
 			validateBarcode(oldCpr.getBarcode(), cpr.getBarcode(), errorHandler);
 			errorHandler.checkErrorAndThrow();
 			oldCpr.update(cpr);
-			daoFactory.getCprDao().saveOrUpdate(cpr);
-			return RegistrationUpdatedEvent.ok(CollectionProtocolRegistrationDetail.fromDomain(cpr));
+			daoFactory.getCprDao().saveOrUpdate(oldCpr);
+			return RegistrationUpdatedEvent.ok(CollectionProtocolRegistrationDetail.fromDomain(oldCpr));
 		}
 		catch (ObjectCreationException ce) {
 			return RegistrationUpdatedEvent.invalidRequest(ParticipantErrorCode.ERRORS.message(), ce.getErroneousFields());

@@ -178,6 +178,7 @@ public class CollectionProtocolRegistration {
 		setConsentWitness(cpr.getConsentWitness());
 		setBarcode(cpr.getBarcode());
 		setconsents(cpr.getConsentResponseCollection());
+		this.getParticipant().update(cpr.getParticipant());
 	}
 
 	private void setconsents(Set<ConsentTierResponse> consentResponseCollection) {

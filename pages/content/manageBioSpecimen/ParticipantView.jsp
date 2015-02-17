@@ -70,7 +70,7 @@
                 <b>Last Contact Date</b>
 			</td>
             <td class="black_ar" width="20%"> 
-                      <fmt:formatDate value="${participantDto.dethOfDate}" pattern="${datePattern}" />
+                      <fmt:formatDate value="${participantDto.dob}" pattern="${datePattern}" />
 			</td>
        </tr>
 	   
