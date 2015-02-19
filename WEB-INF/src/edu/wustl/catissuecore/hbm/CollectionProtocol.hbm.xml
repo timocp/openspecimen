@@ -418,7 +418,7 @@
         <set
             name="labelSQLAssociationCollection"
             table="LABELSQLASSOC"
-            lazy="false"
+            lazy="true"
             inverse="false"
             cascade="all"
             order-by="SEQ_ORDER"
