@@ -42,7 +42,7 @@
 				<name>deathDate</name>
 				<udn>deathDate</udn>
 				<caption>Last Contact Date</caption>
-				<column>DEATH_DATE</column>
+				<column>BIRTH_DATE</column>
 				<format>MM-dd-yyyy</format>
 				<phi>true</phi>
 			</datePicker>
@@ -54,9 +54,7 @@
 				<caption>DNA Quality</caption>
 				<column>DNA_QUALITY</column>
 				<options>
-					<option><value>Poor</value></option>
-					<option><value>Good</value></option>
-					<option><value>Unknown</value></option>
+					<sql>select value from catissue_permissible_value where public_id='Dna_Quality'</sql>
 				</options>
 			</dropDown>
 		</row>
@@ -159,6 +157,29 @@
 					</dropDown>
 				</row>
 				
+			</subForm>
+		</row>
+		<row>
+			<subForm>
+				<name>consentTier</name>
+				<udn>consentTier</udn>
+				<caption>Consent Tier</caption>
+				<table>CONSENT_TIER_VIEW</table>
+				<foreignKey>CPR_ID</foreignKey>
+				<parentKey>CPR_ID</parentKey>
+				<row>
+					<dropDown>
+						<name>consentResponseStatement</name>
+						<udn>consentResponseStatement</udn>
+						<caption>Consent To Use Blood</caption>
+						<column>RESPONSE</column>
+						<options>
+							<option><value>Yes</value></option>
+							<option><value>No</value></option>
+							<option><value>Not Specified</value></option>
+						</options>
+					</dropDown>
+				</row>
 			</subForm>
 		</row>
 		<row>
