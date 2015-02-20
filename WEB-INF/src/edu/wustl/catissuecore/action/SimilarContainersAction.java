@@ -263,7 +263,8 @@ public class SimilarContainersAction extends SecureAction
 					if (!containerIdList.isEmpty())
 					{
 						similarContainersForm.setParentContainerId(((Long) containerIdList.get(0))
-								.longValue());
+								.longValue()); 
+						parentContId = String.valueOf(similarContainersForm.getParentContainerId());
 
 						if (similarContainersForm.getPos1() == null
 								|| similarContainersForm.getPos1().equals("")
@@ -323,7 +324,7 @@ public class SimilarContainersAction extends SecureAction
 				{
 					parentContId = "" + similarContainersForm.getParentContainerId();
 				}
-				if (parentContId != null)
+				if (parentContId != null && !parentContId.equals("0"))
 				{
 					final Object containerObject = dao.retrieveById(StorageContainer.class
 							.getName(), new Long(parentContId));
@@ -352,10 +353,11 @@ public class SimilarContainersAction extends SecureAction
 				similarContainersForm.setSelectedContainerName(null);
 			}
 			final StorageContainerForContainerBizLogic scBiz = new StorageContainerForContainerBizLogic();
-			final TreeMap containerMap = scBiz.getAllocatedContainerMapForContainer(new Long(
-					request.getParameter("typeId")).longValue(), 
-					sessionDataBean, dao, 
-					"Auto",similarContainersForm.getSelectedContainerName());
+			final TreeMap containerMap = new TreeMap();
+//			scBiz.getAllocatedContainerMapForContainer(new Long(
+//					request.getParameter("typeId")).longValue(), 
+//					sessionDataBean, dao, 
+//					"Auto",similarContainersForm.getSelectedContainerName());
 			request.setAttribute(Constants.AVAILABLE_CONTAINER_MAP, containerMap);
 			request.setAttribute(Constants.EXCEEDS_MAX_LIMIT, exceedingMaxLimit);
 			// request.setAttribute("siteForParentList", siteList1);
@@ -409,8 +411,8 @@ public class SimilarContainersAction extends SecureAction
 						Vector initialValues = null;
 						try
 						{
-							initialValues = this.getInitalValues(startingPoints, containerMap,
-									noOfContainers);
+//							initialValues = this.getInitalValues(startingPoints, containerMap,
+//									noOfContainers);
 						}
 						catch (final Exception e)
 						{
@@ -431,24 +433,24 @@ public class SimilarContainersAction extends SecureAction
 						request.setAttribute("initValues", initialValues);
 					}
 
-					if (!Constants.SITE.equals(selectedParentContainer)
-							&& !(this.checkAvailability(containerMap, noOfContainers)))
-					{
-						ActionErrors errors = (ActionErrors) request
-								.getAttribute(Globals.ERROR_KEY);
-						if (errors == null)
-						{
-							errors = new ActionErrors();
-						}
-						System.out.println("errors " + errors + ", ActionErrors.GLOBAL_ERROR "
-								+ ActionErrors.GLOBAL_ERROR + ", new ActionError"
-								+ "(\"errors.storageContainer.overflow\") "
-								+ new ActionError("errors.storageContainer.overflow"));
-						errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
-								"errors.storageContainer.overflow"));
-						pageOf = Constants.PAGE_OF_STORAGE_CONTAINER;
-						this.saveErrors(request, errors);
-					}
+//					if (!Constants.SITE.equals(selectedParentContainer)
+//							&& !(this.checkAvailability(containerMap, noOfContainers)))
+//					{
+//						ActionErrors errors = (ActionErrors) request
+//								.getAttribute(Globals.ERROR_KEY);
+//						if (errors == null)
+//						{
+//							errors = new ActionErrors();
+//						}
+//						System.out.println("errors " + errors + ", ActionErrors.GLOBAL_ERROR "
+//								+ ActionErrors.GLOBAL_ERROR + ", new ActionError"
+//								+ "(\"errors.storageContainer.overflow\") "
+//								+ new ActionError("errors.storageContainer.overflow"));
+//						errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
+//								"errors.storageContainer.overflow"));
+//						pageOf = Constants.PAGE_OF_STORAGE_CONTAINER;
+//						this.saveErrors(request, errors);
+//					}
 				}
 				for (int i = 1; i <= noOfContainers; i++)
 				{
