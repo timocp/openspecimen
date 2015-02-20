@@ -6,27 +6,23 @@ import java.util.Properties;
 
 import edu.common.dynamicextensions.domain.nui.AbstractLookupControl;
 
-public class StorageContainerControl extends AbstractLookupControl {
+public class SiteControl extends AbstractLookupControl {
+
 	private static final long serialVersionUID = 1L;
 	
-	private static final String LU_TABLE = "CATISSUE_CONTAINER";
+	private static final String LU_TABLE = "CATISSUE_SITE";
 	
 	private static final Properties LU_PV_SOURCE_PROPS = initPvSourceProps();
 	
+
 	@Override
 	public void getProps(Map<String, Object> props) {
-		props.put("type", "storageContainer");
-		props.put("apiUrl", "rest/ng/storage-containers");
+		props.put("type", "siteField");
 		props.put("dataType", getDataType());
 	}
 	
 	public void serializeToXml(Writer writer, Properties props) {
-		super.serializeToXml("storageContainer", writer, props);
-	}
-
-	@Override
-	public String getTableName() {		
-		return LU_TABLE;
+		super.serializeToXml("siteField", writer, props);
 	}
 
 	@Override
@@ -35,13 +31,19 @@ public class StorageContainerControl extends AbstractLookupControl {
 	}
 
 	@Override
+	public String getTableName() {
+		return LU_TABLE;
+	}
+
+	@Override
 	public String getAltKeyColumn() {
 		return getValueColumn();
 	}
+
 	
 	private static Properties initPvSourceProps() {
 		Properties props = new Properties();
-		props.put("apiUrl", "rest/ng/storage-containers");
+		props.put("apiUrl", "rest/ng/sites/");
 		props.put("searchTermName", "name");
 		props.put("resultFormat", "{{name}}");
 		return props;
