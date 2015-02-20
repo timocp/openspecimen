@@ -96,7 +96,10 @@ public class StorageContainerServiceImpl implements StorageContainerService {
 		
 		try {	
 			Specimen specimen = daoFactory.getStorageContainerDao().getSpecimen(input.getSpecimenId());
-			
+			if (specimen.getSpecimenPosition() != null) {
+				return SpecimenPositionAllocatedEvent.from(updateSpecimenPosition(req));				
+			}
+
 			//
 			// create new position
 			//

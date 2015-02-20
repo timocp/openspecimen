@@ -34,6 +34,12 @@ public class SiteControl extends AbstractLookupControl {
 	public String getTableName() {
 		return LU_TABLE;
 	}
+
+	@Override
+	public String getAltKeyColumn() {
+		return getValueColumn();
+	}
+
 	
 	private static Properties initPvSourceProps() {
 		Properties props = new Properties();

@@ -39,6 +39,11 @@ public class DistributionProtocolControl extends AbstractLookupControl {
 	public String getValueColumn() {
 		return LU_VALUE_COLUMN;
 	}
+
+	@Override
+	public String getAltKeyColumn() {		
+		return getValueColumn();
+	}
 	
 	private static Properties initPvSourceProps() {
 		Properties props = new Properties();
@@ -47,5 +52,4 @@ public class DistributionProtocolControl extends AbstractLookupControl {
 		props.put("resultFormat", "{{shortTitle}}");
 		return props;
 	}
-
 }
