@@ -41,142 +41,41 @@ public abstract class SpecimenProtocol extends AbstractDomainObject implements j
 	/**
 	 * System generated unique id.
 	 */
-	protected Long id = null;
 
 	//Change for API Search   --- Ashwin 04/10/2006
-	/**
-	 * The current principal investigator of the protocol.
-	 */
-	protected User principalInvestigator;
-
-	/**
-	 * Full title assigned to the protocol.
-	 */
-	protected String title;
-
-	/**
-	 * Abbreviated title assigned to the protocol.
-	 */
-	protected String shortTitle;
-
-	/**
-	 * IRB approval number.
-	 */
-	protected String irbIdentifier;
-
-	/**
-	 * Date on which the protocol is activated.
-	 */
-	protected Date startDate;
-
-	/**
-	 * Date on which the protocol is marked as closed.
-	 */
-	protected Date endDate;
-
-	/**
-	 * Number of anticipated cases need for the protocol.
-	 */
-	protected Integer enrollment;
-
-	/**
-	 * URL to the document that describes detailed information for the biospecimen protocol.
-	 */
-	protected String descriptionURL;
-
-	/**
-	 * Defines whether this SpecimenProtocol record can be queried (Active) or not
-	 * queried (Inactive) by any actor.
-	 */
-	protected String activityStatus;
-
-
-	/**
-	 * Label format for specimens associated with this CP.
-	 */
-	protected String specimenLabelFormat;
-
-	protected String derivativeLabelFormat;
-
-	protected String aliquotLabelFormat;
-	
-	/*
-	 * Label format for participant protocol id
-	 * */
-	protected String ppidFormat;
 	
 	/*
 	 * Return participant protocol id format 
 	 * @return participant protocol id format 
 	 * */
-	public String getPpidFormat() {
-		return ppidFormat;
-	}
+	public abstract String getPpidFormat();
 
 
 	/**
 	 * Set participant protocol id format
 	 * @param participant protocol id format 
 	 */
-	public void setPpidFormat(String ppidFormat) {
-		this.ppidFormat = ppidFormat;
-	}
-
-
+	public abstract void setPpidFormat(String ppidFormat);
 
 	/**
 	 * Return the label format
 	 * @return the label format
 	 */
-	public String getSpecimenLabelFormat()
-	{
-		return specimenLabelFormat;
-	}
-
-
+	public abstract String getSpecimenLabelFormat();
 
 	/**
 	 * Set the label format
 	 * @param labelFormat
 	 */
-	public void setSpecimenLabelFormat(String labelFormat)
-	{
-		this.specimenLabelFormat = labelFormat;
-	}
+	public abstract void setSpecimenLabelFormat(String labelFormat);
 
+	public abstract String getDerivativeLabelFormat();
 
+	public abstract void setDerivativeLabelFormat(String derivativeLabelFormat);
 
-	public String getDerivativeLabelFormat()
-	{
-		return derivativeLabelFormat;
-	}
+	public abstract String getAliquotLabelFormat();
 
-
-
-
-	public void setDerivativeLabelFormat(String derivativeLabelFormat)
-	{
-		this.derivativeLabelFormat = derivativeLabelFormat;
-	}
-
-
-
-
-	public String getAliquotLabelFormat()
-	{
-		return aliquotLabelFormat;
-	}
-
-
-
-
-	public void setAliquotLabelFormat(String aliquotLabelFormat)
-	{
-		this.aliquotLabelFormat = aliquotLabelFormat;
-	}
-
-
-
+	public abstract void setAliquotLabelFormat(String aliquotLabelFormat);
 
 	/**
 	 * Default Constructor.
@@ -193,19 +92,13 @@ public abstract class SpecimenProtocol extends AbstractDomainObject implements j
 	 * @return Returns the id.
 	 */
 	@Override
-	public Long getId()
-	{
-		return this.id;
-	}
+	public abstract Long getId();
 
 	/**
 	 * @param identifier The id to set.
 	 */
 	@Override
-	public void setId(Long identifier)
-	{
-		this.id = identifier;
-	}
+	public abstract void setId(Long identifier);
 
 	/**
 	 * Returns the principal investigator of the protocol.
@@ -214,36 +107,24 @@ public abstract class SpecimenProtocol extends AbstractDomainObject implements j
 	 * @return the principal investigator of the protocol.
 	 * @see #setPrincipalInvestigator(User)
 	 */
-	public User getPrincipalInvestigator()
-	{
-		return this.principalInvestigator;
-	}
+	public abstract User getPrincipalInvestigator();
 
 	/**
 	 * @param principalInvestigator The principalInvestigator to set.
 	 */
-	public void setPrincipalInvestigator(User principalInvestigator)
-	{
-		this.principalInvestigator = principalInvestigator;
-	}
+	public abstract void setPrincipalInvestigator(User principalInvestigator);
 
 	/**
 	 * Returns the title of the protocol.
 	 * @hibernate.property name="title" type="string" column="TITLE" length="255" not-null="true" unique="true"
 	 * @return Returns the title.
 	 */
-	public String getTitle()
-	{
-		return this.title;
-	}
+	public abstract String getTitle();
 
 	/**
 	 * @param title The title to set.
 	 */
-	public void setTitle(String title)
-	{
-		this.title = title;
-	}
+	public abstract void setTitle(String title);
 
 	/**
 	 * Returns the short title of the protocol.
@@ -251,126 +132,84 @@ public abstract class SpecimenProtocol extends AbstractDomainObject implements j
 	 * length="255"
 	 * @return Returns the shortTitle.
 	 */
-	public String getShortTitle()
-	{
-		return this.shortTitle;
-	}
+	public abstract String getShortTitle();
 
 	/**
 	 * @param shortTitle The shortTitle to set.
 	 */
-	public void setShortTitle(String shortTitle)
-	{
-		this.shortTitle = shortTitle;
-	}
+	public abstract void setShortTitle(String shortTitle);
 
 	/**
 	 * Returns the irb id of the protocol.
 	 * @hibernate.property name="irbIdentifier" type="string" column="IRB_IDENTIFIER" length="255"
 	 * @return Returns the irbIdentifier.
 	 */
-	public String getIrbIdentifier()
-	{
-		return this.irbIdentifier;
-	}
+	public abstract String getIrbIdentifier();
 
 	/**
 	 * @param irbIdentifier The irbIdentifier to set.
 	 */
-	public void setIrbIdentifier(String irbIdentifier)
-	{
-		this.irbIdentifier = irbIdentifier;
-	}
+	public abstract void setIrbIdentifier(String irbIdentifier);
 
 	/**
 	 * Returns the startdate of the protocol.
 	 * @hibernate.property name="startDate" type="date" column="START_DATE" length="50"
 	 * @return Returns the startDate.
 	 */
-	public Date getStartDate()
-	{
-		return this.startDate;
-	}
+	public abstract Date getStartDate();
 
 	/**
 	 * @param startDate The startDate to set.
 	 */
-	public void setStartDate(Date startDate)
-	{
-		this.startDate = startDate;
-	}
+	public abstract void setStartDate(Date startDate);
 
 	/**
 	 * Returns the enddate of the protocol.
 	 * @hibernate.property name="endDate" type="date" column="END_DATE" length="50"
 	 * @return Returns the endDate.
 	 */
-	public Date getEndDate()
-	{
-		return this.endDate;
-	}
+	public abstract Date getEndDate();
 
 	/**
 	 * @param endDate The endDate to set.
 	 */
-	public void setEndDate(Date endDate)
-	{
-		this.endDate = endDate;
-	}
+	public abstract void setEndDate(Date endDate);
 
 	/**
 	 * Returns the enrollment.
 	 * @hibernate.property name="enrollment" type="int" column="ENROLLMENT" length="50"
 	 * @return Returns the enrollment.
 	 */
-	public Integer getEnrollment()
-	{
-		return this.enrollment;
-	}
+	public abstract Integer getEnrollment();
 
 	/**
 	 * @param enrollment The enrollment to set.
 	 */
-	public void setEnrollment(Integer enrollment)
-	{
-		this.enrollment = enrollment;
-	}
+	public abstract void setEnrollment(Integer enrollment);
 
 	/**
 	 * Returns the descriptionURL.
 	 * @hibernate.property name="descriptionURL" type="string" column="DESCRIPTION_URL" length="255"
 	 * @return Returns the descriptionURL.
 	 */
-	public String getDescriptionURL()
-	{
-		return this.descriptionURL;
-	}
+	public abstract String getDescriptionURL();
 
 	/**
 	 * @param descriptionURL The descriptionURL to set.
 	 */
-	public void setDescriptionURL(String descriptionURL)
-	{
-		this.descriptionURL = descriptionURL;
-	}
+	public abstract void setDescriptionURL(String descriptionURL);
 
 	/**
 	 * Returns the activityStatus.
 	 * @hibernate.property name="activityStatus" type="string" column="ACTIVITY_STATUS" length="50"
 	 * @return Returns the activityStatus.
 	 */
-	public String getActivityStatus()
-	{
-		return this.activityStatus;
-	}
+	public abstract String getActivityStatus();
 
 	/**
 	 * @param activityStatus The activityStatus to set.
 	 */
-	public void setActivityStatus(String activityStatus)
-	{
-		this.activityStatus = activityStatus;
-	}
+	public abstract void setActivityStatus(String activityStatus);
 
 	/**
 	 * Set All Values in Form.
@@ -381,44 +220,5 @@ public abstract class SpecimenProtocol extends AbstractDomainObject implements j
 	public void setAllValues(IValueObject abstractForm) throws AssignDataException
 	{
 		logger.debug("SpecimenProtocol: setAllValues ");
-		try
-		{
-			//Change for API Search   --- Ashwin 04/10/2006
-			if (SearchUtil.isNullobject(this.principalInvestigator))
-			{
-				this.principalInvestigator = new User();
-			}
-
-			final SpecimenProtocolForm spForm = (SpecimenProtocolForm) abstractForm;
-
-			this.title = spForm.getTitle();
-			this.shortTitle = spForm.getShortTitle();
-			this.irbIdentifier = spForm.getIrbID();
-//			this.generateLabel=spForm.isGenerateLabel();
-			this.specimenLabelFormat= spForm.getSpecimenLabelFormat();
-			this.startDate = CommonUtilities.parseDate(spForm.getStartDate(), CommonUtilities
-					.datePattern(spForm.getStartDate()));
-			this.endDate = CommonUtilities.parseDate(spForm.getEndDate(), CommonUtilities
-					.datePattern(spForm.getEndDate()));
-
-			if (spForm.getEnrollment() != null && spForm.getEnrollment().trim().length() > 0)
-			{
-				this.enrollment = Integer.valueOf(spForm.getEnrollment());
-			}
-
-			this.descriptionURL = spForm.getDescriptionURL();
-			this.activityStatus = spForm.getActivityStatus();
-
-			this.principalInvestigator = new User();
-			this.principalInvestigator.setId(Long.valueOf(spForm.getPrincipalInvestigatorId()));
-			this.setPpidFormat(spForm.getPpidFormat());
-		}
-		catch (final Exception excp)
-		{
-			SpecimenProtocol.logger.error(excp.getMessage(), excp);
-			excp.printStackTrace();
-			final ErrorKey errorKey = ErrorKey.getErrorKey("assign.data.error");
-			throw new AssignDataException(errorKey, null, "SpecimenProtocol.java :");
-		}
 	}
 }

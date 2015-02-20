@@ -3664,10 +3664,10 @@ public class NewSpecimenBizLogic extends CatissueDefaultBizLogic
 	 *
 	 * @return set
 	 */
-	private Set<AbstractDomainObject> populateDeriveSpecimenEventCollection(
+	private Set<SpecimenEventParameters> populateDeriveSpecimenEventCollection(
 			Specimen parentSpecimen, Specimen deriveSpecimen)
 	{
-		final Set<AbstractDomainObject> deriveEventCollection = new HashSet<AbstractDomainObject>();
+		final Set<SpecimenEventParameters> deriveEventCollection = new HashSet<SpecimenEventParameters>();
 		final Set<SpecimenEventParameters> parentSpecimeneventCollection = (Set<SpecimenEventParameters>) parentSpecimen
 				.getSpecimenEventCollection();
 		SpecimenEventParameters deriveSpecimenEventParameters = null;

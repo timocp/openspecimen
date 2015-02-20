@@ -57,6 +57,29 @@ public class SpecimenCollectionGroup extends AbstractSpecimenCollectionGroup
 
 	private static final String ACTIVITY_STATUS_ACTIVE = "Active";
 	private static final String COLLECTION_STATUS_PENDING = "Pending";
+	
+	protected Long id;
+	/**
+	 * Participant's clinical diagnosis at
+	 * this collection event (e.g. Prostate Adenocarcinoma).
+	 */
+	protected String clinicalDiagnosis;
+	/**
+	 * The clinical status of the participant at the time of specimen collection.
+	 * (e.g. New DX, pre-RX, pre-OP, post-OP, remission, relapse)
+	 */
+	protected String clinicalStatus;
+	/**
+	 * Defines whether this  record can be queried (Active)
+	 * or not queried (Inactive) by any actor.
+	 */
+	protected String activityStatus;
+	/**
+	 * A physical location associated with biospecimen collection,
+	 * storage, processing, or utilization.
+	 */
+	protected Site specimenCollectionSite;
+
 	/**
 	 * name assigned to Specimen Collection Group.
 	 */
@@ -643,6 +666,11 @@ public class SpecimenCollectionGroup extends AbstractSpecimenCollectionGroup
 		final SpecimenCollectionGroupForm form = (SpecimenCollectionGroupForm) abstractForm;
 		try
 		{
+			this.setClinicalDiagnosis(form.getClinicalDiagnosis());
+			this.setClinicalStatus(form.getClinicalStatus());
+			this.setActivityStatus(form.getActivityStatus());
+			this.specimenCollectionSite = new Site();
+			this.specimenCollectionSite.setId(Long.valueOf(form.getSiteId()));
 			this.setName(form.getName());
 			this.barcode = form.getBarcode();
 			if (Constants.TRUE.equals(form.getRestrictSCGCheckbox()))
@@ -1111,4 +1139,55 @@ public class SpecimenCollectionGroup extends AbstractSpecimenCollectionGroup
 	{
 		this.setCollectionStatus(COLLECTION_STATUS_PENDING);
 	}
+
+	
+	public Long getId() {
+		return id;
+	}
+
+	
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	
+	public String getClinicalDiagnosis() {
+		return clinicalDiagnosis;
+	}
+
+	
+	public void setClinicalDiagnosis(String clinicalDiagnosis) {
+		this.clinicalDiagnosis = clinicalDiagnosis;
+	}
+
+	
+	public String getClinicalStatus() {
+		return clinicalStatus;
+	}
+
+	
+	public void setClinicalStatus(String clinicalStatus) {
+		this.clinicalStatus = clinicalStatus;
+	}
+
+	
+	public String getActivityStatus() {
+		return activityStatus;
+	}
+
+	
+	public void setActivityStatus(String activityStatus) {
+		this.activityStatus = activityStatus;
+	}
+
+	
+	public Site getSpecimenCollectionSite() {
+		return specimenCollectionSite;
+	}
+
+	
+	public void setSpecimenCollectionSite(Site specimenCollectionSite) {
+		this.specimenCollectionSite = specimenCollectionSite;
+	}
+	
 }

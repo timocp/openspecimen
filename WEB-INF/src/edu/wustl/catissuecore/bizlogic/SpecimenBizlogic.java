@@ -471,10 +471,10 @@ public class SpecimenBizlogic
 	 * @return set
 	 * @throws CloneNotSupportedException 
 	 */
-	private Set<AbstractDomainObject> populateDeriveSpecimenEventCollection(
+	private Set<SpecimenEventParameters> populateDeriveSpecimenEventCollection(
 			Specimen parentSpecimen, Specimen deriveSpecimen) throws CloneNotSupportedException
 	{
-		final Set<AbstractDomainObject> deriveEventCollection = new HashSet<AbstractDomainObject>();
+		final Set<SpecimenEventParameters> deriveEventCollection = new HashSet<SpecimenEventParameters>();
 		final Set<SpecimenEventParameters> parentSpecimeneventCollection = (Set<SpecimenEventParameters>) parentSpecimen
 				.getSpecimenEventCollection();
 		SpecimenEventParameters deriveSpecimenEventParameters = null;

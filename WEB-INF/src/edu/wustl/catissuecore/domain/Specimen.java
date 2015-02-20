@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -58,6 +59,57 @@ public class Specimen extends AbstractSpecimen implements Serializable, IActivit
 	 * logger Logger - Generic logger.
 	 */
 	private static Logger logger = Logger.getCommonLogger(Specimen.class);
+
+	/**
+	 * System generated identifier.
+	 */
+	protected Long id;
+	/**
+	 * parentSpecimen from which this specimen is derived.
+	 */
+	protected AbstractSpecimen parentSpecimen;
+	/**
+	 * Collection of childSpecimenCollection derived from this specimen.
+	 */
+	protected Collection<AbstractSpecimen> childSpecimenCollection = new LinkedHashSet<AbstractSpecimen>();
+
+	/**
+	 * The anatomical site from which a specimen is derived.
+	 */
+	protected String tissueSite;
+
+	/**
+	 * For bilateral sites, left or right.
+	 */
+	protected String tissueSide;
+
+	/**
+	 * Collection of Specimen Event Parameters associated with this specimen.
+	 */
+	protected Collection<SpecimenEventParameters> specimenEventCollection = new HashSet<SpecimenEventParameters>();
+	/**
+	 * pathologicalStatus - Histoathological character of specimen.
+	 * e.g. Non-Malignant, Malignant, Non-Malignant Diseased, Pre-Malignant.
+	 */
+	protected String pathologicalStatus;
+	/**
+	 * lineage - A historical information about the specimen i.e. whether the specimen is a new specimen
+	 * or a derived specimen or an aliquot
+	 */
+	protected String lineage;
+
+	/**
+	 * initialQuantity - The quantity of a specimen.
+	 */
+	protected Double initialQuantity;
+	/**
+	 * specimenClass - Tissue, Molecular,Fluid and Cell.
+	 */
+	protected String specimenClass;
+	/**
+	 * specimenType - Type of specimen. e.g. Serum, Plasma, Blood, Fresh Tissue etc.
+	 */
+	protected String specimenType;
 
 	/**
 	 * specimenPosition.
@@ -166,7 +218,16 @@ public class Specimen extends AbstractSpecimen implements Serializable, IActivit
 	 */
 	private String applyChangesTo = Constants.APPLY_NONE;
 
+	protected Double concentrationInMicrogramPerMicroliter; 
 	
+	public Double getConcentrationInMicrogramPerMicroliter() {
+		return concentrationInMicrogramPerMicroliter;
+	}
+
+	public void setConcentrationInMicrogramPerMicroliter(
+			Double concentrationInMicrogramPerMicroliter) {
+		this.concentrationInMicrogramPerMicroliter = concentrationInMicrogramPerMicroliter;
+	}
 
 	//protected Collection<SpecimenRecordEntry> specimenRecordEntryCollection = new HashSet<SpecimenRecordEntry>();
 
@@ -1320,6 +1381,77 @@ public class Specimen extends AbstractSpecimen implements Serializable, IActivit
 //	{
 //		this.specimenRecordEntryCollection = specimenRecordEntryCollection;
 //	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public AbstractSpecimen getParentSpecimen() {
+		return parentSpecimen;
+	}
+
+	public void setParentSpecimen(AbstractSpecimen parentSpecimen) {
+		this.parentSpecimen = parentSpecimen;
+	}
+
+	public Collection<AbstractSpecimen> getChildSpecimenCollection() {
+		return childSpecimenCollection;
+	}
+
+	public void setChildSpecimenCollection(Collection<AbstractSpecimen> childSpecimenCollection) {
+		this.childSpecimenCollection = childSpecimenCollection;
+	}
+
+	public String getTissueSite() {
+		return tissueSite;
+	}
+
+	public void setTissueSite(String tissueSite) {
+		this.tissueSite = tissueSite;
+	}
+
+	public String getTissueSide() {
+		return tissueSide;
+	}
+
+	public void setTissueSide(String tissueSide) {
+		this.tissueSide = tissueSide;
+	}
+
+	public Collection<SpecimenEventParameters> getSpecimenEventCollection() {
+		return specimenEventCollection;
+	}
+
+	public void setSpecimenEventCollection(Collection<SpecimenEventParameters> specimenEventCollection) {
+		this.specimenEventCollection = specimenEventCollection;
+	}
+	
+	public String getClassName() {
+		return specimenClass;
+	}
+	
+	public String getSpecimenClass() {
+		return specimenClass;
+	}
+
+	
+	public void setSpecimenClass(String specimenClass) {
+		this.specimenClass = specimenClass;
+	}
+
+	
+	public String getSpecimenType() {
+		return specimenType;
+	}
+
+	
+	public void setSpecimenType(String specimenType) {
+		this.specimenType = specimenType;
+	}
 
 	//bug no. 7690
 	/**

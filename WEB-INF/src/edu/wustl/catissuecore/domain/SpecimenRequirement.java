@@ -4,6 +4,8 @@ package edu.wustl.catissuecore.domain;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import edu.wustl.common.util.global.Validator;
@@ -18,6 +20,61 @@ public class SpecimenRequirement extends AbstractSpecimen
 	 * Serial Version ID.
 	 */
 	private static final long serialVersionUID = -34444448799655L;
+
+	
+	/**
+	 * System generated identifier.
+	 */
+	protected Long id;
+	/**
+	 * parentSpecimen from which this specimen is derived.
+	 */
+	protected AbstractSpecimen parentSpecimen;
+	/**
+	 * Collection of childSpecimenCollection derived from this specimen.
+	 */
+	protected Collection<AbstractSpecimen> childSpecimenCollection = new LinkedHashSet<AbstractSpecimen>();
+
+	/**
+	 * The anatomical site from which a specimen is derived.
+	 */
+	protected String tissueSite;
+
+	/**
+	 * For bilateral sites, left or right.
+	 */
+	protected String tissueSide;
+
+	/**
+	 * Collection of Specimen Event Parameters associated with this specimen.
+	 */
+	protected Collection<SpecimenEventParameters> specimenEventCollection = new HashSet<SpecimenEventParameters>();
+	/**
+	 * pathologicalStatus - Histoathological character of specimen.
+	 * e.g. Non-Malignant, Malignant, Non-Malignant Diseased, Pre-Malignant.
+	 */
+	protected String pathologicalStatus;
+	/**
+	 * lineage - A historical information about the specimen i.e. whether the specimen is a new specimen
+	 * or a derived specimen or an aliquot
+	 */
+	protected String lineage;
+	/**
+	 * label - A label name of this specimen.
+	 */
+	protected String label;
+	/**
+	 * initialQuantity - The quantity of a specimen.
+	 */
+	protected Double initialQuantity;
+	/**
+	 * specimenClass - Tissue, Molecular,Fluid and Cell.
+	 */
+	protected String specimenClass;
+	/**
+	 * specimenType - Type of specimen. e.g. Serum, Plasma, Blood, Fresh Tissue etc.
+	 */
+	protected String specimenType;
 
 	private Date collectionTimestamp;
 
@@ -74,6 +131,16 @@ public class SpecimenRequirement extends AbstractSpecimen
 	 */
 	private String activityStatus;
 
+	protected Double concentrationInMicrogramPerMicroliter; 
+	public Double getConcentrationInMicrogramPerMicroliter() {
+		return concentrationInMicrogramPerMicroliter;
+	}
+
+	public void setConcentrationInMicrogramPerMicroliter(
+			Double concentrationInMicrogramPerMicroliter) {
+		this.concentrationInMicrogramPerMicroliter = concentrationInMicrogramPerMicroliter;
+	}
+	
 	public Date getCollectionTimestamp()
 	{
 		return collectionTimestamp;
@@ -266,7 +333,99 @@ public class SpecimenRequirement extends AbstractSpecimen
 	{
 		this.activityStatus = activityStatus;
 	}
+	
+	public Long getId() {
+		return id;
+	}
 
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public AbstractSpecimen getParentSpecimen() {
+		return parentSpecimen;
+	}
+
+	public void setParentSpecimen(AbstractSpecimen parentSpecimen) {
+		this.parentSpecimen = parentSpecimen;
+	}
+
+	public Collection<AbstractSpecimen> getChildSpecimenCollection() {
+		return childSpecimenCollection;
+	}
+
+	public void setChildSpecimenCollection(Collection<AbstractSpecimen> childSpecimenCollection) {
+		this.childSpecimenCollection = childSpecimenCollection;
+	}
+
+	public String getTissueSite() {
+		return tissueSite;
+	}
+
+	public void setTissueSite(String tissueSite) {
+		this.tissueSite = tissueSite;
+	}
+
+	public String getTissueSide() {
+		return tissueSide;
+	}
+
+	public void setTissueSide(String tissueSide) {
+		this.tissueSide = tissueSide;
+	}
+
+	public String getPathologicalStatus() {
+		return pathologicalStatus;
+	}
+
+	public void setPathologicalStatus(String pathologicalStatus) {
+		this.pathologicalStatus = pathologicalStatus;
+	}
+
+	public String getLineage() {
+		return lineage;
+	}
+	
+	public void setLineage(String lineage) {
+		this.lineage = lineage;
+	}
+
+	public String getLabel() {
+		return label;
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
+	}
+
+	public Double getInitialQuantity() {
+		return initialQuantity;
+	}
+
+	public void setInitialQuantity(Double initialQuantity) {
+		this.initialQuantity = initialQuantity;
+	}
+
+	public String getSpecimenClass() {
+		return specimenClass;
+	}
+	
+	public String getClassName() {
+		return specimenClass;
+	}
+	
+	public void setSpecimenClass(String specimenClass) {
+		this.specimenClass = specimenClass;
+	}
+	
+	public String getSpecimenType() {
+		return specimenType;
+	}
+	
+	public void setSpecimenType(String specimenType) {
+		this.specimenType = specimenType;
+	}
+	
 	@Override
 	public Collection<SpecimenEventParameters> getSpecimenEventCollection()
 	{
@@ -302,7 +461,7 @@ public class SpecimenRequirement extends AbstractSpecimen
 	 * @see #getSpecimenEventCollection()
 	 */
 	@Override
-	public void setSpecimenEventCollection(final Collection specimenEventCollection)
+	public void setSpecimenEventCollection(final Collection<SpecimenEventParameters> specimenEventCollection)
 	{
 		for (Object event : specimenEventCollection)
 		{

@@ -13,6 +13,8 @@ package edu.wustl.catissuecore.domain;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 
+import edu.wustl.catissuecore.actionForm.SpecimenCollectionGroupForm;
+import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.actionForm.IValueObject;
 import edu.wustl.common.exception.AssignDataException;
 import edu.wustl.common.exception.BizLogicException;
@@ -34,6 +36,26 @@ public class CollectionProtocolEvent extends AbstractSpecimenCollectionGroup
 	 */
 	private static final long serialVersionUID = 1234567890L;
 
+	/**
+	 * Participant's clinical diagnosis at
+	 * this collection event (e.g. Prostate Adenocarcinoma).
+	 */
+	protected String clinicalDiagnosis;
+	/**
+	 * The clinical status of the participant at the time of specimen collection.
+	 * (e.g. New DX, pre-RX, pre-OP, post-OP, remission, relapse)
+	 */
+	protected String clinicalStatus;
+	/**
+	 * Defines whether this  record can be queried (Active)
+	 * or not queried (Inactive) by any actor.
+	 */
+	protected String activityStatus;
+	/**
+	 * A physical location associated with biospecimen collection,
+	 * storage, processing, or utilization.
+	 */
+	protected Site specimenCollectionSite;
 	/**
 	 * System generated unique id.
 	 */
@@ -165,7 +187,13 @@ public class CollectionProtocolEvent extends AbstractSpecimenCollectionGroup
 	@Override
 	public void setAllValues(IValueObject abstractForm) throws AssignDataException
 	{
-		//
+		final AbstractActionForm aForm = (AbstractActionForm) abstractForm;
+		final SpecimenCollectionGroupForm form = (SpecimenCollectionGroupForm) abstractForm;
+		this.setClinicalDiagnosis(form.getClinicalDiagnosis());
+		this.setClinicalStatus(form.getClinicalStatus());
+		this.setActivityStatus(form.getActivityStatus());
+		this.specimenCollectionSite = new Site();
+		this.specimenCollectionSite.setId(Long.valueOf(form.getSiteId()));
 	}
 
 	/**
@@ -324,6 +352,48 @@ public class CollectionProtocolEvent extends AbstractSpecimenCollectionGroup
 	{
 		return ACTIVITY_STATUS_ACTIVE.equals(this.getActivityStatus());
 	}
+
+	
+	public String getClinicalDiagnosis() {
+		return clinicalDiagnosis;
+	}
+
+	
+	public void setClinicalDiagnosis(String clinicalDiagnosis) {
+		this.clinicalDiagnosis = clinicalDiagnosis;
+	}
+
+	
+	public String getClinicalStatus() {
+		return clinicalStatus;
+	}
+
+	
+	public void setClinicalStatus(String clinicalStatus) {
+		this.clinicalStatus = clinicalStatus;
+	}
+
+	
+	public String getActivityStatus() {
+		return activityStatus;
+	}
+
+	
+	public void setActivityStatus(String activityStatus) {
+		this.activityStatus = activityStatus;
+	}
+
+	
+	public Site getSpecimenCollectionSite() {
+		return specimenCollectionSite;
+	}
+
+	
+	public void setSpecimenCollectionSite(Site specimenCollectionSite) {
+		this.specimenCollectionSite = specimenCollectionSite;
+	}
+	
+	
 	
 
 }
