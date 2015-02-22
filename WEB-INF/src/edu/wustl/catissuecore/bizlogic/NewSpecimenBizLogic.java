@@ -483,7 +483,7 @@ public class NewSpecimenBizLogic extends CatissueDefaultBizLogic {
 		this.insertChildSpecimens(specimen, dao, sessionDataBean, pos1, pos2);
 		if ((Constants.DERIVED_SPECIMEN.equals(specimen.getLineage()) || Constants.ALIQUOT.equals(specimen.getLineage())) && 
 				Constants.COLLECTION_STATUS_COLLECTED.equals(specimen.getCollectionStatus())) {
-			specimen.setThawCycle(1l);
+			specimen.setThawCycle(((Specimen)specimen.getParentSpecimen()).getThawCycle()+1);
 		}
 	}
 
