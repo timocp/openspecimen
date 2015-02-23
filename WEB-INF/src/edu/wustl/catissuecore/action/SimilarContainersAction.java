@@ -45,6 +45,7 @@ import edu.wustl.common.bizlogic.IBizLogic;
 import edu.wustl.common.factory.AbstractFactoryConfig;
 import edu.wustl.common.factory.IFactory;
 import edu.wustl.common.util.global.ApplicationProperties;
+import edu.wustl.common.util.global.Validator;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.dao.DAO;
 import edu.wustl.dao.QueryWhereClause;
@@ -254,7 +255,7 @@ public class SimilarContainersAction extends SecureAction
 					final String joinCondition = null;
 					final QueryWhereClause queryWhereClause = new QueryWhereClause(sourceObjectName);
 					queryWhereClause.addCondition(new EqualClause("name", containerName));
-					dao.retrieve(sourceObjectName, selectColumnName, queryWhereClause);
+//					dao.retrieve(sourceObjectName, selectColumnName, queryWhereClause);
 
 					final List containerIdList = bizLogic.retrieve(sourceObjectName,
 							selectColumnName, whereColumnName, whereColumnCondition,
@@ -483,6 +484,21 @@ public class SimilarContainersAction extends SecureAction
 								+ "_siteId", new Long(siteId).toString());
 						similarContainersForm.setSimilarContainerMapValue("simCont:" + i
 								+ "_siteName", maxSiteName.toString());
+					}
+					if("Manual".equals(selectedParentContainer)){
+						String exitContName = (String)similarContainersForm.getSimilarContainerMapValue("simCont:" + i + "_StorageContainer_name_fromMap");
+						if(Validator.isEmpty(exitContName)){
+							similarContainersForm.setSimilarContainerMapValue("simCont:" + i
+									+ "_StorageContainer_name_fromMap", similarContainersForm.getSelectedContainerName());
+							similarContainersForm.setSimilarContainerMapValue("simCont:" + i
+									+ "_StorageContainer_id_fromMap", similarContainersForm.getParentContainerId());
+							if(i==1){
+								similarContainersForm.setSimilarContainerMapValue("simCont:" + i
+										+ "_positionDimensionOne_fromMap", similarContainersForm.getPos1());
+								similarContainersForm.setSimilarContainerMapValue("simCont:" + i
+										+ "_positionDimensionTwo_fromMap", similarContainersForm.getPos2());
+							}
+						}
 					}
 
 				}
