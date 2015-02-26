@@ -424,7 +424,7 @@ angular.module('plus.cpview', [])
   	  $scope.selectedSubCpId=data.scgId;
 	  var participantId = $scope.selectedParticipant.id.split(',')[0];
 	  
-      var url = "CPQuerySubCollectionProtocolRegistration.do?pageOf=pageOfCollectionProtocolRegistrationCPQuery&refresh=false&operation=add&cpSearchParticipantId="+participantId+"&cpSearchCpId="+data.scgId+"&participantId="+participantId+"&clickedNodeId="+data.id+"&regDate=&parentCPId="+$scope.selectedCp.id;
+      var url = "CPQuerySubCollectionProtocolRegistration.do?pageOf=pageOfCollectionProtocolRegistrationCPQuery&refresh=false&operation=add&cpSearchParticipantId="+participantId+"&cpSearchCpId="+data.scgId+"&participantId="+participantId+"&regDate=&parentCPId="+$scope.selectedCp.id;
 	  
 		
       $('#cpFrameNew').attr('src',url);
