@@ -225,10 +225,14 @@ angular.module('plus.cpview', [])
   $scope.handleSubCPScenario = function(displayNode) {//alert('here for status update');
   $scope.$apply(function(){
     $scope.selectedNode.collectionStatus=$scope.getStatusIcon(displayNode.collectionStatus,displayNode.cpType);
-	$scope.selectedNode.nodes=[];
+	
 	$scope.selectedNode.state='closed';
 	if($scope.selectedNode.type == 'childCP'){
 		$scope.selectedNode.regId=displayNode.id;
+		$scope.selectedNode.nodes=[];
+	}
+	if($scope.selectedNode.type == 'scg'){
+		$scope.selectedNode.nodes=[];
 	}
 	$scope.selectedNode.childrenProbed='';
 	if($scope.selectedNode.type == 'specimen' && displayNode.name){
