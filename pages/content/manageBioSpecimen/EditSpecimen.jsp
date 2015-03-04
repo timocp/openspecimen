@@ -312,9 +312,12 @@ req.onreadystatechange = function() {
         function closeTermWindow(){
             aliquotNameSpace.dhxWins.window("containerPositionPopUp").close();
         }
+		function updateSpecimenNode(){
+			parent.handleCpViewForSubCP('${specimenDTO.id}','${specimenDTO.collectionStatus}','${specimenDTO.label}','');
+		}
 </script>
 <!----------------------------------------------------------------------->
-<body onload="init();"> 
+<body onload="LoadSCGTabBar('${requestScope.operation}');updateSpecimenNode();"> 
 <html:form action="NewSpecimenEdit.do">
 
 <html:hidden name="specimenDTO" property="generateLabel"/>

@@ -303,9 +303,9 @@ public class AppUtility
 	{
 		final List<NameValueBean> storagePositionTypeList = new ArrayList<NameValueBean>();
 
-		storagePositionTypeList.add(new NameValueBean(
-				Constants.STORAGE_TYPE_POSITION_AUTO,
-				Constants.STORAGE_TYPE_POSITION_AUTO_VALUE_FOR_TRANSFER_EVENT));
+//		storagePositionTypeList.add(new NameValueBean(
+//				Constants.STORAGE_TYPE_POSITION_AUTO,
+//				Constants.STORAGE_TYPE_POSITION_AUTO_VALUE_FOR_TRANSFER_EVENT));
 		storagePositionTypeList
 				.add(new NameValueBean(
 						Constants.STORAGE_TYPE_POSITION_MANUAL,
@@ -2211,10 +2211,10 @@ public class AppUtility
 
 		storagePositionTypeList.add(new NameValueBean(Constants.SITE,
 				Constants.SITE));
-		storagePositionTypeList.add(new NameValueBean(
-				Constants.CDE_NAME_CONTAINER + " ("
-						+ Constants.STORAGE_TYPE_POSITION_AUTO + ")",
-				Constants.STORAGE_TYPE_POSITION_AUTO));
+//		storagePositionTypeList.add(new NameValueBean(
+//				Constants.CDE_NAME_CONTAINER + " ("
+//						+ Constants.STORAGE_TYPE_POSITION_AUTO + ")",
+//				Constants.STORAGE_TYPE_POSITION_AUTO));
 		storagePositionTypeList.add(new NameValueBean(
 				Constants.CDE_NAME_CONTAINER + " ("
 						+ Constants.STORAGE_TYPE_POSITION_MANUAL + ")",
