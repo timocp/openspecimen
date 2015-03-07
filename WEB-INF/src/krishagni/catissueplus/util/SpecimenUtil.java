@@ -147,12 +147,13 @@ public class SpecimenUtil
 	{
 		final DisposalEventParameters disposalEvent = new DisposalEventParameters();
 		disposalEvent.setSpecimen(specimen);
+		disposalEvent.setActivityStatus(Constants.ACTIVITY_STATUS_CLOSED);
 		disposalEvent.setReason(disposalReason);
 		disposalEvent.setTimestamp(new Date(System.currentTimeMillis()));
 		final User user = new User();
 		user.setId(sessionDataBean.getUserId());
 		disposalEvent.setUser(user);
-		disposalEvent.setActivityStatus(specimen.getActivityStatus());
+//		disposalEvent.setActivityStatus(specimen.getActivityStatus());
 		return disposalEvent;
 	}
 	

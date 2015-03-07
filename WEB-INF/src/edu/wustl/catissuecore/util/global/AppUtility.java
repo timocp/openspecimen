@@ -3111,22 +3111,27 @@ public class AppUtility
 			throws BizLogicException
 	{
 		boolean isAuthorized = false;
-		final String protectionElementNames[] = protectionElementName
-				.split("_");
-
-		final Long cpId = Long.valueOf(protectionElementNames[1]);
-		final Set<Long> cpIdSet = new UserBizLogic().getRelatedCPIds(
-				sessionDataBean.getUserId(), false);
-
-		if (cpIdSet.contains(cpId))
-		{
-			// bug 11611 and 11659
-			throw AppUtility.getUserNotAuthorizedException(privilegeName,
-					protectionElementName);
+		try{
+			
+			final String protectionElementNames[] = protectionElementName
+					.split("_");
+	
+			final Long cpId = Long.valueOf(protectionElementNames[1]);
+			final Set<Long> cpIdSet = new UserBizLogic().getRelatedCPIds(
+					sessionDataBean.getUserId(), false);
+	
+			if (cpIdSet.contains(cpId))
+			{
+				// bug 11611 and 11659
+				throw AppUtility.getUserNotAuthorizedException(privilegeName,
+						protectionElementName);
+			}
+			isAuthorized = edu.wustl.catissuecore.util.global.AppUtility
+					.checkForAllCurrentAndFutureCPs(privilegeName, sessionDataBean,
+							protectionElementNames[1]);
+		}catch(Exception e){
+			logger.error(e);
 		}
-		isAuthorized = edu.wustl.catissuecore.util.global.AppUtility
-				.checkForAllCurrentAndFutureCPs(privilegeName, sessionDataBean,
-						protectionElementNames[1]);
 		return isAuthorized;
 	}
 
@@ -4991,4 +4996,5 @@ public class AppUtility
 		allPrivleges.add(new NameValueBean("Registration", 18));
 		return allPrivleges;
 	}
+  
 }

@@ -3,6 +3,7 @@ package edu.wustl.catissuecore.domain;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Date;
 import java.util.LinkedHashSet;
 
 import edu.wustl.common.actionForm.IValueObject;
@@ -40,6 +41,16 @@ public class Aliquot extends AbstractDomainObject implements Serializable
 	 * aliquotsInSameContainer.
 	 */
 	private Boolean aliquotsInSameContainer = true;
+	
+	private Date createdOn;
+	
+	public Date getCreatedOn() {
+		return createdOn;
+	}
+	
+	public void setCreatedOn(Date createdOn) {
+		this.createdOn = createdOn;
+	}
 	/**
 	 * Get Count.
 	 * @return Integer Integer.

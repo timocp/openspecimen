@@ -186,6 +186,7 @@ public class AliquotBizLogic extends CatissueDefaultBizLogic
 			specimen.setSpecimenType(parentSpecimen.getSpecimenType());
 			specimen.setInitialQuantity(aliquot.getQuantityPerAliquot());
 			specimen.setAvailableQuantity(aliquot.getQuantityPerAliquot());
+			specimen.setCreatedOn(aliquot.getCreatedOn());
 			specimen.setCollectionStatus(Constants.COLLECTION_STATUS_COLLECTED);
 			specimen.setIsAvailable(Boolean.TRUE);
 //			if (!edu.wustl.catissuecore.util.global.Variables.isSpecimenLabelGeneratorAvl)

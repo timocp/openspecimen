@@ -2810,8 +2810,8 @@ public class NewSpecimenBizLogic extends CatissueDefaultBizLogic {
 		 * .getValue("specimen.available.operation")); } }
 		 */
 		if (operation.equals(Constants.ADD)) {
-			if ((specimen.getIsAvailable() == null)
-					|| (!specimen.getIsAvailable().booleanValue() && !"Pending".equals(specimen.getCollectionStatus()))) {
+			if ((specimen.getIsAvailable() == null)){
+//					|| (!specimen.getIsAvailable().booleanValue() && !"Pending".equals(specimen.getCollectionStatus()))) {
 				throw this.getBizLogicException(null, "specimen.available.errMsg", "");
 			}
 

@@ -1121,7 +1121,7 @@ public class SpecimenBizLogic {
 		final SpecimenPosition prevPosition = specimen.getSpecimenPosition();
 		specimen.setSpecimenPosition(null);
 		specimen.setIsAvailable(Boolean.FALSE);
-//		specimen.setActivityStatus(disposalEventParameters.getActivityStatus());
+		specimen.setActivityStatus(disposalEventParameters.getActivityStatus());
 		hibernateDao.update(specimen);
 		if (prevPosition != null) {
 			hibernateDao.delete(prevPosition);
