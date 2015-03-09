@@ -102,6 +102,7 @@ public class AliquotBizLogic extends CatissueDefaultBizLogic
 				boolean flag = newSpecimenBizLogic.validate(specimen, dao, Constants.ADD);
 				if (flag)
 				{
+					sessionDataBean.setIpAddress("fromAliquot");
 					newSpecimenBizLogic.insert(specimen, dao, sessionDataBean);
 				}
 			}

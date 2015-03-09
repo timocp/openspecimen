@@ -194,7 +194,7 @@ public class NewSpecimenBizLogic extends CatissueDefaultBizLogic {
 			checkLabel(specimen);
 			dao.insert(specimen);
 			
-			if (Constants.DERIVED_SPECIMEN.equals(specimen.getLineage()) || Constants.ALIQUOT.equals(specimen.getLineage())) {
+			if (Constants.DERIVED_SPECIMEN.equals(specimen.getLineage()) || (Constants.ALIQUOT.equals(specimen.getLineage()) && !"fromAliquot".equals(sessionDataBean.getIpAddress()))) {
 				updateParentSpecimen(dao,specimen.getParentSpecimen());
 				ApplicationContext applicationContext = OpenSpecimenAppCtxProvider.getAppCtx();
 				FormRecordSaveServiceImpl formRecSvc = (FormRecordSaveServiceImpl) applicationContext.getBean("formRecordSvc");
@@ -202,9 +202,9 @@ public class NewSpecimenBizLogic extends CatissueDefaultBizLogic {
 				krishagni.catissueplus.dto.SpecimenDTO specimenDTO = new krishagni.catissueplus.dto.SpecimenDTO();
 				specimenDTO.setParentSpecimenId(specimen.getParentSpecimen().getId());
 				specimenDTO.setType(specimen.getSpecimenType());
-				if(Constants.ALIQUOT.equals(specimen.getLineage())){
+				if(Constants.ALIQUOT.equals(specimen.getLineage()) && !"fromAliquot".equals(sessionDataBean.getIpAddress())){
 					formRecSvc.saveAliquotEvent(specimenDTO, 1, sessionDataBean);
-				}else{
+				}else if(Constants.DERIVED_SPECIMEN.equals(specimen.getLineage())){
 					formRecSvc.saveDerivativeEvent(specimenDTO, sessionDataBean);
 				}
 				
