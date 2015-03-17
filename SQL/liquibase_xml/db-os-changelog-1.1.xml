@@ -212,4 +212,10 @@
       splitStatements="true"
       stripComments="true"/>
   </changeSet>
+
+  <changeSet author="marwahan" id="dropNotNullConstraint from csm_migrate_user" failOnError="false">
+    <dropNotNullConstraint columnDataType="${text.type}" columnName="MIGRATION_STATUS" tableName="csm_migrate_user"/>
+  </changeSet>
+
+  
 </databaseChangeLog>
