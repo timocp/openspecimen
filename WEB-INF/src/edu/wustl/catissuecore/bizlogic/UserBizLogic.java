@@ -128,6 +128,7 @@ public class UserBizLogic extends CatissueDefaultBizLogic
 	/** The Constant USER_EMAIL_ADDRESS. */
 	private static final String USER_EMAIL_ADDRESS = "user.emailAddress";
 
+	private static final String USER_LOGIN_NAME = "user.loginName";
 	/** The Constant ERRORS_ITEM_REQUIRED. */
 	private static final String ERRORS_ITEM_REQUIRED = "errors.item.required";
 
@@ -1781,6 +1782,12 @@ public class UserBizLogic extends CatissueDefaultBizLogic
 		String message = "";
 		final boolean validate = true;
 
+		if (validator.isEmpty(user.getLoginName()))
+		{
+			message = ApplicationProperties.getValue(USER_LOGIN_NAME);
+			throw getBizLogicException(null, ERRORS_ITEM_REQUIRED, message);
+		}
+		
 		if (validator.isEmpty(user.getEmailAddress()))
 		{
 			message = ApplicationProperties.getValue(USER_EMAIL_ADDRESS);
@@ -1809,6 +1816,17 @@ public class UserBizLogic extends CatissueDefaultBizLogic
 				LOGGER.debug("Unique Constraint Violated: " + errMsg);
 				throw getBizLogicException(null, "Err.ConstraintViolation", "User :"
 						+ ApplicationProperties.getValue(USER_EMAIL_ADDRESS));
+			}
+			
+			if (!(isUniqueLoginName(user.getLoginName(), user.getId(), dao, operation)))
+			{
+				String arguments[] = null;
+				arguments = new String[] { "User", ApplicationProperties.getValue(USER_LOGIN_NAME) };
+				final String errMsg = new DefaultExceptionFormatter().getErrorMessage("Err.ConstraintViolation",
+						arguments);
+				LOGGER.debug("Unique Constraint Violated: " + errMsg);
+				throw getBizLogicException(null, "Err.ConstraintViolation", "User :"
+						+ ApplicationProperties.getValue(USER_LOGIN_NAME));
 			}
 			//            if (null != user.getTargetIdpLoginName() && !"".equals(user.getTargetIdpLoginName()))
 			//            {
@@ -2191,6 +2209,47 @@ public class UserBizLogic extends CatissueDefaultBizLogic
 				else
 				{
 					if (emailAddress.equals(objects[1]) && !userId.equals(objects[0]))
+					{
+						isUnique = false;
+					}
+				}
+
+			}
+
+		}
+		catch (final DAOException daoExp)
+		{
+			UserBizLogic.LOGGER.error(daoExp.getMessage(), daoExp);
+			throw getBizLogicException(daoExp, daoExp.getErrorKeyName(), daoExp.getMsgValues());
+		}
+		return isUnique;
+			}
+	
+	private boolean isUniqueLoginName(final String loginName, final Long userId, final DAO dao,
+			final String operation) throws BizLogicException
+			{
+		boolean isUnique = true;
+		try
+		{
+			final String sourceObjectName = User.class.getName();
+			final String[] selectColumnName = new String[] { "id", "loginName" };
+
+			final QueryWhereClause queryWhereClause = new QueryWhereClause(sourceObjectName);
+			queryWhereClause.addCondition(new EqualClause("loginName", loginName));
+
+			final List userList = dao.retrieve(sourceObjectName, selectColumnName, queryWhereClause);
+
+			if (!userList.isEmpty())
+			{
+				final Object[] objects = (Object[]) userList.get(0);
+
+				if (operation.equalsIgnoreCase(Constants.ADD))
+				{
+					isUnique = false;
+				}
+				else
+				{
+					if (loginName.equals(objects[1]) && !userId.equals(objects[0]))
 					{
 						isUnique = false;
 					}

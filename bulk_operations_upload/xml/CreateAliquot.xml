@@ -9,6 +9,7 @@
 		 
 		<attribute name="count" csvColumnName="count"   />
 		<attribute name="quantityPerAliquot" csvColumnName="quantityPerAliquot"   />
+		<attribute name="thawCycleIncrementBy" csvColumnName="thawCycleIncrementBy"   />
 		<attribute name="createdOn" csvColumnName="Created On"   />
 
 		<containmentAssociation

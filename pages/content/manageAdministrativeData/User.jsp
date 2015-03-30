@@ -197,20 +197,19 @@
                                 readonly='${requestScope.readOnlyEmail}'/></td>
                             <td width="13%" align="left">&nbsp;</td>
 
-                            <logic:notEqual name="pageOf"
-                                value='${requestScope.pageOfUserProfile}'>
+                            
                                 <td width="1%" align="center"><span class="blue_ar_b"><img
                                     src="images/uIEnhancementImages/star.gif" alt="Mandatory"
                                     width="6" height="6" hspace="0" vspace="0" /></span></td>
                                 <td width="17%" align="left"><label
-                                    for="confirmEmailAddress" class="black_ar"><bean:message
-                                    key="user.confirmemailAddress" /></label></td>
+                                    for="loginName" class="black_ar"><bean:message
+                                    key="user.loginName" /></label></td>
                                 <td width="19%" align="left"><html:text
                                     styleClass="black_ar" maxlength="255" size="30"
-                                    styleId="confirmEmailAddress" property="confirmEmailAddress"
+                                    styleId="loginName" property="loginName"
                                     readonly='${requestScope.readOnlyEmail}' /></td>
                                 <td width="13%" align="left" valign="top">&nbsp;</td>
-                            </logic:notEqual>
+                            
                             <logic:equal name="pageOf"
                                 value='${requestScope.pageOfUserProfile}'>
                                 <td width="32%" align="left" colspan="3" valign="top">&nbsp;</td>

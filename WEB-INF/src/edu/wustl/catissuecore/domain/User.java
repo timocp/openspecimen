@@ -788,7 +788,7 @@ public class User extends AbstractDomainObject implements Serializable, IActivit
 					}
 				}
 				id = Long.valueOf(uform.getId());
-				setLoginName(uform.getEmailAddress());
+				setLoginName(uform.getLoginName());
 				setLastName(uform.getLastName());
 				setFirstName(uform.getFirstName());
 				setEmailAddress(uform.getEmailAddress());

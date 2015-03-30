@@ -217,12 +217,22 @@ public class Specimen extends AbstractSpecimen implements Serializable, IActivit
   
   private Long thawCycle;
   
+  private Integer thawCycleIncrementBy;
+  
   private String quality;
   
   private Date venesectionTime;
   
   private String labNumber;
   
+	public Integer getThawCycleIncrementBy() {
+		return thawCycleIncrementBy;
+	}
+	
+	public void setThawCycleIncrementBy(Integer thawCycleIncrementBy) {
+		this.thawCycleIncrementBy = thawCycleIncrementBy;
+	}
+
 	public String getQuality() {
 		return quality;
 	}

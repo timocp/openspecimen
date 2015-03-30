@@ -195,17 +195,19 @@ public class NewSpecimenBizLogic extends CatissueDefaultBizLogic {
 			dao.insert(specimen);
 			
 			if (Constants.DERIVED_SPECIMEN.equals(specimen.getLineage()) || (Constants.ALIQUOT.equals(specimen.getLineage()) && !"fromAliquot".equals(sessionDataBean.getIpAddress()))) {
-				updateParentSpecimen(dao,specimen.getParentSpecimen());
-				ApplicationContext applicationContext = OpenSpecimenAppCtxProvider.getAppCtx();
-				FormRecordSaveServiceImpl formRecSvc = (FormRecordSaveServiceImpl) applicationContext.getBean("formRecordSvc");
-
-				krishagni.catissueplus.dto.SpecimenDTO specimenDTO = new krishagni.catissueplus.dto.SpecimenDTO();
-				specimenDTO.setParentSpecimenId(specimen.getParentSpecimen().getId());
-				specimenDTO.setType(specimen.getSpecimenType());
-				if(Constants.ALIQUOT.equals(specimen.getLineage()) && !"fromAliquot".equals(sessionDataBean.getIpAddress())){
-					formRecSvc.saveAliquotEvent(specimenDTO, 1, sessionDataBean);
-				}else if(Constants.DERIVED_SPECIMEN.equals(specimen.getLineage())){
-					formRecSvc.saveDerivativeEvent(specimenDTO, sessionDataBean);
+				if(specimen.getThawCycleIncrementBy() == null || specimen.getThawCycleIncrementBy() != 0){ 
+					updateParentSpecimen(dao,specimen);
+					ApplicationContext applicationContext = OpenSpecimenAppCtxProvider.getAppCtx();
+					FormRecordSaveServiceImpl formRecSvc = (FormRecordSaveServiceImpl) applicationContext.getBean("formRecordSvc");
+	
+					krishagni.catissueplus.dto.SpecimenDTO specimenDTO = new krishagni.catissueplus.dto.SpecimenDTO();
+					specimenDTO.setParentSpecimenId(specimen.getParentSpecimen().getId());
+					specimenDTO.setType(specimen.getSpecimenType());
+					if(Constants.ALIQUOT.equals(specimen.getLineage()) && !"fromAliquot".equals(sessionDataBean.getIpAddress())){
+						formRecSvc.saveAliquotEvent(specimenDTO, 1, sessionDataBean);
+					}else if(Constants.DERIVED_SPECIMEN.equals(specimen.getLineage())){
+						formRecSvc.saveDerivativeEvent(specimenDTO, sessionDataBean);
+					}
 				}
 				
 			}
@@ -231,15 +233,16 @@ public class NewSpecimenBizLogic extends CatissueDefaultBizLogic {
 		}
 	}
 
-	private void updateParentSpecimen(DAO dao, AbstractSpecimen parentSpecimen) throws DAOException {
-		Specimen spec = (Specimen)parentSpecimen;
-		if(spec.getThawCycle()==null){
-			spec.setThawCycle(1l);
-		}
-		else{
-			spec.setThawCycle(spec.getThawCycle()+1);
-		}
-		dao.update(spec);
+	private void updateParentSpecimen(DAO dao, Specimen specimen) throws DAOException {
+		Specimen pspec = (Specimen)specimen.getParentSpecimen();
+		Integer thawCycleIncrBy = specimen.getThawCycleIncrementBy() == null ? 1 : specimen.getThawCycleIncrementBy(); 
+			if(pspec.getThawCycle()==null){
+				pspec.setThawCycle(thawCycleIncrBy.longValue());
+			}
+			else{
+				pspec.setThawCycle(pspec.getThawCycle()+thawCycleIncrBy);
+			}
+			dao.update(pspec);
 	}
 
 	private void checkLabel(Specimen specimen) throws BizLogicException {
@@ -483,7 +486,16 @@ public class NewSpecimenBizLogic extends CatissueDefaultBizLogic {
 		this.insertChildSpecimens(specimen, dao, sessionDataBean, pos1, pos2);
 		if ((Constants.DERIVED_SPECIMEN.equals(specimen.getLineage()) || Constants.ALIQUOT.equals(specimen.getLineage())) && 
 				Constants.COLLECTION_STATUS_COLLECTED.equals(specimen.getCollectionStatus())) {
-			specimen.setThawCycle(((Specimen)specimen.getParentSpecimen()).getThawCycle()+1);
+			Long parentThawCycle = ((Specimen)specimen.getParentSpecimen()).getThawCycle();
+			if(specimen.getThawCycle() == null || specimen.getThawCycle() != 0){
+				Integer thawCycleIncrBy = specimen.getThawCycleIncrementBy() == null ? 1 : specimen.getThawCycleIncrementBy();
+				specimen.setThawCycle(parentThawCycle == null ? thawCycleIncrBy : parentThawCycle + thawCycleIncrBy);
+			}
+//			if(specimen.getThawCycle() != null && specimen.getThawCycle()!=0){
+////				specimen.setThawCycle(parentThawCycle == null ? 1 : parentThawCycle+1);
+//			}else{
+//				specimen.setThawCycle(parentThawCycle == null ? 1 : parentThawCycle+1);
+//			}
 		}
 	}
 

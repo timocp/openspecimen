@@ -44,7 +44,6 @@
 		<referenceAssociation	className="edu.wustl.catissuecore.domain.Site" 	  roleName="site"  parentRoleName="participant" >
 					<attribute name="name" csvColumnName="Site Name"   />
 				</referenceAssociation>
-			<attribute name="medicalRecordNumber" csvColumnName="UR Number"   />
 		</containmentAssociation>
 		<attribute name="socialSecurityNumber" csvColumnName="Social Security Number" />
 		<attribute name="birthDate" csvColumnName="Birth Date"   />

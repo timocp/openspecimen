@@ -76,10 +76,10 @@
 	   
 	   <tr class="tr_alternate_color_lightGrey">
          <td  align="right" class="black_ar bottomtd  padding_right_style" width="20%"> 
-            <b>UR Number</b>
+            <b>Status In Research</b>
          </td> 
          <td class="black_ar bottomtd" width="30%">
-              <bean:write name="participantDto" property="urNumber" />
+              <bean:write name="participantDto" property="vitalStatus" />
         </td>
         <td  align="right" class="black_ar bottomtd  padding_right_style" width="30%"> 
             <b>Consent To Use Of Blood</b>
@@ -91,19 +91,19 @@
 	  
 	  <tr>
          <td  align="right" class="black_ar bottomtd  padding_right_style" width="20%"> 
-            <b>Status In Research</b>
+            <b>Site</b>
          </td> 
          <td class="black_ar bottomtd" width="30%">
-                        <bean:write name="participantDto" property="vitalStatus" />
+                        <bean:write name="participantDto" property="siteName" />
         </td>
         <td  align="right" class="black_ar bottomtd  padding_right_style" width="30%"> 
-            <b>Site</b>
+            <b></b>
         </td>
         <td class="black_ar bottomtd" width="20%"> 
-             <bean:write name="participantDto" property="siteName" />
+             
         </td>
       </tr>
-	  <tr>
+	  <tr class="tr_alternate_color_lightGrey">
          <td  align="right" class="black_ar bottomtd  padding_right_style" width="20%"> 
             <b><bean:message key="participant.dnaQuality"/></b>
          </td> 

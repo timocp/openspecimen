@@ -1871,7 +1871,7 @@ public class ParticipantBizLogic extends CatissueDefaultBizLogic
 			participantDTO.setDethOfDate(participantInfo[7]!=null? (Date) participantInfo[7]:null);
 			participantDTO.setVitalStatus((String)participantInfo[8]);
 			participantDTO.setDnaQuality((String)participantInfo[9]);
-			String mrnhql = "select pmi.medicalRecordNumber ,site.name from "
+			String mrnhql = "select site.name from "
 					+ ParticipantMedicalIdentifier.class.getName() + " as pmi, "
 					+ Site.class.getName()
 					+ " as site where pmi.participant.id=? and pmi.site.id=site.id";
@@ -1881,10 +1881,10 @@ public class ParticipantBizLogic extends CatissueDefaultBizLogic
 			{
 				for (Object mrn : mrns)
 				{
-					Object[] mrnArray = (Object[]) mrn;
+//					Object[] mrnArray = (Object[]) mrn;
 					MedicalRecordNumberDTO mrnDto = new MedicalRecordNumberDTO();
-					mrnDto.setMrn(mrnArray[0].toString());
-					mrnDto.setSiteName(mrnArray[1].toString());
+					mrnDto.setMrn("");
+					mrnDto.setSiteName(mrn.toString());
 					mrnDtos.add(mrnDto);
 					//mrnBuffer.append(((Object[])mrn)[1]).append("(").append(((Object[])mrn)[0]).append(")").append(",");
 				}

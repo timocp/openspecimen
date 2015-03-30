@@ -137,15 +137,6 @@
 				<foreignKey>PARTICIPANT_ID</foreignKey>
 				<parentKey>PARTICIPANT_ID</parentKey>
 				<row>
-					<textField>
-						<name>medicalRecordNumber</name>
-						<udn>medicalRecordNumber</udn>
-						<caption>UR Number</caption>
-						<column>MEDICAL_RECORD_NUMBER</column>
-						<maxLength>255</maxLength>
-						<phi>true</phi>
-					</textField>
-		
 					<dropDown>
 						<name>mrnSiteName</name>
 						<udn>mrnSiteName</udn>

@@ -173,7 +173,7 @@ public class UserForm extends AbstractActionForm
     /**
      * COnfirm EmailAddress of the user.
      */
-    private String confirmEmailAddress;
+    private String loginName;
 
     /**
      * Site ID's.
@@ -259,25 +259,15 @@ public class UserForm extends AbstractActionForm
         this.targetIdp = targetIdp;
     }
 
-    // Mandar : 24-Apr-06 : bug id : 972
-    /**
-     * @return Returns the confirmEmailAddress.
-     */
-    public String getConfirmEmailAddress()
-    {
-        return confirmEmailAddress;
-    }
+		public String getLoginName() {
+			return loginName;
+		}
+		
+		public void setLoginName(String loginName) {
+			this.loginName = loginName;
+		}
 
-    /**
-     * @param confirmEmailAddress
-     *            The confirmEmailAddress to set.
-     */
-    public void setConfirmEmailAddress(final String confirmEmailAddress)
-    {
-        this.confirmEmailAddress = confirmEmailAddress;
-    }
-
-    /**
+		/**
      * Returns the last name of the user.
      *
      * @return String representing the last name of the user.
@@ -782,7 +772,7 @@ public class UserForm extends AbstractActionForm
             emailAddress = user.getEmailAddress();
 
             // Mandar : 24-Apr-06 : bug id 972 : confirmEmailAddress
-            confirmEmailAddress = emailAddress;
+            loginName = user.getLoginName();
             setDptCRG(user);
             setAddr(user);
             // Populate the activity status, comments and role for approve user
@@ -1121,11 +1111,15 @@ public class UserForm extends AbstractActionForm
             // Mandar : 24-Apr-06 Bugid:972 confirmEmailAddress start
             if (!getPageOf().equals(Constants.PAGE_OF_USER_PROFILE))
             {
-                chkMail(errors, validator, "user.confirmemailAddress", confirmEmailAddress);
+//                chkMail(errors, validator, "user.confirmemailAddress", confirmEmailAddress);
                 compMail(errors);
             }
-            // Mandar : 24-Apr-06 Bugid:972 confirmEmailAddress end
-
+            // Mandar : 24-Apr-06 Bugid:972 confirmEmailAddress end 
+            if (Validator.isEmpty(loginName))
+            {
+                errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties
+                        .getValue("user.loginName")));
+            }
             chkNames(errors, validator, "user.lastName", lastName);
             chkNames(errors, validator, "user.firstName", firstName);
             chkEmpty(errors, validator, "user.city", city);
@@ -1243,10 +1237,10 @@ public class UserForm extends AbstractActionForm
      */
     private void compMail(final ActionErrors errors)
     {
-        if (!confirmEmailAddress.equals(emailAddress))
-        {
-            errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.email.mismatch"));
-        }
+//        if (!confirmEmailAddress.equals(emailAddress))
+//        {
+//            errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.email.mismatch"));
+//        }
     }
 
     /**

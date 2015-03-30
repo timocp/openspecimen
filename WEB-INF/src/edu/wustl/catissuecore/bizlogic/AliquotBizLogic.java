@@ -107,14 +107,15 @@ public class AliquotBizLogic extends CatissueDefaultBizLogic
 				}
 			}
 			
-			ApplicationContext applicationContext = OpenSpecimenAppCtxProvider.getAppCtx();
-			FormRecordSaveServiceImpl formRecSvc = (FormRecordSaveServiceImpl) applicationContext.getBean("formRecordSvc");
-			krishagni.catissueplus.dto.SpecimenDTO specimenDTO = new krishagni.catissueplus.dto.SpecimenDTO();
-			specimenDTO.setParentSpecimenId(aliquot.getSpecimen().getId());
-			formRecSvc.saveAliquotEvent(specimenDTO, aliquotCount, sessionDataBean);
-			
+			if(aliquot.getThawCycleIncrementBy() == null || aliquot.getThawCycleIncrementBy() > 0){
+				ApplicationContext applicationContext = OpenSpecimenAppCtxProvider.getAppCtx();
+				FormRecordSaveServiceImpl formRecSvc = (FormRecordSaveServiceImpl) applicationContext.getBean("formRecordSvc");
+				krishagni.catissueplus.dto.SpecimenDTO specimenDTO = new krishagni.catissueplus.dto.SpecimenDTO();
+				specimenDTO.setParentSpecimenId(aliquot.getSpecimen().getId());
+				formRecSvc.saveAliquotEvent(specimenDTO, aliquotCount, sessionDataBean);
+			}
 			Double totalAliquotQty = calculateAvailableQuantityForParent(aliquot, parentSpecimenAvailQty);
-			updateParentSpecimen(aliquot.getSpecimen(), totalAliquotQty, dao);
+			updateParentSpecimen(aliquot.getSpecimen(), totalAliquotQty, dao,aliquot.getThawCycleIncrementBy());
 		}
 		catch (final ApplicationException exp)
 		{
@@ -145,7 +146,7 @@ public class AliquotBizLogic extends CatissueDefaultBizLogic
 	 * @throws ApplicationException ApplicationException
 	 */
 	private void updateParentSpecimen(Specimen parentSpecimen, Double totalAliquotQty,
-			DAO dao) throws ApplicationException
+			DAO dao,Integer thawCycleIncrBy) throws ApplicationException
 	{
 		if(totalAliquotQty < 0L)
 		{
@@ -158,7 +159,11 @@ public class AliquotBizLogic extends CatissueDefaultBizLogic
 				parentSpecimen.getId());
 		Specimen spec = (Specimen)pSpec;
 		spec.setAvailableQuantity(totalAliquotQty);
-		spec.setThawCycle(spec.getThawCycle()+1);
+		if(thawCycleIncrBy != null){
+			spec.setThawCycle(spec.getThawCycle()+thawCycleIncrBy);
+		}else{
+			spec.setThawCycle(spec.getThawCycle()+1);
+		}
 		dao.update(spec);
 //		dao.commit();
 	}
@@ -190,6 +195,7 @@ public class AliquotBizLogic extends CatissueDefaultBizLogic
 			specimen.setCreatedOn(aliquot.getCreatedOn());
 			specimen.setCollectionStatus(Constants.COLLECTION_STATUS_COLLECTED);
 			specimen.setIsAvailable(Boolean.TRUE);
+			specimen.setThawCycleIncrementBy(aliquot.getThawCycleIncrementBy());
 //			if (!edu.wustl.catissuecore.util.global.Variables.isSpecimenLabelGeneratorAvl)
 //			{
 //				long totalAliquotCount = newSpecimenBizLogic.getTotalNoOfAliquotSpecimen(
@@ -773,7 +779,7 @@ public class AliquotBizLogic extends CatissueDefaultBizLogic
 			specimenBizLogic.disposeParentSpecimen(sessionDataBean, specimenCollection,
 					Constants.SPECIMEN_DISPOSAL_REASON);
 			}
-			this.updateParentSpecimen(parentSpecimen, aliquotDetailObj.getAvailableQuantity(), dao);
+			this.updateParentSpecimen(parentSpecimen, aliquotDetailObj.getAvailableQuantity(), dao,null);
 			if(aliquotDetailObj.isPrintLabel()){
 				List<AbstractDomainObject> list = new ArrayList<AbstractDomainObject>(specimenCollection);
 				printLabel(list,sessionDataBean);
@@ -869,7 +875,7 @@ public class AliquotBizLogic extends CatissueDefaultBizLogic
 			}
 			this.updateCpBasedAliquot(updateSpecimenAliquotCollection,dao);
 			specimenBizLogic.insert(newSpecimenAliquotCollection, sessionDataBean, 0, false);
-			this.updateParentSpecimen(parentSpecimen, aliquotDetailObj.getAvailableQuantity(), dao);
+			this.updateParentSpecimen(parentSpecimen, aliquotDetailObj.getAvailableQuantity(), dao,null);
 			if(aliquotDetailObj.isDisposeParentCheck()){
 				specimenBizLogic.disposeSpecimen(sessionDataBean,
 						parentSpecimen, Constants.SPECIMEN_DISPOSAL_REASON);

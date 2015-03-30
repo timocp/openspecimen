@@ -33,6 +33,8 @@ public class Aliquot extends AbstractDomainObject implements Serializable
 	 * specimen.
 	 */
 	private Specimen specimen;
+	
+	private Integer thawCycleIncrementBy;
 	/**
 	 * specimenPosition.
 	 */
@@ -44,6 +46,14 @@ public class Aliquot extends AbstractDomainObject implements Serializable
 	
 	private Date createdOn;
 	
+	public Integer getThawCycleIncrementBy() {
+		return thawCycleIncrementBy;
+	}
+	
+	public void setThawCycleIncrementBy(Integer thawCycleIncrementBy) {
+		this.thawCycleIncrementBy = thawCycleIncrementBy;
+	}
+
 	public Date getCreatedOn() {
 		return createdOn;
 	}
