@@ -54,7 +54,7 @@ public class CatissuePlusCommonUtil {
 		String aliquotJsonString = "{\"appData\":{\"formCtxtId\":" + formContextId + ",\"objectId\" :"
 				+ specimenDTO.getParentSpecimenId() + "},\"user\":" + userId + ",\"time\":\""
 				+ new SimpleDateFormat(ApplicationProperties.getValue("date.pattern.timestamp")).format(new Date())
-				+ "\",\"aliquotCount\":\"" + aliquotCount + "\" }";
+				+ "\"}";
 
 		return aliquotJsonString;
 	}

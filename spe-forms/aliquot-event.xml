@@ -19,13 +19,5 @@
         <mandatory>true</mandatory>
       </datePicker>
     </row>
-    <row>
-      <numberField>
-        <name>aliquotCount</name>
-        <udn>aliquotCount</udn>
-        <caption>Aliquot Count</caption>
-        <mandatory>true</mandatory>
-      </numberField>
-    </row>
   </view>
 </form>

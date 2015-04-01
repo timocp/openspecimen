@@ -36,7 +36,7 @@
       <column name="DNA_260" type="${double.type}" />
     </addColumn>
     <addColumn tableName="CATISSUE_SPECIMEN">
-      <column name="THAW_CYCLE" type="${double.type}" />
+      <column name="THAW_CYCLE" type="${int.type}" />
     </addColumn>
     <addColumn tableName="CATISSUE_SPECIMEN">
       <column name="LAB_NUMBER" type="${text.type}(255)" />
@@ -44,6 +44,10 @@
     <addColumn tableName="CATISSUE_SPECIMEN">
       <column name="QUALITY" type="${text.type}(50)" />
     </addColumn>
+  </changeSet>
+
+  <changeSet author="nitesh" id="add default value for thaw cycle">
+    <addDefaultValue columnDataType="${int.type}" columnName="THAW_CYCLE" defaultValue="0" tableName="CATISSUE_SPECIMEN"/>
   </changeSet>
   
   <changeSet author="nitesh" id="Add column for VENESECTION_TIME in specimen" dbms="mysql">

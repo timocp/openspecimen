@@ -160,9 +160,9 @@ public class AliquotBizLogic extends CatissueDefaultBizLogic
 		Specimen spec = (Specimen)pSpec;
 		spec.setAvailableQuantity(totalAliquotQty);
 		if(thawCycleIncrBy != null){
-			spec.setThawCycle(spec.getThawCycle()+thawCycleIncrBy);
+			spec.setThawCycle(spec.getThawCycle()==null?0:spec.getThawCycle()+thawCycleIncrBy);
 		}else{
-			spec.setThawCycle(spec.getThawCycle()+1);
+			spec.setThawCycle(spec.getThawCycle()==null?0:spec.getThawCycle()+1);
 		}
 		dao.update(spec);
 //		dao.commit();
