@@ -33,7 +33,7 @@
 		
 	<attribute csvColumnName="PPID" name="protocolParticipantIdentifier" />
 	<referenceAssociation className="edu.wustl.catissuecore.domain.CollectionProtocol" roleName="collectionProtocol">
-		<attribute csvColumnName="CP Title" name="shortTitle" defaultValue="St.Vincent CP"/>
+		<attribute csvColumnName="CP Title" name="shortTitle" defaultValue="ASIG Collection Protocol"/>
 	</referenceAssociation>
 	</referenceAssociation>
 		
@@ -52,7 +52,7 @@
 		<attribute name="createdOn" csvColumnName="Extraction Date"   />
 		<attribute name="activityStatus" csvColumnName="Activity Status" defaultValue="Active"   />
 		<attribute name="comment" csvColumnName="Comments"/>
-		<attribute name="isAvailable" csvColumnName="Is Available" defaultValue="True"  />
+		<attribute name="isAvailable" csvColumnName="Is Available"  />
 		<attribute name="collectionStatus" csvColumnName="Specimen Collection Status" defaultValue="Collected"/>
 		<attribute name="specimenClass" csvColumnName="Specimen Class"  defaultValue="Molecular" />
 		<attribute name="specimenType" csvColumnName="Sample type"   />

@@ -2,6 +2,7 @@
 <BulkOperationClass className="edu.wustl.catissuecore.domain.Specimen">
 <attribute name="label" csvColumnName="Specimen Label" updateBasedOn="true"/>
 <attribute name="initialQuantity" csvColumnName="Initial Quantity"/>
+<attribute name="availableQuantity" csvColumnName="Available Quantity"/>
 <attribute name="comment" csvColumnName="Comment"/>
 </BulkOperationClass>
 </BulkOperationMetadata>

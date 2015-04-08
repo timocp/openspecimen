@@ -28,7 +28,7 @@
 		<attribute name="createdOn" csvColumnName="Extraction Date" />
 		<attribute name="activityStatus" csvColumnName="Activity Status" defaultValue="Active"/>
 		<attribute name="comment" csvColumnName="Comments" />
-		<attribute name="isAvailable" csvColumnName="Is Available" defaultValue="True" />
+		<attribute name="isAvailable" csvColumnName="Is Available" />
 		<attribute name="collectionStatus" csvColumnName="Collection Status" defaultValue="Collected" />
 		<attribute name="specimenClass" csvColumnName="Specimen Class" defaultValue="Molecular" >
 

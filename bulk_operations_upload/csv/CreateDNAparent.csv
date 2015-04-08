@@ -1,2 +1,2 @@
-PPID,Site,Parent Label,Lineage,Label,Sample box,Position One,Position Two,Initial Quantity,Available Quantity,Sample type,Extraction Date,Concentration,260-280,Method,Comments
-1_1,In Transit,Blood_1_1,New,lbr_14,Box_1,A,1,1,1,DNA,9-11-2014 10:12,0.607,1.2,OiaGen Salt Precipitation,Specimen comment
+PPID,Site,Parent Label,Lineage,Label,Sample box,Position One,Position Two,Initial Quantity,Available Quantity,Is Available,Sample type,Extraction Date,Concentration,260-280,Method,Comments
+1_1,In Transit,Blood_1_1,New,lbr_14,Box_1,A,1,1,1,,TRUE,DNA,9-11-2014 10:12,0.607,1.2,OiaGen Salt Precipitation,Specimen comment

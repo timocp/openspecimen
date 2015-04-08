@@ -1,2 +1,2 @@
-ASIG ID,Site,Parent Label,Lineage,Label,Sample box,Position One,Position Two,Sample type,Sample Date,Initial Quantity,Date sent to ARL,Freeze Thaw,Lab Number,Comments,Venesection Date,Quality
-1_1,In Transit,lbr_14,Serum,lbr_Serum_1_1,Box1,A,1,Serum,09-11-2014 10:21,1,09-11-2014 10:30,1,P01-12154N,specimen comment,09-11-2014 10:40,Good
+ASIG ID,Site,Parent Label,Lineage,Label,Sample box,Position One,Position Two,Sample type,Sample Date,Initial Quantity,Date sent to ARL,Freeze Thaw,Lab Number,Comments,Venesection Date,Quality,thawCycleIncrementBy
+1_1,In Transit,lbr_14,Serum,lbr_Serum_1_1,Box1,A,1,Serum,09-11-2014 10:21,1,09-11-2014 10:30,1,P01-12154N,specimen comment,09-11-2014 10:40,Good,0

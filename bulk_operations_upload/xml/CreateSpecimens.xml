@@ -30,7 +30,7 @@
 		
 	<attribute csvColumnName="ASIG ID" name="protocolParticipantIdentifier" />
 	<referenceAssociation className="edu.wustl.catissuecore.domain.CollectionProtocol" roleName="collectionProtocol">
-		<attribute csvColumnName="CP Title" name="shortTitle" defaultValue="St.Vincent CP"/>
+		<attribute csvColumnName="CP Title" name="shortTitle" defaultValue="ASIG Collection Protocol"/>
 	</referenceAssociation>
 	</referenceAssociation>
 		
@@ -63,6 +63,7 @@
 		<attribute csvColumnName="Lab Number" name="labNumber"/>
 		<attribute csvColumnName="Venesection Date" name="venesectionTime"/>
 		<attribute csvColumnName="Quality" name="quality"/>
+		<attribute name="thawCycleIncrementBy" csvColumnName="thawCycleIncrementBy"   />
 
 	</BulkOperationClass>
 </BulkOperationMetadata>
