@@ -24,14 +24,14 @@
 				</referenceAssociation>
 
 				<attribute csvColumnName="Received Quality" name="receivedQuality" defaultValue="Acceptable"/>
-				<attribute csvColumnName="Date sent to ARL" name="receivedTimestamp"/>
+				<attribute csvColumnName="Extraction Date" name="receivedTimestamp"/>
 				<attribute csvColumnName="Collection Status" name="collectionStatus" defaultValue="Complete"/>
 				<attribute csvColumnName="Clinical Diagnosis" name="clinicalDiagnosis" defaultValue="Not Specified"/>
 				<attribute csvColumnName="Clinical Status" name="clinicalStatus" defaultValue="Not Specified"/>
 				<attribute csvColumnName="Activity Status" name="activityStatus" defaultValue="Active"/>
 	<referenceAssociation className="edu.wustl.catissuecore.domain.CollectionProtocolRegistration" roleName="collectionProtocolRegistration">
 		
-	<attribute csvColumnName="PPID" name="protocolParticipantIdentifier" />
+	<attribute csvColumnName="ASIG_ID" name="protocolParticipantIdentifier" />
 	<referenceAssociation className="edu.wustl.catissuecore.domain.CollectionProtocol" roleName="collectionProtocol">
 		<attribute csvColumnName="CP Title" name="shortTitle" defaultValue="ASIG Collection Protocol"/>
 	</referenceAssociation>
