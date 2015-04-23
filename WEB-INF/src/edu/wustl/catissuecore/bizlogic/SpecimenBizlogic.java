@@ -757,7 +757,7 @@ public class SpecimenBizlogic
     {
       Iterator<ParticipantMedicalIdentifier> itr = mrnColl.iterator();
       ParticipantMedicalIdentifier mrn = itr.next(); 
-      if(mrn != null && !StringUtils.isEmpty(mrn.getMedicalRecordNumber()))
+      if(mrn != null && mrn.getSite() != null)
       specimenDTO.setSiteName(mrn.getSite().getName());
     }
     specimenDTO.setCpId(specimen.getSpecimenCollectionGroup().getCollectionProtocolRegistration()

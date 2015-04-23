@@ -119,7 +119,7 @@ public class AddSpecimenFromRequirementAction extends CatissueBaseAction {
       {
         Iterator<ParticipantMedicalIdentifier> itr = mrnColl.iterator();
         ParticipantMedicalIdentifier mrn = itr.next();
-        if(mrn != null && !StringUtils.isEmpty(mrn.getMedicalRecordNumber())){
+        if(mrn != null && mrn.getSite() != null){
         	specimenDTO.setSiteName(mrn.getSite().getName());
         }
       }
