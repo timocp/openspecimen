@@ -6,3 +6,4 @@ createParticipant,Create Participant,CreateParticipants.csv,CreateParticipants.x
 CreateNewSpecimens,Create Specimen,CreateSpecimens.csv,CreateSpecimens.xml
 Distribution,Distribution,Distribution.csv,Distribution.xml
 UpdateSpecimen,Update Specimen,UpdateSpecimen.csv,UpdateSpecimen.xml
+Transfer,Transfer,CreateTransferEvent.csv,CreateTransferEvent.xml

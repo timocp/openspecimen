@@ -27,7 +27,7 @@
 			</referenceAssociation>
 			<attribute name="consentSignatureDate" csvColumnName="Consent Sign Date"   />
 
-			<attribute name="protocolParticipantIdentifier" csvColumnName="ASIG_ID"   />
+			<attribute name="protocolParticipantIdentifier" csvColumnName="ASIG ID"   />
 				<attribute name="registrationDate" csvColumnName="Registration Date"   />
 				<attribute name="isToInsertAnticipatorySCGs" csvColumnName="isToInsertAnticipatorySCGs" defaultValue="TRUE"  />
 		</containmentAssociation>

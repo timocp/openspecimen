@@ -96,6 +96,14 @@
 			</dropDown>
 		</row>
 		<row>
+				<numberField>
+				<name>dna260</name>
+				<udn>dna260</udn>
+				<caption>260:280</caption>
+				<column>DNA_260</column>
+			</numberField>
+		</row>
+		<row>
 			<datePicker>
 				<name>createdOn</name>
 				<udn>createdOn</udn>

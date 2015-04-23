@@ -11,21 +11,21 @@
 		<attribute csvColumnName="Site" name="name"/>
 	</referenceAssociation>
 	<referenceAssociation className="edu.wustl.catissuecore.domain.User" roleName="collector">
-					<attribute csvColumnName="Collected User Name" name="loginName" defaultValue="candice.rabusa@svha.org.au"/>
-				</referenceAssociation>
-				<attribute csvColumnName="Collection Procedure" name="collectionProcedure" defaultValue="Not Specified"/>
-				<attribute csvColumnName="Collection Container" name="collectionContainer" defaultValue="Not Specified"/>
-				<attribute csvColumnName="Sample Date" name="collectionTimestamp"/>
-				<referenceAssociation className="edu.wustl.catissuecore.domain.User" roleName="receiver">
-				<attribute csvColumnName="Received User Name" name="loginName" defaultValue="candice.rabusa@svha.org.au"/>
-				</referenceAssociation>
+		<attribute csvColumnName="Collected User Name" name="loginName"/>
+		</referenceAssociation>
+			<attribute csvColumnName="Collection Procedure" name="collectionProcedure" defaultValue="Not Specified"/>
+			<attribute csvColumnName="Collection Container" name="collectionContainer" defaultValue="Not Specified"/>
+			<attribute csvColumnName="Sample Date" name="collectionTimestamp"/>
+		<referenceAssociation className="edu.wustl.catissuecore.domain.User" roleName="receiver">
+			<attribute csvColumnName="Received User Name" name="loginName"/>
+		</referenceAssociation>
 
-				<attribute csvColumnName="Received Quality" name="receivedQuality" defaultValue="Acceptable"/>				
-				<attribute csvColumnName="Date sent to ARL" name="receivedTimestamp"/>
-				<attribute csvColumnName="Collection Status" name="collectionStatus" defaultValue="Complete"/>
-				<attribute csvColumnName="Clinical Diagnosis" name="clinicalDiagnosis" defaultValue="Not Specified"/>
-				<attribute csvColumnName="Clinical Status" name="clinicalStatus" defaultValue="Not Specified"/>
-				<attribute csvColumnName="Activity Status" name="activityStatus" defaultValue="Active"/>
+		<attribute csvColumnName="Received Quality" name="receivedQuality" defaultValue="Acceptable"/>				
+		<attribute csvColumnName="Date sent to ARL" name="receivedTimestamp"/>
+		<attribute csvColumnName="Collection Status" name="collectionStatus" defaultValue="Complete"/>
+		<attribute csvColumnName="Clinical Diagnosis" name="clinicalDiagnosis" defaultValue="Not Specified"/>
+		<attribute csvColumnName="Clinical Status" name="clinicalStatus" defaultValue="Not Specified"/>
+		<attribute csvColumnName="Activity Status" name="activityStatus" defaultValue="Active"/>
 	<referenceAssociation className="edu.wustl.catissuecore.domain.CollectionProtocolRegistration" roleName="collectionProtocolRegistration">
 		
 	<attribute csvColumnName="ASIG ID" name="protocolParticipantIdentifier" />
@@ -63,7 +63,7 @@
 		<attribute csvColumnName="Lab Number" name="labNumber"/>
 		<attribute csvColumnName="Venesection Date" name="venesectionTime"/>
 		<attribute csvColumnName="Quality" name="quality"/>
-		<attribute name="thawCycleIncrementBy" csvColumnName="thawCycleIncrementBy"   />
+		<attribute name="thawCycleIncrementBy" csvColumnName="Freeze thaw increment"   />
 
 	</BulkOperationClass>
 </BulkOperationMetadata>

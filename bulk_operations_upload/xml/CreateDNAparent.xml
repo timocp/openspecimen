@@ -11,7 +11,7 @@
 		<attribute csvColumnName="Site" name="name"/>
 	</referenceAssociation>
 	<referenceAssociation className="edu.wustl.catissuecore.domain.User" roleName="collector">
-					<attribute csvColumnName="Collected User Name" name="loginName" defaultValue="candice.rabusa@svha.org.au"/>
+					<attribute csvColumnName="Collected User Name" name="loginName"/>
 				</referenceAssociation>
 
 				<attribute csvColumnName="Collection Procedure" name="collectionProcedure" defaultValue="Not Specified"/>
@@ -20,7 +20,7 @@
 		
 		
 				<referenceAssociation className="edu.wustl.catissuecore.domain.User" roleName="receiver">
-					<attribute csvColumnName="Received User Name" name="loginName" defaultValue="candice.rabusa@svha.org.au"/>
+					<attribute csvColumnName="Received User Name" name="loginName"/>
 				</referenceAssociation>
 
 				<attribute csvColumnName="Received Quality" name="receivedQuality" defaultValue="Acceptable"/>
