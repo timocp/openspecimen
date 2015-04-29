@@ -234,6 +234,13 @@ public class Participant {
 		this.setDeathDate(participant.getDeathDate());
 		updateRace(participant.getRaceColl());
 		updatePmi(participant);
+		if(participant.getPmiCollection() != null){
+			Iterator<Entry<String, ParticipantMedicalIdentifier>> entries = participant.getPmiCollection().entrySet().iterator();
+			while(entries.hasNext()) {
+				ParticipantMedicalIdentifier pmi = entries.next().getValue();
+				pmi.setParticipant(this);
+			}
+		}
 	}
 
 	private void updateRace(Set<Race> raceColl) {
@@ -244,8 +251,27 @@ public class Participant {
 	}
 
 	private void updatePmi(Participant participant) {
-		MapUpdater.<String, ParticipantMedicalIdentifier> newInstance().update(this.pmiCollection,
-				participant.getPmiCollection());
+		updateMrn(this.pmiCollection,participant.getPmiCollection());
+	}
+	
+	private void updateMrn(Map<String, ParticipantMedicalIdentifier> oldColl,Map<String, ParticipantMedicalIdentifier> newColl)
+	{
+		oldColl = oldColl==null?new HashMap<String, ParticipantMedicalIdentifier>():oldColl;
+		newColl = newColl==null?new HashMap<String, ParticipantMedicalIdentifier>():newColl;
+		Iterator<Entry<String, ParticipantMedicalIdentifier>> entries = oldColl.entrySet().iterator();
+		while (entries.hasNext()) {
+			Entry<String, ParticipantMedicalIdentifier> entry = entries.next();
+			if (!newColl.containsKey(entry.getKey())) {
+				entries.remove();
+			}
+		}
+		Iterator<Entry<String, ParticipantMedicalIdentifier>> newEntries = newColl.entrySet().iterator();
+		while (newEntries.hasNext()) { 
+			Entry<String, ParticipantMedicalIdentifier> entry = newEntries.next();
+			if (!oldColl.containsKey(entry.getKey())) {
+				oldColl.put(entry.getKey(), entry.getValue());
+			}
+		}
 	}
 
 	public void updateActivityStatus(String activityStatus) {
