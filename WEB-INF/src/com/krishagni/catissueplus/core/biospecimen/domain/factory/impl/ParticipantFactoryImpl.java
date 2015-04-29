@@ -293,7 +293,7 @@ public class ParticipantFactoryImpl implements ParticipantFactory {
 			exception.addError(ParticipantErrorCode.CONSTRAINT_VIOLATION, SEX_GENOTYPE);
 			return;
 		}
-		participant.setVitalStatus(sexGenotype);
+		participant.setSexGenotype(sexGenotype);
 	}
 
 	//	private void addError(CatissueErrorCode event, String field) {
