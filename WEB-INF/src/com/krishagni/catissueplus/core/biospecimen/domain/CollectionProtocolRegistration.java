@@ -183,6 +183,9 @@ public class CollectionProtocolRegistration {
 
 	private void setconsents(Set<ConsentTierResponse> consentResponseCollection) {
 		SetUpdater.<ConsentTierResponse> newInstance().update(this.consentResponseCollection, consentResponseCollection);
+		for (ConsentTierResponse consentTierResponse : this.consentResponseCollection) {
+			consentTierResponse.setCpr(this);
+		}
 	}
 
 }

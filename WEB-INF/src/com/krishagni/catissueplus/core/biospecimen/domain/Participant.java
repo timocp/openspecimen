@@ -235,7 +235,7 @@ public class Participant {
 		updateRace(participant.getRaceColl());
 		updatePmi(participant);
 		if(participant.getPmiCollection() != null){
-			Iterator<Entry<String, ParticipantMedicalIdentifier>> entries = participant.getPmiCollection().entrySet().iterator();
+			Iterator<Entry<String, ParticipantMedicalIdentifier>> entries = this.getPmiCollection().entrySet().iterator();
 			while(entries.hasNext()) {
 				ParticipantMedicalIdentifier pmi = entries.next().getValue();
 				pmi.setParticipant(this);
