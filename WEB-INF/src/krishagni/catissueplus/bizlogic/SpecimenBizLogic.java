@@ -568,6 +568,11 @@ public class SpecimenBizLogic
 			LOGGER.error("Specimen label cannot be empty.");
 			throw new CatissueException(SpecimenErrorCodeEnum.LABEL_REQUIRED.getCode());
 		}
+
+		if(specimen.getCreatedOn() == null) {
+			throw new CatissueException(SpecimenErrorCodeEnum.CREATED_DATE_REQUIRED.getCode());
+		}
+		
 //		checkDuplicateSpecimenFields(specimen, hibernateDao);
 	}
 	

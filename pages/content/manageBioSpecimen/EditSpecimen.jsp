@@ -435,16 +435,16 @@ req.onreadystatechange = function() {
                                 </label>
                             </td>
                         </tr>
-						<tr class="tr_alternate_color_white">
-                            <td width="20%" class="black_ar align_right_style">
-                                <label for="label">
-                                    RF ID
-                                </label>
-                            </td>
-                            <td align="left" width="30%">
-                                <html:text styleClass="black_ar" size="30" maxlength="255"  styleId="rfId" name="specimenDTO" property="rfId" onmouseover="showTip(this.id)" onmouseout="hideTip(this.id)" onblur="processData(this)" disabled="false" />
-                            </td>
-                        </tr>
+<!-- 						<tr class="tr_alternate_color_white"> -->
+<!--                             <td width="20%" class="black_ar align_right_style"> -->
+<!--                                 <label for="label"> -->
+<!--                                     RF ID -->
+<!--                                 </label> -->
+<!--                             </td> -->
+<!--                             <td align="left" width="30%"> -->
+<%--                                 <html:text styleClass="black_ar" size="30" maxlength="255"  styleId="rfId" name="specimenDTO" property="rfId" onmouseover="showTip(this.id)" onmouseout="hideTip(this.id)" onblur="processData(this)" disabled="false" /> --%>
+<!--                             </td> -->
+<!--                         </tr> -->
                         <tr class="tr_alternate_color_lightGrey">
                             <td  width="20%" class="black_ar align_right_style">
                                 <img src="images/uIEnhancementImages/star.gif" alt="Mandatory" width="6" height="6" hspace="0" vspace="0" />    
@@ -535,6 +535,7 @@ req.onreadystatechange = function() {
                                 </td>
                             
                                 <td width="20%" class="black_ar align_right_style">
+                                    <img src="images/uIEnhancementImages/star.gif" alt="Mandatory" width="6" height="6" hspace="0" vspace="0" />
                                     <label for="createdDate">
                                         <bean:message key="specimen.createdDate"/>
                                     </label>
