@@ -387,17 +387,17 @@
 
     <property>
         <name>password.expire_after_n_days</name>
-        <value>60</value>
+        <value>360</value>
     </property>
 
     <property>
         <name>password.not_same_as_last_n</name>
-        <value>6</value>
+        <value>0</value>
     </property>
 
     <property>
         <name>minimumPasswordLength</name>
-        <value>6</value>
+        <value>3</value>
     </property>
 
     <property>
