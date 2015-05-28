@@ -1807,16 +1807,16 @@ public class UserBizLogic extends CatissueDefaultBizLogic
 			 * Following method is provided to verify whether the email address
 			 * is already present in the system or not.
 			 */
-			if (!(isUniqueEmailAddress(user.getEmailAddress(), user.getId(), dao, operation)))
-			{
-				String arguments[] = null;
-				arguments = new String[] { "User", ApplicationProperties.getValue(USER_EMAIL_ADDRESS) };
-				final String errMsg = new DefaultExceptionFormatter().getErrorMessage("Err.ConstraintViolation",
-						arguments);
-				LOGGER.debug("Unique Constraint Violated: " + errMsg);
-				throw getBizLogicException(null, "Err.ConstraintViolation", "User :"
-						+ ApplicationProperties.getValue(USER_EMAIL_ADDRESS));
-			}
+//			if (!(isUniqueEmailAddress(user.getEmailAddress(), user.getId(), dao, operation)))
+//			{
+//				String arguments[] = null;
+//				arguments = new String[] { "User", ApplicationProperties.getValue(USER_EMAIL_ADDRESS) };
+//				final String errMsg = new DefaultExceptionFormatter().getErrorMessage("Err.ConstraintViolation",
+//						arguments);
+//				LOGGER.debug("Unique Constraint Violated: " + errMsg);
+//				throw getBizLogicException(null, "Err.ConstraintViolation", "User :"
+//						+ ApplicationProperties.getValue(USER_EMAIL_ADDRESS));
+//			}
 			
 			if (!(isUniqueLoginName(user.getLoginName(), user.getId(), dao, operation)))
 			{

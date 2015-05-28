@@ -324,12 +324,12 @@ function disableIdpDetails(disableStatus)
 						</div>
 							
 					</div>
-					<div style="float:left;">
-						<div class="form-inner-div margin-form-field">
-							<label for="confirmEmailAddress" class="black_ar form-label"><bean:message key="user.confirmemailAddress" /></label>
-							</br><html:text tabindex="2" styleClass=" black_ar form-text-field" maxlength="255" size="30" styleId="confirmEmailAddress" property="confirmEmailAddress" readonly='${requestScope.readOnlyEmail}' />
-						</div>
-						
+					<div class="form-inner-div margin-form-field">
+						<span class="form-label"><bean:message key="user.loginName"/></span> </br>
+						<html:text tabindex="2" styleClass="black_ar  form-text-field" maxlength="255" size="30" 
+						  styleId="loginName" property="loginName" />
+					</div>
+
 						<div class="form-inner-div margin-form-field">
 							<span class="form-label"><bean:message key="user.firstName" /></span> </br>
 							<html:text  tabindex="4" styleClass="black_ar  form-text-field" maxlength="255" size="30" styleId="firstName" property="firstName" />
