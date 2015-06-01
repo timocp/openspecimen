@@ -94,6 +94,7 @@
 	morphTree.enableThreeStateCheckboxes(false);
 	morphTree.deleteChildItems(0);
 	morphTree.attachEvent("onClick", function(id){
+		morphologicalAbnormalityValue = morphTree.getItemText(id);
 		newMorphCombo.setComboText(morphTree.getItemText(id));
 		newMorphCombo.setComboValue(morphTree.getItemText(id));
 		newMorphCombo.DOMelem_input.title=morphTree.getItemText(id);
@@ -104,7 +105,7 @@
 		LoadSCGTabBar('${requestScope.operation}');
 		newMorphCombo = new dhtmlXCombo("morphologicalAbnormality","morphologicalAbnormality","203px");
 				newMorphCombo.setSize(203);
-				newMorphCombo.loadXML('/openspecimen/MorphologicalAbnormality.do',function(){
+				newMorphCombo.loadXML('/openspecimen/MorphologicalAbnormality.do?mask=${specimenDTO.morphologicalAbnormality}',function(){
 				if("${specimenDTO.morphologicalAbnormality}" == "") {
 					newMorphCombo.setComboText("Not Specified");
 					newMorphCombo.setComboValue("Not Specified");
@@ -128,7 +129,9 @@
 				else
 					newMorphCombo.DOMelem_input.title='Start typing to see values';
 		 	});
-			newMorphCombo.attachEvent("onXLE",function (){newMorphCombo.addOption("${specimenDTO.morphologicalAbnormality}","${specimenDTO.morphologicalAbnormality}");});
+			newMorphCombo.attachEvent("onXLE",function (){
+				//newMorphCombo.addOption("${specimenDTO.morphologicalAbnormality}","${specimenDTO.morphologicalAbnormality}");
+				});
 			dhtmlxEvent(newMorphCombo.DOMelem_input,"mouseover",function(){
 	     var diagnosisVal = newMorphCombo.getSelectedText();
 				if(diagnosisVal){
