@@ -8,7 +8,7 @@
 		</referenceAssociation>
 <referenceAssociation className="edu.wustl.catissuecore.domain.SpecimenCollectionGroup" roleName="specimenCollectionGroup">		
 	<referenceAssociation className="edu.wustl.catissuecore.domain.Site" roleName="specimenCollectionSite">
-		<attribute csvColumnName="Site" name="name"/>
+		<attribute csvColumnName="Site Name" name="name"/>
 	</referenceAssociation>
 	<referenceAssociation className="edu.wustl.catissuecore.domain.User" roleName="collector">
 		<attribute csvColumnName="Collected User Name" name="loginName"/>
@@ -30,7 +30,7 @@
 		
 	<attribute csvColumnName="ASIG ID" name="protocolParticipantIdentifier" />
 	<referenceAssociation className="edu.wustl.catissuecore.domain.CollectionProtocol" roleName="collectionProtocol">
-		<attribute csvColumnName="CP Title" name="shortTitle" defaultValue="ASIG Collection Protocol"/>
+		<attribute csvColumnName="CP Title" name="shortTitle" />
 	</referenceAssociation>
 	</referenceAssociation>
 		
@@ -42,7 +42,7 @@
 				<attribute name="positionDimensionOneString" csvColumnName="Position One"   />
 				<attribute name="positionDimensionTwoString" csvColumnName="Position Two"   />
 				<referenceAssociation className="edu.wustl.catissuecore.domain.StorageContainer" roleName="storageContainer">
-					<attribute name="name" csvColumnName="Sample box"/>
+					<attribute name="name" csvColumnName="Sample Box Name"/>
 				</referenceAssociation>			
 			</containmentAssociation>
 		<attribute name="label" csvColumnName="Label"/>

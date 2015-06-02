@@ -16,13 +16,13 @@
 			className="edu.wustl.catissuecore.domain.SpecimenPosition"
 			    
 			cardinality="*" roleName="specimenPositionCollection" >
-				<attribute name="positionDimensionOneString" csvColumnName="Position one"   />
-				<attribute name="positionDimensionTwoString" csvColumnName="Position two"   />
+				<attribute name="positionDimensionOneString" csvColumnName="Position One"   />
+				<attribute name="positionDimensionTwoString" csvColumnName="Position Two"   />
 				<referenceAssociation
 					className="edu.wustl.catissuecore.domain.StorageContainer"
 					    
 					 roleName="storageContainer" >
-						<attribute name="name" csvColumnName="Container name"   />
+						<attribute name="name" csvColumnName="Sample Box Name"   />
 				</referenceAssociation>			
 		</containmentAssociation>
 

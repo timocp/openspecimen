@@ -18,7 +18,7 @@
 			<referenceAssociation
 				className="edu.wustl.catissuecore.domain.CollectionProtocol"
 				   roleName="collectionProtocol"   >
-				<attribute name="title" csvColumnName="CP Title" defaultValue="ASIG Collection Protocol"  />
+				<attribute name="title" csvColumnName="CP Title"  />
 			</referenceAssociation>
 			<referenceAssociation
 				className="edu.wustl.catissuecore.domain.User"

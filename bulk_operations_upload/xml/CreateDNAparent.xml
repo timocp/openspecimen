@@ -8,7 +8,7 @@
 		</referenceAssociation>
 <referenceAssociation className="edu.wustl.catissuecore.domain.SpecimenCollectionGroup" roleName="specimenCollectionGroup">		
 	<referenceAssociation className="edu.wustl.catissuecore.domain.Site" roleName="specimenCollectionSite">
-		<attribute csvColumnName="Site" name="name"/>
+		<attribute csvColumnName="Site Name" name="name"/>
 	</referenceAssociation>
 	<referenceAssociation className="edu.wustl.catissuecore.domain.User" roleName="collector">
 					<attribute csvColumnName="Collected User Name" name="loginName"/>
@@ -31,9 +31,9 @@
 				<attribute csvColumnName="Activity Status" name="activityStatus" defaultValue="Active"/>
 	<referenceAssociation className="edu.wustl.catissuecore.domain.CollectionProtocolRegistration" roleName="collectionProtocolRegistration">
 		
-	<attribute csvColumnName="ASIG_ID" name="protocolParticipantIdentifier" />
+	<attribute csvColumnName="ASIG ID" name="protocolParticipantIdentifier" />
 	<referenceAssociation className="edu.wustl.catissuecore.domain.CollectionProtocol" roleName="collectionProtocol">
-		<attribute csvColumnName="CP Title" name="shortTitle" defaultValue="ASIG Collection Protocol"/>
+		<attribute csvColumnName="CP Title" name="shortTitle" />
 	</referenceAssociation>
 	</referenceAssociation>
 		
@@ -45,7 +45,7 @@
 				<attribute name="positionDimensionOneString" csvColumnName="Position One"   />
 				<attribute name="positionDimensionTwoString" csvColumnName="Position Two"   />
 				<referenceAssociation className="edu.wustl.catissuecore.domain.StorageContainer" roleName="storageContainer">
-					<attribute name="name" csvColumnName="Sample box"/>
+					<attribute name="name" csvColumnName="Sample Box Name"/>
 				</referenceAssociation>
 			</containmentAssociation>
 		<attribute name="label" csvColumnName="Label"/>
@@ -55,16 +55,17 @@
 		<attribute name="isAvailable" csvColumnName="Is Available"  />
 		<attribute name="collectionStatus" csvColumnName="Specimen Collection Status" defaultValue="Collected"/>
 		<attribute name="specimenClass" csvColumnName="Specimen Class"  defaultValue="Molecular" />
-		<attribute name="specimenType" csvColumnName="Sample type"   />
+		<attribute name="specimenType" csvColumnName="Sample type" defaultValue="DNA"  />
 		<attribute name="initialQuantity" csvColumnName="Initial Quantity" />
 		<attribute name="availableQuantity" csvColumnName="Available Quantity"  />
-		<attribute name="lineage" csvColumnName="Lineage"  />
+		<attribute name="lineage" csvColumnName="Lineage" defaultValue="New"/>
 		<attribute name="pathologicalStatus" csvColumnName="Pathological Status" defaultValue="Not Specified"   />
 		<attribute name="tissueSite" csvColumnName="Tissue Site"  defaultValue="Not Specified" />
 		<attribute name="tissueSide" csvColumnName="Tissue Side"  defaultValue="Not Specified" />
 		<attribute name="concentrationInMicrogramPerMicroliter" csvColumnName="Concentration"   />
-		<attribute name="dnaMethod" csvColumnName="Method"/>
+		<attribute name="dnaMethod" csvColumnName="Method" defaultValue="Not Specified" />
 		<attribute name="dna260" csvColumnName="260-280" />
+		<attribute csvColumnName="Freeze Thaw" name="thawCycle" defaultValue="0" />
 
 	</BulkOperationClass>
 </BulkOperationMetadata>

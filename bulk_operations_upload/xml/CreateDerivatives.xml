@@ -10,8 +10,8 @@
 			className="edu.wustl.catissuecore.domain.SpecimenPosition"
 			  
 			 roleName="specimenPosition"   >
-				<attribute name="positionDimensionOneString" csvColumnName="Position 1"   />
-				<attribute name="positionDimensionTwoString" csvColumnName="Position 2"   />
+				<attribute name="positionDimensionOneString" csvColumnName="Position One"   />
+				<attribute name="positionDimensionTwoString" csvColumnName="Position Two"   />
 				<referenceAssociation
 				className="edu.wustl.catissuecore.domain.StorageContainer"
 				  
@@ -37,8 +37,8 @@
 		<attribute name="lineage" csvColumnName="Lineage" defaultValue="Derived" />
 		<attribute name="pathologicalStatus" csvColumnName="Pathological Status" defaultValue="Not Specified" />
 		<attribute name="concentrationInMicrogramPerMicroliter" csvColumnName="Concentration"   />
-		
-		<attribute name="dnaMethod" csvColumnName="Method"/>
+		<attribute name="thawCycleIncrementBy" csvColumnName="Freeze thaw increment"   />		
+		<attribute name="dnaMethod" csvColumnName="Method" defaultValue="Not Specified" />
 		<attribute name="dna260" csvColumnName="260-280" />
 
 	</BulkOperationClass>

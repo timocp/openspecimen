@@ -23,10 +23,10 @@
 			className="edu.wustl.catissuecore.domain.StorageContainer"
 			 
 			  roleName="toStorageContainer"    >
-			<attribute name="name" csvColumnName="Destination Container Name"   />	
+			<attribute name="name" csvColumnName="Destination Sample Box Name"   />	
 		</containmentAssociation>
 		
-		<attribute name="toPositionDimensionOne" csvColumnName="Position1"   />	
-		<attribute name="toPositionDimensionTwo" csvColumnName="Position2"   />	
+		<attribute name="toPositionDimensionOne" csvColumnName="Position one"   />	
+		<attribute name="toPositionDimensionTwo" csvColumnName="Position two"   />	
 	</BulkOperationClass>
 </BulkOperationMetadata>

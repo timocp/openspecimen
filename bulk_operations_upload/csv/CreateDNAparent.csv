@@ -1,2 +1,2 @@
-ASIG_ID,Site,Parent Label,Lineage,Label,Sample box,Position One,Position Two,Initial Quantity,Available Quantity,Is Available,Sample type,Extraction Date,Concentration,260-280,Method,Comments,Collected User Name,Received User Name
-1_1,In Transit,Blood_1_1,New,lbr_14,Box_1,A,1,1,1,,TRUE,DNA,9-11-2014 10:12,0.607,1.2,OiaGen Salt Precipitation,Specimen comment,admin@admin.com,admin@admin.com
+ASIG ID,CP Title,Site Name,Label,Sample Box Name,Position One,Position Two,Initial Quantity,Available Quantity,Is Available,Extraction Date,Concentration,260-280,Method,Comments,Collected User Name,Received User Name
+1_1,Test Only,In Transit,Blood_1_1,New,lbr_14,Box_1,A,1,1,1,,TRUE,9-11-2014 10:12,0.607,1.2,OiaGen Salt Precipitation,Specimen comment,admin@admin.com,admin@admin.com
