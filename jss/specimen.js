@@ -836,7 +836,6 @@ function submitTabData(operation)
 		
 		if(morphologicalAbnormalityValue != null && morphologicalAbnormalityValue != "" &&  morphologicalAbnormalityValue != "Not Specified")
 		{
-		  value = morphologicalAbnormalityValue.substring(0,morphologicalAbnormalityValue.lastIndexOf("("));
 		  tabDataJSON["morphologicalAbnormality"] = value; 
 		}
 	

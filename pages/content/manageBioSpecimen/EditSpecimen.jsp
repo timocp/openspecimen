@@ -94,7 +94,8 @@
 	morphTree.enableThreeStateCheckboxes(false);
 	morphTree.deleteChildItems(0);
 	morphTree.attachEvent("onClick", function(id){
-		morphologicalAbnormalityValue = morphTree.getItemText(id);
+		value = morphTree.getItemText(id);
+		morphologicalAbnormalityValue = value.substring(0,value.lastIndexOf("("));
 		newMorphCombo.setComboText(morphTree.getItemText(id));
 		newMorphCombo.setComboValue(morphTree.getItemText(id));
 		newMorphCombo.DOMelem_input.title=morphTree.getItemText(id);
