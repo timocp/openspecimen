@@ -11,7 +11,7 @@
         lazy="true"
         table="CATISSUE_CONTAINER" >
 
-        <!-- cache usage="read-write" / -->
+        <cache usage="read-write" />
 
         <id
             name="id"
