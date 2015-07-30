@@ -154,6 +154,8 @@ public class MigrateForm {
 	private CSVWriter recordsLog;
 	
 	private int logEntriesCnt = 0;
+
+	private Long defaultRecordId = -2L;
 	
 	private Set<String> obsoleteTables = new HashSet<String>();
 	
@@ -486,7 +488,7 @@ public class MigrateForm {
 			}
 		} else {
 			logger.info("Date picker control refers to entity attribute that is not of date type " +
-					"Control name: " + oldCtrl.getCaption() + 
+					"Control name: " + oldCtrl.getCaption() +
 					", attribute id: " + oldCtrl.getBaseAbstractAttribute().getId());
 		}
 		
@@ -1060,7 +1062,7 @@ public class MigrateForm {
 		long t1 = System.currentTimeMillis();
 			
 		List<RecordObject> recAndObjectIds = getRecordAndObjectIds(info.getOldFormCtxId());
-		logger.info("Number of records to migrate for form : " + oldForm.getCaption() + "(" + oldForm.getId() + ")" + 
+		logger.info("Number of records to migrate for form : " + oldForm.getCaption() + "(" + oldForm.getId() + ")" +
 				" with form context id : " + info.getOldFormCtxId() + " is : " + recAndObjectIds.size());
 		if (recAndObjectIds.size() == 0) {
 			return;
@@ -1085,7 +1087,7 @@ public class MigrateForm {
 					", old container : " + oldForm.getId());
 		}
 		
-		logger.info("Using record ID column: " + recordIdCol + 
+		logger.info("Using record ID column: " + recordIdCol +
 				" for table: " + tableName +
 				" while migrating: " + oldForm.getId());
 		
@@ -1117,8 +1119,8 @@ public class MigrateForm {
 			}
 		}
 		
-		logger.info("Migrated records for form: " + oldForm.getCaption() + "(" + oldForm.getId() + ")" + 
-				", number of records = " + recAndObjectIds.size() + 
+		logger.info("Migrated records for form: " + oldForm.getCaption() + "(" + oldForm.getId() + ")" +
+				", number of records = " + recAndObjectIds.size() +
 				", time = " + (System.currentTimeMillis() - t1) / 1000 + " seconds"); 
 	}
 	
@@ -1363,10 +1365,20 @@ public class MigrateForm {
 		entityRecord.setId(entity.getId());
 		entityRecord.setName(entity.getName());
 		Long recordId = (Long)oldFormData.get(entityRecord);
+
 		if (recordId == null) {
 			logger.warn("Could not obtain record id in " + oldFormData);
 			logger.warn("Key used was: " + entity.getId() + ":" + entity.getName());
-			return null;
+
+			// Fallback Approach, if record id is not found then try with default key
+			logger.warn("Trying with default key: " + defaultRecordId + ":" + entity.getName());
+			entityRecord.setId(defaultRecordId);
+			recordId = (Long)oldFormData.get(entityRecord);
+
+			if (recordId == null) {
+				logger.warn("Could not obtain record id using default key");
+				return null;
+			}
 		}
 		
 		String tableName = attr.getEntity().getTableProperties().getName();
