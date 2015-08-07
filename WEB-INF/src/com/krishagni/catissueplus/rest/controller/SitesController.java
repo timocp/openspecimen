@@ -16,10 +16,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import com.krishagni.catissueplus.core.administrative.domain.Site;
 import com.krishagni.catissueplus.core.administrative.events.SiteDetail;
 import com.krishagni.catissueplus.core.administrative.events.SiteQueryCriteria;
 import com.krishagni.catissueplus.core.administrative.repository.SiteListCriteria;
 import com.krishagni.catissueplus.core.administrative.services.SiteService;
+import com.krishagni.catissueplus.core.audit.AuditService;
+import com.krishagni.catissueplus.core.audit.events.AuditDetail;
+import com.krishagni.catissueplus.core.audit.events.RequestAudit;
 import com.krishagni.catissueplus.core.common.events.DeleteEntityOp;
 import com.krishagni.catissueplus.core.common.events.DependentEntityDetail;
 import com.krishagni.catissueplus.core.common.events.RequestEvent;
@@ -34,6 +38,9 @@ public class SitesController {
 
 	@Autowired
 	private HttpServletRequest httpServletRequest;
+	
+	@Autowired
+	private AuditService auditSvc;
 	
 	@RequestMapping(method = RequestMethod.GET)
 	@ResponseStatus(HttpStatus.OK)
@@ -152,5 +159,25 @@ public class SitesController {
 		resp.throwErrorIfUnsuccessful();
 		
 		return resp.getPayload();
-	}	
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value="/{id}/audit-trail")
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody	
+	public List<AuditDetail> getAuditDetails(
+			@PathVariable("id") Long siteId,
+			@RequestParam(value = "maxRecs", required = false, defaultValue = "25") int maxRecs,
+			@RequestParam(value = "startAt", required = false, defaultValue = "0") int  startAt) {
+		
+		RequestAudit req = new RequestAudit();
+		req.setEntityType(Site.class.getSimpleName());
+		req.setEntityId(siteId);
+		req.setMaxRecs(maxRecs);
+		req.setStartAt(startAt);
+		
+		RequestEvent<RequestAudit> reqEvent = new RequestEvent<RequestAudit>(req);
+		ResponseEvent<List<AuditDetail>> resp = auditSvc.getDetailedAudit(reqEvent);
+		resp.throwErrorIfUnsuccessful();
+		return resp.getPayload();
+	}
 }

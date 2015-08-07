@@ -5,14 +5,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.krishagni.catissueplus.core.administrative.domain.Institute;
 import com.krishagni.catissueplus.core.administrative.domain.Site;
+import com.krishagni.catissueplus.core.administrative.domain.StorageContainer;
 import com.krishagni.catissueplus.core.administrative.domain.User;
 import com.krishagni.catissueplus.core.audit.AuditService;
 import com.krishagni.catissueplus.core.audit.domain.CustomRevisionEntity;
 import com.krishagni.catissueplus.core.audit.events.AuditDetail;
 import com.krishagni.catissueplus.core.audit.events.RequestAudit;
 import com.krishagni.catissueplus.core.audit.util.AuditUtil;
+import com.krishagni.catissueplus.core.biospecimen.domain.CollectionProtocol;
+import com.krishagni.catissueplus.core.biospecimen.domain.CollectionProtocolEvent;
+import com.krishagni.catissueplus.core.biospecimen.domain.CollectionProtocolRegistration;
+import com.krishagni.catissueplus.core.biospecimen.domain.Participant;
 import com.krishagni.catissueplus.core.biospecimen.domain.Specimen;
+import com.krishagni.catissueplus.core.biospecimen.domain.Visit;
 import com.krishagni.catissueplus.core.biospecimen.repository.DaoFactory;
 import com.krishagni.catissueplus.core.common.PlusTransactional;
 import com.krishagni.catissueplus.core.common.events.RequestEvent;
@@ -40,6 +47,14 @@ public class AuditServiceImpl implements AuditService{
 		final Map<String, String> auditTableMap = new HashMap<String, String>();
 		auditTableMap.put("SPECIMEN", "catissue_specimen_aud");
 		auditTableMap.put("SITE", "catissue_site_aud");
+		auditTableMap.put("COLLECTIONPROTOCOLEVENT", "catissue_coll_prot_event_aud");
+		auditTableMap.put("COLLECTIONPROTOCOLREGISTRATION", "catissue_coll_prot_reg_aud");
+		auditTableMap.put("COLLECTIONPROTOCOL", "cat_collection_protocol_aud");
+		auditTableMap.put("INSTITUTE", "catissue_institution_aud");
+		auditTableMap.put("PARTICIPANT", "catissue_participant_aud");
+		auditTableMap.put("STORAGECONTAINER", "os_storage_containers_aud");
+		auditTableMap.put("USER", "catissue_user_aud");
+		auditTableMap.put("VISIT", "cat_specimen_coll_group_aud");
 		
 		return auditTableMap;
 	}
@@ -48,6 +63,14 @@ public class AuditServiceImpl implements AuditService{
 		final Map<String, Class> classMap = new HashMap<String, Class>();
 		classMap.put("SPECIMEN", Specimen.class);
 		classMap.put("SITE", Site.class);
+		classMap.put("COLLECTIONPROTOCOLEVENT", CollectionProtocolEvent.class);
+		classMap.put("COLLECTIONPROTOCOLREGISTRATION", CollectionProtocolRegistration.class);
+		classMap.put("COLLECTIONPROTOCOL", CollectionProtocol.class);
+		classMap.put("INSTITUTE", Institute.class);
+		classMap.put("PARTICIPANT", Participant.class);
+		classMap.put("STORAGECONTAINER", StorageContainer.class);
+		classMap.put("USER", User.class);
+		classMap.put("VISIT", Visit.class);
 		
 		return classMap;
 	}
