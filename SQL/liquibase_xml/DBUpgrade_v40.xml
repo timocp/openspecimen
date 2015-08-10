@@ -3251,7 +3251,7 @@ PROCEDURE DEL_DUP_SCG_REC_EVENTS
 	<sql>commit;</sql>
     </changeSet>
 
-    <changeSet id="CPR_VIEW INCLUDING PARTICIPANT MIDDLE_NAME AND CONSENT_DOC_URL" author="mibrahim" failOnError="true" runOnChange="true">
+    <changeSet id="CPR_VIEW INCLUDING PARTICIPANT MIDDLE_NAME AND CONSENT_DOC_URL" author="mibrahim" runOnChange="true">
         <sql>CREATE OR REPLACE VIEW cpr_view AS 
 
             (select cpr.IDENTIFIER AS CPR_ID,cpr.COLLECTION_PROTOCOL_ID AS CP_ID, cpr.PARTICIPANT_ID AS PARTICIPANT_ID,
