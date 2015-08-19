@@ -32,6 +32,10 @@ public class AuditServiceImpl implements AuditService{
 	
 	private AuditUtil auditUtil;
 	
+	private static Map<String, String> entityAuditTableMap = getEntityAuditTableMap();
+	
+	private static Map<String, Class> entityClassMap = getEntityClassMap();
+	
 	public void setDaoFactory(DaoFactory daoFactory) {
 		this.daoFactory = daoFactory;
 	}
@@ -39,47 +43,12 @@ public class AuditServiceImpl implements AuditService{
 	public void setAuditUtil(AuditUtil auditUtil) {
 		this.auditUtil = auditUtil;
 	}
-
-	private static Map<String, String> entityAuditTableMap = getEntityAuditTableMap();
-	private static Map<String, Class> entityClassMap = getEntityClassMap();
-
-	private static Map<String, String> getEntityAuditTableMap() {
-		final Map<String, String> auditTableMap = new HashMap<String, String>();
-		auditTableMap.put("SPECIMEN", "catissue_specimen_aud");
-		auditTableMap.put("SITE", "catissue_site_aud");
-		auditTableMap.put("COLLECTIONPROTOCOLEVENT", "catissue_coll_prot_event_aud");
-		auditTableMap.put("COLLECTIONPROTOCOLREGISTRATION", "catissue_coll_prot_reg_aud");
-		auditTableMap.put("COLLECTIONPROTOCOL", "cat_collection_protocol_aud");
-		auditTableMap.put("INSTITUTE", "catissue_institution_aud");
-		auditTableMap.put("PARTICIPANT", "catissue_participant_aud");
-		auditTableMap.put("STORAGECONTAINER", "os_storage_containers_aud");
-		auditTableMap.put("USER", "catissue_user_aud");
-		auditTableMap.put("VISIT", "cat_specimen_coll_group_aud");
-		
-		return auditTableMap;
-	}
-	
-	private static Map<String, Class> getEntityClassMap() {
-		final Map<String, Class> classMap = new HashMap<String, Class>();
-		classMap.put("SPECIMEN", Specimen.class);
-		classMap.put("SITE", Site.class);
-		classMap.put("COLLECTIONPROTOCOLEVENT", CollectionProtocolEvent.class);
-		classMap.put("COLLECTIONPROTOCOLREGISTRATION", CollectionProtocolRegistration.class);
-		classMap.put("COLLECTIONPROTOCOL", CollectionProtocol.class);
-		classMap.put("INSTITUTE", Institute.class);
-		classMap.put("PARTICIPANT", Participant.class);
-		classMap.put("STORAGECONTAINER", StorageContainer.class);
-		classMap.put("USER", User.class);
-		classMap.put("VISIT", Visit.class);
-		
-		return classMap;
-	}
 	
 	@Override
 	@PlusTransactional
 	public ResponseEvent<List<AuditDetail>> getDetailedAudit(RequestEvent<RequestAudit> req) {
 		RequestAudit reqEntity = req.getPayload();
-		
+
 		return ResponseEvent.response(getEntityDetailedAudit(reqEntity));
 	}
 
@@ -132,10 +101,12 @@ public class AuditServiceImpl implements AuditService{
 	
 	private void addGenericDetails(AuditDetail revDetails, String auditTable, Long entityId, Long current) {
 		CustomRevisionEntity lastModifiedDetails;
-		if(auditTable != null)
+		
+		if(auditTable != null){
 			lastModifiedDetails = daoFactory.getAuditDao().getEntityModifiedDetails(auditTable, entityId, current);
-		else 
+		} else { 
 			lastModifiedDetails = daoFactory.getAuditDao().getSubjectRoleLastModifiedDetails(entityId, current);
+		}
 		
 		revDetails.setRevisionId(current);
 		User user = daoFactory.getUserDao().getById(lastModifiedDetails.getUserId());
@@ -146,14 +117,47 @@ public class AuditServiceImpl implements AuditService{
 	
 	private List<Map<String, Object>> getChangeSet(Object currentEntity, Object prevEntity, boolean isSubjeRole) {
 		try {
-			if(!isSubjeRole)
-				return auditUtil.compareObjects(prevEntity, currentEntity);
-			else
+			if(isSubjeRole){
 				return auditUtil.compareSubjectRole(prevEntity, currentEntity);
+			} else {
+				return auditUtil.compareObjects(prevEntity, currentEntity);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	private static Map<String, String> getEntityAuditTableMap() {
+		final Map<String, String> auditTableMap = new HashMap<String, String>();
+		auditTableMap.put("SPECIMEN", "catissue_specimen_aud");
+		auditTableMap.put("SITE", "catissue_site_aud");
+		auditTableMap.put("COLLECTIONPROTOCOLEVENT", "catissue_coll_prot_event_aud");
+		auditTableMap.put("COLLECTIONPROTOCOLREGISTRATION", "catissue_coll_prot_reg_aud");
+		auditTableMap.put("COLLECTIONPROTOCOL", "cat_collection_protocol_aud");
+		auditTableMap.put("INSTITUTE", "catissue_institution_aud");
+		auditTableMap.put("PARTICIPANT", "catissue_participant_aud");
+		auditTableMap.put("STORAGECONTAINER", "os_storage_containers_aud");
+		auditTableMap.put("USER", "catissue_user_aud");
+		auditTableMap.put("VISIT", "cat_specimen_coll_group_aud");
+		
+		return auditTableMap;
+	}
+	
+	private static Map<String, Class> getEntityClassMap() {
+		final Map<String, Class> classMap = new HashMap<String, Class>();
+		classMap.put("SPECIMEN", Specimen.class);
+		classMap.put("SITE", Site.class);
+		classMap.put("COLLECTIONPROTOCOLEVENT", CollectionProtocolEvent.class);
+		classMap.put("COLLECTIONPROTOCOLREGISTRATION", CollectionProtocolRegistration.class);
+		classMap.put("COLLECTIONPROTOCOL", CollectionProtocol.class);
+		classMap.put("INSTITUTE", Institute.class);
+		classMap.put("PARTICIPANT", Participant.class);
+		classMap.put("STORAGECONTAINER", StorageContainer.class);
+		classMap.put("USER", User.class);
+		classMap.put("VISIT", Visit.class);
+		
+		return classMap;
 	}
 	
 }

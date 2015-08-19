@@ -38,7 +38,7 @@ public class AuditDaoImpl extends AbstractDao<CustomRevisionEntity> implements A
 		}
 		String sql = String.format(GET_ENTITY_LAST_MODIFIED_DETAILS_SQL, auditTable, whereClause);
 		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql)
-				.setLong("entityId", entityId);
+			.setLong("entityId", entityId);
 
 		if (rev != null) {
 			query.setLong("rev", rev);
@@ -57,6 +57,7 @@ public class AuditDaoImpl extends AbstractDao<CustomRevisionEntity> implements A
 				.setLong("identifier", entityId)
 				.list();
 	}
+	
 	private CustomRevisionEntity getRevisionEntity(Object[] row) {
 		CustomRevisionEntity revisionEntity = new CustomRevisionEntity();
 		revisionEntity.setIdentifier(Integer.valueOf(row[0].toString()));
@@ -73,8 +74,8 @@ public class AuditDaoImpl extends AbstractDao<CustomRevisionEntity> implements A
 	public Long getRevision(String auditTable, Long entityId) {
 		String sql = String.format(GET_REVISION_ID_SQL, auditTable);
 		return Long.valueOf((sessionFactory.getCurrentSession()
-				.createSQLQuery(sql)
-				.setLong("entityId", entityId).list().get(0).toString()));
+			.createSQLQuery(sql)
+			.setLong("entityId", entityId).list().get(0).toString()));
 	}
 	
 	@Override
@@ -87,8 +88,8 @@ public class AuditDaoImpl extends AbstractDao<CustomRevisionEntity> implements A
 		
 		String sql = String.format(GET_SUBJECT_ROLE_LAST_MODIFIED_SQL, whereClause);
 		Query query = sessionFactory.getCurrentSession()
-						.createSQLQuery(sql)
-						.setLong("dsoId", dsoId);
+				.createSQLQuery(sql)
+				.setLong("dsoId", dsoId);
 		
 		if(rev != null) {
 			query.setLong("rev", rev);

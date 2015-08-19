@@ -21,6 +21,8 @@ import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.proxy.HibernateProxy;
 
 import com.krishagni.catissueplus.core.administrative.domain.Site;
+import com.krishagni.catissueplus.core.administrative.domain.User;
+import com.krishagni.catissueplus.core.biospecimen.domain.CollectionProtocolRegistration;
 import com.krishagni.catissueplus.core.biospecimen.domain.Specimen;
 import com.krishagni.catissueplus.core.biospecimen.repository.DaoFactory;
 import com.krishagni.catissueplus.core.biospecimen.repository.impl.DaoFactoryImpl;
@@ -33,11 +35,56 @@ public class AuditUtil {
 
 	private String baseClass;
 
-	private HashMap<String, List> entityAggregateMap = new HashMap<String, List>();
+	private static Map<String, List<String>> entityAggregateMap = getEntityAggrMap();
 
 	private HashMap<Class, Long> aggregateClassIdMap = new HashMap<Class, Long>();
 
 	private final Set<String> excludedProperties = getExcludedProperties();
+	
+	private static Map<String, List<String>> getEntityAggrMap() {
+		
+		List<String> userAggregate = new ArrayList<String>();
+		userAggregate.add("AuthDomain");
+		userAggregate.add("Department");
+		
+		List<String> instAggregate = new ArrayList<String>();
+		instAggregate.add("Department");
+		
+		List<String> siteAggregate = new ArrayList<String>();
+		siteAggregate.add("User");
+		siteAggregate.add("Institute");
+		
+		List<String> cpAggregate = new ArrayList<String>();
+		cpAggregate.add("User");
+		cpAggregate.add("Site");
+		
+		List<String> partAggregate = new ArrayList<String>();
+		partAggregate.add("ParticipantMedicalIdentifier");
+		partAggregate.add("CollectionProtocolRegistration");
+		
+		List<String> cprAggregate = new ArrayList<String>();
+		cprAggregate.add("User");
+		cprAggregate.add("ConsentTierResponse");
+		
+		List<String> visitAggregate = new ArrayList<String>();
+		visitAggregate.add("CollectionProtocolRegistration");
+		
+		List<String> specimenAggregate = new ArrayList<String>();
+		specimenAggregate.add("StorageContainerPosition");
+		specimenAggregate.add("ExternalIdentifier");
+		
+		Map<String, List<String>> entityAggregateMap = new HashMap<String, List<String>>();
+		entityAggregateMap.put("User", userAggregate);
+		entityAggregateMap.put("Institute", instAggregate);
+		entityAggregateMap.put("Site", siteAggregate);
+		entityAggregateMap.put("CollectionProtocol", cpAggregate);
+		entityAggregateMap.put("Participant", partAggregate);
+		entityAggregateMap.put("CollectionProtocolRegistration", cprAggregate);
+		entityAggregateMap.put("Visit", visitAggregate);
+		entityAggregateMap.put("Specimen", specimenAggregate);
+		
+		return entityAggregateMap;
+	}
 	
 	private void setBaseClass(String baseClass) {
 		this.baseClass = baseClass;
@@ -186,7 +233,7 @@ public class AuditUtil {
 		try {
 				Object oldVal;
 				Object newVal;
-
+				System.out.println("qualifiedName : "+ qualifiedName);
 				if (isAggregateCollection(oldObj) || isAggregateCollection(newObj)) {
 					oldVal = getAggregareCollection(oldObj);
 					newVal = getAggregareCollection(newObj);
@@ -244,8 +291,12 @@ public class AuditUtil {
 			if (getBaseClass().equals(obj.getClass().getSimpleName())) {
 				return null;
 			}
-
+			
 			Map<String, Object> objMap = new HashMap<String, Object>();
+			
+			if(!isSimpleObject(obj)){
+				
+			
 			BeanMap map = new BeanMap(obj);
 			for (Object propNameObject : map.keySet()) {
 				String propertyName = (String) propNameObject;
@@ -264,6 +315,8 @@ public class AuditUtil {
 					objMap.put(propertyName, relatedObjName);
 				}
 			}
+			}
+			objMap.put("name", obj);
 			objList.add(objMap);
 		}
 		return objList;
@@ -293,15 +346,19 @@ public class AuditUtil {
 		}
 
 		List<String> names = new ArrayList<String>();
-		names.add("name");
+		names.add("id");
 
 		if (obj instanceof Specimen) {
 			names.clear();
-			names.add("range");
+			names.add("label");
 		} else if (obj instanceof Site) {
+			names.clear();
+			names.add("name");
+		} else if (obj instanceof User) {
 			names.clear();
 			names.add("firstName");
 			names.add("lastName");
+			names.add("loginName");
 		}  else {
 			System.out.println("Object name not found " + obj.getClass().getSimpleName());
 		}
