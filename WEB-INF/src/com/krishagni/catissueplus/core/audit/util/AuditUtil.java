@@ -118,11 +118,6 @@ public class AuditUtil {
 
 	}
 
-	public AuditQuery getSubjectRoleRevisionInstance(Integer current, Long dsoId) {
-		//TODO: Should we replace this with native sql
-		return daoFactory.getAuditDao().getAuditReader().createQuery().forEntitiesAtRevision(SubjectRole.class, current);
-	}
-	
 	private Set<String> getExcludedProperties() {
 		final Set<String> prop = new HashSet<String>();
 		prop.add("class");
@@ -152,18 +147,6 @@ public class AuditUtil {
 		}
 		
 		return entity;
-	}
-	
-	public List<Map<String, Object>> compareSubjectRole(Object oldObject, Object newObject) {
-		List<Map<String, Object>> changeSet = new ArrayList<Map<String, Object>>();
-		
-		if (newObject != null) {
-			String className = SubjectRole.class.getSimpleName();
-			setBaseClass(className);
-			Object collectionsChangeSet = getCollectionsChangeSet(oldObject, newObject, className);
-			addToChangeSet(changeSet, collectionsChangeSet);
-		}
-		return changeSet;
 	}
 	
 	public List<Map<String, Object>> compareObjects(Object oldObject, Object newObject) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
@@ -273,7 +256,7 @@ public class AuditUtil {
 	}
 
 	private Object getValueCollection(Object valueObj) throws Exception {
-		Set<Map> objList = new HashSet<Map>();
+		Collection<Map> objList = new HashSet<Map>();
 		if ((!(valueObj instanceof Set)) || valueObj == null || ((Set) valueObj).size() == 0) {
 			return null;
 		}

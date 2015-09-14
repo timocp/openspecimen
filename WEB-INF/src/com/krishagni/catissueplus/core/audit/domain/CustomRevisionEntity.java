@@ -8,11 +8,12 @@ import com.krishagni.catissueplus.core.common.util.AuthUtil;
 
 
 public class CustomRevisionEntity extends BaseEntity{
+
 	@RevisionNumber
-	private int identifier;
+	private Integer identifier;
 
 	@RevisionTimestamp
-	private long timestamp;
+	private Long timestamp;
 
 	private Long userId;
 	
@@ -35,9 +36,6 @@ public class CustomRevisionEntity extends BaseEntity{
 	}
 
 	public Long getUserId() {
-		if (userId == null) {
-			setUserId(AuthUtil.getCurrentUser().getId());
-		}
 		return userId;
 	}
 
@@ -45,15 +43,12 @@ public class CustomRevisionEntity extends BaseEntity{
 		this.userId = userId;
 	}
 
-	
 	public String getAction() {
 		return action;
 	}
 
-	
 	public void setAction(String action) {
 		this.action = action;
 	}
-	
 	
 }

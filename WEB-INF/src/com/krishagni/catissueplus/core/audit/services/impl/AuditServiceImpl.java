@@ -78,7 +78,7 @@ public class AuditServiceImpl implements AuditService{
 			Object currentRevision = auditUtil.getRevisionInstance(klass, current, entityId).getSingleResult();
 			Object prevRevision = auditUtil.getRevisionInstance(klass, prev, entityId).getSingleResult();
 			
-			List<Map<String, Object>> changeSet = getChangeSet(currentRevision, prevRevision, false);
+			List<Map<String, Object>> changeSet = getChangeSet(currentRevision, prevRevision);
 
 			if (changeSet.size() > 0) {
 				revDetails.setModifiedAttrs(changeSet);
@@ -115,13 +115,9 @@ public class AuditServiceImpl implements AuditService{
 		revDetails.setAction(lastModifiedDetails.getAction());
 	}
 	
-	private List<Map<String, Object>> getChangeSet(Object currentEntity, Object prevEntity, boolean isSubjeRole) {
+	private List<Map<String, Object>> getChangeSet(Object currentEntity, Object prevEntity) {
 		try {
-			if(isSubjeRole){
-				return auditUtil.compareSubjectRole(prevEntity, currentEntity);
-			} else {
 				return auditUtil.compareObjects(prevEntity, currentEntity);
-			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -132,12 +128,12 @@ public class AuditServiceImpl implements AuditService{
 		final Map<String, String> auditTableMap = new HashMap<String, String>();
 		auditTableMap.put("SPECIMEN", "catissue_specimen_aud");
 		auditTableMap.put("SITE", "catissue_site_aud");
-		auditTableMap.put("COLLECTIONPROTOCOLEVENT", "catissue_coll_prot_event_aud");
-		auditTableMap.put("COLLECTIONPROTOCOLREGISTRATION", "catissue_coll_prot_reg_aud");
-		auditTableMap.put("COLLECTIONPROTOCOL", "cat_collection_protocol_aud");
+		auditTableMap.put("COLLECTION_PROTOCOL_EVENT", "catissue_coll_prot_event_aud");
+		auditTableMap.put("COLLECTION_PROTOCOL_REGISTRATION", "catissue_coll_prot_reg_aud");
+		auditTableMap.put("COLLECTIO_NPROTOCOL", "cat_collection_protocol_aud");
 		auditTableMap.put("INSTITUTE", "catissue_institution_aud");
 		auditTableMap.put("PARTICIPANT", "catissue_participant_aud");
-		auditTableMap.put("STORAGECONTAINER", "os_storage_containers_aud");
+		auditTableMap.put("STORAGE_CONTAINER", "os_storage_containers_aud");
 		auditTableMap.put("USER", "catissue_user_aud");
 		auditTableMap.put("VISIT", "cat_specimen_coll_group_aud");
 		
@@ -148,12 +144,12 @@ public class AuditServiceImpl implements AuditService{
 		final Map<String, Class> classMap = new HashMap<String, Class>();
 		classMap.put("SPECIMEN", Specimen.class);
 		classMap.put("SITE", Site.class);
-		classMap.put("COLLECTIONPROTOCOLEVENT", CollectionProtocolEvent.class);
-		classMap.put("COLLECTIONPROTOCOLREGISTRATION", CollectionProtocolRegistration.class);
-		classMap.put("COLLECTIONPROTOCOL", CollectionProtocol.class);
+		classMap.put("COLLECTION_PROTOCOL_EVENT", CollectionProtocolEvent.class);
+		classMap.put("COLLECTION_PROTOCOL_REGISTRATION", CollectionProtocolRegistration.class);
+		classMap.put("COLLECTION_PROTOCOL", CollectionProtocol.class);
 		classMap.put("INSTITUTE", Institute.class);
 		classMap.put("PARTICIPANT", Participant.class);
-		classMap.put("STORAGECONTAINER", StorageContainer.class);
+		classMap.put("STORAGE_CONTAINER", StorageContainer.class);
 		classMap.put("USER", User.class);
 		classMap.put("VISIT", Visit.class);
 		
