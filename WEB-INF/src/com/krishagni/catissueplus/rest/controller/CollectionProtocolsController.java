@@ -30,6 +30,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+import com.krishagni.catissueplus.core.audit.AuditService;
+import com.krishagni.catissueplus.core.audit.events.AuditDetail;
+import com.krishagni.catissueplus.core.audit.events.RequestAudit;
+import com.krishagni.catissueplus.core.biospecimen.domain.CollectionProtocol;
+import com.krishagni.catissueplus.core.biospecimen.domain.Specimen;
 import com.krishagni.catissueplus.core.biospecimen.events.CollectionProtocolDetail;
 import com.krishagni.catissueplus.core.biospecimen.events.CollectionProtocolSummary;
 import com.krishagni.catissueplus.core.biospecimen.events.ConsentTierDetail;
@@ -64,6 +69,9 @@ public class CollectionProtocolsController {
 
 	@Autowired
 	private HttpServletRequest httpServletRequest;
+	
+	@Autowired
+	private AuditService auditSvc;
 
 	@RequestMapping(method = RequestMethod.GET)
 	@ResponseStatus(HttpStatus.OK)
@@ -354,6 +362,25 @@ public class CollectionProtocolsController {
 		resp.throwErrorIfUnsuccessful();
 		
 		return CollectionUtils.isNotEmpty(resp.getPayload()) ? resp.getPayload().get(0) : null;
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value="/{id}/audit-trail")
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody	
+	public List<AuditDetail> getAuditDetails(
+			@PathVariable("id") Long cpId,
+			@RequestParam(value = "maxRecs", required = false, defaultValue = "25") int maxRecs,
+			@RequestParam(value = "startAt", required = false, defaultValue = "0") int  startAt) {
+		
+		RequestAudit req = new RequestAudit();
+		req.setEntityType(CollectionProtocol.class.getSimpleName());
+		req.setEntityId(cpId);
+		req.setMaxRecs(maxRecs);
+		req.setStartAt(startAt);
+		
+		ResponseEvent<List<AuditDetail>> resp = auditSvc.getDetailedAudit(getRequest(req));
+		resp.throwErrorIfUnsuccessful();
+		return resp.getPayload();
 	}
 	
 	private ConsentTierDetail performConsentTierOp(OP op, Long cpId, ConsentTierDetail consentTier) {

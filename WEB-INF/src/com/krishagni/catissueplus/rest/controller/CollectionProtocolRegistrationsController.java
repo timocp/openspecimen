@@ -22,6 +22,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.krishagni.catissueplus.core.audit.AuditService;
+import com.krishagni.catissueplus.core.audit.events.AuditDetail;
+import com.krishagni.catissueplus.core.audit.events.RequestAudit;
+import com.krishagni.catissueplus.core.biospecimen.domain.CollectionProtocolRegistration;
 import com.krishagni.catissueplus.core.biospecimen.events.CollectionProtocolRegistrationDetail;
 import com.krishagni.catissueplus.core.biospecimen.events.ConsentDetail;
 import com.krishagni.catissueplus.core.biospecimen.events.ConsentFormDetail;
@@ -57,6 +61,9 @@ public class CollectionProtocolRegistrationsController {
 	
 	@Autowired
 	private HttpServletRequest httpReq;
+	
+	@Autowired
+	private AuditService auditSvc;
 	
 	
 	@RequestMapping(method = RequestMethod.GET)
@@ -289,6 +296,25 @@ public class CollectionProtocolRegistrationsController {
 		ResponseEvent<List<FormRecordsList>> resp = formSvc.getFormRecords(getRequest(opDetail));
 		resp.throwErrorIfUnsuccessful();
 		return resp.getPayload();				
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value="/{id}/audit-trail")
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody	
+	public List<AuditDetail> getAuditDetails(
+			@PathVariable("id") Long cprId,
+			@RequestParam(value = "maxRecs", required = false, defaultValue = "25") int maxRecs,
+			@RequestParam(value = "startAt", required = false, defaultValue = "0") int  startAt) {
+		
+		RequestAudit req = new RequestAudit();
+		req.setEntityType(CollectionProtocolRegistration.class.getSimpleName());
+		req.setEntityId(cprId);
+		req.setMaxRecs(maxRecs);
+		req.setStartAt(startAt);
+		
+		ResponseEvent<List<AuditDetail>> resp = auditSvc.getDetailedAudit(getRequest(req));
+		resp.throwErrorIfUnsuccessful();
+		return resp.getPayload();
 	}
 	
 	private RequestEvent<RegistrationQueryCriteria> getRegQueryReq(Long cprId) {

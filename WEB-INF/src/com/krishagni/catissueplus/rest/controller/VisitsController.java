@@ -21,6 +21,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.krishagni.catissueplus.core.audit.AuditService;
+import com.krishagni.catissueplus.core.audit.events.AuditDetail;
+import com.krishagni.catissueplus.core.audit.events.RequestAudit;
+import com.krishagni.catissueplus.core.biospecimen.domain.Visit;
 import com.krishagni.catissueplus.core.biospecimen.events.FileDetail;
 import com.krishagni.catissueplus.core.biospecimen.events.SprDetail;
 import com.krishagni.catissueplus.core.biospecimen.events.SprLockDetail;
@@ -61,6 +65,9 @@ public class VisitsController {
 	
 	@Autowired
 	private FormService formSvc;
+	
+	@Autowired
+	private AuditService auditSvc;
 	
 	
 	@RequestMapping(method = RequestMethod.GET)
@@ -292,6 +299,25 @@ public class VisitsController {
 		ResponseEvent<List<FormRecordsList>> resp = formSvc.getFormRecords(getRequest(opDetail));
 		resp.throwErrorIfUnsuccessful();
 		return resp.getPayload();				
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value="/{id}/audit-trail")
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody	
+	public List<AuditDetail> getAuditDetails(
+			@PathVariable("id") Long visitId,
+			@RequestParam(value = "maxRecs", required = false, defaultValue = "25") int maxRecs,
+			@RequestParam(value = "startAt", required = false, defaultValue = "0") int  startAt) {
+		
+		RequestAudit req = new RequestAudit();
+		req.setEntityType(Visit.class.getSimpleName());
+		req.setEntityId(visitId);
+		req.setMaxRecs(maxRecs);
+		req.setStartAt(startAt);
+		
+		ResponseEvent<List<AuditDetail>> resp = auditSvc.getDetailedAudit(getRequest(req));
+		resp.throwErrorIfUnsuccessful();
+		return resp.getPayload();
 	}
 	
 	private RequestEvent<EntityQueryCriteria> getVisitQueryReq(Long visitId) {

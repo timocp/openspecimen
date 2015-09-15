@@ -16,6 +16,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import com.krishagni.catissueplus.core.audit.AuditService;
+import com.krishagni.catissueplus.core.audit.events.AuditDetail;
+import com.krishagni.catissueplus.core.audit.events.RequestAudit;
+import com.krishagni.catissueplus.core.biospecimen.domain.Participant;
 import com.krishagni.catissueplus.core.biospecimen.events.MatchedParticipant;
 import com.krishagni.catissueplus.core.biospecimen.events.ParticipantDetail;
 import com.krishagni.catissueplus.core.biospecimen.services.ParticipantService;
@@ -30,6 +34,9 @@ public class ParticipantController {
 
 	@Autowired
 	private ParticipantService participantSvc;
+	
+	@Autowired
+	private AuditService auditSvc;
 
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}")
 	@ResponseStatus(HttpStatus.OK)
@@ -75,6 +82,25 @@ public class ParticipantController {
 	@ResponseBody
 	public List<MatchedParticipant> getMatchedParticipants(@RequestBody ParticipantDetail criteria) {
 		ResponseEvent<List<MatchedParticipant>> resp = participantSvc.getMatchingParticipants(getRequest(criteria));
+		resp.throwErrorIfUnsuccessful();
+		return resp.getPayload();
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value="/{id}/audit-trail")
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody	
+	public List<AuditDetail> getAuditDetails(
+			@PathVariable("id") Long participantId,
+			@RequestParam(value = "maxRecs", required = false, defaultValue = "25") int maxRecs,
+			@RequestParam(value = "startAt", required = false, defaultValue = "0") int  startAt) {
+		
+		RequestAudit req = new RequestAudit();
+		req.setEntityType(Participant.class.getSimpleName());
+		req.setEntityId(participantId);
+		req.setMaxRecs(maxRecs);
+		req.setStartAt(startAt);
+		
+		ResponseEvent<List<AuditDetail>> resp = auditSvc.getDetailedAudit(getRequest(req));
 		resp.throwErrorIfUnsuccessful();
 		return resp.getPayload();
 	}

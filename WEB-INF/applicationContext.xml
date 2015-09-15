@@ -671,6 +671,15 @@
     <property name="dataSource" ref="dataSource"/>
   </bean>
   
+  <bean id="auditUtil" class="com.krishagni.catissueplus.core.audit.util.AuditUtil">
+    <property name="daoFactory" ref="biospecimenDaoFactory"/>
+  </bean>
+  
+  <bean id="auditSvc" class="com.krishagni.catissueplus.core.audit.services.impl.AuditServiceImpl">
+    <property name="daoFactory" ref="biospecimenDaoFactory"/>
+    <property name="auditUtil" ref="auditUtil"/>
+  </bean>
+
   <task:scheduler id="taskScheduler" pool-size="1"/>
   <task:annotation-driven scheduler="taskScheduler"/>
   <context:annotation-config/>
