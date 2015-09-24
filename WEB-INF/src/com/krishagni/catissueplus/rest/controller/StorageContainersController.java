@@ -261,11 +261,9 @@ public class StorageContainersController {
 			Long containerId,
 			
 			@RequestBody
-			List<StorageContainerPositionDetail> positions) {
+			AssignPositionsOp detail) {
 		
-		AssignPositionsOp detail = new AssignPositionsOp();
 		detail.setContainerId(containerId);
-		detail.setPositions(positions);
 		
 		RequestEvent<AssignPositionsOp> req = new RequestEvent<AssignPositionsOp>(detail);
 		ResponseEvent<List<StorageContainerPositionDetail>> resp = storageContainerSvc.assignPositions(req);

@@ -53,7 +53,7 @@ public interface DaoFactory {
 	
 	public LabelPrintJobDao getLabelPrintJobDao();
 	
-	public SpecimenQuantityUnitDao getSpecimenQuantityUnitDao();
+	public SpecimenUnitDao getSpecimenUnitDao();
 	
 	public AuditDao getAuditDao();
 }

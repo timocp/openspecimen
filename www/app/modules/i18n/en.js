@@ -169,8 +169,8 @@
 
     "bulk_import_biospecimen_obj_jobs": "Import Biospecimen Objects Job List",
 
-    "show_site_coding": "More Site Code Information",
-    "hide_site_coding": "Less Site Code Information",
+    "show_site_coding": "Show Site Code Information",
+    "hide_site_coding": "Hide Site Code Information",
 
     "tab": {
       "overview": "Overview",
@@ -830,6 +830,7 @@
     "stores_specimens": "Stores Specimens",
     "confirm_delete": "{{entityType}} {{entityName}} and its child containers will be deleted forever. Are you sure you want to proceed?",
     "assign_positions": "Assign Positions",
+    "vacate_positions": "Vacate existing specimens",
     "paste_specimen_labels": "Paste or input specimen labels separated by comma/tab/newline",
     "no_free_locs": "Container does not have enough free locations to accommodate input specimen labels",
     "replicated_successfully": "Container {{name}} replicated successfully",

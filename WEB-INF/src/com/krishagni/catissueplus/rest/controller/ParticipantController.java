@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -25,6 +26,10 @@ import com.krishagni.catissueplus.core.biospecimen.events.ParticipantDetail;
 import com.krishagni.catissueplus.core.biospecimen.services.ParticipantService;
 import com.krishagni.catissueplus.core.common.events.RequestEvent;
 import com.krishagni.catissueplus.core.common.events.ResponseEvent;
+import com.krishagni.catissueplus.core.de.events.FormCtxtSummary;
+import com.krishagni.catissueplus.core.de.events.ListEntityFormsOp;
+import com.krishagni.catissueplus.core.de.events.ListEntityFormsOp.EntityType;
+import com.krishagni.catissueplus.core.de.services.FormService;
 
 @Controller
 @RequestMapping("/participants")
@@ -37,6 +42,9 @@ public class ParticipantController {
 	
 	@Autowired
 	private AuditService auditSvc;
+	
+	@Autowired
+	private FormService formSvc;
 
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}")
 	@ResponseStatus(HttpStatus.OK)
@@ -103,6 +111,20 @@ public class ParticipantController {
 		ResponseEvent<List<AuditDetail>> resp = auditSvc.getDetailedAudit(getRequest(req));
 		resp.throwErrorIfUnsuccessful();
 		return resp.getPayload();
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value="/extension-form")
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody
+	public FormCtxtSummary getForm() {
+		ListEntityFormsOp op = new ListEntityFormsOp();
+		op.setEntityType(EntityType.PARTICIPANT_EXTN); 
+        
+		RequestEvent<ListEntityFormsOp> req = new RequestEvent<ListEntityFormsOp>(op);
+		ResponseEvent<List<FormCtxtSummary>> resp = formSvc.getEntityForms(req);
+		resp.throwErrorIfUnsuccessful();
+		
+		return CollectionUtils.isNotEmpty(resp.getPayload()) ? resp.getPayload().get(0) : null;
 	}
 
 	private <T> RequestEvent<T> getRequest(T payload) {

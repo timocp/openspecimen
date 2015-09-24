@@ -59,7 +59,7 @@ public class Specimen extends BaseEntity {
 
 	private String specimenType;
 
-	private Double concentration;
+	private BigDecimal concentration;
 
 	private String label;
 
@@ -199,11 +199,11 @@ public class Specimen extends BaseEntity {
 		this.specimenType = specimenType;
 	}
 
-	public Double getConcentration() {
+	public BigDecimal getConcentration() {
 		return concentration;
 	}
 
-	public void setConcentration(Double concentration) {
+	public void setConcentration(BigDecimal concentration) {
 		if (concentrationInit) {
 			if (this.concentration == concentration) {
 				return;
@@ -830,6 +830,10 @@ public class Specimen extends BaseEntity {
 	}
 	
 	public void updatePosition(StorageContainerPosition newPosition) {
+		if (newPosition != null && newPosition.getPosOneOrdinal() == 0 && newPosition.getPosTwoOrdinal() == 0) {
+			newPosition = null;
+		}
+
 		transferTo(newPosition, null);
 	}
 	
