@@ -36,25 +36,12 @@
     </div>
   </div>
 
-  <div class="os-cards"> 
-    <div class="os-card" ng-repeat="institute in instituteList" ng-click="showInstituteOverview(institute)">
-      <h4>
-        <a title="{{'institutes.tooltip.view_details' | translate}}" 
-          ui-sref="institute-detail.overview({instituteId: institute.id})"> 
-          {{institute.name}}
-        </a>
-      </h4>
-      <div class="stats">
-        <div class="stat col-xs-6" title="{{'institutes.tooltip.department_count' | translate}}">
-          <span class="fa fa-sitemap"></span>
-          <span>{{institute.departmentsCount | number: 0}}</span>
-        </div>
-        <div class="stat col-xs-6" title="{{'institutes.tooltip.user_count' | translate}}">
-          <span class="fa fa-user"></span>
-          <span>{{institute.usersCount | number: 0}}</span>
-        </div>
-      </div>
-    </div>
+  <div class="os-grid">
+    <os-grid obj-list="instituteList"
+      on-delete="deleteInstitute(obj)"
+      on-click="showInstituteOverview(obj)"
+      template-url="modules/administrative/institute/grid.html">
+    </os-grid>
   </div>
 
   <div os-right-drawer ng-include="'modules/administrative/institute/search.html'"></div>

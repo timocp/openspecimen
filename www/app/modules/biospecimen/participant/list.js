@@ -2,7 +2,7 @@
 angular.module('os.biospecimen.participant.list', ['os.biospecimen.models'])
   .controller('ParticipantListCtrl', function(
     $scope, $state, $stateParams, $modal, $q, osRightDrawerSvc,
-    cp, CollectionProtocolRegistration, Util) {
+    cp, CollectionProtocolRegistration, Util, DeleteUtil) {
 
     function init() {
       $scope.cpId = $stateParams.cpId;
@@ -20,7 +20,7 @@ angular.module('os.biospecimen.participant.list', ['os.biospecimen.models'])
     function loadParticipants() {
       CollectionProtocolRegistration.listForCp($scope.cpId, true, $scope.filterOpts).then(
         function(cprList) {
-          if (!$scope.cprList && cprList.length > 12) {
+          if (!$scope.cprList && cprList.length > 20) {
             //
             // Show search options when number of participants are more than 12
             //
@@ -39,6 +39,11 @@ angular.module('os.biospecimen.participant.list', ['os.biospecimen.models'])
     $scope.showParticipantOverview = function(cpr) {
       $state.go('participant-detail.overview', {cprId: cpr.cprId});
     };
+
+    $scope.deleteReg = function(cpr) {
+      cpr.id = cpr.cprId;
+      DeleteUtil.delete(cpr, {onDeletion: loadParticipants});
+    }
 
     init();
   });

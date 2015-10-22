@@ -1,0 +1,71 @@
+.os-grid {
+  margin: 10px 0px;
+  padding: 0px 20px;
+  width: 100%;
+}
+
+.os-grid:after {
+  content:'';
+  display: block;
+  clear: both;
+}
+
+.os-rows {
+  list-style: none;
+  overflow-y: auto;
+  position: absolute;
+  top: 40px;
+  bottom: 0px;
+}
+
+.os-grid-header {
+  position: relative;
+  box-sizing: border-box;
+  height: 40px;
+  padding-top: 13px;
+  border-bottom : 1px solid #ddd;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.os-grid-row {
+  box-sizing: border-box;
+  height: 40px;
+  border-top : 1px solid #ddd;
+  cursor: pointer;
+}
+
+.os-grid-row .value {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  padding-top: 10px;
+}
+
+.os-grid-row .dropdown-toggle {
+  color: #777777;
+  background: transparent;
+  border: 0px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.os-grid-row:hover {
+  box-shadow: #d8dde6 0 -1px 0 inset;
+  background-color: rgb(244, 246, 249);
+}
+
+.os-grid-row .dropdown-menu:before {
+  left: 129px !important;
+}
+
+.os-grid-row .dropdown-menu:after {
+  left: 130px !important;
+}
+
+.os-grid-row .grid-dropdown {
+  position: absolute;
+  right: 0px;
+  top: 10px;
+}

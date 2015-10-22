@@ -1,6 +1,6 @@
 
 angular.module('os.administrative.dp.list', ['os.administrative.models'])
-  .controller('DpListCtrl', function($scope, $state, DistributionProtocol, Util, PvManager) {
+  .controller('DpListCtrl', function($scope, $state, DistributionProtocol, Util, PvManager, DeleteUtil) {
 
     function init() {
       $scope.dpFilterOpts = {includeStats: true};
@@ -42,6 +42,10 @@ angular.module('os.administrative.dp.list', ['os.administrative.models'])
           });
         }
       );
+    }
+
+    $scope.deleteDp = function(distributionProtocol) {
+      DeleteUtil.delete(distributionProtocol, {onDeleteState: 'dp-list'});
     }
 
     init();

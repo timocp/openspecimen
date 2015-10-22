@@ -301,7 +301,8 @@ h4 + .btn-group {
   overflow: auto;
 }
 
-.os-page-hdr + .os-cards {
+.os-page-hdr + .os-cards,
+.os-page-hdr + .os-grid {
   position: absolute;
   top: 114px;
   bottom: 0px;

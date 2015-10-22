@@ -15,30 +15,13 @@
       </button>
     </div>
   </div>
-  
-  <div class="os-cards">
-    <div class="os-card" ng-repeat="distributionProtocol in distributionProtocols" 
-      ng-click="showDpOverview(distributionProtocol)">
-    
-      <h4>
-        <a title="{{distributionProtocol.shortTitle}}" ui-sref=".overview(distributionProtocol)">
-          <span>{{distributionProtocol.shortTitle}}</span>
-        </a>
-      </h4>
 
-      <h5 title="{{'dp.pi' | translate}}" > 
-        {{distributionProtocol.principalInvestigator.firstName}} {{distributionProtocol.principalInvestigator.lastName}}
-      </h5>
-      
-      <h5 title="{{'dp.start_date' | translate}}" > {{distributionProtocol.startDate | date : global.dateFmt}}</h5>
-
-      <div class="stats">
-        <div class="stat col-xs-6" title="{{'dp.tooltip.distributed_count' | translate}}">
-          <span class="fa fa-truck"></span>
-          <span>{{(distributionProtocol.distributedSpecimensCount || 0) | number: 0}}</span>
-        </div>
-      </div>
-    </div>
+  <div class="os-grid">
+    <os-grid obj-list="distributionProtocols"
+      on-delete="deleteDp(obj)"
+      on-click="showDpOverview(obj)"
+      template-url="modules/administrative/dp/grid.html">
+    </os-grid>
   </div>
 
   <div os-right-drawer ng-include="'modules/administrative/dp/search.html'"></div>

@@ -59,6 +59,7 @@
     "footer_note": "<a href=\"http://www.openspecimen.org\" target=\"_blank\">OpenSpecimen</a> - powered by <a href=\"http://www.krishagni.com\" target=\"_blank\">Krishagni</a>",
 
     "buttons": {
+      "view": "View",
       "add": "Add",
       "save": "Save",
       "export": "Export",
@@ -172,6 +173,9 @@
     "show_site_coding": "Show Site Code Information",
     "hide_site_coding": "Hide Site Code Information",
 
+    "participant_count": "Participants",
+    "specimen_count": "Specimens",
+
     "tab": {
       "overview": "Overview",
       "consents": "Consents",
@@ -222,6 +226,8 @@
     "edit_participant": "Edit Participant",
     "reg_date": "Registration Date",
     "ppid": "Participant Protocol ID",
+    "ppid_short": "PPID",
+    "empi": "EMPI",
     "name": "Name",
     "first_name": "First Name",
     "last_name": "Last Name",
@@ -248,8 +254,11 @@
     "spmn_label_or_barcode": "Specimen Label / Barcode",
     "collection_protocol": "Collection Protocol",
     "regDate": "Registration Date",
+    "reg_date": "Registration",
     "reg_another_protocol": "Register to Another Protocol",
     "search_results": "Participant Search Result for {{key}}",
+    "specimen_count": "Specimens",
+    "scg_count": "Visits",
     "consent": {
       "signed_form": "Signed Consent Form",
       "deleting_form": "Deleting Signed Consent Form",
@@ -581,6 +590,9 @@
     "bulk_import": "Import Institutes",
     "bulk_import_jobs": "Import Institutes Job List",
 
+    "department_count": "Departments",
+    "user_count": "Users",
+
     "tooltip": {
       "view_details": "Click to view/edit Institute details",
       "add": "Click to add new Institute",
@@ -618,6 +630,8 @@
 
     "bulk_import": "Import Sites",
     "bulk_import_jobs": "Import Sites Job List",
+
+    "cp_count": "Collection Protocols",
 
     "tooltip": {
       "view_details": "Click to view/edit Site details",
@@ -663,7 +677,7 @@
     "closed": "Closed",
     "confirm_close_title": "Closing {{shortTitle}} confirmation",
     "confirm_close": "Are you sure you want to close the distribution protocol {{shortTitle}} ?",
-
+    "distributed_specimen_count": "Distributed Specimens",
     "tooltip": {
       "view_details": "Click to view/edit Distribution Protocol details",
       "add": "Click to add new Distribution Protocol",
@@ -761,7 +775,7 @@
     "sign_in_here": "Sign In here",
     "signed_up": "Your membership request has been received. Please wait for an approval email from OpenSpecimen Administrator. Thank you.",
     "return_to_signin": "Return to Sign in",
-
+    "cp_count": "Collection Protocols",
     "tooltip": {
       "view_details": "Click to view/edit User details",
       "add": "Click to add new User",

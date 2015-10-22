@@ -109,27 +109,13 @@
       </button>
     </div>
   </div>
-   
-  <div class="os-cards">
-    <div class="os-card" ng-repeat="cp in cpList" ng-click="showParticipants(cp)">
-      <h4 title="{{'cp.tooltip.view_details' | translate}}">
-        <a ui-sref="cp-detail.overview({cpId: cp.id})" ng-click="$event.stopPropagation()">
-          {{cp.shortTitle}}
-        </a>
-      </h4>
-      <h5>{{cp.principalInvestigator.firstName}} {{cp.principalInvestigator.lastName}}</h5>
-      <p>{{cp.startDate | date: global.dateFmt}}</p>
-      <div class="stats">
-        <div class="stat col-xs-6" title="{{'cp.tooltip.reg_participants_count' | translate}}">
-          <span class="os-lavatar os-lavatar-sm">P</span>
-          <span>{{cp.participantCount | number: 0}}</span>
-        </div>
-        <div class="stat col-xs-6" title="{{'cp.tooltip.collected_specimens_count' | translate}}">
-          <span class="os-lavatar os-lavatar-sm">S</span>
-          <span>{{cp.specimenCount | number: 0}}</span>
-        </div>
-      </div>
-    </div>
+
+  <div class="os-grid">
+    <os-grid obj-list="cpList"
+      on-delete="deleteCp(obj)"
+      on-click="showParticipants(obj)"
+      template-url="modules/biospecimen/cp/grid.html">
+    </os-grid>
   </div>
 
   <div os-right-drawer ng-include="'modules/biospecimen/cp/search.html'"></div>

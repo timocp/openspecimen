@@ -1,5 +1,5 @@
 angular.module('os.administrative.institute.list', ['os.administrative.models'])
-  .controller('InstituteListCtrl', function($scope, $state, Institute, Util) {
+  .controller('InstituteListCtrl', function($scope, $state, Institute, Util, DeleteUtil) {
 
     function init() {
       $scope.instituteFilterOpts = {includeStats: true};
@@ -18,6 +18,10 @@ angular.module('os.administrative.institute.list', ['os.administrative.models'])
     $scope.showInstituteOverview = function(institute) {
       $state.go('institute-detail.overview', {instituteId: institute.id});
     };
+
+    $scope.deleteInstitute = function(institute) {
+      DeleteUtil.delete(institute, {onDeletion: loadInstitutes});
+    }
 
     init();
   });

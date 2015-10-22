@@ -1,0 +1,73 @@
+<div class="os-grid-header col-xs-12 labels">
+  <div class="col-xs-2">
+    <span translate="participant.ppid_short">PPID</span>
+  </div>
+  <div class="col-xs-3">
+    <span translate="participant.mpi">Master Patient Index</span>
+  </div>
+  <div class="col-xs-3">
+    <span translate="participant.name">Name</span>
+  </div>
+  <div class="col-xs-2">
+    <span translate="participant.reg_date">Registration Date</span>
+  </div>
+  <div class="col-xs-1">
+    <span translate="participant.scg_count">Scg Count</span>
+  </div>
+  <div class="col-xs-1">
+    <span translate="participant.specimen_count">Specimen Count</span>
+  </div>
+</div>
+
+<div ng-class="{'os-rows': list.length > 20}">
+  <div class="os-grid-row col-xs-12" ng-repeat="cpr in list" ng-click="showDetail(cpr)">
+    <div class="col-xs-2 value">
+      <a ui-sref="participant-detail.overview({cprId: cpr.cprId})">{{cpr.ppid}}</a>
+    </div>
+    <div class="col-xs-3 value">
+      <span>{{cpr.participant.empi}}</span>
+    </div>
+    <div class="col-xs-3 value">
+      <span title="{{cpr.participant.firstName}} {{cpr.participant.lastName}}">{{cpr.participant.firstName}} {{cpr.participant.lastName}}</span>
+    </div>
+    <div class="col-xs-2 value">
+      <span title="{{cpr.registrationDate | date: global.dateFmt}}">{{cpr.registrationDate | date: global.dateFmt}}</span>
+    </div>
+    <div class="col-xs-1 value">
+      <span>{{cpr.scgCount | number: 0}}</span>
+    </div>
+    <div class="col-xs-1 value">
+      <span>{{cpr.specimenCount | number: 0}}</span>
+    </div>
+    <div ng-include="'more_button.html'"></div>
+  </div>
+</div>
+
+<script type="text/ng-template" id="more_button.html">
+  <span dropdown class="grid-dropdown">
+    <button class="dropdown-toggle" aria-haspopup="true" aria-expanded="false"
+      ng-click="$event.stopPropagation()">
+      <span class="fa fa-ellipsis-v"></span>
+    </button>
+    <ul class="dropdown-menu pull-right" role="menu">
+      <li>
+        <a ng-click="showDetail(cpr)">
+          <i class="fa fa-eye"></i>
+          <span translate="common.buttons.view">View</span>
+        </a>
+      </li>
+      <li show-if-allowed="specimenResource.updateOpts">
+        <a ui-sref="participant-addedit({cprId: cpr.id, cpId: cpr.cpId})">
+          <i class="fa fa-pencil"></i>
+          <span translate="common.buttons.edit">Edit</span>
+        </a>
+      </li>
+      <li show-if-allowed="participantResource.deleteOpts" ng-click="$event.stopPropagation()">
+        <a ng-click="deleteObj(cpr)">
+          <span class="fa fa-trash"></span>
+          <span translate="common.buttons.delete">Delete</span>
+        </a>
+      </li>
+    </ul>
+  </span>
+</script>

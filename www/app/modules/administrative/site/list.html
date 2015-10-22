@@ -36,20 +36,12 @@
     </div>
   </div>
 
-  <div class="os-cards">
-    <div class="os-card" ng-repeat="site in siteList" ng-click="showSiteOverview(site)">
-      <h4>
-        <a title="{{'site.tooltip.view_details' | translate}}" ui-sref="site-detail.overview({siteId: site.id})"> {{site.name}} </a>
-      </h4>
-      <h5 title="{{'site.type' | translate}}">{{site.type}}</h5>
-      <p title="{{'site.code' | translate}}">{{site.code || 'N/A'}}</p>
-      <div class="stats">
-        <div class="stat col-xs-6" title="{{'site.tooltip.cp_count' | translate}}">
-          <span class="fa fa-calendar"></span>
-          <span>{{site.cpCount || 0 | number: 0}}</span>
-        </div>
-      </div>
-    </div>
+  <div class="os-grid">
+    <os-grid obj-list="siteList"
+      on-delete="deleteSite(obj)"
+      on-click="showSiteOverview(obj)"
+      template-url="modules/administrative/site/grid.html">
+    </os-grid>
   </div>
 
   <div os-right-drawer ng-include="'modules/administrative/site/search.html'"></div>

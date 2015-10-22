@@ -2,7 +2,7 @@
 angular.module('os.administrative.user.list', ['os.administrative.models'])
   .controller('UserListCtrl', function(
     $scope, $state, $rootScope, 
-    osRightDrawerSvc, Institute, User, PvManager, Util) {
+    osRightDrawerSvc, Institute, User, PvManager, Util, DeleteUtil) {
 
     var pvInit = false;
 
@@ -82,6 +82,13 @@ angular.module('os.administrative.user.list', ['os.administrative.models'])
     $scope.showUserOverview = function(user) {
       $state.go('user-detail.overview', {userId:user.id});
     };
+
+    $scope.deleteUser = function(user) {
+      DeleteUtil.delete(user, {
+        onDeletion: loadUsers,
+        confirmDelete: user.activityStatus == 'Pending' ? 'user.confirm_reject' : undefined
+      });
+    }
 
     init();
   });

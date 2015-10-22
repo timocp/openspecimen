@@ -1,5 +1,5 @@
 angular.module('os.administrative.site.list', ['os.administrative.models'])
-  .controller('SiteListCtrl', function($scope, $state, Site, Util) {
+  .controller('SiteListCtrl', function($scope, $state, Site, Util, DeleteUtil) {
 
     function init() {
       $scope.siteFilterOpts = {includeStats: true};
@@ -18,6 +18,10 @@ angular.module('os.administrative.site.list', ['os.administrative.models'])
     $scope.showSiteOverview = function(site) {
       $state.go('site-detail.overview', {siteId: site.id});
     };
+
+    $scope.deleteSite = function(site) {
+      DeleteUtil.delete(site, {onDeletion: loadSites});
+    }
 
     init();
   });
