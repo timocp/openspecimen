@@ -10,7 +10,6 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import com.krishagni.catissueplus.core.administrative.domain.Site;
@@ -32,10 +31,11 @@ public class SiteDaoImpl extends AbstractDao<Site> implements SiteDao {
 		Criteria query = sessionFactory.getCurrentSession()
 				.createCriteria(Site.class)
 				.add(Restrictions.eq("activityStatus", Status.ACTIVITY_STATUS_ACTIVE.getStatus()))
-				.addOrder(Order.asc("name"))
+//				.addOrder(Order.asc("name"))
 				.setFirstResult(listCrit.startAt())
 				.setMaxResults(listCrit.maxResults());
-				
+
+		setOrder(query, listCrit);
 		addSearchConditions(query, listCrit);
 		return query.list();
 	}

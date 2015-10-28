@@ -30,12 +30,12 @@ import com.krishagni.catissueplus.core.common.repository.AbstractDao;
 public class CollectionProtocolRegistrationDaoImpl 
 	extends AbstractDao<CollectionProtocolRegistration> 
 	implements CollectionProtocolRegistrationDao {
-	
+
 	@Override
 	public Class<CollectionProtocolRegistration> getType() {
 		return CollectionProtocolRegistration.class;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<CprSummary> getCprList(CprListCriteria cprCrit) {
@@ -46,32 +46,34 @@ public class CollectionProtocolRegistrationDaoImpl
 		} else {
 			query.setProjection(cprFields);
 		}
-		
-		
+
+
 		List<CprSummary> cprs = new ArrayList<CprSummary>();
 		Map<Long, CprSummary> cprMap = new HashMap<Long, CprSummary>();
-		
-		List<Object[]> rows = query.list();				
+
+
+
+		List<Object[]> rows = query.list();
 		for (Object[] row : rows) {
 			CprSummary cpr = getCprSummary(row);
 			if (cprCrit.includeStat()) {
 				cprMap.put(cpr.getCprId(), cpr);
 			}
-			
+
 			cprs.add(cpr);
 		}
-		
+
 		if (!cprCrit.includeStat()) {
 			return cprs;
 		}
-		
+
 		List<Object[]> countRows = getScgAndSpecimenCounts(cprCrit);
 		for (Object[] row : countRows) {
 			CprSummary cpr = cprMap.get((Long)row[0]);
 			cpr.setScgCount((Long)row[1]);
 			cpr.setSpecimenCount((Long)row[2]);
 		}
-		
+
 		return cprs;
 	}
 
@@ -82,7 +84,7 @@ public class CollectionProtocolRegistrationDaoImpl
 				.createCriteria(CollectionProtocolRegistration.class)
 				.add(Restrictions.eq("barcode", barcode))
 				.list();
-		
+
 		return result.isEmpty() ? null : result.iterator().next();
 	}
 
@@ -94,10 +96,10 @@ public class CollectionProtocolRegistrationDaoImpl
 			.setLong("cpId", cpId)
 			.setString("ppid", ppid)
 			.list();
-		
+
 		return CollectionUtils.isEmpty(result) ? null : result.iterator().next();
 	}
-	
+
 	@Override
 	@SuppressWarnings("unchecked")
 	public CollectionProtocolRegistration getCprByPpid(String cpTitle, String ppid) {
@@ -106,10 +108,10 @@ public class CollectionProtocolRegistrationDaoImpl
 				.setString("title", cpTitle)
 				.setString("ppid", ppid)
 				.list();
-		
+
 		return CollectionUtils.isEmpty(result) ? null : result.iterator().next();
 	}
-	
+
 	@Override
 	@SuppressWarnings("unchecked")
 	public CollectionProtocolRegistration getCprByCpShortTitleAndPpid(String cpShortTitle, String ppid) {
@@ -118,23 +120,23 @@ public class CollectionProtocolRegistrationDaoImpl
 				.setString("shortTitle", cpShortTitle)
 				.setString("ppid", ppid)
 				.list();
-		
-		return CollectionUtils.isEmpty(result) ? null : result.iterator().next();		
+
+		return CollectionUtils.isEmpty(result) ? null : result.iterator().next();
 	}
-	
+
 	@Override
 	@SuppressWarnings("unchecked")
-	public CollectionProtocolRegistration getCprByParticipantId(Long cpId, Long participantId) {		
+	public CollectionProtocolRegistration getCprByParticipantId(Long cpId, Long participantId) {
 		List<CollectionProtocolRegistration> result =  sessionFactory.getCurrentSession()
 				.getNamedQuery(GET_BY_CP_ID_AND_PID)
 				.setLong("cpId", cpId)
 				.setLong("participantId", participantId)
 				.list();
-		
+
 		return result.isEmpty() ? null : result.iterator().next();
 	}
-	
-	
+
+
 	private Criteria getCprListQuery(CprListCriteria cprCrit) {
 		Criteria query = getSessionFactory().getCurrentSession()
 				.createCriteria(CollectionProtocolRegistration.class)
@@ -143,17 +145,17 @@ public class CollectionProtocolRegistrationDaoImpl
 				.add(Restrictions.ne("activityStatus", "Disabled"))
 				.add(Restrictions.ne("cp.activityStatus", "Disabled"))
 				.add(Restrictions.ne("participant.activityStatus", "Disabled"))
-				.addOrder(Order.asc("id"))
 				.setFirstResult(cprCrit.startAt() < 0 ? 0 : cprCrit.startAt())
 				.setMaxResults(cprCrit.maxResults() < 0 || cprCrit.maxResults() > 100 ? 100 : cprCrit.maxResults());
 
+		setOrder(query, cprCrit);
 		addCpRestrictions(query, cprCrit);
 		addRegDateCondition(query, cprCrit);
 		addMrnSiteAndEmpiAndSsnCondition(query, cprCrit);
 		addNamePpidAndUidCondition(query, cprCrit);
 		addDobCondition(query, cprCrit);
 		addSpecimenCondition(query, cprCrit);
-		return query;		
+		return query;
 	}
 
 	private void addCpRestrictions(Criteria query, CprListCriteria cprCrit) {
@@ -308,9 +310,10 @@ public class CollectionProtocolRegistrationDaoImpl
 		
 		return countQuery.setProjection(Projections.projectionList()
 				.add(Projections.property("id"))
-				.add(Projections.countDistinct("visit.id"))
+				.add(Projections.countDistinct("visit.id").as("visitCount"))
 				.add(Projections.countDistinct("specimen.id"))
 				.add(Projections.groupProperty("id")))
+				.addOrder(Order.desc("visitCount"))
 				.list();
 	}
 	

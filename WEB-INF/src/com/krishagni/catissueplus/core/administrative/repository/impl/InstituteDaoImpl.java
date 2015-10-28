@@ -9,7 +9,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
@@ -34,13 +33,14 @@ public class InstituteDaoImpl extends AbstractDao<Institute> implements Institut
 		Criteria query = sessionFactory.getCurrentSession()
 			.createCriteria(Institute.class, "institute")
 			.add(Restrictions.eq("activityStatus", Status.ACTIVITY_STATUS_ACTIVE.getStatus()))
-			.addOrder(Order.asc("institute.name"))
+//			.addOrder(Order.asc("institute.name"))
 			.setFirstResult(listCrit.startAt())
 			.setMaxResults(listCrit.maxResults());
-				
+
+		setOrder(query, listCrit);
 		addSearchConditions(query, listCrit);
 		addProjectionFields(query);
-		
+
 		List<Object[]> rows = query.list();
 		List<InstituteSummary> institutes = new ArrayList<InstituteSummary>();
 		Map<Long, InstituteSummary> instituteMap = new HashMap<Long, InstituteSummary>();

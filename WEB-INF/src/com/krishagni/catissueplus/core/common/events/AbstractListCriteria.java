@@ -1,6 +1,7 @@
 package com.krishagni.catissueplus.core.common.events;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.hibernate.criterion.MatchMode;
@@ -18,7 +19,9 @@ public abstract class AbstractListCriteria<T extends ListCriteria<T>> implements
 	private boolean exactMatch;
 	
 	private boolean includeStat;
-	
+
+	private List<String> sortBy;
+
 	private Set<Long> ids = new HashSet<Long>();
 	
 	@Override
@@ -101,6 +104,17 @@ public abstract class AbstractListCriteria<T extends ListCriteria<T>> implements
 		this.ids = ids;
 		return self();
 	}
-	
+
+	@Override
+	public List<String> sortBy() {
+		return this.sortBy;
+	}
+
+	@Override
+	public T sortBy(List<String> sortBy) {
+		this.sortBy = sortBy;
+		return self();
+	}
+
 	public abstract T self();
 }

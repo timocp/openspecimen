@@ -28,6 +28,7 @@ import com.krishagni.catissueplus.core.common.events.RequestEvent;
 import com.krishagni.catissueplus.core.common.events.ResponseEvent;
 import com.krishagni.catissueplus.core.common.events.UserSummary;
 import com.krishagni.rbac.events.SubjectRoleDetail;
+import edu.emory.mathcs.backport.java.util.Arrays;
 
 @Controller
 @RequestMapping("/users")
@@ -71,7 +72,10 @@ public class UserController {
 			boolean listAll,
 
 			@RequestParam(value = "includeStats", required = false, defaultValue = "false")
-			boolean includeStats) {
+			boolean includeStats,
+
+			@RequestParam(value = "sortBy", required= false, defaultValue= "id")
+			String[] sortBy) {
 		
 		UserListCriteria crit = new UserListCriteria()
 			.startAt(start)
@@ -82,7 +86,8 @@ public class UserController {
 			.instituteName(institute)
 			.activityStatus(activityStatus)
 			.listAll(listAll)
-			.includeStat(includeStats);
+			.includeStat(includeStats)
+			.sortBy(Arrays.asList(sortBy));
 		
 		
 		RequestEvent<UserListCriteria> req = new RequestEvent<UserListCriteria>(crit);

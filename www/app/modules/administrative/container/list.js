@@ -3,11 +3,11 @@ angular.module('os.administrative.container.list', ['os.administrative.models'])
 
     function init() {
       $scope.containerFilterOpts = {};
-      loadContainers();
-      Util.filter($scope, 'containerFilterOpts', loadContainers);
+      $scope.loadContainers();
+      Util.filter($scope, 'containerFilterOpts', $scope.loadContainers);
     }
 
-    function loadContainers(filterOpts) {
+    $scope.loadContainers = function(filterOpts) {
       Container.list(filterOpts).then(
         function(containers) {
           $scope.containerList = containers;
@@ -21,7 +21,7 @@ angular.module('os.administrative.container.list', ['os.administrative.models'])
 
     $scope.deleteContainer = function(container) {
       DeleteUtil.delete(container, {
-        onDeletion: loadContainers,
+        onDeletion: $scope.loadContainers,
         confirmDelete: 'container.confirm_delete'
       });
     }

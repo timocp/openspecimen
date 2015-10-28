@@ -4,12 +4,12 @@ angular.module('os.administrative.dp.list', ['os.administrative.models'])
 
     function init() {
       $scope.dpFilterOpts = {includeStats: true};
-      loadDps($scope.dpFilterOpts);
+      $scope.loadDps($scope.dpFilterOpts);
       Util.filter($scope, 'dpFilterOpts', filter);
       loadActivityStatuses();
     }
     
-    function loadDps(filterOpts) {
+    $scope.loadDps = function(filterOpts) {
       DistributionProtocol.query(filterOpts).then(
         function(result) {
           $scope.distributionProtocols = result; 
@@ -24,7 +24,7 @@ angular.module('os.administrative.dp.list', ['os.administrative.models'])
         delete dpFilterOpts.pi;
       }
 
-      loadDps(dpFilterOpts);
+      $scope.loadDps(dpFilterOpts);
     }
 
     $scope.showDpOverview = function(distributionProtocol) {
@@ -45,7 +45,7 @@ angular.module('os.administrative.dp.list', ['os.administrative.models'])
     }
 
     $scope.deleteDp = function(distributionProtocol) {
-      DeleteUtil.delete(distributionProtocol, {onDeleteState: 'dp-list'});
+      DeleteUtil.delete(distributionProtocol, {onDeletion: $scope.loadDps});
     }
 
     init();

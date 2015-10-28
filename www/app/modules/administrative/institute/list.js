@@ -3,11 +3,11 @@ angular.module('os.administrative.institute.list', ['os.administrative.models'])
 
     function init() {
       $scope.instituteFilterOpts = {includeStats: true};
-      loadInstitutes($scope.instituteFilterOpts);
-      Util.filter($scope, 'instituteFilterOpts', loadInstitutes);
+      $scope.loadInstitutes($scope.instituteFilterOpts);
+      Util.filter($scope, 'instituteFilterOpts', $scope.loadInstitutes);
     }
 
-    function loadInstitutes(filterOpts) {
+    $scope.loadInstitutes = function(filterOpts) {
       Institute.query(filterOpts).then(
         function(instituteList) {
           $scope.instituteList = instituteList;
@@ -20,7 +20,7 @@ angular.module('os.administrative.institute.list', ['os.administrative.models'])
     };
 
     $scope.deleteInstitute = function(institute) {
-      DeleteUtil.delete(institute, {onDeletion: loadInstitutes});
+      DeleteUtil.delete(institute, {onDeletion: $scope.loadInstitutes});
     }
 
     init();

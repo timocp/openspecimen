@@ -3,11 +3,11 @@ angular.module('os.administrative.site.list', ['os.administrative.models'])
 
     function init() {
       $scope.siteFilterOpts = {includeStats: true};
-      loadSites($scope.siteFilterOpts);
-      Util.filter($scope, 'siteFilterOpts', loadSites);
+      $scope.loadSites($scope.siteFilterOpts);
+      Util.filter($scope, 'siteFilterOpts', $scope.loadSites);
     }
 
-    function loadSites(filterOpts) {
+    $scope.loadSites = function(filterOpts) {
       Site.query(filterOpts).then(
         function(siteList) {
           $scope.siteList = siteList;
@@ -20,7 +20,7 @@ angular.module('os.administrative.site.list', ['os.administrative.models'])
     };
 
     $scope.deleteSite = function(site) {
-      DeleteUtil.delete(site, {onDeletion: loadSites});
+      DeleteUtil.delete(site, {onDeletion: $scope.loadSites});
     }
 
     init();

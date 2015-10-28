@@ -13,12 +13,18 @@ angular.module('os.biospecimen.participant.list', ['os.biospecimen.models'])
         registerOpts: {resource: 'ParticipantPhi', operations: ['Create'], cp: $scope.cp.shortTitle},
       }
 
-      loadParticipants();
+      loadParticipants($scope.cpId, true, $scope.filterOpts);
       Util.filter($scope, 'filterOpts', loadParticipants);
     }
 
     function loadParticipants() {
-      CollectionProtocolRegistration.listForCp($scope.cpId, true, $scope.filterOpts).then(
+      $scope.loadParticipants($scope.cpId, true, $scope.filterOpts);
+    }
+
+    $scope.loadParticipants = function (cpId, includeStats, filterOpts) {
+      cpId = cpId || $scope.cpId;
+
+      CollectionProtocolRegistration.listForCp(cpId, includeStats, filterOpts).then(
         function(cprList) {
           if (!$scope.cprList && cprList.length > 20) {
             //

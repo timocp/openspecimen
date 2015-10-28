@@ -91,7 +91,10 @@ public class CollectionProtocolsController {
 			boolean chkPrivlege,
 			
 			@RequestParam(value = "detailedList", required = false, defaultValue = "false") 
-			boolean detailedList) {
+			boolean detailedList,
+
+			@RequestParam(value = "sortBy", required= false, defaultValue= "id")
+			String[] sortBy) {
 		
 		CpListCriteria crit = new CpListCriteria()
 			.query(searchStr)
@@ -101,7 +104,8 @@ public class CollectionProtocolsController {
 			.includePi(detailedList)
 			.includeStat(detailedList)
 			.startAt(startAt)
-			.maxResults(maxResults);
+			.maxResults(maxResults)
+			.sortBy(Arrays.asList(sortBy));
 
 		ResponseEvent<List<CollectionProtocolSummary>> resp = cpSvc.getProtocols(getRequest(crit));
 		resp.throwErrorIfUnsuccessful();		

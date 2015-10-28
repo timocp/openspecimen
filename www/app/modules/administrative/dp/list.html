@@ -20,6 +20,7 @@
     <os-grid obj-list="distributionProtocols"
       on-delete="deleteDp(obj)"
       on-click="showDpOverview(obj)"
+      load-objects="loadDps(filterOpts)"
       template-url="modules/administrative/dp/grid.html">
     </os-grid>
   </div>

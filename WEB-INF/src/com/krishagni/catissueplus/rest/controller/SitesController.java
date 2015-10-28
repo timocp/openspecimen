@@ -30,6 +30,7 @@ import com.krishagni.catissueplus.core.de.events.FormCtxtSummary;
 import com.krishagni.catissueplus.core.de.events.ListEntityFormsOp;
 import com.krishagni.catissueplus.core.de.events.ListEntityFormsOp.EntityType;
 import com.krishagni.catissueplus.core.de.services.FormService;
+import edu.emory.mathcs.backport.java.util.Arrays;
 
 @Controller
 @RequestMapping("/sites")
@@ -73,7 +74,10 @@ public class SitesController {
 			boolean listAll,
 
 			@RequestParam(value = "includeStats", required = false, defaultValue = "false")
-			boolean includeStats) {
+			boolean includeStats,
+
+			@RequestParam(value = "sortBy", required= false, defaultValue= "id")
+			String[] sortBy) {
 		
 		SiteListCriteria crit = new SiteListCriteria()
 			.query(name)
@@ -84,7 +88,8 @@ public class SitesController {
 			.startAt(startAt)
 			.maxResults(maxResults)
 			.listAll(listAll)
-			.includeStat(includeStats);
+			.includeStat(includeStats)
+			.sortBy(Arrays.asList(sortBy));
 		
 		RequestEvent<SiteListCriteria> req = new RequestEvent<SiteListCriteria>(crit);
 		ResponseEvent<List<SiteSummary>> resp = siteService.getSites(req);

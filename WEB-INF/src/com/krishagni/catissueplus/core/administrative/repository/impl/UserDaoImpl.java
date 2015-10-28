@@ -13,8 +13,6 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
@@ -25,7 +23,6 @@ import com.krishagni.catissueplus.core.administrative.repository.UserListCriteri
 import com.krishagni.catissueplus.core.common.events.DependentEntityDetail;
 import com.krishagni.catissueplus.core.common.events.UserSummary;
 import com.krishagni.catissueplus.core.common.repository.AbstractDao;
-import com.krishagni.catissueplus.core.common.util.Status;
 
 public class UserDaoImpl extends AbstractDao<User> implements UserDao {
 	
@@ -45,10 +42,11 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
 					)
 				)
 				.setFirstResult(listCrit.startAt())
-				.setMaxResults(listCrit.maxResults())
-				.addOrder(Order.asc("u.lastName"))
-				.addOrder(Order.asc("u.firstName"));
+				.setMaxResults(listCrit.maxResults());
+//				.addOrder(Order.asc("u.lastName"))
+//				.addOrder(Order.asc("u.firstName"));
 		
+		setOrder(criteria, listCrit);
 		addSearchConditions(criteria, listCrit);
 		addProjectionFields(criteria);
 		return getUsers(criteria.list(), listCrit);

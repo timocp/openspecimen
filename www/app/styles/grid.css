@@ -69,3 +69,10 @@
   right: 0px;
   top: 10px;
 }
+
+.os-grid-header .fa-arrow-up,
+.os-grid-header .fa-arrow-down {
+  color: #666;
+  font-weight: lighter;
+  font-size: 12px;
+}

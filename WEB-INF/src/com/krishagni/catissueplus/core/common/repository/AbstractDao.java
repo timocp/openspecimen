@@ -9,7 +9,10 @@ import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Junction;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+
+import com.krishagni.catissueplus.core.common.events.ListCriteria;
 
 public class AbstractDao<T> implements Dao<T> {
 
@@ -95,6 +98,21 @@ public class AbstractDao<T> implements Dao<T> {
 		}
 		
 		criteria.add(or);
+	}
+
+	public void setOrder(Criteria query, ListCriteria crit) {
+		List<String> sortBy = crit.sortBy();
+		if (CollectionUtils.isEmpty(sortBy)) {
+			return;
+		}
+
+		for (String sort : sortBy) {
+			if (sort.startsWith("-")) {
+				query.addOrder(Order.desc(sort.substring(1)));
+			} else {
+				query.addOrder(Order.asc(sort));
+			}
+		}
 	}
 		 
 }

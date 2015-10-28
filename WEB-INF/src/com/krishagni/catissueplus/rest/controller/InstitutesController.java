@@ -24,6 +24,7 @@ import com.krishagni.catissueplus.core.common.events.DeleteEntityOp;
 import com.krishagni.catissueplus.core.common.events.DependentEntityDetail;
 import com.krishagni.catissueplus.core.common.events.RequestEvent;
 import com.krishagni.catissueplus.core.common.events.ResponseEvent;
+import edu.emory.mathcs.backport.java.util.Arrays;
 
 @Controller
 @RequestMapping("/institutes")
@@ -52,14 +53,18 @@ public class InstitutesController {
 			boolean exactMatch,
 
 			@RequestParam(value = "includeStats", required = false, defaultValue = "false")
-			boolean includeStats) {
+			boolean includeStats,
+
+			@RequestParam(value = "sortBy", required= false, defaultValue= "id")
+			String[] sortBy) {
 		
 		InstituteListCriteria crit  = new InstituteListCriteria()
 				.query(name)
 				.exactMatch(exactMatch)
 				.startAt(startAt)
 				.maxResults(maxResults)
-				.includeStat(includeStats);
+				.includeStat(includeStats)
+				.sortBy(Arrays.asList(sortBy));
 		
 		RequestEvent<InstituteListCriteria> req = new RequestEvent<InstituteListCriteria>(crit);
 		ResponseEvent<List<InstituteSummary>> resp = instituteSvc.getInstitutes(req);

@@ -3,12 +3,12 @@ angular.module('os.biospecimen.cp.list', ['os.biospecimen.models'])
   .controller('CpListCtrl', function($scope, $state, CollectionProtocol, Util, PvManager, DeleteUtil) {
     function init() {
       $scope.cpFilterOpts = {};
-      loadCollectionProtocols();
+      $scope.loadCollectionProtocols();
       $scope.sites = PvManager.getSites();
       Util.filter($scope, 'cpFilterOpts', filter);
     }
 
-    function loadCollectionProtocols(filterOpts) {
+    $scope.loadCollectionProtocols = function(filterOpts) {
       CollectionProtocol.list(filterOpts).then(
         function(cpList) {
           $scope.cpList = cpList;
@@ -23,7 +23,7 @@ angular.module('os.biospecimen.cp.list', ['os.biospecimen.models'])
         delete cpFilterOpts.pi;
       }
 
-      loadCollectionProtocols(cpFilterOpts);
+      $scope.loadCollectionProtocols(cpFilterOpts);
     }
 
     $scope.showParticipants = function(cp) {
@@ -31,7 +31,7 @@ angular.module('os.biospecimen.cp.list', ['os.biospecimen.models'])
     };
 
     $scope.deleteCp = function(cp) {
-      DeleteUtil.delete(cp, {onDeletion: loadCollectionProtocols});
+      DeleteUtil.delete(cp, {onDeletion: $scope.loadCollectionProtocols});
     }
 
     init();

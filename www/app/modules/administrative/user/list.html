@@ -47,6 +47,7 @@
     <os-grid obj-list="users"
       on-delete="deleteUser(obj)"
       on-click="showUserOverview(obj)"
+      load-objects="loadUsers(filterOpts)"
       template-url="modules/administrative/user/grid.html">
     </os-grid>
   </div>

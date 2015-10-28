@@ -40,6 +40,7 @@
     <os-grid obj-list="siteList"
       on-delete="deleteSite(obj)"
       on-click="showSiteOverview(obj)"
+      load-objects="loadSites(filterOpts)"
       template-url="modules/administrative/site/grid.html">
     </os-grid>
   </div>

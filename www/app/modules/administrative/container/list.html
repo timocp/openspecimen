@@ -40,6 +40,7 @@
     <os-grid obj-list="containerList"
       on-delete="deleteContainer(obj)"
       on-click="showContainerOverview(obj)"
+      load-objects="loadContainers(filterOpts)"
       template-url="modules/administrative/container/grid.html">
     </os-grid>
   </div>

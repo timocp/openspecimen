@@ -95,9 +95,9 @@ public class StorageContainerDaoImpl extends AbstractDao<StorageContainer> imple
 			addStoreSpecimenRestriction();
 			
 			addParentRestriction();
-			
+
 			String hql = new StringBuilder(from).append(" ").append(where)
-					.append(" order by c.id asc")
+					.append(" ").append(getSortOrder())
 					.toString();
 			
 			Query query = sessionFactory.getCurrentSession().createQuery(hql)
@@ -187,6 +187,30 @@ public class StorageContainerDaoImpl extends AbstractDao<StorageContainer> imple
 				where.append("pc.id = :parentId");
 				params.put("parentId", parentId);						
 			}
+		}
+
+		private String getSortOrder() {
+			StringBuilder orderBy = new StringBuilder();
+			List<String> sortBy = crit.sortBy();
+			for (int i = 0; i < sortBy.size() ; i++) {
+				String sort = sortBy.get(i);
+				if (i == 0) {
+					orderBy.append(" order by ");
+				}
+
+				if (sort.equals("id")) {
+					sort = "c.id";
+				}
+
+				if (sort.startsWith("-")) {
+					orderBy.append(sort.substring(1)).append(" desc ");
+				} else {
+					orderBy.append(sort).append(" asc ");
+				}
+
+				orderBy.append(",");
+			}
+			return orderBy.substring(0, orderBy.length() -1 );
 		}
 
 		private void addSpecimenRestriction() {			

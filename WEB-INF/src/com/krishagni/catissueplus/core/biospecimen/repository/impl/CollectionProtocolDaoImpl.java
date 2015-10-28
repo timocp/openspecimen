@@ -280,7 +280,8 @@ public class CollectionProtocolDaoImpl extends AbstractDao<CollectionProtocol> i
 				.setMaxResults(cpCriteria.maxResults())
 				.add(Restrictions.eq("activityStatus", Status.ACTIVITY_STATUS_ACTIVE.getStatus()))
 				.createAlias("principalInvestigator", "pi");
-		
+
+		setOrder(query, cpCriteria);
 		addSearchConditions(query, cpCriteria);
 		addProjections(query, cpCriteria);
 		

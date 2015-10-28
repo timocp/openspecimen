@@ -25,6 +25,7 @@
     <os-grid obj-list="cprList"
       on-delete="deleteReg(obj)"
       on-click="showParticipantOverview(obj)"
+      load-objects="loadParticipants(objId, includeStats, filterOpts)"
       template-url="modules/biospecimen/participant/grid.html">
     </os-grid>
   </div>

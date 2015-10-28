@@ -1,16 +1,10 @@
 
 package com.krishagni.catissueplus.rest.controller;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -22,8 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import au.com.bytecode.opencsv.CSVWriter;
-
 import com.krishagni.catissueplus.core.administrative.events.DistributionOrderStat;
 import com.krishagni.catissueplus.core.administrative.events.DistributionOrderStatListCriteria;
 import com.krishagni.catissueplus.core.administrative.events.DistributionProtocolDetail;
@@ -32,7 +24,7 @@ import com.krishagni.catissueplus.core.administrative.services.DistributionProto
 import com.krishagni.catissueplus.core.common.events.DependentEntityDetail;
 import com.krishagni.catissueplus.core.common.events.RequestEvent;
 import com.krishagni.catissueplus.core.common.events.ResponseEvent;
-import com.krishagni.catissueplus.core.common.util.Utility;
+import edu.emory.mathcs.backport.java.util.Arrays;
 
 @Controller
 @RequestMapping("/distribution-protocols")
@@ -66,7 +58,10 @@ public class DistributionProtocolController {
 			boolean includeStats,
 			
 			@RequestParam(value = "activityStatus", required = false)
-			String activityStatus) {
+			String activityStatus,
+
+			@RequestParam(value = "sortBy", required= false, defaultValue= "id")
+			String[] sortBy) {
 		
 		DpListCriteria criteria = new DpListCriteria()
 			.startAt(startAt)
@@ -75,7 +70,8 @@ public class DistributionProtocolController {
 			.title(title)
 			.piId(piId)
 			.includeStat(includeStats)
-			.activityStatus(activityStatus);
+			.activityStatus(activityStatus)
+			.sortBy(Arrays.asList(sortBy));
 		
 		
 		ResponseEvent<List<DistributionProtocolDetail>> resp = dpSvc.getDistributionProtocols(getRequest(criteria));

@@ -36,6 +36,7 @@ import com.krishagni.catissueplus.core.common.events.RequestEvent;
 import com.krishagni.catissueplus.core.common.events.ResponseEvent;
 
 import edu.common.dynamicextensions.nutility.IoUtil;
+import edu.emory.mathcs.backport.java.util.Arrays;
 
 @Controller
 @RequestMapping("/storage-containers")
@@ -91,8 +92,10 @@ public class StorageContainersController {
 			Boolean storeSpecimensEnabled,
 			
 			@RequestParam(value = "hierarchical", required = false, defaultValue = "false")
-			boolean hierarchical
-			) {
+			boolean hierarchical,
+
+			@RequestParam(value = "sortBy", required= false, defaultValue= "id")
+			String[] sortBy) {
 		
 		StorageContainerListCriteria crit = new StorageContainerListCriteria()
 			.query(name)
@@ -108,7 +111,8 @@ public class StorageContainersController {
 			.cpIds(cpIds)
 			.cpShortTitles(cpShortTitles)
 			.storeSpecimensEnabled(storeSpecimensEnabled)
-			.hierarchical(hierarchical);
+			.hierarchical(hierarchical)
+			.sortBy(Arrays.asList(sortBy));
 					
 		RequestEvent<StorageContainerListCriteria> req = new RequestEvent<StorageContainerListCriteria>(crit);
 		ResponseEvent<List<StorageContainerSummary>> resp = storageContainerSvc.getStorageContainers(req);

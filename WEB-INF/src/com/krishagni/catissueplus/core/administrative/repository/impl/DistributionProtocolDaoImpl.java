@@ -14,7 +14,6 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Junction;
 import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -37,8 +36,10 @@ public class DistributionProtocolDaoImpl extends AbstractDao<DistributionProtoco
 				.setFirstResult(crit.startAt())
 				.setMaxResults(crit.maxResults())
 				.add(Restrictions.ne("activityStatus", "Disabled"))
-				.addOrder(Order.asc("title"));
+				.createAlias("principalInvestigator", "pi");
+//				.addOrder(Order.asc("title"));
 
+		setOrder(query, crit);
 		addSearchConditions(query, crit);		
 		return query.list();
 	}

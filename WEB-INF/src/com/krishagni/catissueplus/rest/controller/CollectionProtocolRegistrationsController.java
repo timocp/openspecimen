@@ -42,6 +42,7 @@ import com.krishagni.catissueplus.core.de.events.GetFormRecordsListOp;
 import com.krishagni.catissueplus.core.de.events.ListEntityFormsOp;
 import com.krishagni.catissueplus.core.de.events.ListEntityFormsOp.EntityType;
 import com.krishagni.catissueplus.core.de.services.FormService;
+import edu.emory.mathcs.backport.java.util.Arrays;
 
 @Controller
 @RequestMapping("/collection-protocol-registrations")
@@ -105,7 +106,10 @@ public class CollectionProtocolRegistrationsController {
 			boolean includeStats,
 
 			@RequestParam(value = "exactMatch", required = false, defaultValue = "false")
-			Boolean exactMatch) {
+			Boolean exactMatch,
+
+			@RequestParam(value = "sortBy", required= false, defaultValue= "id")
+			String[] sortBy) {
 
 		CprListCriteria crit = new CprListCriteria()
 			.cpId(cpId)
@@ -121,6 +125,7 @@ public class CollectionProtocolRegistrationsController {
 			.maxResults(maxRecs)
 			.includeStat(includeStats)
 			.exactMatch(exactMatch)
+			.sortBy(Arrays.asList(sortBy))
 			.includePhi(true);
 		
 		ResponseEvent<List<CprSummary>> resp = cpSvc.getRegisteredParticipants(getRequest(crit));

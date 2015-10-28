@@ -7,7 +7,7 @@ angular.module('os.administrative.user.list', ['os.administrative.models'])
     var pvInit = false;
 
     function init() {
-      loadUsers({includeStats: true});
+      $scope.loadUsers({includeStats: true});
       initPvsAndFilterOpts();
     }
   
@@ -25,7 +25,7 @@ angular.module('os.administrative.user.list', ['os.administrative.models'])
               $scope.userFilterOpts.institute = institutes[0].name;
             }
 
-            Util.filter($scope, 'userFilterOpts', loadUsers);
+            Util.filter($scope, 'userFilterOpts', $scope.loadUsers);
           }
         );
 
@@ -66,11 +66,11 @@ angular.module('os.administrative.user.list', ['os.administrative.models'])
       );
     }
 
-    function loadUsers(filterOpts) {
+    $scope.loadUsers = function(filterOpts) {
       User.query(filterOpts).then(function(result) {
-        if (!$scope.users && result.length > 12) {
+        if (!$scope.users && result.length > 20) {
           //
-          // Show search options when # of users are more than 12
+          // Show search options when # of users are more than 20
           //
           osRightDrawerSvc.open();
         }
@@ -85,7 +85,7 @@ angular.module('os.administrative.user.list', ['os.administrative.models'])
 
     $scope.deleteUser = function(user) {
       DeleteUtil.delete(user, {
-        onDeletion: loadUsers,
+        onDeletion: $scope.loadUsers,
         confirmDelete: user.activityStatus == 'Pending' ? 'user.confirm_reject' : undefined
       });
     }
