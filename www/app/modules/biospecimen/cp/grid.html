@@ -1,15 +1,15 @@
 <div class="os-grid-header col-xs-12">
-  <div class="col-xs-4" ng-click="sortBy('shortTitle'); shortTitle = !shortTitle">
+  <div class="col-xs-4" ng-click="sortBy('shortTitle', $event); shortTitle = !shortTitle">
     <span translate="cp.short_title">Short Title</span>
-    <i ng-class="{'fa fa-arrow-up': shortTitle, 'fa fa-arrow-down': !shortTitle}" ng-if="sort == 'shortTitle'"></i>
+    <i ng-show="sort == 'shortTitle'"></i>
   </div>
-  <div class="col-xs-3" ng-click="sortBy('pi.firstName'); pi = !pi">
+  <div class="col-xs-3" ng-click="sortBy('pi.firstName', $event); pi = !pi">
     <span translate="cp.pi">Principal Investigator</span>
-    <i ng-class="{'fa fa-arrow-up': pi, 'fa fa-arrow-down': !pi}" ng-if="sort == 'pi.firstName'"></i>
+    <i ng-show="sort == 'pi.firstName'"></i>
   </div>
-  <div class="col-xs-2" ng-click="sortBy('startDate'); startDate = !startDate">
+  <div class="col-xs-2" ng-click="sortBy('startDate', $event); startDate = !startDate">
     <span translate="cp.start_date">Start Date</span>
-    <i ng-class="{'fa fa-arrow-up': startDate, 'fa fa-arrow-down': !startDate}" ng-if="sort == 'startDate'"></i>
+    <i ng-show="sort == 'startDate'"></i>
   </div>
   <div class="col-xs-2">
     <span translate="cp.participant_count">Participants</span>

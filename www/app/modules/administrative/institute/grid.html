@@ -1,7 +1,7 @@
 <div class="os-grid-header col-xs-12">
-  <div class="col-xs-4" ng-click="sortBy('institute.name'); name = !name">
+  <div class="col-xs-4" ng-click="sortBy('institute.name', $event); name = !name">
     <span translate="institutes.name">Name</span>
-    <i ng-class="{'fa fa-arrow-up': name, 'fa fa-arrow-down': !name}" ng-if="sort == 'institute.name'"></i>
+    <i ng-show="sort == 'institute.name'"></i>
   </div>
   <div class="col-xs-4">
     <span translate="institutes.department_count">Departments</span>

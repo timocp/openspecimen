@@ -1,19 +1,19 @@
 <div class="os-grid-header col-xs-12 labels">
-  <div class="col-xs-2" ng-click="sortBy('participant.uid'); ppid = !ppid">
+  <div class="col-xs-2" ng-click="sortBy('participant.uid', $event); ppid = !ppid">
     <span translate="participant.ppid_short">PPID</span>
-    <i ng-class="{'fa fa-arrow-up': ppid, 'fa fa-arrow-down': !ppid}" ng-if="sort =='participant.uid'"></i>
+    <i ng-show="sort =='participant.uid'"></i>
   </div>
-  <div class="col-xs-3" ng-click="sortBy('participant.empi'); empi = !empi">
+  <div class="col-xs-3" ng-click="sortBy('participant.empi', $event); empi = !empi">
     <span translate="participant.mpi">Master Patient Index</span>
-    <i ng-class="{'fa fa-arrow-up': empi, 'fa fa-arrow-down': !empi}" ng-if="sort =='participant.empi'"></i>
+    <i ng-show="sort =='participant.empi'"></i>
   </div>
-  <div class="col-xs-3" ng-click="sortBy('participant.firstName'); name = !name">
+  <div class="col-xs-3" ng-click="sortBy('participant.firstName', $event); name = !name">
     <span translate="participant.name">Name</span>
-    <i ng-class="{'fa fa-arrow-up': name, 'fa fa-arrow-down': !name}" ng-if="sort =='participant.firstName'"></i>
+    <i ng-show="sort =='participant.firstName'"></i>
   </div>
-  <div class="col-xs-2" ng-click="sortBy('registrationDate'); registrationDate = !registrationDate">
+  <div class="col-xs-2" ng-click="sortBy('registrationDate', $event); registrationDate = !registrationDate">
     <span translate="participant.reg_date">Registration Date</span>
-    <i ng-class="{'fa fa-arrow-up': registrationDate, 'fa fa-arrow-down': !registrationDate}" ng-if="sort =='registrationDate'"></i>
+    <i ng-show="sort =='registrationDate'"></i>
   </div>
   <div class="col-xs-1">
     <span translate="participant.scg_count">Scg Count</span>

@@ -1,15 +1,15 @@
 <div class="os-grid-header col-xs-12">
-  <div class="col-xs-2" ng-click="sortBy('c.name'); name = !name">
+  <div class="col-xs-2" ng-click="sortBy('c.name', $event); name = !name">
     <span translate="container.name">Name</span>
-    <i ng-class="{'fa fa-arrow-up': name, 'fa fa-arrow-down': !name}" ng-if="sort == 'c.name'"></i>
+    <i ng-show="sort == 'c.name'"></i>
   </div>
-  <div class="col-xs-3" ng-click="sortBy('c.site.name'); site = !site">
+  <div class="col-xs-3" ng-click="sortBy('c.site.name', $event); site = !site">
     <span translate="container.parent_site">Parent Site</span>
-    <i ng-class="{'fa fa-arrow-up': site, 'fa fa-arrow-down': !site}" ng-if="sort == 'c.site.name'"></i>
+    <i ng-show="sort == 'c.site.name'"></i>
   </div>
-  <div class="col-xs-3" ng-click="sortBy('c.parentContainer.name'); container = !container">
+  <div class="col-xs-3" ng-click="sortBy('c.parentContainer.name', $event); container = !container">
     <span translate="container.parent_container">Parent Container</span>
-    <i ng-class="{'fa fa-arrow-up': container, 'fa fa-arrow-down': !container}" ng-if="sort == 'c.parentContainer.name'"></i>
+    <i ng-show="sort == 'c.parentContainer.name'"></i>
   </div>
   <div class="col-xs-2">
     <span translate="container.dimension">Dimension</span>

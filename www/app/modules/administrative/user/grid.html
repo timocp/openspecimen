@@ -1,22 +1,22 @@
 <div class="os-grid-header col-xs-12">
-  <div class="col-xs-3" ng-click="sortBy('u.firstName'); name = !name">
+  <div class="col-xs-3" ng-click="sortBy('u.firstName', $event); name = !name">
     <span translate="user.name">Name</span>
-    <i ng-class="{'fa fa-arrow-up': name, 'fa fa-arrow-down': !name}" ng-if="sort == 'u.firstName'"></i>
+    <i ng-show="sort == 'u.firstName'"></i>
   </div>
-  <div class="col-xs-3" ng-click="sortBy('u.loginName'); loginName = !loginName">
+  <div class="col-xs-3" ng-click="sortBy('u.loginName', $event); loginName = !loginName">
     <span translate="user.email_address">Email Address</span>
-    <i ng-class="{'fa fa-arrow-up': loginName, 'fa fa-arrow-down': !loginName}" ng-if="sort == 'u.loginName'"></i>
+    <i ng-show="sort == 'u.loginName'"></i>
   </div>
-  <div class="col-xs-2" ng-click="sortBy('u.lastLogin'); lastLogin = !lastLogin">
+  <div class="col-xs-2" ng-click="sortBy('u.lastLogin', $event); lastLogin = !lastLogin">
     <span translate="user.tooltip.last_login">Last Login</span>
-    <i ng-class="{'fa fa-arrow-up': lastLogin, 'fa fa-arrow-down': !lastLogin}" ng-if="sort == 'u.lastLogin'"></i>
+    <i ng-show="sort == 'u.lastLogin'"></i>
   </div>
   <div class="col-xs-2">
     <span translate="user.cp_count">CPs</span>
   </div>
-  <div class="col-xs-2" ng-click="sortBy('u.creationDate'); creationDate = !creationDate">
+  <div class="col-xs-2" ng-click="sortBy('u.creationDate', $event); creationDate = !creationDate">
     <span translate="user.tooltip.user_since">Creation Date</span>
-    <i ng-class="{'fa fa-arrow-up': creationDate, 'fa fa-arrow-down': !creationDate}" ng-if="sort == 'u.creationDate'"></i>
+    <i ng-show="sort == 'u.creationDate'"></i>
   </div>
 </div>
 

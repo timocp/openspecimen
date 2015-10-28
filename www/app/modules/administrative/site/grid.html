@@ -1,15 +1,15 @@
 <div class="os-grid-header col-xs-12">
-  <div class="col-xs-3" ng-click="sortBy('name'); name = !name">
+  <div class="col-xs-3" ng-click="sortBy('name', $event); name = !name">
     <span translate="site.name">Name</span>
-    <i ng-class="{'fa fa-arrow-up': name, 'fa fa-arrow-down': !name}" ng-if="sort == 'name'"></i>
+    <i ng-show="sort == 'name'"></i>
   </div>
-  <div class="col-xs-3" ng-click="sortBy('type'); type = !type">
+  <div class="col-xs-3" ng-click="sortBy('type', $event); type = !type">
     <span translate="site.type">Type</span>
-    <i ng-class="{'fa fa-arrow-up': type, 'fa fa-arrow-down': !type}" ng-if="sort == 'type'"></i>
+    <i ng-show="sort == 'type'"></i>
   </div>
-  <div class="col-xs-3" ng-click="sortBy('code'); code = !code">
+  <div class="col-xs-3" ng-click="sortBy('code', $event); code = !code">
     <span translate="site.code">Code</span>
-    <i ng-class="{'fa fa-arrow-up': code, 'fa fa-arrow-down': !code}" ng-if="sort == 'code'"></i>
+    <i ng-show="sort == 'code'"></i>
   </div>
   <div class="col-xs-3">
     <span translate="site.cp_count">Collection Protocols</span>

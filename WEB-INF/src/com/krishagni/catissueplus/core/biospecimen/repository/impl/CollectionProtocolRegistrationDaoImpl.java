@@ -310,7 +310,7 @@ public class CollectionProtocolRegistrationDaoImpl
 		
 		return countQuery.setProjection(Projections.projectionList()
 				.add(Projections.property("id"))
-				.add(Projections.countDistinct("visit.id").as("visitCount"))
+				.add(Projections.countDistinct("visit.id"))
 				.add(Projections.countDistinct("specimen.id"))
 				.add(Projections.groupProperty("id")))
 				.addOrder(Order.desc("visitCount"))

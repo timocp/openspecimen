@@ -31,9 +31,12 @@ angular.module('openspecimen')
           scope.onDelete({obj: obj});
         }
 
-        scope.sortBy = function(colName) {
+        scope.sortBy = function(colName, element) {
           scope.sort = colName;
+
+          var sortEl = angular.element(element.target.parentElement.children[1]);
           var orderExists = scope.sortOrder.indexOf(colName) > -1  || scope.sortOrder.indexOf("-" + colName) > -1 ? true  : false;
+
           if (!orderExists) {
             scope.sortOrder = [];
           }
@@ -41,12 +44,21 @@ angular.module('openspecimen')
           if (orderExists) {
             angular.forEach(scope.sortOrder, function(order, $index) {
               if (colName.indexOf(order) > -1 || order.indexOf(colName) > -1) {
-                scope.sortOrder[$index] = order.indexOf("-") == 0 ? colName : "-" + colName;
+                colName = order.indexOf("-") == 0 ? colName : "-" + colName;
+                scope.sortOrder[$index] = colName;
               }
 
             })
           } else {
             scope.sortOrder.push(colName);
+          }
+
+          if (colName.indexOf("-") > -1) {
+            sortEl.removeClass("fa fa-arrow-down");
+            sortEl.addClass("fa fa-arrow-up");
+          } else {
+            sortEl.removeClass("fa fa-arrow-up");
+            sortEl.addClass("fa fa-arrow-down");
           }
 
           scope.loadObjects({objId: scope.parentId, includeStats: true, filterOpts: {sortBy: scope.sortOrder.reverse()}});
