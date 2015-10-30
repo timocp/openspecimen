@@ -27,7 +27,7 @@ angular.module('os.administrative.user',
         parent: 'signed-in'
       })
       .state('user-list', {
-        url: '/users',
+        url: '/users?sortby&reload&filter',
         templateUrl: 'modules/administrative/user/list.html',
         controller: 'UserListCtrl',
         parent: 'user-root'

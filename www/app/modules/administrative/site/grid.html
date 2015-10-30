@@ -1,38 +1,39 @@
-<div class="os-grid-header col-xs-12">
-  <div class="col-xs-3" ng-click="sortBy('name', $event); name = !name">
-    <span translate="site.name">Name</span>
-    <i ng-show="sort == 'name'"></i>
+<div class="grid-view">
+  <div class="os-grid-header col-xs-12">
+    <div class="col-xs-3" ng-click="sortBy('name', $event); name = !name">
+      <span class="name" translate="site.name">Name</span>
+    </div>
+    <div class="col-xs-3" ng-click="sortBy('type', $event); type = !type">
+      <span class="type" translate="site.type">Type</span>
+    </div>
+    <div class="col-xs-3" ng-click="sortBy('code', $event); code = !code">
+      <span class="code" translate="site.code">Code</span>
+    </div>
+    <div class="col-xs-3">
+      <span translate="site.cp_count">Collection Protocols</span>
+    </div>
   </div>
-  <div class="col-xs-3" ng-click="sortBy('type', $event); type = !type">
-    <span translate="site.type">Type</span>
-    <i ng-show="sort == 'type'"></i>
-  </div>
-  <div class="col-xs-3" ng-click="sortBy('code', $event); code = !code">
-    <span translate="site.code">Code</span>
-    <i ng-show="sort == 'code'"></i>
-  </div>
-  <div class="col-xs-3">
-    <span translate="site.cp_count">Collection Protocols</span>
+
+  <div ng-class="{'os-rows': list.length > 20}">
+    <div class="os-grid-row col-xs-12" ng-repeat="site in list"  ng-click="showDetail(site)">
+      <div class="col-xs-3 value">
+        <a ui-sref="site-detail.overview({siteId: site.id})">{{site.name}}</a>
+      </div>
+      <div class="col-xs-3 value">
+        <span>{{site.type}}</span>
+      </div>
+      <div class="col-xs-3 value">
+        <span>{{site.code || 'N/A'}}</span>
+      </div>
+      <div class="col-xs-3 value">
+        <span>{{site.cpCount | number: 0}}</span>
+      </div>
+      <div ng-include="'more_button.html'"></div>
+    </div>
   </div>
 </div>
 
-<div ng-class="{'os-rows': list.length > 20}">
-  <div class="os-grid-row col-xs-12" ng-repeat="site in list"  ng-click="showDetail(site)">
-    <div class="col-xs-3 value">
-      <a ui-sref="site-detail.overview({siteId: site.id})">{{site.name}}</a>
-    </div>
-    <div class="col-xs-3 value">
-      <span>{{site.type}}</span>
-    </div>
-    <div class="col-xs-3 value">
-      <span>{{site.code || 'N/A'}}</span>
-    </div>
-    <div class="col-xs-3 value">
-      <span>{{site.cpCount | number: 0}}</span>
-    </div>
-    <div ng-include="'more_button.html'"></div>
-  </div>
-</div>
+<div os-right-drawer ng-include="'modules/administrative/site/search.html'"></div>
 
 <script type="text/ng-template" id="more_button.html">
   <div dropdown class="grid-dropdown">

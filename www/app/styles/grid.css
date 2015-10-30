@@ -1,7 +1,7 @@
 .os-grid {
-  margin: 10px 0px;
   padding: 0px 20px;
   width: 100%;
+  overflow-x: hidden;
 }
 
 .os-grid:after {
@@ -16,6 +16,7 @@
   position: absolute;
   top: 40px;
   bottom: 0px;
+  width: inherit;
 }
 
 .os-grid-header {
@@ -24,6 +25,7 @@
   height: 40px;
   padding-top: 13px;
   border-bottom : 1px solid #ddd;
+  cursor: pointer;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
   font-weight: bold;
@@ -75,4 +77,5 @@
   color: #666;
   font-weight: lighter;
   font-size: 12px;
+  margin-left:4px;
 }

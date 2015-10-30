@@ -1,13 +1,16 @@
 
 angular.module('os.administrative.user.list', ['os.administrative.models'])
   .controller('UserListCtrl', function(
-    $scope, $state, $rootScope, 
+    $scope, $state, $stateParams, $rootScope,
     osRightDrawerSvc, Institute, User, PvManager, Util, DeleteUtil) {
 
     var pvInit = false;
 
     function init() {
-      $scope.loadUsers({includeStats: true});
+      if ($stateParams.reload != "false") {
+        $scope.loadUsers({includeStats: true});
+      }
+
       initPvsAndFilterOpts();
     }
   

@@ -36,7 +36,7 @@ angular.module('os.biospecimen.participant',
         abstract: true
       })
       .state('participant-list', {
-        url: '/participants',
+        url: '/participants?sortby&reload&filter',
         templateUrl: 'modules/biospecimen/participant/list.html',
         controller: 'ParticipantListCtrl',
         parent: 'cp-view'

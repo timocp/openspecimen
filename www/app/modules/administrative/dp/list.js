@@ -1,11 +1,13 @@
 
 angular.module('os.administrative.dp.list', ['os.administrative.models'])
-  .controller('DpListCtrl', function($scope, $state, DistributionProtocol, Util, PvManager, DeleteUtil) {
+  .controller('DpListCtrl', function($scope, $state, $stateParams, DistributionProtocol, Util, PvManager, DeleteUtil) {
 
     function init() {
       $scope.dpFilterOpts = {includeStats: true};
-      $scope.loadDps($scope.dpFilterOpts);
-      Util.filter($scope, 'dpFilterOpts', filter);
+      if ($stateParams.reload != "false") {
+        $scope.loadDps($scope.dpFilterOpts);
+      }
+
       loadActivityStatuses();
     }
     
@@ -15,16 +17,6 @@ angular.module('os.administrative.dp.list', ['os.administrative.models'])
           $scope.distributionProtocols = result; 
         }
       );
-    }
-
-    function filter(filterOpts) {
-      var dpFilterOpts = angular.copy(filterOpts);
-      if (dpFilterOpts.pi) {
-        dpFilterOpts.piId = dpFilterOpts.pi.id;
-        delete dpFilterOpts.pi;
-      }
-
-      $scope.loadDps(dpFilterOpts);
     }
 
     $scope.showDpOverview = function(distributionProtocol) {

@@ -30,7 +30,7 @@ angular.module('os.biospecimen.cp',
         parent: 'signed-in'
       })
       .state('cp-list', {
-        url: '', 
+        url: '?sortby&reload&filter',
         templateUrl: 'modules/biospecimen/cp/list.html',
         controller: 'CpListCtrl',
         parent: 'cps'

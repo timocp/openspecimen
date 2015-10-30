@@ -5,21 +5,21 @@
 
   <div class="os-body">
     <div class="form-group">
-      <input os-md-input type="text" ng-model="dpFilterOpts.title" class="form-control"
+      <input os-md-input type="text" ng-model="filterOpts.title" class="form-control"
         placeholder="{{'dp.title' | translate}}">
     </div>
 
     <div class="form-group">
-      <div os-md-input ng-model="dpFilterOpts.pi" placeholder="{{'dp.filter.pi' | translate}}">
-        <os-users ng-model="dpFilterOpts.pi" placeholder="{{'dp.filter.pi' | translate}}">
+      <div os-md-input ng-model="filterOpts.pi" placeholder="{{'dp.filter.pi' | translate}}">
+        <os-users ng-model="filterOpts.pi" placeholder="{{'dp.filter.pi' | translate}}">
         </os-users>
       </div>
     </div>
     
     <div class="form-group">
-      <div os-md-input ng-model="dpFilterOpts.activityStatus"
+      <div os-md-input ng-model="filterOpts.activityStatus"
         placeholder="{{'dp.filter.activity_status' | translate}}">
-        <os-select ng-model="dpFilterOpts.activityStatus" list="activityStatuses"
+        <os-select ng-model="filterOpts.activityStatus" list="activityStatuses"
           placeholder="{{'dp.filter.activity_status' | translate}}">
         </os-select>
       </div>

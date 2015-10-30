@@ -15,6 +15,10 @@ angular.module('openspecimen')
         }
 
         osRightDrawerSvc.setDrawer(element);
+
+        if (JSON.stringify(scope.filterOpts) != ("{}")) {
+          osRightDrawerSvc.open();
+        }
       }
     };
   })
@@ -32,7 +36,7 @@ angular.module('openspecimen')
     var drawerEl = undefined;
     
     function setCardsViewWidth(width) {
-      var cardsDiv = drawerEl.parent().find("div.os-cards, div.os-grid, div.os-list-container");
+      var cardsDiv = drawerEl.parent().find("div.os-cards, div.grid-view, div.os-list-container");
       cardsDiv.css('width', width);
     }
 

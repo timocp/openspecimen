@@ -1,10 +1,12 @@
 angular.module('os.administrative.site.list', ['os.administrative.models'])
-  .controller('SiteListCtrl', function($scope, $state, Site, Util, DeleteUtil) {
+  .controller('SiteListCtrl', function($scope, $state, $stateParams, Site, Util, DeleteUtil) {
 
     function init() {
       $scope.siteFilterOpts = {includeStats: true};
-      $scope.loadSites($scope.siteFilterOpts);
-      Util.filter($scope, 'siteFilterOpts', $scope.loadSites);
+
+      if ($stateParams.reload != "false") {
+        $scope.loadSites($scope.siteFilterOpts);
+      }
     }
 
     $scope.loadSites = function(filterOpts) {

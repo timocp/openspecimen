@@ -1,10 +1,10 @@
 angular.module('os.administrative.container.list', ['os.administrative.models'])
-  .controller('ContainerListCtrl', function($scope, $state, Container, Util, DeleteUtil) {
+  .controller('ContainerListCtrl', function($scope, $state, $stateParams, Container, Util, DeleteUtil) {
 
     function init() {
-      $scope.containerFilterOpts = {};
-      $scope.loadContainers();
-      Util.filter($scope, 'containerFilterOpts', $scope.loadContainers);
+      if ($stateParams.reload != "false") {
+        $scope.loadContainers();
+      }
     }
 
     $scope.loadContainers = function(filterOpts) {

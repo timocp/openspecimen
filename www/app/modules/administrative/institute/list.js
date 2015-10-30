@@ -1,10 +1,13 @@
 angular.module('os.administrative.institute.list', ['os.administrative.models'])
-  .controller('InstituteListCtrl', function($scope, $state, Institute, Util, DeleteUtil) {
+  .controller('InstituteListCtrl', function($scope, $state, $stateParams, Institute, Util, DeleteUtil) {
 
     function init() {
       $scope.instituteFilterOpts = {includeStats: true};
-      $scope.loadInstitutes($scope.instituteFilterOpts);
-      Util.filter($scope, 'instituteFilterOpts', $scope.loadInstitutes);
+
+      if ($stateParams.reload != "false") {
+        $scope.loadInstitutes($scope.instituteFilterOpts);
+      }
+
     }
 
     $scope.loadInstitutes = function(filterOpts) {

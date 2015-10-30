@@ -13,8 +13,9 @@ angular.module('os.biospecimen.participant.list', ['os.biospecimen.models'])
         registerOpts: {resource: 'ParticipantPhi', operations: ['Create'], cp: $scope.cp.shortTitle},
       }
 
-      loadParticipants($scope.cpId, true, $scope.filterOpts);
-      Util.filter($scope, 'filterOpts', loadParticipants);
+      if ($stateParams.reload != "false") {
+        loadParticipants($scope.cpId, true, $scope.filterOpts);
+      }
     }
 
     function loadParticipants() {
@@ -26,7 +27,7 @@ angular.module('os.biospecimen.participant.list', ['os.biospecimen.models'])
 
       CollectionProtocolRegistration.listForCp(cpId, includeStats, filterOpts).then(
         function(cprList) {
-          if (!$scope.cprList && cprList.length > 20) {
+          if (!$scope.cprList && cprList.length > 50) {
             //
             // Show search options when number of participants are more than 12
             //
@@ -37,10 +38,6 @@ angular.module('os.biospecimen.participant.list', ['os.biospecimen.models'])
         }
       )
     }
-
-    $scope.clearFilters = function() {
-      $scope.filterOpts = {};
-    };
 
     $scope.showParticipantOverview = function(cpr) {
       $state.go('participant-detail.overview', {cprId: cpr.cprId});

@@ -28,7 +28,7 @@ angular.module('os.administrative.container',
         parent: 'signed-in'
       })
       .state('container-list', {
-        url: '/containers',
+        url: '/containers?sortby&reload&filter',
         templateUrl: 'modules/administrative/container/list.html',
         controller: 'ContainerListCtrl',
         parent: 'container-root'

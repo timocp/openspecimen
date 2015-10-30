@@ -10,7 +10,7 @@ angular.module('os.administrative.dp',
   .config(function($stateProvider) {
     $stateProvider
       .state('dp-list', {
-        url: '/dps',
+        url: '/dps?sortby&reload&filter',
         templateUrl: 'modules/administrative/dp/list.html',     
         controller: 'DpListCtrl',
         parent: 'signed-in'
