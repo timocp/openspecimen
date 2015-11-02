@@ -54,13 +54,13 @@
           <span translate="common.buttons.view">View</span>
         </a>
       </li>
-      <li show-if-allowed="specimenResource.updateOpts">
+      <li show-if-allowed="containerResource.updateOpts">
         <a ui-sref="container-addedit({containerId: container.id})">
           <i class="fa fa-pencil"></i>
           <span translate="common.buttons.edit">Edit</span>
         </a>
       </li>
-      <li show-if-allowed="participantResource.deleteOpts" ng-click="$event.stopPropagation()">
+      <li show-if-allowed="containerResource.deleteOpts" ng-click="$event.stopPropagation()">
         <a ng-click="deleteObj(container)">
           <span class="fa fa-trash"></span>
           <span translate="common.buttons.delete">Delete</span>
