@@ -100,6 +100,7 @@ angular.module('openspecimen')
           var filterOpts = angular.copy(scope.filterOpts);
           filterOpts.sortBy = $stateParams.sortby;
           filterOpts.includeStats = true;
+
           return filterOpts;
         }
       }
