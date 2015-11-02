@@ -173,7 +173,8 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
 		userSummary.setFirstName((String)row[1]);
 		userSummary.setLastName((String)row[2]);
 		userSummary.setLoginName((String)row[3]);
-		userSummary.setCreationDate((Date)row[4]);
+		userSummary.setEmailAddress((String)row[4]);
+		userSummary.setCreationDate((Date)row[5]);
 		return userSummary;
 	}
 
@@ -267,6 +268,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
 				.add(Projections.property("u.firstName"), "firstName")
 				.add(Projections.property("u.lastName"), "lastName")
 				.add(Projections.property("u.loginName"), "loginName")
+				.add(Projections.property("u.emailAddress"), "emailAddress")
 				.add(Projections.property("u.creationDate"), "creationDate")
 		));
 	}

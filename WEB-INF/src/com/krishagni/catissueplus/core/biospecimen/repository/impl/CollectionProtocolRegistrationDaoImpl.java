@@ -14,7 +14,6 @@ import org.hibernate.criterion.Conjunction;
 import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Junction;
 import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -313,7 +312,6 @@ public class CollectionProtocolRegistrationDaoImpl
 				.add(Projections.countDistinct("visit.id"))
 				.add(Projections.countDistinct("specimen.id"))
 				.add(Projections.groupProperty("id")))
-				.addOrder(Order.desc("visitCount"))
 				.list();
 	}
 	

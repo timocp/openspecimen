@@ -19,7 +19,7 @@ angular.module('openspecimen')
         Util.filter(scope, 'filterOpts', loadObjects);
 
         if ($stateParams.filter || $stateParams.sortby) {
-          scope.loadObjects({objId: undefined, includeStats: true, filterOpts: getFilterOpts()});
+          scope.loadObjects({filterOpts: getFilterOpts()});
         }
 
         scope.sortBy = function(colName, element) {
@@ -99,7 +99,7 @@ angular.module('openspecimen')
           scope.sortOrder[0] = $stateParams.sortby
           var filterOpts = angular.copy(scope.filterOpts);
           filterOpts.sortBy = $stateParams.sortby;
-
+          filterOpts.includeStats = true;
           return filterOpts;
         }
       }

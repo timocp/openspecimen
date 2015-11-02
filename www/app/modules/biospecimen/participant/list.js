@@ -14,15 +14,15 @@ angular.module('os.biospecimen.participant.list', ['os.biospecimen.models'])
       }
 
       if ($stateParams.reload != "false") {
-        loadParticipants($scope.cpId, true, $scope.filterOpts);
+        loadParticipants($scope.filterOpts, $scope.cpId, true);
       }
     }
 
     function loadParticipants() {
-      $scope.loadParticipants($scope.cpId, true, $scope.filterOpts);
+      $scope.loadParticipants($scope.filterOpts, $scope.cpId, true);
     }
 
-    $scope.loadParticipants = function (cpId, includeStats, filterOpts) {
+    $scope.loadParticipants = function (filterOpts, cpId, includeStats) {
       cpId = cpId || $scope.cpId;
 
       CollectionProtocolRegistration.listForCp(cpId, includeStats, filterOpts).then(
