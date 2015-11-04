@@ -88,7 +88,8 @@
       "add_another": "Add Another",
       "download": "Download",
       "reset_password": "Reset Password",
-      "print": "Print"
+      "print": "Print",
+      "archive": "Archive"
     }
   },
 
@@ -631,7 +632,7 @@
     "type": "Type",
     "address": "Address",
     "cp_count": "Collection Protocols",
-
+    "archived_successfully": "Site {{name}} archived successfully",
     "bulk_import": "Import Sites",
     "bulk_import_jobs": "Import Sites Job List",
 
