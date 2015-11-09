@@ -10,6 +10,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
 import com.krishagni.catissueplus.core.administrative.domain.DistributionProtocol;
+import com.krishagni.catissueplus.core.administrative.domain.Site;
 import com.krishagni.catissueplus.core.administrative.domain.factory.DistributionProtocolErrorCode;
 import com.krishagni.catissueplus.core.administrative.domain.factory.DistributionProtocolFactory;
 import com.krishagni.catissueplus.core.administrative.events.DistributionOrderStat;
@@ -130,7 +131,8 @@ public class DistributionProtocolServiceImpl implements DistributionProtocolServ
 		
 			DistributionProtocol distributionProtocol = distributionProtocolFactory.createDistributionProtocol(req.getPayload());
 			ensureUniqueConstraints(distributionProtocol, existing);
-			
+			ensureValidRecSite(distributionProtocol, existing);
+
 			existing.update(distributionProtocol);
 			daoFactory.getDistributionProtocolDao().saveOrUpdate(existing);
 			return ResponseEvent.response(DistributionProtocolDetail.from(existing));
@@ -265,7 +267,23 @@ public class DistributionProtocolServiceImpl implements DistributionProtocolServ
 			dpMap.get(count.getKey()).setDistributedSpecimensCount(count.getValue());
 		}		
 	}
-	
+
+	private void ensureValidRecSite(DistributionProtocol newDp, DistributionProtocol existingDp) {
+		OpenSpecimenException ose = new OpenSpecimenException(ErrorType.USER_ERROR);
+
+		if (existingDp == null) {
+			return;
+		}
+
+		Site existingSite = existingDp.getDefReceivingSite();
+		Site newSite = newDp.getDefReceivingSite();
+		if (!existingSite.equals(newSite) && !newSite.getActivityStatus().equals(Status.ACTIVITY_STATUS_ACTIVE.getStatus())) {
+			ose.addError(DistributionProtocolErrorCode.INVALID_DISTRIBUTING_SITES);
+		}
+
+		ose.checkAndThrow();
+	}
+
 	private void ensureUniqueConstraints(DistributionProtocol newDp, DistributionProtocol existingDp) {
 		OpenSpecimenException ose = new OpenSpecimenException(ErrorType.USER_ERROR);
 		

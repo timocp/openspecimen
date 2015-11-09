@@ -12,6 +12,8 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 
+import com.krishagni.catissueplus.core.administrative.domain.Site;
+import com.krishagni.catissueplus.core.administrative.domain.factory.StorageContainerErrorCode;
 import com.krishagni.catissueplus.core.biospecimen.ConfigParams;
 import com.krishagni.catissueplus.core.biospecimen.domain.CollectionProtocol;
 import com.krishagni.catissueplus.core.biospecimen.domain.Visit;
@@ -44,6 +46,7 @@ import com.krishagni.catissueplus.core.common.service.ConfigurationService;
 import com.krishagni.catissueplus.core.common.service.LabelGenerator;
 import com.krishagni.catissueplus.core.common.service.LabelPrinter;
 import com.krishagni.catissueplus.core.common.util.ConfigUtil;
+import com.krishagni.catissueplus.core.common.util.Status;
 import com.krishagni.catissueplus.core.common.util.Utility;
 
 public class VisitServiceImpl implements VisitService {
@@ -390,6 +393,7 @@ public class VisitServiceImpl implements VisitService {
 		
 		OpenSpecimenException ose = new OpenSpecimenException(ErrorType.USER_ERROR);
 		ensureValidAndUniqueVisitName(existing, visit, ose);
+		ensureValidSite(existing, visit, ose);
 		ose.checkAndThrow();
 		
 		if (existing == null) {
@@ -423,7 +427,19 @@ public class VisitServiceImpl implements VisitService {
 		
 		return visit;
 	}
-	
+
+	private void ensureValidSite(Visit existing, Visit visit, OpenSpecimenException ose) {
+		if (existing == null) {
+			return;
+		}
+
+		Site existingSite = existing.getSite();
+		Site newSite = visit.getSite();
+		if (!existingSite.equals(newSite) && !newSite.getActivityStatus().equals(Status.ACTIVITY_STATUS_ACTIVE.getStatus())) {
+			ose.addError(StorageContainerErrorCode.INVALID_SITE_AND_PARENT_CONT);
+		}
+	}
+
 	private void ensureValidAndUniqueVisitName(Visit existing, Visit visit, OpenSpecimenException ose) {
 		if (existing != null && 
 			StringUtils.isNotBlank(existing.getName()) && 

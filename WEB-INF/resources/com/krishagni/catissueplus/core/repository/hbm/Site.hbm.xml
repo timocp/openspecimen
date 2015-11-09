@@ -74,14 +74,21 @@
       from 
         com.krishagni.catissueplus.core.administrative.domain.Site site 
       where 
-        site.name in (:siteNames) and site.activityStatus != 'Disabled'
+        site.name in (:siteNames) and site.activityStatus = 'Active'
+    </query>
+
+    <query name="getSitesByNamesAndStatus">
+      from
+        com.krishagni.catissueplus.core.administrative.domain.Site site
+      where
+        site.name in (:siteNames) and site.activityStatus in (:status)
     </query>
     
     <query name="getSiteByCode">
       from 
         com.krishagni.catissueplus.core.administrative.domain.Site site 
       where 
-        site.code = :siteCode and site.activityStatus != 'Disabled'
+        site.code = :siteCode and site.activityStatus = 'Active'
     </query>
 
     <query name="getCpCountBySites">

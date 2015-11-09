@@ -1,8 +1,10 @@
 package com.krishagni.catissueplus.core.administrative.domain.factory.impl;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -114,7 +116,14 @@ public class DistributionOrderFactoryImpl implements DistributionOrderFactory {
 		if (siteId != null) {
 			site = daoFactory.getSiteDao().getById(siteId);
 		} else {
-			site = daoFactory.getSiteDao().getSiteByName(siteName);
+			List<String> status = new ArrayList<String>();
+			status.add(Status.ACTIVITY_STATUS_ACTIVE.getStatus());
+
+			if (detail.getId() != null) {
+				status.add(Status.ACTIVITY_STATUS_CLOSED.getStatus());
+			}
+
+			site = daoFactory.getSiteDao().getSiteByNameAndStatus(siteName, status);
 		}
 
 		if (site == null) {

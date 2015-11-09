@@ -8,8 +8,10 @@ import static com.krishagni.catissueplus.core.common.PvAttributes.MISSED_VISIT_R
 import static com.krishagni.catissueplus.core.common.PvAttributes.VISIT_STATUS;
 import static com.krishagni.catissueplus.core.common.service.PvValidator.isValid;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -279,13 +281,20 @@ public class VisitFactoryImpl implements VisitFactory {
 				ose.addError(VisitErrorCode.SITE_REQUIRED);
 			}
 		} else {
-			Site site = daoFactory.getSiteDao().getSiteByName(visitSite);
+			List<String> status = new ArrayList<String>();
+			status.add(Status.ACTIVITY_STATUS_ACTIVE.getStatus());
+
+			if (visitDetail.getId() != null) {
+				status.add(Status.ACTIVITY_STATUS_CLOSED.getStatus());
+			}
+
+			Site site = daoFactory.getSiteDao().getSiteByNameAndStatus(visitSite, status);
 			if (site == null) {
 				ose.addError(SiteErrorCode.NOT_FOUND);
 				return;
 			}
-			
-			visit.setSite(site);			
+
+			visit.setSite(site);
 		}
 	}
 	

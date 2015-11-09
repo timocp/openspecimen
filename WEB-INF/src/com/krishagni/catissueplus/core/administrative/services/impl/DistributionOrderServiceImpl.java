@@ -3,7 +3,6 @@ package com.krishagni.catissueplus.core.administrative.services.impl;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -16,9 +15,11 @@ import org.springframework.context.MessageSource;
 import com.krishagni.catissueplus.core.administrative.domain.DistributionOrder;
 import com.krishagni.catissueplus.core.administrative.domain.DistributionOrder.Status;
 import com.krishagni.catissueplus.core.administrative.domain.DistributionProtocol;
+import com.krishagni.catissueplus.core.administrative.domain.Site;
 import com.krishagni.catissueplus.core.administrative.domain.factory.DistributionOrderErrorCode;
 import com.krishagni.catissueplus.core.administrative.domain.factory.DistributionOrderFactory;
 import com.krishagni.catissueplus.core.administrative.domain.factory.DistributionProtocolErrorCode;
+import com.krishagni.catissueplus.core.administrative.domain.factory.StorageContainerErrorCode;
 import com.krishagni.catissueplus.core.administrative.events.DistributionOrderDetail;
 import com.krishagni.catissueplus.core.administrative.events.DistributionOrderListCriteria;
 import com.krishagni.catissueplus.core.administrative.events.DistributionOrderSummary;
@@ -45,7 +46,6 @@ import com.krishagni.catissueplus.core.de.events.ExecuteQueryEventOp;
 import com.krishagni.catissueplus.core.de.events.QueryDataExportResult;
 import com.krishagni.catissueplus.core.de.services.QueryService;
 import com.krishagni.rbac.common.errors.RbacErrorCode;
-
 import edu.common.dynamicextensions.query.WideRowMode;
 
 public class DistributionOrderServiceImpl implements DistributionOrderService {
@@ -169,8 +169,10 @@ public class DistributionOrderServiceImpl implements DistributionOrderService {
 			AccessCtrlMgr.getInstance().ensureUpdateDistributionOrderRights(newOrder);
 			
 			OpenSpecimenException ose = new OpenSpecimenException(ErrorType.USER_ERROR);
+			ensureValidRecSite(existingOrder, newOrder, ose);
 			ensureUniqueConstraints(existingOrder, newOrder, ose);
-			
+
+
 			List<String> specimenLabels = Utility.<List<String>>collect(newOrder.getOrderItems(), "specimen.label");
 			getValidSpecimens(newOrder.getDistributionProtocol(), specimenLabels, ose);
 			
@@ -234,7 +236,19 @@ public class DistributionOrderServiceImpl implements DistributionOrderService {
 			return ResponseEvent.serverError(e);
 		}
 	}
-	
+
+	private void ensureValidRecSite(DistributionOrder existingOrder, DistributionOrder newOrder, OpenSpecimenException ose) {
+		if (existingOrder == null) {
+			return;
+		}
+
+		Site existingSite = existingOrder.getSite();
+		Site newSite = newOrder.getSite();
+		if (!existingSite.equals(newSite) && !newSite.getActivityStatus().equals(com.krishagni.catissueplus.core.common.util.Status.ACTIVITY_STATUS_ACTIVE.getStatus())) {
+			ose.addError(StorageContainerErrorCode.INVALID_SITE_AND_PARENT_CONT);
+		}
+	}
+
 	private void ensureUniqueConstraints(DistributionOrder existingOrder, DistributionOrder newOrder, OpenSpecimenException ose) {
 		if (existingOrder == null || !newOrder.getName().equals(existingOrder.getName())) {
 			DistributionOrder order = daoFactory.getDistributionOrderDao().getOrder(newOrder.getName());

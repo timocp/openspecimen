@@ -253,14 +253,22 @@ public class StorageContainerFactoryImpl implements StorageContainerFactory {
 		if (StringUtils.isBlank(siteName)) {
 			return null;
 		}
-				
-		Site site = daoFactory.getSiteDao().getSiteByName(siteName);
-		if (site == null) {
-			ose.addError(SiteErrorCode.NOT_FOUND);			
+
+		List<String> status = new ArrayList<String>();
+		status.add(Status.ACTIVITY_STATUS_ACTIVE.getStatus());
+
+		if (detail.getId() != null) {
+			status.add(Status.ACTIVITY_STATUS_CLOSED.getStatus());
 		}
-			
+
+		Site site = daoFactory.getSiteDao().getSiteByNameAndStatus(siteName, status);
+		if (site == null) {
+			ose.addError(SiteErrorCode.NOT_FOUND);
+			return null;
+		}
+
 		container.setSite(site);
-		return site;		
+		return site;
 	}
 	
 	private StorageContainer setParentContainer(StorageContainerDetail detail, StorageContainer container, OpenSpecimenException ose) {

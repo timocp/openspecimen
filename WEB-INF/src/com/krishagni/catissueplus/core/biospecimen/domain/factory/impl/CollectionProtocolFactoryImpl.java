@@ -1,5 +1,6 @@
 package com.krishagni.catissueplus.core.biospecimen.domain.factory.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -74,7 +75,7 @@ public class CollectionProtocolFactoryImpl implements CollectionProtocolFactory 
 		cp.setConsentsWaived(input.getConsentsWaived());
 
 		setVisitNameFmt(input, cp, ose);
-		setLabelFormats(input, cp, ose);		
+		setLabelFormats(input, cp, ose);
 		setActivityStatus(input, cp, ose);
 		setCollectionProtocolExtension(input, cp, ose);
 
@@ -97,8 +98,15 @@ public class CollectionProtocolFactoryImpl implements CollectionProtocolFactory 
 			 ose.addError(CpErrorCode.REPOSITORIES_REQUIRED);
 			 return;
 		 }
-		 
-		 List<Site> repositories = daoFactory.getSiteDao().getSitesByNames(cpSiteDetails.keySet());
+
+		 List<String> status = new ArrayList<String>();
+		 status.add(Status.ACTIVITY_STATUS_ACTIVE.getStatus());
+
+		 if (input.getId() != null) {
+		     status.add(Status.ACTIVITY_STATUS_CLOSED.getStatus());
+		 }
+
+		 List<Site> repositories = daoFactory.getSiteDao().getSitesByNamesAndStatus(cpSiteDetails.keySet(), status);
 		 if (repositories.size() != cpSiteDetails.keySet().size()) {
 			 ose.addError(CpErrorCode.INVALID_REPOSITORIES);
 			 return;
@@ -107,6 +115,11 @@ public class CollectionProtocolFactoryImpl implements CollectionProtocolFactory 
 		 Set<CollectionProtocolSite> sites = new HashSet<CollectionProtocolSite>();
 		 for (Site site: repositories) {
 			 CollectionProtocolSiteDetail detail = cpSiteDetails.get(site.getName());
+			 if (detail.getId() == null && !site.getActivityStatus().equals(Status.ACTIVITY_STATUS_ACTIVE.getStatus())) {
+				 ose.addError(CpErrorCode.INVALID_REPOSITORIES);
+				 return;
+			 }
+
 			 CollectionProtocolSite cpSite = new CollectionProtocolSite();
 			 cpSite.setId(detail.getId());
 			 cpSite.setSite(site); 

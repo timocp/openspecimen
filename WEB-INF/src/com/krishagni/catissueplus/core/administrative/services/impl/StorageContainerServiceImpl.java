@@ -9,6 +9,7 @@ import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
+import com.krishagni.catissueplus.core.administrative.domain.Site;
 import com.krishagni.catissueplus.core.administrative.domain.StorageContainer;
 import com.krishagni.catissueplus.core.administrative.domain.StorageContainerPosition;
 import com.krishagni.catissueplus.core.administrative.domain.factory.StorageContainerErrorCode;
@@ -39,7 +40,7 @@ import com.krishagni.catissueplus.core.common.events.DependentEntityDetail;
 import com.krishagni.catissueplus.core.common.events.RequestEvent;
 import com.krishagni.catissueplus.core.common.events.ResponseEvent;
 import com.krishagni.catissueplus.core.common.util.AuthUtil;
-import com.krishagni.catissueplus.core.common.util.Utility;
+import com.krishagni.catissueplus.core.common.util.Status;
 import com.krishagni.rbac.common.errors.RbacErrorCode;
 
 public class StorageContainerServiceImpl implements StorageContainerService {
@@ -343,8 +344,8 @@ public class StorageContainerServiceImpl implements StorageContainerService {
 				container = containerFactory.createStorageContainer(input); 
 			}
 			
-			
-			ensureUniqueConstraints(existing, container);			
+			ensureValidSite(existing, container);
+			ensureUniqueConstraints(existing, container);
 			existing.update(container);			
 			daoFactory.getStorageContainerDao().saveOrUpdate(existing, true);
 			return ResponseEvent.response(StorageContainerDetail.from(existing));			
@@ -354,7 +355,18 @@ public class StorageContainerServiceImpl implements StorageContainerService {
 			return ResponseEvent.serverError(e);
 		}		
 	}
-	
+
+	private void ensureValidSite(StorageContainer existing, StorageContainer newContainer) {
+		OpenSpecimenException ose = new OpenSpecimenException(ErrorType.USER_ERROR);
+		Site existingSite = existing.getSite();
+		Site newSite = newContainer.getSite();
+		if (!existingSite.equals(newSite) && !newSite.getActivityStatus().equals(Status.ACTIVITY_STATUS_ACTIVE.getStatus())) {
+			ose.addError(StorageContainerErrorCode.INVALID_SITE_AND_PARENT_CONT);
+		}
+
+		ose.checkAndThrow();
+	}
+
 	private void ensureUniqueConstraints(StorageContainer existing, StorageContainer newContainer) {
 		OpenSpecimenException ose = new OpenSpecimenException(ErrorType.USER_ERROR);
 		

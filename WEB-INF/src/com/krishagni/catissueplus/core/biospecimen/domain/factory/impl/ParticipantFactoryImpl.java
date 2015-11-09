@@ -9,9 +9,11 @@ import static com.krishagni.catissueplus.core.common.PvAttributes.VITAL_STATUS;
 import static com.krishagni.catissueplus.core.common.service.PvValidator.areValid;
 import static com.krishagni.catissueplus.core.common.service.PvValidator.isValid;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -308,9 +310,16 @@ public class ParticipantFactoryImpl implements ParticipantFactory {
 		} else {
 			Set<String> siteNames = new HashSet<String>();
 			boolean dupSite = false;
-			
+
+			List<String> status = new ArrayList<String>();
+			status.add(Status.ACTIVITY_STATUS_ACTIVE.getStatus());
+
+			if (detail.getId() != null) {
+				status.add(Status.ACTIVITY_STATUS_CLOSED.getStatus());
+			}
+
 			for (PmiDetail pmiDetail : detail.getPmis()) {
-				ParticipantMedicalIdentifier pmi = getPmi(pmiDetail, oce);
+				ParticipantMedicalIdentifier pmi = getPmi(pmiDetail, status, oce);
 				if (pmi == null) {
 					continue;
 				}
@@ -328,8 +337,8 @@ public class ParticipantFactoryImpl implements ParticipantFactory {
 		participant.setPmis(newPmis);
 	}
 
-	private ParticipantMedicalIdentifier getPmi(PmiDetail pmiDetail, OpenSpecimenException oce) {
-		Site site = daoFactory.getSiteDao().getSiteByName(pmiDetail.getSiteName());		
+	private ParticipantMedicalIdentifier getPmi(PmiDetail pmiDetail, List<String> status, OpenSpecimenException oce) {
+		Site site = daoFactory.getSiteDao().getSiteByNameAndStatus(pmiDetail.getSiteName(), status);
 		if (site == null) {
 			oce.addError(SiteErrorCode.NOT_FOUND);
 			return null;

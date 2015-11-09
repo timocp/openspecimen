@@ -109,8 +109,16 @@ public class DistributionProtocolFactoryImpl implements DistributionProtocolFact
 		if (StringUtils.isBlank(defReceivingSiteName)) {
 			return;
 		}
-		
-		Site defReceivingSite = daoFactory.getSiteDao().getSiteByName(defReceivingSiteName);
+
+		List<String> status = new ArrayList<String>();
+		status.add(Status.ACTIVITY_STATUS_ACTIVE.getStatus());
+
+		if (detail.getId() != null) {
+			status.add(Status.ACTIVITY_STATUS_CLOSED.getStatus());
+		}
+
+		Site defReceivingSite = daoFactory.getSiteDao().getSiteByNameAndStatus(defReceivingSiteName, status);
+
 		if (defReceivingSite == null) {
 			ose.addError(SiteErrorCode.NOT_FOUND);
 			return;

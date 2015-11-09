@@ -48,6 +48,16 @@ public class SiteDaoImpl extends AbstractDao<Site> implements SiteDao {
 				.setParameterList("siteNames", siteNames)
 				.list();
 	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<Site> getSitesByNamesAndStatus(Collection<String> siteNames, Collection<String> status) {
+		return sessionFactory.getCurrentSession()
+				.getNamedQuery(GET_SITES_BY_NAMES_AND_STATUS)
+				.setParameterList("siteNames", siteNames)
+				.setParameterList("status", status)
+				.list();
+	}
 	
 	@Override
 	public Site getSiteByName(String siteName) {
@@ -55,7 +65,13 @@ public class SiteDaoImpl extends AbstractDao<Site> implements SiteDao {
 		
 		return result.isEmpty() ? null : result.get(0);
 	}
-	
+
+	@Override
+	public Site getSiteByNameAndStatus(String siteName, Collection<String> status) {
+		List<Site> result = getSitesByNamesAndStatus(Collections.singletonList(siteName), status);
+		return result.isEmpty() ? null : result.get(0);
+	}
+
 	@Override
 	@SuppressWarnings("unchecked")
 	public Site getSiteByCode(String siteCode) {
@@ -100,7 +116,9 @@ public class SiteDaoImpl extends AbstractDao<Site> implements SiteDao {
 	private static final String FQN = Site.class.getName();
 
 	private static final String GET_SITES_BY_NAMES = FQN + ".getSitesByNames";
-	
+
+	private static final String GET_SITES_BY_NAMES_AND_STATUS = FQN + ".getSitesByNamesAndStatus";
+
 	private static final String GET_SITE_BY_CODE = FQN + ".getSiteByCode";
 	
 	private static final String GET_CP_COUNT_BY_SITES = FQN + ".getCpCountBySites";
