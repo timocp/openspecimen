@@ -143,5 +143,28 @@
       incrementBy="1" 
       ordered="true" />
   </changeSet>
+
+  <changeSet author="vlonushte" id="Added created by column to specimen table">
+    <addColumn tableName="CATISSUE_SPECIMEN">
+      <column name="CREATED_BY" type="${int.type}">
+      </column>
+    </addColumn>
+  </changeSet>
+
+  <changeSet author="vlonushte" id="Creating specimen aliquot-derivative view">
+    <createView viewName="specimen_aliquot_derivative_view">
+      select
+        min(identifier) as identifier, lineage, group_concat(label separator ', ') as labels, created_by, created_on, comments
+      from
+        catissue_specimen
+      where
+        lineage != 'New' and
+        collection_status = 'Collected'
+      group by
+        parent_specimen_id,
+        lineage,
+        created_on
+    </createView>
+  </changeSet>
   
 </databaseChangeLog>

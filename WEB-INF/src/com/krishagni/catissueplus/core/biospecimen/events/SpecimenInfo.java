@@ -13,6 +13,7 @@ import com.krishagni.catissueplus.core.biospecimen.domain.Specimen;
 import com.krishagni.catissueplus.core.biospecimen.domain.SpecimenRequirement;
 import com.krishagni.catissueplus.core.common.AttributeModifiedSupport;
 import com.krishagni.catissueplus.core.common.ListenAttributeChanges;
+import com.krishagni.catissueplus.core.common.events.UserSummary;
 
 @ListenAttributeChanges
 public class SpecimenInfo extends AttributeModifiedSupport implements Comparable<SpecimenInfo>, Serializable {
@@ -78,6 +79,8 @@ public class SpecimenInfo extends AttributeModifiedSupport implements Comparable
 	private String activityStatus;
 	
 	private Date createdOn;
+	
+	private UserSummary createdBy;
 	
 	private String code;
 
@@ -323,6 +326,14 @@ public class SpecimenInfo extends AttributeModifiedSupport implements Comparable
 		this.createdOn = createdOn;
 	}
 	
+	public UserSummary getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(UserSummary createdBy) {
+		this.createdBy = createdBy;
+	}
+
 	public String getCode() {
 		return code;
 	}
@@ -392,6 +403,7 @@ public class SpecimenInfo extends AttributeModifiedSupport implements Comparable
 		result.setStorageLocation(location);		
 		result.setActivityStatus(specimen.getActivityStatus());
 		result.setCreatedOn(specimen.getCreatedOn());
+		result.setCreatedBy(specimen.getCreatedBy() == null ? null : UserSummary.from(specimen.getCreatedBy()));
 		result.setStorageType(sr != null ? sr.getStorageType() : null);
 		result.setVisitId(specimen.getVisit().getId());
 		result.setVisitName(specimen.getVisit().getName());

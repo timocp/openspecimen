@@ -44,6 +44,8 @@ import com.krishagni.catissueplus.core.biospecimen.repository.DaoFactory;
 import com.krishagni.catissueplus.core.common.errors.ActivityStatusErrorCode;
 import com.krishagni.catissueplus.core.common.errors.ErrorType;
 import com.krishagni.catissueplus.core.common.errors.OpenSpecimenException;
+import com.krishagni.catissueplus.core.common.events.UserSummary;
+import com.krishagni.catissueplus.core.common.util.AuthUtil;
 import com.krishagni.catissueplus.core.common.util.NumUtil;
 import com.krishagni.catissueplus.core.common.util.Status;
 import com.krishagni.catissueplus.core.de.domain.DeObject;
@@ -130,6 +132,7 @@ public class SpecimenFactoryImpl implements SpecimenFactory {
 		setCollectionDetail(detail, existing, specimen, ose);
 		setReceiveDetail(detail, existing, specimen, ose);
 		setCreatedOn(detail, existing, specimen, ose);
+		setCreatedBy(detail, existing, specimen, ose);
 		setPooledSpecimen(detail, existing, specimen, ose);
 		setExtension(detail, existing, specimen, ose);
 
@@ -630,6 +633,29 @@ public class SpecimenFactoryImpl implements SpecimenFactory {
 		}
 	}
 	
+	private void setCreatedBy(SpecimenDetail detail, Specimen specimen, OpenSpecimenException ose) {
+		if (specimen.isPrimary() || !specimen.isCollected()) {
+			return;
+		}
+		
+		User user = null;
+		if (detail.getCreatedBy() != null) {
+			user = getUser(detail.getCreatedBy(), ose);
+		} else {
+			user = AuthUtil.getCurrentUser();
+		}
+		
+		specimen.setCreatedBy(user); 
+	}
+	
+	private void setCreatedBy(SpecimenDetail detail, Specimen existing, Specimen specimen, OpenSpecimenException ose) {
+		if (existing == null || detail.isAttrModified("createdBy")) {
+			setCreatedBy(detail, specimen, ose); 
+		} else {
+			specimen.setCreatedBy(existing.getCreatedBy());
+		}
+	}
+	
 	private void setBiohazards(SpecimenDetail detail, Specimen specimen, OpenSpecimenException ose) {
 		Specimen parentSpecimen = specimen.getParentSpecimen();
 		
@@ -820,7 +846,7 @@ public class SpecimenFactoryImpl implements SpecimenFactory {
 	}
 	
 	private void setEventAttrs(SpecimenEventDetail detail, SpecimenEvent event, OpenSpecimenException ose) {
-		User user = getUser(detail, ose);
+		User user = getUser(detail.getUser(), ose);
 		if (user != null) {
 			event.setUser(user);
 		}
@@ -839,13 +865,13 @@ public class SpecimenFactoryImpl implements SpecimenFactory {
 		specimen.setExtension(extension);
 	}
 	
-	private User getUser(SpecimenEventDetail detail, OpenSpecimenException ose) {
-		if (detail.getUser() == null) {
+	private User getUser(UserSummary userDetail, OpenSpecimenException ose) {
+		if (userDetail == null) {
 			return null;			
 		}
 		
-		Long userId = detail.getUser().getId();		
-		String emailAddress = detail.getUser().getEmailAddress();
+		Long userId = userDetail.getId();		
+		String emailAddress = userDetail.getEmailAddress();
 		
 		User user = null;
 		if (userId != null) {

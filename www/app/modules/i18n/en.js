@@ -439,6 +439,7 @@
     "container": "Container",
     "biohazards": "Biohazards",
     "created_on": "Created On",
+    "created_by": "Created By",
     "concentration_unit": "&#181;g/&#181;l",
     "copy_first_to_all": "Copy First To All",
     "row": "Row",

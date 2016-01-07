@@ -77,6 +77,8 @@ public class Specimen extends BaseExtensionEntity {
 	private String comment;
 
 	private Date createdOn;
+	
+	private User createdBy;
 
 	private BigDecimal availableQuantity;
 
@@ -317,6 +319,15 @@ public class Specimen extends BaseExtensionEntity {
 	public void setCreatedOn(Date createdOn) {
 		// For all specimens, the created on seconds and milliseconds should be reset to 0
 		this.createdOn = Utility.chopSeconds(createdOn);
+	}
+
+	@NotAudited
+	public User getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(User createdBy) {
+		this.createdBy = createdBy;
 	}
 
 	public BigDecimal getAvailableQuantity() {
@@ -645,11 +656,13 @@ public class Specimen extends BaseExtensionEntity {
 				updateCreatedOn(Utility.chopSeconds(getReceivedEvent().getTime()));
 			} else {
 				updateCreatedOn(specimen.getCreatedOn());
+				updateCreatedBy(specimen.getCreatedBy());
 			}
 		} else {
 			updateCreatedOn(null);
+			updateCreatedBy(null);
 		}
-
+		
 		// TODO: Specimen class/type should not be allowed to change
 		Specimen spmnToUpdateFrom = null;
 		if (isAliquot() || isDerivative()) {
@@ -793,6 +806,16 @@ public class Specimen extends BaseExtensionEntity {
 				throw OpenSpecimenException.userError(SpecimenErrorCode.PARENT_CREATED_ON_GT_CHILDREN);
 			}
 		}*/
+	}
+	
+	private void updateCreatedBy(User createdBy) {
+		this.createdBy = createdBy;
+		
+		if (createdBy == null) {
+			for (Specimen childSpecimen : getChildCollection()) {
+				childSpecimen.updateCreatedBy(createdBy);
+			}
+		}
 	}
 	
 	private void addDisposalEvent(User user, Date time, String reason) {

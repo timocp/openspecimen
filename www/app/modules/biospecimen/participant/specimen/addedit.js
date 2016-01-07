@@ -34,6 +34,7 @@ angular.module('os.biospecimen.specimen.addedit', [])
 
       if (currSpecimen.lineage != 'New') {
         currSpecimen.anatomicSite = currSpecimen.laterality = undefined;
+        currSpecimen.createdBy = $scope.currentUser;
       }
 
       if (currSpecimen.status != 'Collected') {

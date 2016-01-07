@@ -121,6 +121,13 @@
         </div>
       </div>
 
+      <div class="form-group" ng-if="currSpecimen.lineage != 'New' && currSpecimen.status == 'Collected'">
+        <label class="col-xs-3 control-label" translate="specimens.created_by">Created By</label>
+        <div class="col-xs-6">
+          <os-users ng-model="currSpecimen.createdBy" placeholder="{{'specimens.created_by' | translate}}"></os-users>
+        </div>
+      </div>
+
       <div class="form-group" ng-if="currSpecimen.lineage != 'Aliquot' && !currSpecimen.poolSpecimen">
         <label class="col-xs-3 control-label" translate="specimens.concentration">Concentration</label>
         <div class="col-xs-6"> 

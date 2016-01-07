@@ -47,6 +47,7 @@ import com.krishagni.catissueplus.core.common.events.DependentEntityDetail;
 import com.krishagni.catissueplus.core.common.events.EntityQueryCriteria;
 import com.krishagni.catissueplus.core.common.events.RequestEvent;
 import com.krishagni.catissueplus.core.common.events.ResponseEvent;
+import com.krishagni.catissueplus.core.common.events.UserSummary;
 import com.krishagni.catissueplus.core.common.service.ConfigurationService;
 import com.krishagni.catissueplus.core.common.service.LabelGenerator;
 import com.krishagni.catissueplus.core.common.service.LabelPrinter;
@@ -234,7 +235,7 @@ public class SpecimenServiceImpl implements SpecimenService {
 				// Pre-populate specimen interaction objects with
 				// appropriate created on time
 				//
-				setCreatedOn(detail);
+				setCreatedOnAndCreatedBy(detail);
 
 				Specimen specimen = collectSpecimen(detail, null);
 				specimens.add(specimen);
@@ -424,7 +425,7 @@ public class SpecimenServiceImpl implements SpecimenService {
 		return daoFactory.getSpecimenDao().getSpecimens(crit);
 	}
 
-	private void setCreatedOn(SpecimenDetail detail) {
+	private void setCreatedOnAndCreatedBy(SpecimenDetail detail) {
 		//
 		// 1. If primary specimen, copy received time, if available, to created on.
 		//    Otherwise use current time for both created on and receive time
@@ -432,9 +433,11 @@ public class SpecimenServiceImpl implements SpecimenService {
 		// 3. Copy parent's created on to its children
 		//
 		Date createdOn = Calendar.getInstance().getTime();
+		UserSummary createdBy = UserSummary.from(AuthUtil.getCurrentUser());
 		if (Specimen.NEW.equals(detail.getLineage())) {
 			if (detail.getReceivedEvent() != null && detail.getReceivedEvent().getTime() != null) {
 				createdOn = detail.getReceivedEvent().getTime();
+				createdBy = detail.getReceivedEvent().getUser();
 			} else {
 				ReceivedEventDetail receivedEvent = detail.getReceivedEvent();
 				if (receivedEvent == null) {
@@ -445,13 +448,13 @@ public class SpecimenServiceImpl implements SpecimenService {
 				detail.setReceivedEvent(receivedEvent);
 			}
 
-			setCreatedOn(detail.getSpecimensPool(), createdOn);
+			setCreatedOnAndCreatedBy(detail.getSpecimensPool(), createdOn, null);
 		}
 
-		setCreatedOn(detail.getChildren(), createdOn);
+		setCreatedOnAndCreatedBy(detail.getChildren(), createdOn, createdBy);
 	}
 
-	private void setCreatedOn(List<SpecimenDetail> details, Date createdOn) {
+	private void setCreatedOnAndCreatedBy(List<SpecimenDetail> details, Date createdOn, UserSummary createdBy) {
 		if (CollectionUtils.isEmpty(details)) {
 			return;
 		}
@@ -460,8 +463,12 @@ public class SpecimenServiceImpl implements SpecimenService {
 			if (detail.getCreatedOn() == null) {
 				detail.setCreatedOn(createdOn);
 			}
+			
+			if (detail.getCreatedBy() == null) {
+				detail.setCreatedBy(createdBy);
+			}
 
-			setCreatedOn(detail.getChildren(), detail.getCreatedOn());
+			setCreatedOnAndCreatedBy(detail.getChildren(), detail.getCreatedOn(), detail.getCreatedBy());
 		}
 	}
 	
