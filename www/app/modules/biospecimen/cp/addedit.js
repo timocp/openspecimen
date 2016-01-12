@@ -9,6 +9,10 @@ angular.module('os.biospecimen.cp.addedit', ['os.biospecimen.models', 'os.admini
       $scope.ppidFmt = cp.getUiPpidFmt();
       $scope.coordinators = [];
 
+      if (!cp.id) {
+        cp.aliquotLabelFmt = $scope.global.appProps.aliquot_label_format;
+      }
+
       loadPvs();
 
       $scope.$watch('ppidFmt', function(newVal) {

@@ -1620,7 +1620,9 @@
         "visit_label_print_rules": "Visit Label Print Rules",
         "visit_label_print_rules_desc": "CSV file containing the conditions which decides the data to be printed as labels and which printer to use",
         "visit_label_printer": "Visit Label Printer Implementor",
-        "visit_label_printer_desc": "Name of the Java bean defined in the spring context for the implementor class"
+        "visit_label_printer_desc": "Name of the Java bean defined in the spring context for the implementor class",
+        "aliquot_label_format": "Aliquot label format",
+        "aliquot_label_format_desc": "Set system level aliquot label format."
       },
 
       "common": {
