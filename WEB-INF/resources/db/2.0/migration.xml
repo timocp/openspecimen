@@ -40,15 +40,21 @@
   </changeSet>
   
   <changeSet author="nmarwaha" id="Script to map departments and institutes" dbms="oracle">
-    <validCheckSum>7:9b747c0e6e8b8fc87f96fa2f7fd2c783</validCheckSum>
+    <validCheckSum>7:755315db33621a5e65c2293b664d2309</validCheckSum>
     <sql>
       insert into os_departments
         (identifier, name, institute_id)
       select 
-        os_departments_seq.nextval, d.name, u.institution_id 
-      from 
-        catissue_user u
-        inner join catissue_department d on d.identifier = u.department_id
+        os_departments_seq.nextval, t0.dept_name, t0.institution_id
+      from (
+        select
+          d.name as dept_name, u.institution_id as institution_id
+        from
+          catissue_user u
+          inner join catissue_department d on d.identifier = u.department_id
+        group by
+          d.name, u.institution_id
+        ) t0;
     </sql>
 
     <sql>
@@ -66,10 +72,20 @@
     </sql>
   </changeSet>
   
-  <changeSet author="vlonushte" id="Drop foreign key and institution id column from CATISSUE_USER">
+  <changeSet author="vlonushte" id="Drop foreign key on institution id column from CATISSUE_USER">
+    <preConditions onFail="MARK_RAN">
+      <foreignKeyConstraintExists foreignKeyTableName="CATISSUE_USER" foreignKeyName="FKB025CFC71792AD22" />
+    </preConditions>
+
     <dropForeignKeyConstraint
       baseTableName="CATISSUE_USER"
       constraintName="FKB025CFC71792AD22"/>
+  </changeSet>
+  
+  <changeSet author="vlonushte" id="Drop institution id column from CATISSUE_USER">
+    <preConditions onFail="MARK_RAN">
+      <columnExists columnName="INSTITUTION_ID" tableName="CATISSUE_USER"/>
+    </preConditions>
 
     <dropColumn
       columnName="INSTITUTION_ID"
@@ -457,6 +473,22 @@
       <tableExists tableName="report_job_details"/>
     </preConditions>
     <dropTable tableName="report_job_details"/>
+  </changeSet>
+  
+  <changeSet author="vpawar" id="Drop event triggers that were introduced in v11" dbms="mysql">
+    <sql>drop trigger if exists specimen_coll_event_trg</sql>
+    <sql>drop trigger if exists specimen_rcvd_event_trg</sql>
+    <sql>drop trigger if exists specimen_transfer_event_trg</sql>
+    <sql>drop trigger if exists specimen_distri_event_trg</sql>
+    <sql>drop trigger if exists specimen_disposal_event_trg</sql>
+  </changeSet>
+  
+  <changeSet author="vpawar" id="Drop event triggers that were introduced in v11" dbms="oracle">
+    <sql>drop trigger specimen_coll_event_trg</sql>
+    <sql>drop trigger specimen_rcvd_event_trg</sql>
+    <sql>drop trigger specimen_transfer_event_trg</sql>
+    <sql>drop trigger specimen_distri_event_trg</sql>
+    <sql>drop trigger specimen_disposal_event_trg</sql>
   </changeSet>
   
 </databaseChangeLog>

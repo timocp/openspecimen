@@ -19,8 +19,7 @@ var osApp = angular.module('openspecimen', [
   'ui.autocomplete',
   'mgcrea.ngStrap.popover',
   'angular-loading-bar',
-  'pascalprecht.translate',
-  'angularLoad'
+  'pascalprecht.translate'
   ]);
 
 osApp.config(function(
@@ -72,20 +71,26 @@ osApp.config(function(
         controller: function() {
         },
         parent: 'signed-in'
+      })
+      .state('admin-view', {
+        abstract: true,
+        template: '<div ui-view></div>',
+        resolve: {
+          isAdmin: function(currentUser, Util) {
+            return Util.booleanPromise(currentUser.admin);
+          }
+        },
+        parent: 'signed-in'
       });
 
     $urlRouterProvider.otherwise('/');
 
     $httpProvider.interceptors.push('httpRespInterceptor');
 
-    /*ApiUrlsProvider.hostname = "localhost"; // used for testing purpose
-    ApiUrlsProvider.port = 9090;*/
-    ApiUrlsProvider.secure = false;
-    ApiUrlsProvider.app = "/openspecimen";
     ApiUrlsProvider.urls = {
-      'sessions': '/rest/ng/sessions',
-      'sites': '/rest/ng/sites',
-      'form-files': '/rest/ng/form-files'
+      'sessions': 'rest/ng/sessions',
+      'sites': 'rest/ng/sites',
+      'form-files': 'rest/ng/form-files'
     };
 
     uiSelectConfig.theme = 'bootstrap';
@@ -96,6 +101,15 @@ osApp.config(function(
     }
   })
   .factory('httpRespInterceptor', function($rootScope, $q, $injector, $window, Alerts, LocationChangeListener) {
+    function displayErrMsgs(errors) {
+      var errMsgs = errors.map(
+        function(err) {
+          return err.message + " (" + err.code + ")";
+        }
+      );
+      Alerts.errorText(errMsgs);
+    }
+
     return {
       request: function(config) {
         return config || $q.when(config);
@@ -122,15 +136,14 @@ osApp.config(function(
           delete $injector.get("$http").defaults.headers.common['X-OS-API-TOKEN'];
           $injector.get('$state').go('login'); // using injector to get rid of circular dependencies
         } else if (rejection.status / 100 == 5) {
-          Alerts.error("common.server_error");
-        } else if (rejection.status / 100 == 4) {
-          var errMsgs = [];
-
           if (rejection.data instanceof Array) {
-            angular.forEach(rejection.data, function(err) {
-              errMsgs.push(err.message + " (" + err.code + ")");
-            });
-            Alerts.errorText(errMsgs);
+            displayErrMsgs(rejection.data);
+          } else {
+            Alerts.error("common.server_error");
+          }
+        } else if (rejection.status / 100 == 4) {
+          if (rejection.data instanceof Array) {
+            displayErrMsgs(rejection.data);
           } else if (rejection.config.method != 'HEAD') {
             Alerts.error('common.ui_error');
           }
@@ -173,29 +186,20 @@ osApp.config(function(
   })
   .provider('ApiUrls', function() {
     var that = this;
+    var server = ui.os.server;
 
-    this.hostname = "";
-    this.port = "";
-    this.secure = false;
-    this.app = "";
     this.urls = {};
 
     this.$get = function() {
       return {
-        hostname: that.hostname,
-        port    : that.port,
-        secure  : that.secure,
-        app     : that.app,
+        hostname: server.hostname,
+        port    : server.port,
+        secure  : server.secure,
+        app     : server.app,
         urls    : that.urls,
 
         getBaseUrl: function() {
-          var prefix = '';
-          if (this.hostname) {
-            var protocol = this.secure ? 'https://' : 'http://';
-            prefix = protocol + this.hostname + ':' + this.port;
-          }
-
-          return prefix + this.app + '/rest/ng/';
+          return server.url + 'rest/ng/';
         },
 
         getUrl: function(key) {
@@ -203,22 +207,18 @@ osApp.config(function(
           if (key) {
             url = this.urls[key];
           }
-
-          var prefix = "";
-          if (this.hostname) {
-            var protocol = this.secure ? 'https://' : 'http://';
-            prefix = protocol + this.hostname + ":" + this.port;
-          }
-
-          return prefix + this.app + url;
+          return server.url + url;
         }
       };
     }
   })
-  .run(
-    function(
-      $rootScope, $window, $cookieStore, $q,  $state, $translate, $translatePartialLoader,
-      LocationChangeListener, ApiUtil, Setting, PluginReg) {
+  .run(function(
+    $rootScope, $window, $document, $cookieStore, $q,  $state, $translate, $translatePartialLoader,
+    LocationChangeListener, ApiUtil, Setting, PluginReg) {
+
+    $document.on('click', '.dropdown-menu.dropdown-menu-form', function(e) {
+      e.stopPropagation();
+    });
 
     if ($window.localStorage['osAuthToken']) {
       $cookieStore.put('osAuthToken', $window.localStorage['osAuthToken']);
@@ -255,6 +255,19 @@ osApp.config(function(
           fromState: fromState, fromParams: fromParams
         };
       });
+      
+    $rootScope.$on('$stateChangeError',
+      function(event, toState, toParams, fromState, fromParams) {
+        if (fromState.name == "") {
+          $state.go('home');
+        } else {
+          $state.go(fromState.name);
+        }
+      });
+
+    $rootScope.includesState = function(stateName, params, options) {
+      return $state.includes(stateName, params, options);
+    }
 
     $rootScope.back = function() {
       LocationChangeListener.allowChange();
@@ -263,13 +276,12 @@ osApp.config(function(
 
     $rootScope.global = {
       defaultDomain: 'openspecimen',	
-      filterWaitInterval: 500
+      filterWaitInterval: 500,
+      appProps: ui.os.appProps
     };
 
-    var promises = [Setting.getLocale(), Setting.getAppProps()];
-    $q.all(promises).then(
-      function(resps) {
-        var localeSettings = resps[0];
+    Setting.getLocale().then(
+      function(localeSettings) {
         angular.extend(
           $rootScope.global,
           {
@@ -282,17 +294,11 @@ osApp.config(function(
           }
         );
 
-
-        var appProps = resps[1];
-        $rootScope.global.appProps = appProps;
-        var plugins = appProps['plugins'];
-        if (plugins) {
-          osApp.providers.pluginReg = PluginReg;
-          PluginReg.usePlugins(plugins);
-          angular.forEach(plugins, function(plugin) {
-            $translatePartialLoader.addPart('plugin-ui-resources/'+ plugin + '/');
-          });
-        }
+        var plugins = ui.os.appProps.plugins;
+        PluginReg.usePlugins(plugins);
+        angular.forEach(plugins, function(plugin) {
+          $translatePartialLoader.addPart('plugin-ui-resources/'+ plugin + '/');
+        });
         
         var locale = localeSettings.locale;
         $translate.use(locale);

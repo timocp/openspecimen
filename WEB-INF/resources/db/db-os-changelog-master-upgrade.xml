@@ -8,9 +8,11 @@
     http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
   <include file="db/db-os-case-sensitive-chk-mysql.xml"/>
+  <include file="db/data-type-definitions.xml"/>
+  
   <include file="db/2.0/schema.xml"/>
-  <include file="db/2.0/config.xml"/>
   <include file="db/2.0/seed-data.xml"/>
+  <include file="db/2.0/config.xml"/>
   <include file="db/2.0/permissible-values.xml"/>
   <include file="db/2.0/migration.xml"/>
   <include file="db/2.0/audit.xml"/>
@@ -28,7 +30,22 @@
   <include file="db/2.2/migration.xml"/>
 
   <include file="db/2.3/schema.xml"/>
-  <include file="db/2.3/seed-data.xml"/>
   <include file="db/2.3/config.xml"/>
+  <include file="db/2.3/seed-data.xml"/>
+  <include file="db/2.3/migration.xml"/>
   
+  <include file="db/2.4/schema.xml"/>
+  <include file="db/2.4/config.xml"/>
+  <include file="db/2.4/audit.xml"/>
+  
+  <include file="db/2.5/schema.xml"/>
+  <include file="db/2.5/config.xml"/>
+  <include file="db/2.5/seed-data.xml"/>
+  <include file="db/2.5/migration.xml"/>
+  
+  <include file="db/2.6/schema.xml"/>
+  <include file="db/2.6/config.xml"/>
+  <include file="db/2.6/audit.xml"/>
+  
+  <include file="db/3.0/schema.xml"/>
 </databaseChangeLog> 

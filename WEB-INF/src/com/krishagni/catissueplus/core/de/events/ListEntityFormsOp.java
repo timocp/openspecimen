@@ -15,7 +15,15 @@ public class ListEntityFormsOp  {
 		
 		CP_EXTN,
 		
-		PARTICIPANT_EXTN
+		PARTICIPANT_EXTN,
+		
+		VISIT_EXTN,
+		
+		SPECIMEN_EXTN,
+		
+		ALIQUOT_EXTN,
+		
+		DERIVATIVE_EXTN
 	};
 
 	private Long entityId;

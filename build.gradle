@@ -6,6 +6,7 @@ apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'war'
 apply plugin: 'eclipse'
+apply plugin: 'idea'
 
 archivesBaseName = 'openspecimen'
 
@@ -91,9 +92,9 @@ dependencies {
 
   compile fileTree(dir: 'lib', include: ['DynamicExtensions.jar', 'kxml2-min-2.3.0.jar'])
   
-  providedCompile group: 'javax.servlet', name: 'servlet-api', version:'2.5'
+  providedCompile group: 'javax.servlet', name: 'javax.servlet-api', version:'3.0.1'
   
-  compile group: 'org.antlr', name: 'antlr4', version:'4.5'
+  compile group: 'org.antlr', name: 'antlr4', version:'4.5.1'
   compile group: 'aopalliance', name: 'aopalliance', version:'1.0'
   compile group: 'asm', name: 'asm', version:'3.3.1'
   compile group: 'org.aspectj', name: 'aspectjweaver', version:'1.8.6'
@@ -129,6 +130,7 @@ dependencies {
   compile group: 'org.json', name: 'json', version:'20140107'
   compile group: 'javax.ws.rs', name: 'jsr311-api', version:'1.1.1'
   compile group: 'javax.servlet', name: 'jstl', version:'1.2'
+  compile group: 'javax.transaction', name: 'jta', version:'1.1'
   compile group: 'org.liquibase', name: 'liquibase-core', version:'3.3.3'
   compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.12'
   compile group: 'log4j', name: 'log4j', version:'1.2.16'
@@ -156,9 +158,8 @@ dependencies {
   compile group: 'velocity', name: 'velocity-dep', version:'1.4'
   compile group: 'com.thoughtworks.xstream', name: 'xstream', version:'1.4.8'
   compile group: 'com.itextpdf', name: 'itextpdf', version:'5.5.6'
-  compile group: 'org.apache.pdfbox', name: 'pdfbox', version:'1.8.9'
-  compile group: 'org.apache.pdfbox', name: 'fontbox', version:'1.8.9'
-  
+  compile group: 'dom4j', name: 'dom4j', version: '1.6.1'
+   
   runtime group: 'antlr', name: 'antlr', version: '2.7.7'
   runtime group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.12'
   
@@ -171,8 +172,8 @@ compileJava {
                 classpath: configurations.ajc.asPath)
       
     ant.iajc(
-      source: 1.6, 
-      target: 1.6, 
+      source: 1.8,
+      target: 1.8,
       destDir: sourceSets.main.output.classesDir.absolutePath, 
       maxmem: "512m", 
       fork: "true",
@@ -199,6 +200,17 @@ def getCommitRevision() {
   return revision.text.trim()
 }
 
+def getBranch() {
+  def branchCmd = "git symbolic-ref -q --short HEAD";
+  def branch = branchCmd.execute().text.trim();
+
+  if (branch.length() == 0) {
+    branchCmd = "git describe --tags --exact-match";
+    branch = branchCmd.execute().text.trim();
+  }
+  return branch;
+}
+
 processResources {
   from(sourceSets.main.resources.srcDirs) {
     include 'application.properties'
@@ -213,7 +225,7 @@ processResources {
         database_type: database_type,
         app_data_dir: props.app_data_dir,
         plugin_dir: props.plugin_dir,
-        buildinfo_version : props.buildinfo_version,
+        buildinfo_version : getBranch(),
         buildinfo_date : getTodayDate(),
         buildinfo_commit_revision : getCommitRevision()])
   }
@@ -256,6 +268,14 @@ task create_war(type: War) {
     include 'js/**'
     
     into '/ngweb/external/de'
+  }
+
+  manifest {
+    attributes(
+      "Implementation-Title": archivesBaseName,
+      "Implementation-Version": getBranch(),
+      "Implementation-Timestamp": new Date()
+    )
   }
 }
 

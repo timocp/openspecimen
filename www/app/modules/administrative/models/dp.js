@@ -11,21 +11,35 @@ angular.module('os.administrative.models.dp', ['os.common.models'])
       return this.title;
     }
     
-    DistributionProtocol.prototype.close = function () {
+    DistributionProtocol.prototype.close = function() {
       return updateActivityStatus(this, 'Closed');
     }
     
-    DistributionProtocol.prototype.reopen = function () {
+    DistributionProtocol.prototype.reopen = function() {
       return updateActivityStatus(this, 'Active');
     }
     
-    function updateActivityStatus (dp, status) {
+    function updateActivityStatus(dp, status) {
       return $http.put(DistributionProtocol.url() + '/' + dp.$id() + '/activity-status', {activityStatus: status}).then(
-        function (result) {
+        function(result) {
           return new DistributionProtocol(result.data);
         }
       );
     }
     
+    DistributionProtocol.getOrders = function(params) {
+      return $http.get(DistributionProtocol.url() + 'orders', {params: params}).then(
+        function(resp) {
+          return resp.data;
+        }
+      );
+    }
+    
+    DistributionProtocol.prototype.historyExportUrl = function() {
+      var params = '?dpId=' + this.$id() + '&groupBy=specimenType,anatomicSite,pathologyStatus';
+      return DistributionProtocol.url() + '/orders-report' + params;
+    }
+    
     return DistributionProtocol;
   });
+

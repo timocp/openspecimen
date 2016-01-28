@@ -37,7 +37,9 @@ public class VisitsDaoImpl extends AbstractDao<Visit> implements VisitsDao {
 		
 		List<VisitSummary> visits = new ArrayList<VisitSummary>();
 		Map<String, VisitSummary> visitsMap = new HashMap<String, VisitSummary>();
-		
+
+		Date regDate = null;
+		int minEventPoint = 0;
 		for (Object[] row : rows) {
 			Long visitId = (Long)row[0];
 			String eventStatus = (String)row[3];
@@ -53,17 +55,28 @@ public class VisitsDaoImpl extends AbstractDao<Visit> implements VisitsDao {
 			visit.setEventPoint((Integer)row[5]);
 			visit.setStatus((String)row[6]);
 			visit.setVisitDate((Date)row[7]);
-			
-			Calendar cal = Calendar.getInstance();
-			cal.setTime((Date)row[8]);
-			cal.add(Calendar.DAY_OF_YEAR, visit.getEventPoint());
-			visit.setAnticipatedVisitDate(cal.getTime());
+			regDate = (Date)row[8];
 			visit.setMissedVisitReason((String)row[9]);
-
 			visits.add(visit);
+
 			if (crit.includeStat()) {				
 				visitsMap.put(getVisitKey(visit.getId(), visit.getEventId()), visit);
 			}
+
+			if (visit.getEventPoint() != null && visit.getEventPoint() < minEventPoint) {
+				minEventPoint = visit.getEventPoint();
+			}
+		}
+
+		Calendar cal = Calendar.getInstance();
+		for (VisitSummary visit : visits) {
+			if (visit.getEventPoint() == null) {
+				continue;
+			}
+
+			cal.setTime(regDate);
+			cal.add(Calendar.DAY_OF_YEAR, visit.getEventPoint() - minEventPoint);
+			visit.setAnticipatedVisitDate(cal.getTime());
 		}
 						
 		if (crit.includeStat() && !visitsMap.isEmpty()) {
@@ -88,7 +101,13 @@ public class VisitsDaoImpl extends AbstractDao<Visit> implements VisitsDao {
 				.setParameterList("names", names)
 				.list();
 	}
-	
+
+	public List<Visit> getBySpr(String sprNumber) {
+		return sessionFactory.getCurrentSession()
+				.getNamedQuery(GET_VISIT_BY_SPR)
+				.setString("sprNumber", sprNumber)
+				.list();
+	}
 	private String getVisitKey(Long visitId, Long cpeId) {
 		String key = "";
 		if (visitId != null) {
@@ -155,4 +174,8 @@ public class VisitsDaoImpl extends AbstractDao<Visit> implements VisitsDao {
 	private static final String GET_VISITS_UNPLANNED_SPECIMENS_STAT = FQN + ".getVisitsUnplannedSpecimenCount";
 
 	private static final String GET_VISIT_BY_NAME = FQN + ".getVisitByName";
+
+	private static final String GET_VISIT_BY_SPR = FQN + ".getVisitBySpr";
+
 }
+

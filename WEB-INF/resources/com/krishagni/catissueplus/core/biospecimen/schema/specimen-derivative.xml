@@ -37,6 +37,11 @@
     </field>  
 
     <field>
+      <caption>#getMessage("specimen_pathological_status")</caption>
+      <attribute>pathology</attribute>
+    </field> 
+
+    <field>
       <caption>#getMessage("specimen_initial_quantity")</caption>
       <attribute>initialQty</attribute>
     </field>
@@ -83,5 +88,9 @@
       <caption>#getMessage("specimen_close_parent")</caption>
       <attribute>closeParent</attribute>
     </field>
+
+    <record type="extensions" entityType="DerivativeExtension">
+      <attribute>extensionDetail</attribute>
+    </record>
   </record>
 </object-schema>

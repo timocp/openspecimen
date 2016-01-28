@@ -31,6 +31,7 @@ import com.krishagni.catissueplus.core.biospecimen.repository.DaoFactory;
 import com.krishagni.catissueplus.core.common.errors.ActivityStatusErrorCode;
 import com.krishagni.catissueplus.core.common.errors.ErrorType;
 import com.krishagni.catissueplus.core.common.errors.OpenSpecimenException;
+import com.krishagni.catissueplus.core.common.util.ConfigUtil;
 import com.krishagni.catissueplus.core.common.util.Status;
 import com.krishagni.catissueplus.core.de.domain.DeObject;
 
@@ -92,9 +93,13 @@ public class ParticipantFactoryImpl implements ParticipantFactory {
 			return;
 		}
 		
-		String uid = detail.getUid();		
-		if (StringUtils.isBlank(uid)) { 
-			participant.setUid(null);
+		String uid = detail.getUid();
+		if (StringUtils.isBlank(uid)) {
+			if (ConfigUtil.getInstance().getBoolSetting("biospecimen", "uid_mandatory", false)) {
+				oce.addError(ParticipantErrorCode.UID_REQUIRED);
+			} else {
+				participant.setUid(null);
+			}
 			return;
 		}
 		
@@ -327,11 +332,6 @@ public class ParticipantFactoryImpl implements ParticipantFactory {
 		Site site = daoFactory.getSiteDao().getSiteByName(pmiDetail.getSiteName());		
 		if (site == null) {
 			oce.addError(SiteErrorCode.NOT_FOUND);
-			return null;
-		}
-		
-		if (StringUtils.isBlank(pmiDetail.getMrn())) {
-			oce.addError(ParticipantErrorCode.MRN_REQUIRED);
 			return null;
 		}
 		

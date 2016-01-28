@@ -18,7 +18,10 @@
       </li>
     </ul>
 
-    <h3>Specimen Collection for T{{visit.eventPoint}}: {{visit.eventLabel}}</h3>
+    <h3>
+      Specimen Collection for
+      <os-event-desc event-point="visit.eventPoint" event-label="visit.eventLabel"></os-event-desc>
+    </h3>
   </div>
 
   <div class="container">
@@ -29,7 +32,7 @@
         <thead class="os-table-head">
           <tr class="row">
             <th class="col os-col-30" translate="specimens.description">Description</th>
-            <th class="col os-col-20" translate="specimens.label">Label</th>
+            <th class="col os-col-15" translate="specimens.label">Label</th>
             <th class="col os-col-10" translate="specimens.qty">Quantity</th>
             <th class="col os-col-25">
               <div class="os-col-60 os-no-left-padding">
@@ -46,11 +49,13 @@
               </div>
             </th>
             <th class="col os-col-10">Status</th>
+            <th class="col os-col-5">Print</th>
             <th class="col os-col-5">&nbsp;</th>
           </tr>
         </thead>
         <tbody class="os-table-body">
-          <tr class="row" ng-repeat="specimen in specimens | openedTreeNodes" ng-form="sform" ng-if="specimen.showInTree">
+          <tr class="row" ng-class="{'os-pool-specimen': !!specimen.pooledSpecimen}"
+            ng-repeat="specimen in specimens | openedTreeNodes" ng-form="sform" ng-if="specimen.showInTree">
             <td class="col os-col-30">
               <div ng-style="{'padding-left': (specimen.hasChildren ? specimen.depth * 20 : specimen.depth * 20 + 16) + 'px'}">
                 <a ng-if="specimen.hasChildren && specimen.isOpened" 
@@ -90,7 +95,7 @@
                 </span>
               </div>
             </td>
-            <td class="col os-col-20" 
+            <td class="col os-col-15"
               ng-switch="!cp.manualSpecLabelEnabled && !specimen.label && !!specimen.labelFmt"> 
               <div ng-switch-when="true">
                 <span>Auto</span>
@@ -127,13 +132,16 @@
             </td>
             <td class="col os-col-25" style="overflow: visible;">
               <os-storage-position os-md-input edit-when="entity.existingStatus != 'Collected'"
-                entity="specimen" cp-id="cpr.cpId" hide-placeholder>
+                entity="specimen" cp-id="cpr.cpId" container-list-cache="containerListCache" hide-placeholder>
               </os-storage-position>
             </td>
             <td class="col os-col-10" style="overflow: visible;">
               <os-select os-md-input edit-when="specimen.existingStatus != 'Collected'" list="specimenStatuses" 
                 ng-model="specimen.status" on-change="statusChanged(specimen)" required> 
               </os-select>
+            </td>
+            <td class="col os-col-5">
+              <os-checkbox ng-model="specimen.printLabel" ng-change="togglePrintLabels(specimen)"></os-checkbox>
             </td>
             <td class="col os-col-5">
               <button class="btn btn-xs btn-default" ng-click="remove(specimen)">
@@ -210,7 +218,7 @@
             </os-date-picker>
             <div os-field-error field="collectionForm.collDate"></div>
           </div>
-          <div class="col-xs-1 input">
+          <div class="col-xs-1 input os-md-time">
             <timepicker class="os-time-no-wheels" os-md-input ng-model="collDetail.collectionDate" show-meridian="false"></timepicker>
           </div>
         </div>

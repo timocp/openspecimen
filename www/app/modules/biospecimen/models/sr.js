@@ -5,14 +5,21 @@ angular.module('os.biospecimen.models.sr', ['os.common.models'])
       function(sr) {
         sr.copyAttrsIfNotPresent(getDefaultProps())
 
-        if (!sr.children) {
-          return;
+        if (sr.specimensPool) {
+          sr.specimensPool = sr.specimensPool.map(
+            function(ps) {
+              return new Sr(ps);
+            }
+          );
         }
 
-        sr.children = sr.children.map(function(child) {
-            return new Sr(child);
-        });
-
+        if (sr.children) {
+          sr.children = sr.children.map(
+            function(child) {
+              return new Sr(child);
+            }
+          );
+        }
       }
     );
 
@@ -23,7 +30,8 @@ angular.module('os.biospecimen.models.sr', ['os.common.models'])
         laterality: notSpecified,
         pathology: notSpecified,
         collectionContainer: notSpecified,
-        collectionProcedure: notSpecified
+        collectionProcedure: notSpecified,
+        labelAutoPrintMode: 'NONE'
       }
     }
  
@@ -81,6 +89,11 @@ angular.module('os.biospecimen.models.sr', ['os.common.models'])
           return result.data; 
         }
       );
+    }
+
+    Sr.prototype.addPoolSpecimens = function(poolSpmn) {
+      return $http.post(Sr.url() + this.$id() + '/specimen-pool', poolSpmn)
+        .then(Sr.modelArrayRespTransform);
     }
 
     return Sr;

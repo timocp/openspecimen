@@ -39,6 +39,8 @@ public class CollectionProtocolEventDetail implements Comparable<CollectionProto
 	//
 	private List<SpecimenRequirementDetail> specimenRequirements;
 
+	private int offset;
+
 	public Long getId() {
 		return id;
 	}
@@ -119,6 +121,14 @@ public class CollectionProtocolEventDetail implements Comparable<CollectionProto
 		this.specimenRequirements = specimenRequirements;
 	}
 
+	public int getOffset() {
+		return offset;
+	}
+
+	public void setOffset(int offset) {
+		this.offset = offset;
+	}
+
 	public static CollectionProtocolEventDetail from(CollectionProtocolEvent event) {
 		return from(event, false);
 	}
@@ -134,6 +144,7 @@ public class CollectionProtocolEventDetail implements Comparable<CollectionProto
 		detail.setCollectionProtocol(event.getCollectionProtocol().getTitle());
 		detail.setActivityStatus(event.getActivityStatus());
 		detail.setCode(event.getCode());
+		detail.setOffset(event.getOffset());
 		
 		if (event.getDefaultSite() != null) {
 			detail.setDefaultSite(event.getDefaultSite().getName());
@@ -141,11 +152,10 @@ public class CollectionProtocolEventDetail implements Comparable<CollectionProto
 		
 		if (fullObject) {
 			Set<SpecimenRequirement> srs = new HashSet<SpecimenRequirement>();
-			for (SpecimenRequirement sr : event.getSpecimenRequirements()) {
-				if (sr.getParentSpecimenRequirement() == null) {
-					srs.add(sr);
-				}
-			}			
+			for (SpecimenRequirement sr : event.getTopLevelAnticipatedSpecimens()) {
+				srs.add(sr);
+			}
+
 			detail.setSpecimenRequirements(SpecimenRequirementDetail.from(srs));
 		}
 		
@@ -173,7 +183,7 @@ public class CollectionProtocolEventDetail implements Comparable<CollectionProto
 		Double otherEventPoint = other.eventPoint == null ? 0d : other.eventPoint;
 
 		if (thisEventPoint.equals(otherEventPoint)) {
-			return eventLabel.compareTo(other.eventLabel);
+			return id.compareTo(other.id);
 		} else {
 			return thisEventPoint.compareTo(otherEventPoint);
 		}		

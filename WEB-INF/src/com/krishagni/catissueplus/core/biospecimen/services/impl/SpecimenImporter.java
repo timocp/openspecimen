@@ -19,12 +19,13 @@ public class SpecimenImporter implements ObjectImporter<SpecimenDetail, Specimen
 	public ResponseEvent<SpecimenDetail> importObject(RequestEvent<ImportObjectDetail<SpecimenDetail>> req) {
 		try {
 			ImportObjectDetail<SpecimenDetail> detail = req.getPayload();
+			detail.getObject().setForceDelete(true);
 			RequestEvent<SpecimenDetail> specReq = new RequestEvent<SpecimenDetail>(detail.getObject());
 			
 			if (detail.isCreate()) {
 				return specimenSvc.createSpecimen(specReq);
 			} else {
-				return specimenSvc.patchSpecimen(specReq);
+				return specimenSvc.updateSpecimen(specReq);
 			}
 		} catch (Exception e) {
 			return ResponseEvent.serverError(e);

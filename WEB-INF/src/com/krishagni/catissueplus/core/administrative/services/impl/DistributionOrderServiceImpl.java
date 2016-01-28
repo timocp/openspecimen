@@ -134,19 +134,20 @@ public class DistributionOrderServiceImpl implements DistributionOrderService {
 			ensureUniqueConstraints(null, order, ose);
 			
 			List<String> specimenLabels = Utility.<List<String>>collect(order.getOrderItems(), "specimen.label");
-			List<Specimen> specimens = getValidSpecimens(order.getDistributionProtocol(), specimenLabels);
-			if (specimens == null) {
-				ose.addError(DistributionOrderErrorCode.INVALID_SPECIMENS_FOR_DP);
-			}
+			getValidSpecimens(order.getDistributionProtocol(), specimenLabels, ose);
 			
 			ose.checkAndThrow();
 			
+			//
+			//  Saved to obtain IDs to make distributed events
+			//
+			daoFactory.getDistributionOrderDao().saveOrUpdate(order, true);
+
 			Status inputStatus = Status.valueOf(detail.getStatus());
 			if (inputStatus == Status.EXECUTED) {
 				order.distribute();
 			}
 			
-			daoFactory.getDistributionOrderDao().saveOrUpdate(order);
 			sendOrderProcessedEmail(order, null);
 			return ResponseEvent.response(DistributionOrderDetail.from(order));
 		} catch (OpenSpecimenException ose) {
@@ -175,16 +176,13 @@ public class DistributionOrderServiceImpl implements DistributionOrderService {
 			ensureUniqueConstraints(existingOrder, newOrder, ose);
 			
 			List<String> specimenLabels = Utility.<List<String>>collect(newOrder.getOrderItems(), "specimen.label");
-			List<Specimen> specimens = getValidSpecimens(newOrder.getDistributionProtocol(), specimenLabels);
-			if (specimens == null) {
-				ose.addError(DistributionOrderErrorCode.INVALID_SPECIMENS_FOR_DP);
-			}
+			getValidSpecimens(newOrder.getDistributionProtocol(), specimenLabels, ose);
 			
 			ose.checkAndThrow();
 			
 			Status oldStatus = existingOrder.getStatus();
 			existingOrder.update(newOrder);
-			daoFactory.getDistributionOrderDao().saveOrUpdate(existingOrder);
+			daoFactory.getDistributionOrderDao().saveOrUpdate(existingOrder, true);
 			sendOrderProcessedEmail(existingOrder, oldStatus);
 			return ResponseEvent.response(DistributionOrderDetail.from(existingOrder));
 		} catch (OpenSpecimenException ose) {
@@ -229,23 +227,18 @@ public class DistributionOrderServiceImpl implements DistributionOrderService {
 			}
 			
 			OpenSpecimenException ose = new OpenSpecimenException(ErrorType.USER_ERROR);
-			List<Specimen> specimens = getValidSpecimens(dp, specimenLabels);
-			if (specimens == null) {
-				ose.addError(DistributionOrderErrorCode.INVALID_SPECIMENS_FOR_DP);
-			}
+			List<Specimen> specimens = getValidSpecimens(dp, specimenLabels, ose);
 			
 			ose.checkAndThrow();
 			
-			List<SpecimenInfo> result = SpecimenInfo.from(specimens);
-			SpecimenInfo.orderByLabels(result, specimenLabels);
-			return ResponseEvent.response(result);
+			return ResponseEvent.response(SpecimenInfo.from(Specimen.sortByLabels(specimens, specimenLabels)));
 		} catch(OpenSpecimenException ose) {
 			return ResponseEvent.error(ose);
 		} catch (Exception e) {
 			return ResponseEvent.serverError(e);
 		}
 	}
-		
+	
 	private void ensureUniqueConstraints(DistributionOrder existingOrder, DistributionOrder newOrder, OpenSpecimenException ose) {
 		if (existingOrder == null || !newOrder.getName().equals(existingOrder.getName())) {
 			DistributionOrder order = daoFactory.getDistributionOrderDao().getOrder(newOrder.getName());
@@ -255,9 +248,11 @@ public class DistributionOrderServiceImpl implements DistributionOrderService {
 		}
 	}
 	
-	private List<Specimen> getValidSpecimens(DistributionProtocol dp, List<String> specimenLabels) {
+	private List<Specimen> getValidSpecimens(DistributionProtocol dp, List<String> specimenLabels,
+			OpenSpecimenException ose) {
 		List<Pair<Long, Long>> siteCpPairs = AccessCtrlMgr.getInstance().getReadAccessSpecimenSiteCps();
 		if (siteCpPairs != null && siteCpPairs.isEmpty()) {
+			ose.addError(DistributionOrderErrorCode.INVALID_SPECIMENS_FOR_DP);
 			return null;
 		}
 		
@@ -266,15 +261,17 @@ public class DistributionOrderServiceImpl implements DistributionOrderService {
 			.siteCps(siteCpPairs);
 		
 		List<Specimen> specimens = daoFactory.getSpecimenDao().getSpecimens(crit);
-		if (CollectionUtils.isEmpty(specimens)) {
+		if (specimens.size() != specimenLabels.size()) {
+			ose.addError(DistributionOrderErrorCode.SPECIMEN_DOES_NOT_EXIST);
 			return null;
 		}
 		
 		Set<Long> specimenIds = Utility.<Set<Long>>collect(specimens, "id", true);
 		Map<String, Set<Long>> specimenSiteIdsMap = daoFactory.getSpecimenDao().getSpecimenSites(specimenIds);
 		Set<Long> orderAllowedIds = AccessCtrlMgr.getInstance().getDistributionOrderAllowedSites(dp);
-		for (Map.Entry<String, Set<Long>> specimenSitesMapEntry: specimenSiteIdsMap.entrySet()) {
+		for (Map.Entry<String, Set<Long>> specimenSitesMapEntry : specimenSiteIdsMap.entrySet()) {
 			if (CollectionUtils.intersection(specimenSitesMapEntry.getValue(), orderAllowedIds).isEmpty()) {
+				ose.addError(DistributionOrderErrorCode.INVALID_SPECIMENS_FOR_DP);
 				return null;
 			}
 		}

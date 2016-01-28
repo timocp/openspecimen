@@ -98,8 +98,7 @@
   </changeSet>
   
   <changeSet author="vratnaparkhi" id="Migrate specimen order data">
-    <validCheckSum>7:62bf05142d54c8a90c7bb96ce1f9a991</validCheckSum>
-    <validCheckSum>7:69ac63e73e11e9d659765be351e9204e</validCheckSum>
+    <validCheckSum>7:211247e8bb91547462ac27768416914e</validCheckSum>
     <sql>
       insert into os_orders (
         identifier, 
@@ -116,28 +115,31 @@
       
       select 
         distribution.identifier as identifier, 
-        case
-          when orders.name is null then distribution.event_timestamp
-          else orders.name
+        case when orders.name is null
+          then concat('',distribution.event_timestamp)
+          else substr(orders.name, 1, 255)
         end as name,
-        case
-          when orders.requester_id is null then distribution.user_id
+        case when orders.requester_id is null
+          then distribution.user_id
           else orders.requester_id
         end as requester_id,
-        case
-          when orders.requested_date is null then distribution.event_timestamp
+        case when orders.requested_date is null
+          then distribution.event_timestamp
           else orders.requested_date
         end as requested_date,
         distribution.event_timestamp as execution_date,
-        case
-          when orders.status in ('Completed') then 'EXECUTED'
+        case when orders.status in ('Completed')
+          then 'EXECUTED'
           else 'PENDING'
         end as status,
         distribution.activity_status as activity_status, 
         distribution.to_site_id as site_id,
-        distribution.distribution_protocol_id as distribution_protocol_id, 
+        case when distribution.distribution_protocol_id is null
+          then (select min(identifier) from catissue_distribution_protocol where activity_status != 'Disabled')
+          else distribution.distribution_protocol_id
+        end as distribution_protocol_id,
         distribution.user_id as distributor_id,
-        orders.comments as comments
+        substr(orders.comments, 1, 255) as comments
       from 
         catissue_distribution distribution
         left join catissue_order orders on distribution.order_id = orders.identifier

@@ -20,6 +20,8 @@ public enum ParticipantErrorCode implements ErrorCode {
 	
 	INVALID_MPI,
 	
+	UID_REQUIRED,
+	
 	DUP_UID,
 	
 	DUP_EMPI,
@@ -27,8 +29,6 @@ public enum ParticipantErrorCode implements ErrorCode {
 	INVALID_VITAL_STATUS,
 	
 	INVALID_GENDER,
-	
-	MRN_REQUIRED,
 	
 	DUP_MRN,
 	

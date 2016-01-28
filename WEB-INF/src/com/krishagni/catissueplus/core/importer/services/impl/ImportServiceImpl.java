@@ -7,14 +7,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.context.MessageSource;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,15 +26,16 @@ import org.springframework.transaction.support.TransactionTemplate;
 import au.com.bytecode.opencsv.CSVWriter;
 
 import com.krishagni.catissueplus.core.administrative.domain.User;
+import com.krishagni.catissueplus.core.administrative.events.MergedObject;
 import com.krishagni.catissueplus.core.common.PlusTransactional;
 import com.krishagni.catissueplus.core.common.errors.OpenSpecimenException;
-import com.krishagni.catissueplus.core.common.errors.ParameterizedError;
 import com.krishagni.catissueplus.core.common.events.RequestEvent;
 import com.krishagni.catissueplus.core.common.events.ResponseEvent;
 import com.krishagni.catissueplus.core.common.service.ConfigurationService;
 import com.krishagni.catissueplus.core.common.util.AuthUtil;
 import com.krishagni.catissueplus.core.common.util.ConfigUtil;
 import com.krishagni.catissueplus.core.importer.domain.ImportJob;
+import com.krishagni.catissueplus.core.importer.domain.ImportJob.CsvType;
 import com.krishagni.catissueplus.core.importer.domain.ImportJob.Status;
 import com.krishagni.catissueplus.core.importer.domain.ImportJob.Type;
 import com.krishagni.catissueplus.core.importer.domain.ImportJobErrorCode;
@@ -52,6 +52,8 @@ import com.krishagni.catissueplus.core.importer.services.ObjectImporterFactory;
 import com.krishagni.catissueplus.core.importer.services.ObjectReader;
 import com.krishagni.catissueplus.core.importer.services.ObjectSchemaFactory;
 
+import edu.common.dynamicextensions.query.cachestore.LinkedEhCacheMap;
+
 public class ImportServiceImpl implements ImportService {
 	private ConfigurationService cfgSvc;
 	
@@ -66,8 +68,6 @@ public class ImportServiceImpl implements ImportService {
 	private PlatformTransactionManager transactionManager;
 	
 	private TransactionTemplate txTmpl;
-	
-	private MessageSource messageSource;
 	
 	public void setCfgSvc(ConfigurationService cfgSvc) {
 		this.cfgSvc = cfgSvc;
@@ -93,10 +93,6 @@ public class ImportServiceImpl implements ImportService {
 		this.transactionManager = transactionManager;
 		this.txTmpl = new TransactionTemplate(this.transactionManager);
 		this.txTmpl.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
-	}
-	
-	public void setMessageSource(MessageSource messageSource) {
-		this.messageSource = messageSource;
 	}
 
 	@Override
@@ -273,31 +269,11 @@ public class ImportServiceImpl implements ImportService {
 		job.setParams(detail.getObjectParams());
 		
 		String importType = detail.getImportType();
-		job.setType(StringUtils.isBlank(importType) ? Type.CREATE : Type.valueOf(importType));		
-		return job;		
-	}
-
-	private String getMessage(ParameterizedError error) {
-		return messageSource.getMessage(
-				error.error().code().toLowerCase(), 
-				error.params(), 
-				Locale.getDefault());
-	}
-	
-	private String getMessage(OpenSpecimenException ose) {
-		StringBuilder errorMsg = new StringBuilder();
-		if (!ose.getErrors().isEmpty()) {
-			for (ParameterizedError pe : ose.getErrors()) {
-				errorMsg.append(getMessage(pe)).append(", ");
-			}
-			errorMsg.delete(errorMsg.length() - 2, errorMsg.length());
-		} else if (ose.getException() != null) {
-			errorMsg.append(ose.getException().getMessage());
-		} else {
-			errorMsg.append("Unknown error");
-		}
+		job.setType(StringUtils.isBlank(importType) ? Type.CREATE : Type.valueOf(importType));
 		
-		return errorMsg.toString();		
+		String csvType = detail.getCsvType();
+		job.setCsvtype(StringUtils.isBlank(csvType) ? CsvType.SINGLE_ROW_PER_OBJ : CsvType.valueOf(csvType));
+		return job;		
 	}
 	
 	private class ImporterTask implements Runnable {
@@ -333,38 +309,11 @@ public class ImportServiceImpl implements ImportService {
 				csvWriter = getOutputCsvWriter(job);
 				csvWriter.writeNext(columnNames.toArray(new String[0]));
 				
-				while (true) {
-					String errMsg = null;					
-					try {
-						Object object = objReader.next();
-						if (object == null) {
-							break;
-						}
-											
-						errMsg = importObject(importer, object, job.getParams());
-					} catch (OpenSpecimenException ose) {						
-						errMsg = getMessage(ose);						
-					}
-					
-					++totalRecords;
-					
-					List<String> row = objReader.getCsvRow();
-					if (StringUtils.isNotBlank(errMsg)) {
-						row.add("FAIL");
-						row.add(errMsg);
-						++failedRecords;
-					} else {
-						row.add("SUCCESS");
-						row.add("");
-					}
-					
-					csvWriter.writeNext(row.toArray(new String[0]));
-					if (totalRecords % 25 == 0) {
-						saveJob(totalRecords, failedRecords, Status.IN_PROGRESS);
-					}					
+				if (job.getCsvtype() == CsvType.MULTIPLE_ROWS_PER_OBJ) {
+					processMultipleRowsPerObj(objReader, csvWriter, importer);
+				} else {
+					processSingleRowPerObj(objReader, csvWriter, importer);
 				}
-				
-				saveJob(totalRecords, failedRecords, Status.COMPLETED);
 			} catch (Exception e) {
 				e.printStackTrace();
 				saveJob(totalRecords, failedRecords, Status.FAILED);
@@ -372,6 +321,112 @@ public class ImportServiceImpl implements ImportService {
 				IOUtils.closeQuietly(objReader);
 				closeQueitly(csvWriter);
 			}
+		}
+		
+		private void processSingleRowPerObj(ObjectReader objReader, CSVWriter csvWriter, ObjectImporter<Object, Object> importer) {
+			long totalRecords = 0, failedRecords = 0;
+
+			while (true) {
+				String errMsg = null;
+				try {
+					Object object = objReader.next();
+					if (object == null) {
+						break;
+					}
+	
+					errMsg = importObject(importer, object, job.getParams());
+				} catch (OpenSpecimenException ose) {
+					errMsg = ose.getMessage();
+				}
+				
+				++totalRecords;
+				
+				List<String> row = objReader.getCsvRow();
+				if (StringUtils.isNotBlank(errMsg)) {
+					row.add("FAIL");
+					row.add(errMsg);
+					++failedRecords;
+				} else {
+					row.add("SUCCESS");
+					row.add("");
+				}
+				
+				csvWriter.writeNext(row.toArray(new String[0]));
+				if (totalRecords % 25 == 0) {
+					saveJob(totalRecords, failedRecords, Status.IN_PROGRESS);
+				}
+			}
+			
+			saveJob(totalRecords, failedRecords, Status.COMPLETED);
+		}
+		
+		private void processMultipleRowsPerObj(ObjectReader objReader, CSVWriter csvWriter, ObjectImporter<Object, Object> importer) {
+			long totalRecords = 0, failedRecords = 0;
+			LinkedEhCacheMap<String, MergedObject> objectsMap =  new LinkedEhCacheMap<String, MergedObject>();
+			
+			while (true) {
+				String errMsg = null;
+				Object parsedObj = null;
+				
+				try {
+					parsedObj = objReader.next();
+					if (parsedObj == null) {
+						break;
+					}
+				} catch (Exception e) {
+					errMsg = e.getMessage();
+				}
+				
+				String key = objReader.getRowKey();
+				MergedObject mergedObj = objectsMap.get(key);
+				if (mergedObj == null) {
+					mergedObj = new MergedObject();
+					mergedObj.setKey(key);
+					mergedObj.setObject(parsedObj);
+				}
+				
+				mergedObj.addErrMsg(errMsg);
+				mergedObj.addRow(objReader.getCsvRow());
+				mergedObj.merge(parsedObj);
+
+				objectsMap.put(key, mergedObj);
+			}
+			
+			Iterator<MergedObject> mergedObjIter = objectsMap.iterator();
+			while (mergedObjIter.hasNext()) {
+				MergedObject mergedObj = mergedObjIter.next();
+				if (!mergedObj.isErrorneous()) {
+					String errMsg = null;
+					try {
+						errMsg = importObject(importer, mergedObj.getObject(), job.getParams());
+					} catch (OpenSpecimenException ose) {
+						errMsg = ose.getMessage();
+					}
+					
+					if (StringUtils.isNotBlank(errMsg)) {
+						mergedObj.addErrMsg(errMsg);
+						objectsMap.put(mergedObj.getKey(), mergedObj);
+					}
+				}
+				
+				++totalRecords;
+				if (mergedObj.isErrorneous()) {
+					++failedRecords;
+				}
+				
+				if (totalRecords % 25 == 0) {
+					saveJob(totalRecords, failedRecords, Status.IN_PROGRESS);
+				}
+			}
+			
+			mergedObjIter = objectsMap.iterator();
+			while (mergedObjIter.hasNext()) {
+				MergedObject mergedObj = mergedObjIter.next();
+				csvWriter.writeAll(mergedObj.getRowsWithStatus());
+			}
+			
+			objectsMap.clear();
+			saveJob(totalRecords, failedRecords, Status.COMPLETED);
 		}
 		
 		private String importObject(final ObjectImporter<Object, Object> importer, Object object, Map<String, Object> params) {
@@ -398,7 +453,7 @@ public class ImportServiceImpl implements ImportService {
 				if (resp.isSuccessful()) {
 					return null;
 				} else {
-					return getMessage(resp.getError());
+					return resp.getError().getMessage();
 				}				
 			} catch (Exception e) {
 				if (StringUtils.isBlank(e.getMessage())) {					
@@ -408,7 +463,7 @@ public class ImportServiceImpl implements ImportService {
 				}
 			}
 		}
-				
+		
 		private void saveJob(long totalRecords, long failedRecords, Status status) {
 			job.setTotalRecords(totalRecords);
 			job.setFailedRecords(failedRecords);

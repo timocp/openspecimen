@@ -188,6 +188,7 @@
         <udn>initialQty</udn>
         <caption>#getMessage("specimen_initial_quantity")</caption>
         <column>INITIAL_QUANTITY</column>
+        <noOfDigitsAfterDecimal>4</noOfDigitsAfterDecimal>
       </numberField>
     </row>
 
@@ -197,6 +198,7 @@
         <udn>availableQty</udn>
         <caption>#getMessage("specimen_available_quantity")</caption>
         <column>AVAILABLE_QUANTITY</column>
+        <noOfDigitsAfterDecimal>4</noOfDigitsAfterDecimal>
       </numberField>
     </row>
 
@@ -215,6 +217,7 @@
         <udn>concentration</udn>
         <caption>#getMessage("specimen_concentration")</caption>
         <column>CONCENTRATION</column>
+        <noOfDigitsAfterDecimal>4</noOfDigitsAfterDecimal>
       </numberField>
     </row>
 
@@ -228,6 +231,7 @@
           <option><value>Pending</value></option>
           <option><value>Collected</value></option>
           <option><value>Not Collected</value></option>
+          <option><value>Missed Collection</value></option>
         </options>
       </dropDown>
     </row>
@@ -288,6 +292,26 @@
             <column>POS_ONE_STR</column>
             <maxLength>255</maxLength>
           </textField>              
+        </row>
+        <row>
+          <subForm>
+            <name>containerStats</name>
+            <udn>containerStats</udn>
+            <caption>#getMessage("specimen_spec_position_container_stats")</caption>
+            <table>OS_STORAGE_CONT_STATS_VIEW</table>
+            <foreignKey>CONTAINER_ID</foreignKey>
+            <parentKey>CONTAINER_IDENTIFIER</parentKey>
+            <primaryKey>CONTAINER_ID</primaryKey>
+            <row>
+              <textField>
+                <name>containerHierarchy</name>
+                <udn>containerHierarchy</udn>
+                <caption>#getMessage("specimen_spec_position_container_hierarchy")</caption>
+                <column>CONTAINER_HIERARCHY</column>
+                <maxLength>255</maxLength>
+              </textField>
+            </row>
+          </subForm>
         </row>
       </subForm>
     </row>
@@ -374,6 +398,7 @@
             <udn>quantity</udn>
             <caption>#getMessage("specimen_distribution_quantity")</caption>
             <column>QUANTITY</column>
+            <noOfDigitsAfterDecimal>4</noOfDigitsAfterDecimal>
           </numberField>
         </row>
  
@@ -386,6 +411,28 @@
             <foreignKey>IDENTIFIER</foreignKey>
             <parentKey>ORDER_ID</parentKey>
             <pathLink>true</pathLink>
+          </subForm>
+        </row>
+      </subForm>
+    </row>
+    
+    <row>
+      <subForm>
+        <name>specimenShipments</name>
+        <udn>specimenShipments</udn>
+        <caption>#getMessage("specimen_shipment_items")</caption>
+        <table>OS_SHIPMENT_ITEMS</table>
+        <foreignKey>SPECIMEN_ID</foreignKey>
+        <parentKey>IDENTIFIER</parentKey>
+       
+        <row>
+          <subForm>
+            <name>shipment</name>
+            <udn>shipment</udn>
+            <caption>#getMessage("specimen_shipment_items_shipment")</caption>
+            <table>OS_SHIPMENTS</table>
+            <foreignKey>IDENTIFIER</foreignKey>
+            <parentKey>SHIPMENT_ID</parentKey>
           </subForm>
         </row>
       </subForm>
@@ -426,5 +473,20 @@
         </row>
       </subForm>
     </row>
+
+    <row>
+      <subForm>
+        <name>customFields</name>
+        <udn>customFields</udn>
+        <caption>#getMessage("specimen_field_extensions")</caption>
+        <table>OS_SPEC_CUST_FIELD_EXTNS_VIEW</table>
+        <foreignKey>SPEC_ID</foreignKey>
+        <parentKey>IDENTIFIER</parentKey>
+        <pathLink>true</pathLink>
+        <extnFkCol>RECORD_ID</extnFkCol>
+      </subForm>
+    </row>
+
+    $querySvc.insertCustomQueryForms('specimen')
   </view>
 </form>

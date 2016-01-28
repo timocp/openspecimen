@@ -4,11 +4,14 @@ angular.module('os.biospecimen.specimenlist.list', ['os.biospecimen.models'])
     SpecimensHolder, SpecimenList, DeleteUtil, Alerts) {
 
     function init() { 
-      $scope.orderCreateOpts = {resource: 'Order', operations: ['Create']};
+      $scope.orderCreateOpts =    {resource: 'Order', operations: ['Create']};
+      $scope.shipmentCreateOpts = {resource: 'ShippingAndTracking', operations: ['Create']};
+
       $scope.listSpecimens = {
         specimens: [],
         actualCount: 0
       }
+
       $scope.selection = resetSelection();
       $scope.lists = {
         selectedList: undefined,
@@ -76,6 +79,10 @@ angular.module('os.biospecimen.specimenlist.list', ['os.biospecimen.models'])
       );
     }
 
+    $scope.viewSpecimen = function(specimen) {
+      $state.go('specimen', {specimenId: specimen.id});
+    }
+
     $scope.toggleAllSpecimenSelect = function() {
       $scope.selection.any = $scope.selection.all;
       if (!$scope.selection.all) {
@@ -124,6 +131,16 @@ angular.module('os.biospecimen.specimenlist.list', ['os.biospecimen.models'])
 
       SpecimensHolder.setSpecimens($scope.selection.specimens);
       $state.go('order-addedit', {orderId: ''});
+    }
+
+    $scope.shipSpecimens = function() {
+      if (!$scope.selection.any) {
+        showSelectSpecimensErrMsg("specimen_list.no_specimens_for_shipment");
+        return;
+      }
+
+      SpecimensHolder.setSpecimens($scope.selection.specimens);
+      $state.go('shipment-addedit', {orderId: ''});
     }
 
     init();

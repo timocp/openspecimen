@@ -8,6 +8,7 @@ angular.module('os.query.util', [])
       le:          {name: "le",         desc: "", code: "&#8804;",     symbol: '<=',          model: 'LE'},
       gt:          {name: "gt",         desc: "", code: "&#62;",       symbol: '>',           model: 'GT'},
       ge:          {name: "ge",         desc: "", code: "&#8805;",     symbol: '>=',          model: 'GE'},
+      any:         {name: "any",        desc: "", code: "all",         symbol: 'any',         model: 'ANY'},
       exists:      {name: "exists",     desc: "", code: "&#8707;",     symbol: 'exists',      model: 'EXISTS'},
       not_exists:  {name: "not_exists", desc: "", code: "&#8708;",     symbol: 'not exists',  model: 'NOT_EXISTS'},
       qin:         {name: "qin",        desc: "", code: "&#8712;",     symbol: 'in',          model: 'IN'},
@@ -75,7 +76,7 @@ angular.module('os.query.util', [])
     function getStringOps() {
       return [ 
         ops.eq, ops.ne, 
-        ops.exists, ops.not_exists, 
+        ops.exists, ops.not_exists, ops.any,
         ops.starts_with, ops.ends_with, 
         ops.contains, ops.qin, ops.not_in
       ];
@@ -86,7 +87,7 @@ angular.module('os.query.util', [])
         ops.eq, ops.ne, 
         ops.lt, ops.le, 
         ops.gt, ops.ge, 
-        ops.exists, ops.not_exists, 
+        ops.exists, ops.not_exists, ops.any,
         ops.qin, ops.not_in, 
         ops.between
       ];
@@ -115,7 +116,7 @@ angular.module('os.query.util', [])
     };
 
     function isUnaryOp(op) {
-      return op && (op.name == 'exists' || op.name == 'not_exists');
+      return op && (op.name == 'exists' || op.name == 'not_exists' || op.name == 'any');
     }
 
     function onOpSelect(filter) {
@@ -204,7 +205,7 @@ angular.module('os.query.util', [])
       var expr = filter.form.name + "." + filter.field.name + " ";
       expr += filter.op.symbol + " ";
 
-      if (filter.op.name == 'exists' || filter.op.name == 'not_exists') {
+      if (filter.op.name == 'exists' || filter.op.name == 'not_exists' || filter.op.name == 'any') {
         return expr;
       }
 
@@ -294,12 +295,12 @@ angular.module('os.query.util', [])
     };
 
     function getTemporalExprObj(temporalExpr) {
-      var re = /<=|>=|<|>|=|!=/g
+      var re = /<=|>=|<|>|=|!=|\sbetween\s|\sany|\sexists/g
       var matches = undefined;
       if ((matches = re.exec(temporalExpr))) {
         return {
           lhs: temporalExpr.substring(0, matches.index),
-          op : matches[0],
+          op : matches[0].trim(),
           rhs: temporalExpr.substring(matches.index + matches[0].length)
         }
       }
@@ -431,13 +432,13 @@ angular.module('os.query.util', [])
                 " where " + query;
     }
 
-    function getDataAql(selectedFields, filtersMap, exprNodes, reporting) {
+    function getDataAql(selectedFields, filtersMap, exprNodes, reporting, addLimit) {
       var selectList = getSelectList(selectedFields, filtersMap);
       var where = getWhereExpr(filtersMap, exprNodes);
       var rptExpr = getRptExpr(selectedFields, reporting);
       return "select " + selectList + 
-             " where " + where + 
-             " limit 0, 10000 " + rptExpr;
+             " where " + where +
+             (addLimit ? " limit 0, 10000 " : " ")  + rptExpr;
     }
 
     function getDefSelectedFields() {
@@ -519,7 +520,7 @@ angular.module('os.query.util', [])
 
       var op = getOpByModel(filterDef.op);
       var value = undefined;
-      if (op.name == 'exists' || op.name == 'not_exists') {
+      if (op.name == 'exists' || op.name == 'not_exists' || op.name == 'any') {
         value = undefined;
       } else if (op.name != 'qin' && op.name != 'not_in' && op.name != 'between') {
         value = filterDef.values[0];
@@ -545,12 +546,12 @@ angular.module('os.query.util', [])
 
       var filters = queryCtx.filters;
       for (var i = 0; i < filters.length; ++i) {
-        if (filters[i].expr && filters[i].expr.indexOf('.extensions.') != -1) { 
+        if (filters[i].expr && (filters[i].expr.indexOf('.extensions.') != -1 || filters[i].expr.indexOf('.customFields.') != -1)) { 
           queryCtx.disableCpSelection = true;
           return;
         }
 
-        if (!filters[i].expr && filters[i].field.name.indexOf('extensions.') == 0) {
+        if (!filters[i].expr && (filters[i].field.name.indexOf('extensions.') == 0 || filters[i].field.name.indexOf('customFields.') == 0)) {
           queryCtx.disableCpSelection = true;
           return;
         }
@@ -565,7 +566,7 @@ angular.module('os.query.util', [])
           fieldName = selectedFields[i].name;
         } 
 
-        if (fieldName.split(".")[1] == 'extensions') {
+        if (fieldName.split(".")[1] == 'extensions' || fieldName.split(".")[1] == "customFields") {
           queryCtx.disableCpSelection = true;
           return;
         }

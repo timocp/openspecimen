@@ -1,6 +1,7 @@
 
 package com.krishagni.catissueplus.core.biospecimen.services.impl;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -41,6 +42,7 @@ import com.krishagni.catissueplus.core.biospecimen.events.CpQueryCriteria;
 import com.krishagni.catissueplus.core.biospecimen.events.CpWorkflowCfgDetail;
 import com.krishagni.catissueplus.core.biospecimen.events.CpWorkflowCfgDetail.WorkflowDetail;
 import com.krishagni.catissueplus.core.biospecimen.events.CprSummary;
+import com.krishagni.catissueplus.core.biospecimen.events.SpecimenPoolRequirements;
 import com.krishagni.catissueplus.core.biospecimen.events.SpecimenRequirementDetail;
 import com.krishagni.catissueplus.core.biospecimen.repository.CollectionProtocolDao;
 import com.krishagni.catissueplus.core.biospecimen.repository.CpListCriteria;
@@ -119,7 +121,7 @@ public class CollectionProtocolServiceImpl implements CollectionProtocolService 
 			if (cpIds != null && cpIds.isEmpty()) {
 				return ResponseEvent.response(Collections.<CollectionProtocolSummary>emptyList());
 			} else if (cpIds != null) {
-				crit.ids(cpIds);
+				crit.ids(new ArrayList<Long>(cpIds));
 			}
 			
 			List<CollectionProtocolSummary> cpList = daoFactory.getCollectionProtocolDao().getCollectionProtocols(crit);			
@@ -165,7 +167,8 @@ public class CollectionProtocolServiceImpl implements CollectionProtocolService 
 		try { 
 			CprListCriteria listCrit = req.getPayload();
 			ParticipantReadAccess access = AccessCtrlMgr.getInstance().getParticipantReadAccess(listCrit.cpId());
-			if (!access.admin && CollectionUtils.isEmpty(access.siteIds)) {
+			//When siteIds is null, access restriction is not enforced based on MRN sites
+			if (!access.admin && access.siteIds != null && access.siteIds.isEmpty()) {
 				return ResponseEvent.response(Collections.<CprSummary>emptyList());
 			} 
 			
@@ -454,8 +457,13 @@ public class CollectionProtocolServiceImpl implements CollectionProtocolService 
 			if (cpe == null) {
 				return ResponseEvent.userError(CpeErrorCode.NOT_FOUND);
 			}
-			
-			AccessCtrlMgr.getInstance().ensureReadCpRights(cpe.getCollectionProtocol());
+
+			CollectionProtocol cp = cpe.getCollectionProtocol();
+			AccessCtrlMgr.getInstance().ensureReadCpRights(cp);
+
+			int minEventPoint = daoFactory.getCollectionProtocolDao().getMinEventPoint(cp.getId());
+			cpe.setOffset(minEventPoint > 0 ? 0 : minEventPoint);
+
 			return ResponseEvent.response(CollectionProtocolEventDetail.from(cpe));
 		} catch (OpenSpecimenException ose) {
 			return ResponseEvent.error(ose);
@@ -618,19 +626,29 @@ public class CollectionProtocolServiceImpl implements CollectionProtocolService 
 
 	@Override
 	@PlusTransactional
+	public ResponseEvent<List<SpecimenRequirementDetail>> addSpecimenPoolReqs(RequestEvent<SpecimenPoolRequirements> req) {
+		try {
+			List<SpecimenRequirement> spmnPoolReqs = srFactory.createSpecimenPoolReqs(req.getPayload());
+
+			SpecimenRequirement pooledReq = spmnPoolReqs.iterator().next().getPooledSpecimenRequirement();
+			AccessCtrlMgr.getInstance().ensureUpdateCpRights(pooledReq.getCollectionProtocol());
+
+			pooledReq.getCollectionProtocolEvent().ensureUniqueSrCodes(spmnPoolReqs);
+			pooledReq.addSpecimenPoolReqs(spmnPoolReqs);
+			daoFactory.getSpecimenRequirementDao().saveOrUpdate(pooledReq, true);
+			return ResponseEvent.response(SpecimenRequirementDetail.from(spmnPoolReqs));
+		} catch (OpenSpecimenException ose) {
+			return ResponseEvent.error(ose);
+		} catch (Exception e) {
+			return ResponseEvent.serverError(e);
+		}
+	}
+
+	@Override
+	@PlusTransactional
 	public ResponseEvent<List<SpecimenRequirementDetail>> createAliquots(RequestEvent<AliquotSpecimensRequirement> req) {
 		try {
-			AliquotSpecimensRequirement requirement = req.getPayload();
-			List<SpecimenRequirement> aliquots = srFactory.createAliquots(requirement);
-			AccessCtrlMgr.getInstance().ensureUpdateCpRights(aliquots.iterator().next().getCollectionProtocol());
-			
-			SpecimenRequirement parent = daoFactory.getSpecimenRequirementDao().getById(requirement.getParentSrId());
-			if (StringUtils.isNotBlank(requirement.getCode())) {
-				setAliquotCode(parent, aliquots, requirement.getCode());
-			}
-			parent.addChildRequirements(aliquots);			
-			daoFactory.getSpecimenRequirementDao().saveOrUpdate(parent, true);
-			return ResponseEvent.response(SpecimenRequirementDetail.from(aliquots));
+			return ResponseEvent.response(SpecimenRequirementDetail.from(createAliquots(req.getPayload())));
 		} catch (OpenSpecimenException ose) {
 			return ResponseEvent.error(ose);
 		} catch (Exception e) {
@@ -809,7 +827,7 @@ public class CollectionProtocolServiceImpl implements CollectionProtocolService 
 			if (cpIds != null && cpIds.isEmpty()) {
 				return ResponseEvent.response(Collections.<CollectionProtocolSummary>emptyList());
 			} else if (cpIds != null) {
-				crit.ids(cpIds);
+				crit.ids(new ArrayList<Long>(cpIds));
 			}
 			
 			List<CollectionProtocolSummary> cpList = daoFactory.getCollectionProtocolDao().getCollectionProtocols(crit);			
@@ -823,8 +841,6 @@ public class CollectionProtocolServiceImpl implements CollectionProtocolService 
 	
 	private void ensureUsersBelongtoCpSites(CollectionProtocol cp) {
 		ensureCreatorBelongToCpSites(cp);
-		ensurePiBelongToCpSites(cp);
-		ensureCoodBelongToCpSites(cp);		
 	}
 	
 	private void ensureCreatorBelongToCpSites(CollectionProtocol cp) {
@@ -846,35 +862,6 @@ public class CollectionProtocolServiceImpl implements CollectionProtocolService 
 		return daoFactory.getUserDao().getById(user.getId());
 	}
 
-	private void ensurePiBelongToCpSites(CollectionProtocol cp) {
-		if (cp.getPrincipalInvestigator().isAdmin()) {
-			return;
-		}
-		
-		Set<Site> piSites = cp.getPrincipalInvestigator().getInstitute().getSites();
-		Set<Site> cpSites = cp.getRepositories();
-		
-		if (!CollectionUtils.containsAny(cpSites, piSites)) {
-			throw OpenSpecimenException.userError(CpErrorCode.PI_DOES_NOT_BELONG_CP_REPOS);
-		}
-	}
-	
-	private void ensureCoodBelongToCpSites(CollectionProtocol cp) {
-		Set<Site> cpSites = cp.getRepositories();
-		Set<User> coordinators = cp.getCoordinators();
-		
-		for (User coordinator : coordinators) {
-			if (coordinator.isAdmin()) {
-				continue;
-			}
-			
-			Set<Site> coordinatorSites = coordinator.getInstitute().getSites();
-			if (!CollectionUtils.containsAny(cpSites, coordinatorSites)) {
-				throw OpenSpecimenException.userError(CpErrorCode.CO_ORD_DOES_NOT_BELONG_CP_REPOS);
-			}
-		}
-	}
-	
 	private void ensureUniqueTitle(CollectionProtocol existingCp, CollectionProtocol cp, OpenSpecimenException ose) {
 		String title = cp.getTitle();
 		if (existingCp != null && existingCp.getTitle().equals(title)) {
@@ -980,10 +967,13 @@ public class CollectionProtocolServiceImpl implements CollectionProtocolService 
 				importSpecimenReqs(eventId, resp.getPayload().getId(), sr.getChildren());
 			} else if (parentSrId != null && sr.getLineage().equals(Specimen.ALIQUOT)) {				
 				AliquotSpecimensRequirement aliquotReq = sr.toAliquotRequirement(parentSrId, 1);
-				ResponseEvent<List<SpecimenRequirementDetail>> resp = createAliquots(new RequestEvent<AliquotSpecimensRequirement>(aliquotReq));
-				resp.throwErrorIfUnsuccessful();
+				List<SpecimenRequirement> aliquots = createAliquots(aliquotReq);
+
+				if (StringUtils.isNotBlank(sr.getCode())) {
+					aliquots.get(0).setCode(sr.getCode());
+				}
 				
-				importSpecimenReqs(eventId, resp.getPayload().get(0).getId(), sr.getChildren());
+				importSpecimenReqs(eventId, aliquots.get(0).getId(), sr.getChildren());
 			} else if (parentSrId != null && sr.getLineage().equals(Specimen.DERIVED)) {
 				DerivedSpecimenRequirement derivedReq = sr.toDerivedRequirement(parentSrId);
 				ResponseEvent<SpecimenRequirementDetail> resp = createDerived(new RequestEvent<DerivedSpecimenRequirement>(derivedReq));
@@ -992,6 +982,20 @@ public class CollectionProtocolServiceImpl implements CollectionProtocolService 
 				importSpecimenReqs(eventId, resp.getPayload().getId(), sr.getChildren());
 			}			
 		}
+	}
+
+	private List<SpecimenRequirement> createAliquots(AliquotSpecimensRequirement requirement) {
+		List<SpecimenRequirement> aliquots = srFactory.createAliquots(requirement);
+		AccessCtrlMgr.getInstance().ensureUpdateCpRights(aliquots.iterator().next().getCollectionProtocol());
+
+		SpecimenRequirement parent = daoFactory.getSpecimenRequirementDao().getById(requirement.getParentSrId());
+		if (StringUtils.isNotBlank(requirement.getCode())) {
+			setAliquotCode(parent, aliquots, requirement.getCode());
+		}
+
+		parent.addChildRequirements(aliquots);
+		daoFactory.getSpecimenRequirementDao().saveOrUpdate(parent, true);
+		return aliquots;
 	}
 
 	private void addDefaultPiRoles(CollectionProtocol cp, User user) {
@@ -1080,17 +1084,18 @@ public class CollectionProtocolServiceImpl implements CollectionProtocolService 
 	private void setAliquotCode(SpecimenRequirement parent, List<SpecimenRequirement> aliquots, String code) {
 		Set<String> codes = new HashSet<String>();
 		CollectionProtocolEvent cpe = parent.getCollectionProtocolEvent();
-		for (SpecimenRequirement sr:  cpe.getSpecimenRequirements()) {
+		for (SpecimenRequirement sr : cpe.getSpecimenRequirements()) {
 			if (StringUtils.isNotBlank(sr.getCode())) {
 				codes.add(sr.getCode());
 			}
 		}
 
 		int count = 1;
-		for (SpecimenRequirement sr: aliquots) {
+		for (SpecimenRequirement sr : aliquots) {
 			while (!codes.add(code + count)) {
 				count++;
 			}
+
 			sr.setCode(code + count++);
 		}
 	}

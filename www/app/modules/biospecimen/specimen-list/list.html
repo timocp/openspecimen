@@ -8,12 +8,24 @@
 
     <h3>
       <span>{{lists.selectedList.name}}</span>
+      <button class="btn btn-default btn-xs"
+        title="{{'specimen_list.cart_info' | translate}}"
+        data-placement="bottom"
+        data-container="body"
+        data-trigger="focus"
+        content-template="modules/biospecimen/specimen-list/detail-po.html" bs-popover>
+        <span class="fa fa-info-circle"></span>
+      </button>
     </h3>
 
     <div class="os-btns right">
       <button show-if-allowed="orderCreateOpts" class="default" ng-click="distributeSpecimens()">
-        <span class="fa fa-shopping-cart"></span>
+        <span class="fa fa-share"></span>
         <span translate="specimen_list.distribute">Distribute</span>
+      </button>
+      <button show-if-allowed="shipmentCreateOpts" class="default" ng-click="shipSpecimens()">
+        <span class="fa fa-paper-plane-o"></span>
+        <span translate="specimen_list.ship">Ship</span>
       </button>
       <div dropdown os-show-if-menu-items-present class="inline">
         <button class="default dropdown-toggle">
@@ -32,7 +44,7 @@
     </div>
   </div>
 
-   <div class="container os-list-container">
+  <div class="container os-list-container">
     <div class="row">
       <div class="os-col-20">
         <div ng-include src="'specimen-list/lists.html'"></div>
@@ -126,7 +138,7 @@
 </script>
 
 <script type="text/ng-template" id="specimen-list/specimens.html">
-  <div class="os-table" overflow="auto" ng-if="listSpecimens.actualCount != 0">
+  <div class="os-table os-table-hover" overflow="auto" ng-if="listSpecimens.actualCount != 0">
     <div class="os-table-head">
       <div class="row">
         <div class="col os-col-20">
@@ -145,7 +157,7 @@
         <div class="col os-col-20">
           <span translate="specimen_list.cp">Collection Protocol</span>
         </div>
-        <div class="col os-col-15" 
+        <div class="col os-col-15">
           <span translate="specimen_list.quantity">Quantity</span>
         </div>
         <div class="col os-col-15">
@@ -155,10 +167,10 @@
     </div>
     <div class="os-table-body">
       <div class="row" ng-repeat="specimen in listSpecimens.specimens"
-        ng-class="{selected: specimen.selected}">
+        ng-class="{selected: specimen.selected}" os-row-click="viewSpecimen(specimen)">
         <div class="col os-col-20">
           <div class="clearfix">
-            <div class="pull-left os-select-specimen-cb">
+            <div class="pull-left os-select-specimen-cb os-click-esc">
               <os-checkbox ng-change="toggleSpecimenSelect(specimen)" ng-model="specimen.selected"></os-checkbox>
             </div>
             <div class="pull-left" style="padding-left: 12px;">

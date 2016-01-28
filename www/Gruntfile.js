@@ -79,7 +79,7 @@ module.exports = function (grunt) {
     // Add vendor prefixed styles
     autoprefixer: {
       options: {
-        browsers: ['last 1 version']
+        browsers: ['last 5 versions']
       },
       dist: {
         files: [{
@@ -240,7 +240,8 @@ module.exports = function (grunt) {
           '<%= config.dist %>/scripts/{,*/}*.js',
           '<%= config.dist %>/styles/{,*/}*.css',
           '<%= config.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
-          '<%= config.dist %>/styles/fonts/*'
+          '<%= config.dist %>/styles/fonts/*',
+          '!<%= config.dist %>/images/os_email_logo.png'
         ]
       }
     },

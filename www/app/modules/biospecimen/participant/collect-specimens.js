@@ -46,6 +46,7 @@ angular.module('os.biospecimen.participant.collect-specimens',
             specimen.initialQty = Util.getNumberInScientificNotation(specimen.initialQty);
             if (specimen.status != 'Collected') {
               specimen.status = 'Collected';
+              specimen.printLabel = (specimen.labelAutoPrintMode == 'ON_COLLECTION');
             }
 
             if (specimen.closeAfterChildrenCreation) {
@@ -57,10 +58,11 @@ angular.module('os.biospecimen.participant.collect-specimens',
           }
         );
 
-        visit.visitDate = visit.visitDate || visit.anticipatedVisitDate;
+        visit.visitDate = visit.visitDate || visit.anticipatedVisitDate || new Date();
         visit.cprId = cpr.id;
         delete visit.anticipatedVisitDate;
         $scope.visit = visit;
+        $scope.containerListCache = {};
         
         $scope.collDetail = {
           collector: undefined,
@@ -109,6 +111,7 @@ angular.module('os.biospecimen.participant.collect-specimens',
             expandOrCollapseAliquotsGrp(specimen, expandGrp);
           }
 
+          initAliquotGrpPrintLabel(specimen);
           specimen.aliquotLabels = getAliquotGrpLabels(specimen);
         });
       }
@@ -150,6 +153,35 @@ angular.module('os.biospecimen.participant.collect-specimens',
         if (!aliquot.expanded) {
           aliquot.aliquotLabels = getAliquotGrpLabels(aliquot);
         }
+      }
+
+      function initAliquotGrpPrintLabel(aliquot) {
+        if (aliquot.expanded) {
+          return;
+        }
+
+        var printLabel = aliquot.aliquotGrp.some(
+          function(sibling) {
+            return sibling.printLabel;
+          }
+        );
+
+        if (!printLabel) {
+          return;
+        }
+
+        aliquot.printLabel = printLabel;
+        setAliquotGrpPrintLabel(aliquot);
+      }
+
+      function setAliquotGrpPrintLabel(aliquot) {
+        if (aliquot.expanded || !aliquot.aliquotGrp) {
+          return;
+        }
+
+        angular.forEach(aliquot.aliquotGrp, function(sibling) {
+          sibling.printLabel = aliquot.printLabel;
+        });
       }
 
       function getAliquotGrpLabels(specimen) {
@@ -243,7 +275,7 @@ angular.module('os.biospecimen.participant.collect-specimens',
 
       function loadPvs() {
         $scope.notSpecified = $translate.instant('pvs.not_specified');
-        $scope.sites = PvManager.getSites();
+        $scope.sites = PvManager.getSites({listAll: true});
         $scope.specimenStatuses = PvManager.getPvs('specimen-status');
       };
 
@@ -319,6 +351,33 @@ angular.module('os.biospecimen.participant.collect-specimens',
         });
       }
 
+      function handleSpecimensPoolStatus(specimen) {
+        var pooledSpmn = specimen.pooledSpecimen;
+        if (!pooledSpmn) {
+          return;
+        }
+
+        var allSameStatus = pooledSpmn.specimensPool.every(
+          function(s) {
+            return s.status == specimen.status;
+          }
+        );
+
+        if (allSameStatus|| pooledSpmn.status == 'Missed Collection') {
+          pooledSpmn.status = specimen.status;
+        } else if (specimen.status != 'Collected' && pooledSpmn.status == 'Collected') {
+          var atLeastOneColl = pooledSpmn.specimensPool.some(
+            function(s) {
+              return s.status == 'Collected';
+            }
+          );
+
+          if (!atLeastOneColl) {
+            pooledSpmn.status = specimen.status;
+          }
+        }
+      }  
+
       $scope.statusChanged = function(specimen) {
         setDescendentStatus(specimen); 
 
@@ -329,6 +388,8 @@ angular.module('os.biospecimen.participant.collect-specimens',
             curr = curr.parent;
           }
         }
+        
+        handleSpecimensPoolStatus(specimen);
 
         if (!specimen.expanded) {
           angular.forEach(specimen.aliquotGrp, function(sibling) {
@@ -336,6 +397,8 @@ angular.module('os.biospecimen.participant.collect-specimens',
           });
         }
       };
+
+      $scope.togglePrintLabels = setAliquotGrpPrintLabel;
         
       $scope.saveSpecimens = function() {
         if (areDuplicateLabelsPresent($scope.specimens)) {
@@ -349,7 +412,8 @@ angular.module('os.biospecimen.participant.collect-specimens',
             function() {
               CollectSpecimensSvc.clear();
               $scope.back();
-            });
+            }
+          );
         } else {
           var visitToSave = angular.copy($scope.visit);
           visitToSave.status = 'Complete';
@@ -361,28 +425,47 @@ angular.module('os.biospecimen.participant.collect-specimens',
               var sd = CollectSpecimensSvc.getStateDetail();
               CollectSpecimensSvc.clear();
               $state.go(sd.state.name, angular.extend(sd.params, {visitId: visitId}));
-            });
+            }
+          );
         }
       };
 
-      function descendentCount(specimen) { 
+      function descendentCount(specimen, onlySelected) {
+        onlySelected = (onlySelected != false);
+
         var count = 0;
-        for (var i = 0; i < specimen.children.length; ++i) {
-          if (specimen.children[i].removed) {
-            continue;
+        angular.forEach(specimen.children, function(child) {
+          if (child.removed || (!child.selected && onlySelected)) {
+            return;
           }
 
-          count += 1 + descendentCount(specimen.children[i]);
-        }
+          count += 1 + descendentCount(child);
+        });
+
+        angular.forEach(specimen.specimensPool, function(poolSpmn) {
+          if (poolSpmn.removed || (!poolSpmn.selected && onlySelected)) {
+            return;
+          }
+
+          count += 1 + descendentCount(poolSpmn);
+        });
 
         return count;
       };
 
       function setDescendentStatus(specimen) {
-        for (var i = 0; i < specimen.children.length; ++i) {
-          specimen.children[i].status = specimen.status;
-          setDescendentStatus(specimen.children[i]);
-        }
+        angular.forEach(specimen.specimensPool, 
+          function(poolSpmn) {
+            poolSpmn.status = specimen.status;
+          }
+        );
+
+        angular.forEach(specimen.children,
+          function(child) {
+            child.status = specimen.status;
+            setDescendentStatus(child);
+          }
+        );
       };
 
       function areDuplicateLabelsPresent(input) {
@@ -400,32 +483,34 @@ angular.module('os.biospecimen.participant.collect-specimens',
 
       function getSpecimensToSave(cp, uiSpecimens, visited) {
         var result = [];
-        angular.forEach(uiSpecimens, function(uiSpecimen) {
-          if (visited.indexOf(uiSpecimen) >= 0 || // already visited
-              !uiSpecimen.selected || // not selected
-              (uiSpecimen.existingStatus == 'Collected' && 
+        angular.forEach(uiSpecimens, 
+          function(uiSpecimen) {
+            if (visited.indexOf(uiSpecimen) >= 0 || // already visited
+                !uiSpecimen.selected || // not selected
+                (uiSpecimen.existingStatus == 'Collected' && 
                 !uiSpecimen.closeAfterChildrenCreation)) { // collected and not close after children creation
-            return;
-          }
-
-          visited.push(uiSpecimen);
-
-          if ((cp.manualSpecLabelEnabled || !uiSpecimen.labelFmt) && !uiSpecimen.label) {
-            if (!uiSpecimen.grpLeader.expanded) {
-              //
-              // Specimen label is not specified when expected but aliquot group is
-              // in collapsed state. Therefore ignore the specimen or do not save
-              //
               return;
             }
+
+            visited.push(uiSpecimen);
+
+            if ((cp.manualSpecLabelEnabled || !uiSpecimen.labelFmt) && !uiSpecimen.label) {
+              if (!uiSpecimen.grpLeader.expanded) {
+                //
+                // Specimen label is not specified when expected but aliquot group is
+                // in collapsed state. Therefore ignore the specimen or do not save
+                //
+                return;
+              }
+            }
+
+            var specimen = getSpecimenToSave(uiSpecimen);
+            specimen.children = getSpecimensToSave(cp, uiSpecimen.children, visited);
+            specimen.specimensPool = getSpecimensToSave(cp, uiSpecimen.specimensPool, visited);
+            result.push(specimen);
+            return result;
           }
-
-
-          var specimen = getSpecimenToSave(uiSpecimen);
-          specimen.children = getSpecimensToSave(cp, uiSpecimen.children, visited);
-          result.push(specimen);
-          return result;
-        });
+        );
 
         return result;
       };
@@ -435,6 +520,7 @@ angular.module('os.biospecimen.participant.collect-specimens',
           id: uiSpecimen.id,
           initialQty: uiSpecimen.initialQty,
           label: uiSpecimen.label,
+          printLabel: uiSpecimen.printLabel,
           reqId: uiSpecimen.reqId,
           visitId: $scope.visit.id,
           storageLocation: uiSpecimen.storageLocation,
@@ -443,7 +529,8 @@ angular.module('os.biospecimen.participant.collect-specimens',
           concentration: uiSpecimen.concentration,
           status: uiSpecimen.status,
           closeAfterChildrenCreation: uiSpecimen.closeAfterChildrenCreation,
-          createdOn: uiSpecimen.lineage != 'New' ? uiSpecimen.createdOn : undefined
+          createdOn: uiSpecimen.lineage != 'New' ? uiSpecimen.createdOn : undefined,
+          extensionDetail: uiSpecimen.extensionDetail
         };
 
         if (specimen.lineage == 'New' && specimen.status == 'Collected') {

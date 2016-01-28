@@ -48,11 +48,17 @@ public class SpecimenRequirementDetail implements Comparable<SpecimenRequirement
 	
 	private String labelFmt;
 	
+	private String labelAutoPrintMode;
+	
 	private Integer sortOrder;
 	
 	private Long eventId;
 	
 	private List<SpecimenRequirementDetail> children;
+
+	private Long pooledSpecimenReqId;
+
+	private List<SpecimenRequirementDetail> specimensPool;
 
 	public Long getId() {
 		return id;
@@ -190,6 +196,14 @@ public class SpecimenRequirementDetail implements Comparable<SpecimenRequirement
 		this.labelFmt = labelFmt;
 	}
 
+	public String getLabelAutoPrintMode() {
+		return labelAutoPrintMode;
+	}
+
+	public void setLabelAutoPrintMode(String labelAutoPrintMode) {
+		this.labelAutoPrintMode = labelAutoPrintMode;
+	}
+
 	public Integer getSortOrder() {
 		return sortOrder;
 	}
@@ -212,6 +226,22 @@ public class SpecimenRequirementDetail implements Comparable<SpecimenRequirement
 
 	public void setChildren(List<SpecimenRequirementDetail> children) {
 		this.children = children;
+	}
+
+	public Long getPooledSpecimenReqId() {
+		return pooledSpecimenReqId;
+	}
+
+	public void setPooledSpecimenReqId(Long pooledSpecimenReqId) {
+		this.pooledSpecimenReqId = pooledSpecimenReqId;
+	}
+
+	public List<SpecimenRequirementDetail> getSpecimensPool() {
+		return specimensPool;
+	}
+
+	public void setSpecimensPool(List<SpecimenRequirementDetail> specimensPool) {
+		this.specimensPool = specimensPool;
 	}
 
 	@Override
@@ -254,6 +284,8 @@ public class SpecimenRequirementDetail implements Comparable<SpecimenRequirement
 		req.setSpecimenClass(getSpecimenClass());
 		req.setStorageType(getStorageType());
 		req.setType(getType());
+		req.setCode(getCode());
+		req.setPathology(getPathology());
 		
 		return req;
 	}
@@ -281,6 +313,7 @@ public class SpecimenRequirementDetail implements Comparable<SpecimenRequirement
 		detail.setCollectionContainer(sr.getCollectionContainer());
 		detail.setReceiver(sr.getReceiver() == null ? null : UserSummary.from(sr.getReceiver()));
 		detail.setLabelFmt(sr.getLabelFormat());
+		detail.setLabelAutoPrintMode(sr.getLabelAutoPrintMode().name());
 		detail.setSortOrder(sr.getSortOrder());
 		detail.setEventId(sr.getCollectionProtocolEvent().getId());
 		
@@ -288,6 +321,12 @@ public class SpecimenRequirementDetail implements Comparable<SpecimenRequirement
 			detail.setChildren(from(sr.getChildSpecimenRequirements()));
 		}
 		
+		if (sr.getPooledSpecimenRequirement() != null) {
+			detail.setPooledSpecimenReqId(sr.getPooledSpecimenRequirement().getId());
+		} else {
+			detail.setSpecimensPool(from(sr.getOrderedSpecimenPoolReqs()));
+		}
+
 		return detail;
 	}
 	

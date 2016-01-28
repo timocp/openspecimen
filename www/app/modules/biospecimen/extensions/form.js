@@ -3,7 +3,7 @@
 * Css changes are in extension.css file.
 */
 angular.module('os.biospecimen.extensions', ['os.biospecimen.models'])
-  .directive('osDeForm', function($http, $rootScope, Form, ApiUrls, LocationChangeListener) {
+  .directive('osDeForm', function($http, $rootScope, Form, ApiUrls, ExtensionsUtil, LocationChangeListener) {
     return {
       restrict: 'A',
       controller: function() {
@@ -24,9 +24,13 @@ angular.module('os.biospecimen.extensions', ['os.biospecimen.models'])
       },
 
       link: function(scope, element, attrs, ctrl) {
-
         if (!!attrs.ctrl) {
-          scope[attrs.ctrl].ctrl = ctrl;
+          var parts = attrs.ctrl.split("\.")
+          var obj = scope;
+          angular.forEach(parts, function(part) {
+            obj = obj[part];
+          });
+          obj.ctrl = ctrl;
         }
 
         var onceRendered = false;
@@ -48,14 +52,7 @@ angular.module('os.biospecimen.extensions', ['os.biospecimen.models'])
             formDataUrl    : baseUrl + '/:formId/data/:recordId',
             formSaveUrl    : baseUrl + '/:formId/data',
             fileUploadUrl  : filesUrl,
-            fileDownloadUrl: function(formId, recordId, ctrlName) {
-              var params = '?formId=' + formId +
-                           '&recordId=' + recordId +
-                           '&ctrlName=' + ctrlName +
-                           '&_reqTime=' + new Date().getTime();
-                           
-              return filesUrl + params;
-            },
+            fileDownloadUrl: ExtensionsUtil.getFileDownloadUrl,
             recordId       : opts.recordId,
             dateFormat     : $rootScope.global.queryDateFmt.format,
             appData        : {formCtxtId: opts.formCtxtId, objectId: opts.objectId},
@@ -65,6 +62,7 @@ angular.module('os.biospecimen.extensions', ['os.biospecimen.models'])
             onPrint        : opts.onPrint,
             onDelete       : opts.onDelete,
             showActionBtns : opts.showActionBtns,
+            showPanel      : opts.showPanel,
             customHdrs     : hdrs
           };
 

@@ -59,6 +59,15 @@
       column="COLLECTION_PROTOCOL_EVENT_ID"/>
 
     <property name="labelFormat" column="LABELFORMAT"/>
+    
+    <property name="labelAutoPrintMode" column="LABEL_AUTO_PRINT_MODE">
+      <type name="org.hibernate.type.EnumType">
+        <param name="enumClass">
+          com.krishagni.catissueplus.core.biospecimen.domain.SpecimenRequirement$LabelAutoPrintMode
+        </param>
+        <param name="type">12</param>
+      </type>
+    </property>
 
     <property name="activityStatus" column="ACTIVITY_STATUS"/>
   
@@ -71,9 +80,22 @@
       update="true"
       column="PARENT_SPECIMEN_ID"/>
 
-    <set name="childSpecimenRequirements" table="CATISSUE_CP_REQ_SPECIMEN" inverse="true" cascade="all">
-      <key column="PARENT_SPECIMEN_ID"></key>
-      <one-to-many class="com.krishagni.catissueplus.core.biospecimen.domain.SpecimenRequirement" />
+    <set name="childSpecimenRequirements" table="CATISSUE_CP_REQ_SPECIMEN" inverse="true" cascade="all" order-by="id asc">
+      <key column="PARENT_SPECIMEN_ID"/>
+      <one-to-many class="com.krishagni.catissueplus.core.biospecimen.domain.SpecimenRequirement"/>
+      <filter name="activeEntity"/>
+    </set>
+
+    <many-to-one
+      name="pooledSpecimenRequirement"
+      class="com.krishagni.catissueplus.core.biospecimen.domain.SpecimenRequirement"
+      cascade="none"
+      update="true"
+      column="POOLED_SPMN_REQ_ID"/>
+
+    <set name="specimenPoolReqs" table="CATISSUE_CP_REQ_SPECIMEN" inverse="true" cascade="all" order-by="id asc">
+      <key column="POOLED_SPMN_REQ_ID"/>
+      <one-to-many class="com.krishagni.catissueplus.core.biospecimen.domain.SpecimenRequirement"/>
       <filter name="activeEntity"/>
     </set>
 
@@ -104,4 +126,3 @@
     </query>
   </class>
 </hibernate-mapping>
-

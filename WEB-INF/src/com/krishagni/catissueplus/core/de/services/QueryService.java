@@ -1,7 +1,6 @@
 package com.krishagni.catissueplus.core.de.services;
 
 import java.io.File;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 
@@ -21,12 +20,18 @@ public interface QueryService {
 
 	public ResponseEvent<Long> deleteQuery(RequestEvent<Long> req);
 	
+	//
+	// query execution APIs
+	//
+
 	public ResponseEvent<QueryExecResult> executeQuery(RequestEvent<ExecuteQueryEventOp> req);
 	
 	public ResponseEvent<QueryDataExportResult> exportQueryData(RequestEvent<ExecuteQueryEventOp> req);
 	
 	public ResponseEvent<File> getExportDataFile(RequestEvent<String> req);
 	
+	public ResponseEvent<List<FacetDetail>> getFacetValues(RequestEvent<GetFacetValuesOp> req);
+
 	//
 	// folder related APIs
 	//
@@ -67,5 +72,10 @@ public interface QueryService {
 	}	
 
 	public QueryDataExportResult exportQueryData(ExecuteQueryEventOp opDetail, ExportProcessor processor);
+	
+	//
+	// internal use
+	// 
+	public String insertCustomQueryForms(String dirName) ;
 	
 }

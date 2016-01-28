@@ -8,21 +8,29 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.springframework.util.CollectionUtils;
 
 import com.krishagni.catissueplus.core.biospecimen.domain.Specimen;
 import com.krishagni.catissueplus.core.biospecimen.domain.SpecimenRequirement;
 import com.krishagni.catissueplus.core.common.ListenAttributeChanges;
+import com.krishagni.catissueplus.core.de.events.ExtensionDetail;
 
 import edu.emory.mathcs.backport.java.util.Collections;
 
 @ListenAttributeChanges
 public class SpecimenDetail extends SpecimenInfo {
+
+	private static final long serialVersionUID = -752005520158376620L;
+
 	private CollectionEventDetail collectionEvent;
 	
 	private ReceivedEventDetail receivedEvent;
 	
 	private String labelFmt;
+	
+	private String labelAutoPrintMode;
 	
 	private Set<String> biohazards;
 	
@@ -32,9 +40,28 @@ public class SpecimenDetail extends SpecimenInfo {
 	
 	private List<SpecimenDetail> children;
 
+	private Long pooledSpecimenId;
+	
+	private String pooledSpecimenLabel;
+
+	private List<SpecimenDetail> specimensPool;
+
 	// This is needed for creation of derivatives from BO for closing parent specimen.
 	private Boolean closeParent;
 	
+	private Boolean poolSpecimen;
+	
+	private String reqCode;
+
+	private ExtensionDetail extensionDetail;
+
+	//
+	// transient variables specifying action to be performed
+	//
+	private boolean forceDelete;
+
+	private boolean printLabel;
+
 	public CollectionEventDetail getCollectionEvent() {
 		return collectionEvent;
 	}
@@ -59,12 +86,44 @@ public class SpecimenDetail extends SpecimenInfo {
 		this.labelFmt = labelFmt;
 	}
 
+	public String getLabelAutoPrintMode() {
+		return labelAutoPrintMode;
+	}
+
+	public void setLabelAutoPrintMode(String labelAutoPrintMode) {
+		this.labelAutoPrintMode = labelAutoPrintMode;
+	}
+
 	public List<SpecimenDetail> getChildren() {
 		return children;
 	}
 
 	public void setChildren(List<SpecimenDetail> children) {
 		this.children = children;
+	}
+
+	public Long getPooledSpecimenId() {
+		return pooledSpecimenId;
+	}
+
+	public void setPooledSpecimenId(Long pooledSpecimenId) {
+		this.pooledSpecimenId = pooledSpecimenId;
+	}
+
+	public String getPooledSpecimenLabel() {
+		return pooledSpecimenLabel;
+	}
+
+	public void setPooledSpecimenLabel(String pooledSpecimenLabel) {
+		this.pooledSpecimenLabel = pooledSpecimenLabel;
+	}
+
+	public List<SpecimenDetail> getSpecimensPool() {
+		return specimensPool;
+	}
+
+	public void setSpecimensPool(List<SpecimenDetail> specimensPool) {
+		this.specimensPool = specimensPool;
 	}
 
 	public Set<String> getBiohazards() {
@@ -99,11 +158,62 @@ public class SpecimenDetail extends SpecimenInfo {
 		this.closeParent = closeParent;
 	}
 
+	public Boolean getPoolSpecimen() {
+		return poolSpecimen;
+	}
+
+	public void setPoolSpecimen(Boolean poolSpecimen) {
+		this.poolSpecimen = poolSpecimen;
+	}
+	
+	public String getReqCode() {
+		return reqCode;
+	}
+
+	public void setReqCode(String reqCode) {
+		this.reqCode = reqCode;
+	}
+
 	public boolean closeParent() {
 		return closeParent == null ? false : closeParent;
 	}
 
+	public ExtensionDetail getExtensionDetail() {
+		return extensionDetail;
+	}
+
+	public void setExtensionDetail(ExtensionDetail extensionDetail) {
+		this.extensionDetail = extensionDetail;
+	}
+
+	@JsonIgnore
+	public boolean isForceDelete() {
+		return forceDelete;
+	}
+
+	public void setForceDelete(boolean forceDelete) {
+		this.forceDelete = forceDelete;
+	}
+	
+	//
+	// Do not serialise printLabel from interaction object to response JSON. Therefore @JsonIgnore
+	// However, deserialise, if present, from input request JSON to interaction object. Hence @JsonProperty
+	//
+	@JsonIgnore
+	public boolean isPrintLabel() {
+		return printLabel;
+	}
+
+	@JsonProperty
+	public void setPrintLabel(boolean printLabel) {
+		this.printLabel = printLabel;
+	}
+
 	public static SpecimenDetail from(Specimen specimen) {
+		return from(specimen, true);
+	}
+
+	public static SpecimenDetail from(Specimen specimen, boolean partial) {
 		SpecimenDetail result = new SpecimenDetail();
 		SpecimenInfo.fromTo(specimen, result);
 		
@@ -112,13 +222,30 @@ public class SpecimenDetail extends SpecimenInfo {
 		if (sr == null) {
 			result.setChildren(from(children));
 		} else {
+			if (sr.isPooledSpecimenReq()) {
+				result.setSpecimensPool(getSpecimens(sr.getSpecimenPoolReqs(), specimen.getSpecimensPool()));
+			}
+			result.setPoolSpecimen(sr.isSpecimenPoolReq());
+			
 			Collection<SpecimenRequirement> anticipated = sr.getChildSpecimenRequirements();
 			result.setChildren(getSpecimens(anticipated, children));
 		}
 		
+		if (specimen.getPooledSpecimen() != null) {
+			result.setPooledSpecimenId(specimen.getPooledSpecimen().getId());
+			result.setPooledSpecimenLabel(specimen.getPooledSpecimen().getLabel());
+		}
+		
 		result.setLabelFmt(specimen.getLabelTmpl());
+		result.setLabelAutoPrintMode(sr != null ? sr.getLabelAutoPrintMode().name(): null);
+		result.setReqCode(sr != null ? sr.getCode() : null);
 		result.setBiohazards(new HashSet<String>(specimen.getBiohazards()));
 		result.setComments(specimen.getComment());
+		
+		if (!partial) {
+			result.setExtensionDetail(ExtensionDetail.from(specimen.getExtension()));
+		}
+		
 		return result;
 	}
 	
@@ -137,11 +264,18 @@ public class SpecimenDetail extends SpecimenInfo {
 	}
 	
 	public static SpecimenDetail from(SpecimenRequirement anticipated) {
-		SpecimenDetail result = new SpecimenDetail();
+		SpecimenDetail result = new SpecimenDetail();		
+		SpecimenInfo.fromTo(anticipated, result);
 		
-		SpecimenInfo.fromTo(anticipated, result);		
+		if (anticipated.isPooledSpecimenReq()) {
+			result.setSpecimensPool(fromAnticipated(anticipated.getSpecimenPoolReqs()));
+		}
+		
+		result.setPoolSpecimen(anticipated.isSpecimenPoolReq());
 		result.setChildren(fromAnticipated(anticipated.getChildSpecimenRequirements()));
 		result.setLabelFmt(anticipated.getLabelTmpl());
+		result.setLabelAutoPrintMode(anticipated.getLabelAutoPrintMode().name());
+		result.setReqCode(anticipated.getCode());
 		return result;		
 	}
 

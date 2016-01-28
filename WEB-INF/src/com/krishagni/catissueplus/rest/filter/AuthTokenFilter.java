@@ -3,7 +3,11 @@ package com.krishagni.catissueplus.rest.filter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,14 +24,18 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.codec.Base64;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.filter.GenericFilterBean;
 
 import com.krishagni.catissueplus.core.administrative.domain.User;
+import com.krishagni.catissueplus.core.audit.domain.UserApiCallLog;
+import com.krishagni.catissueplus.core.audit.services.AuditService;
 import com.krishagni.catissueplus.core.auth.events.LoginDetail;
 import com.krishagni.catissueplus.core.auth.events.TokenDetail;
 import com.krishagni.catissueplus.core.auth.services.UserAuthenticationService;
 import com.krishagni.catissueplus.core.common.events.RequestEvent;
 import com.krishagni.catissueplus.core.common.events.ResponseEvent;
+import com.krishagni.catissueplus.core.common.util.AuthUtil;
 
 public class AuthTokenFilter extends GenericFilterBean {
 	private static final String OS_AUTH_TOKEN_HDR = "X-OS-API-TOKEN";
@@ -40,7 +48,9 @@ public class AuthTokenFilter extends GenericFilterBean {
 	
 	private UserAuthenticationService authService;
 	
-	private Map<String, List<String>> excludeUrls;
+	private Map<String, List<String>> excludeUrls = new HashMap<String, List<String>>();
+	
+	private AuditService auditService;
 	
 	public UserAuthenticationService getAuthService() {
 		return authService;
@@ -56,6 +66,22 @@ public class AuthTokenFilter extends GenericFilterBean {
 
 	public void setExcludeUrls(Map<String, List<String>> excludeUrls) {
 		this.excludeUrls = excludeUrls;
+	}
+
+	public void addExcludeUrl(String method, String resourceUrl) {
+		List<String> urls = excludeUrls.get(method);
+		if (urls == null) {
+			urls = new ArrayList<String>();
+			excludeUrls.put(method, urls);
+		}
+
+		if (urls.indexOf(resourceUrl) == -1) {
+			urls.add(resourceUrl);
+		}
+	}
+
+	public void setAuditService(AuditService auditService) {
+		this.auditService = auditService;
 	}
 
 	public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) 
@@ -82,9 +108,9 @@ public class AuthTokenFilter extends GenericFilterBean {
 		if (urls == null) {
 			urls = Collections.emptyList();
 		}
-		
+
 		for (String url : urls) {
-			if (httpReq.getRequestURI().endsWith(url)) {  
+			if (matches(httpReq, url)) {
 				chain.doFilter(req, resp);
 				return;
 			}
@@ -119,12 +145,21 @@ public class AuthTokenFilter extends GenericFilterBean {
 			}
 			return;
 		}
-		
-		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userDetails, authToken, userDetails.getAuthorities());
-		token.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpReq));
-		SecurityContextHolder.getContext().setAuthentication(token);
+
+		AuthUtil.setCurrentUser(userDetails, authToken, httpReq);
+		Date callStartTime = Calendar.getInstance().getTime();
 		chain.doFilter(req, resp);
-		SecurityContextHolder.clearContext();
+		AuthUtil.clearCurrentUser();
+	
+		UserApiCallLog userAuditLog = new UserApiCallLog();
+		userAuditLog.setUser(userDetails);
+		userAuditLog.setUrl(httpReq.getRequestURI().toString());
+		userAuditLog.setMethod(httpReq.getMethod());
+		userAuditLog.setAuthToken(AuthUtil.decodeToken(authToken));
+		userAuditLog.setCallStartTime(callStartTime);
+		userAuditLog.setCallEndTime(Calendar.getInstance().getTime());
+		userAuditLog.setResponseCode(Integer.toString(httpResp.getStatus()));
+		auditService.insertApiCallLog(userAuditLog);
 	}
 	
 	private User doBasicAuthentication(HttpServletRequest httpReq, HttpServletResponse httpResp) throws UnsupportedEncodingException {
@@ -191,5 +226,18 @@ public class AuthTokenFilter extends GenericFilterBean {
 		}
 		
 		return authToken;
+	}
+
+	private boolean matches(HttpServletRequest httpReq, String url) {
+		if (!url.startsWith("/**")) {
+			String prefix = "/**";
+			if (!url.startsWith("/")) {
+				prefix += "/";
+			}
+
+			url = prefix + url;
+		}
+
+		return new AntPathRequestMatcher(url, httpReq.getMethod(), true).matches(httpReq);
 	}
 }

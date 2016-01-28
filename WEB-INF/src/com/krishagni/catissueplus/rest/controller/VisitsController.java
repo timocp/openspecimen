@@ -8,6 +8,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,8 +28,8 @@ import com.krishagni.catissueplus.core.audit.events.RequestAudit;
 import com.krishagni.catissueplus.core.biospecimen.domain.Visit;
 import com.krishagni.catissueplus.core.biospecimen.events.FileDetail;
 import com.krishagni.catissueplus.core.biospecimen.events.SprDetail;
-import com.krishagni.catissueplus.core.biospecimen.events.SprLockDetail;
 import com.krishagni.catissueplus.core.biospecimen.events.SprFileDownloadDetail;
+import com.krishagni.catissueplus.core.biospecimen.events.SprLockDetail;
 import com.krishagni.catissueplus.core.biospecimen.events.VisitDetail;
 import com.krishagni.catissueplus.core.biospecimen.events.VisitSpecimenDetail;
 import com.krishagni.catissueplus.core.biospecimen.events.VisitSummary;
@@ -74,35 +75,44 @@ public class VisitsController {
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
 	public List<VisitSummary> getVisits(
-		@RequestParam(value = "cprId", required = true) 
+		@RequestParam(value = "cprId", required = true)
 		Long cprId,
-		
+
 		@RequestParam(value = "includeStats", required = false, defaultValue = "false") 
 		boolean includeStats) {
 		
 		VisitsListCriteria crit = new VisitsListCriteria()
 			.cprId(cprId)
 			.includeStat(includeStats);
-		
+
 		ResponseEvent<List<VisitSummary>> resp = cprSvc.getVisits(getRequest(crit));
 		resp.throwErrorIfUnsuccessful();
 		return resp.getPayload();
 	}
-	
+
+	@RequestMapping(method = RequestMethod.GET, value="/bynamespr")
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody
+	public List<VisitDetail> getVisits(
+		@RequestParam(value = "visitName", required = false)
+		String visitName,
+
+		@RequestParam(value = "sprNumber", required = false)
+		String sprNumber) {
+		VisitsListCriteria criteria = new VisitsListCriteria()
+		.name(visitName)
+		.sprNumber(sprNumber);
+
+		ResponseEvent<List<VisitDetail>> resp = visitService.getVisits(getRequest(criteria));
+		resp.throwErrorIfUnsuccessful();
+		return resp.getPayload();
+	}
+
 	@RequestMapping(method = RequestMethod.GET, value="/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
 	public VisitDetail getVisit(@PathVariable("id") Long visitId) {
 		ResponseEvent<VisitDetail> resp = visitService.getVisit(getVisitQueryReq(visitId));
-		resp.throwErrorIfUnsuccessful();
-		return resp.getPayload();
-	}
-
-	@RequestMapping(method = RequestMethod.GET, value="/byname/{name}")
-	@ResponseStatus(HttpStatus.OK)
-	@ResponseBody
-	public VisitDetail getVisitByName(@PathVariable("name") String visitName) {
-		ResponseEvent<VisitDetail> resp = visitService.getVisit(getVisitQueryReq(visitName));
 		resp.throwErrorIfUnsuccessful();
 		return resp.getPayload();
 	}
@@ -195,6 +205,11 @@ public class VisitsController {
 		ResponseEvent<FileDetail> resp = visitService.getSpr(getRequest(sprReqDetail));
 		resp.throwErrorIfUnsuccessful();
 		FileDetail detail = resp.getPayload();
+		String contentType = Utility.getContentType(detail.getFile());
+		if (!contentType.startsWith("text/")) {
+			return null;
+		}
+		
 		return Utility.getFileText(detail.getFile());
 	}
 	
@@ -318,6 +333,20 @@ public class VisitsController {
 		ResponseEvent<List<AuditDetail>> resp = auditSvc.getDetailedAudit(getRequest(req));
 		resp.throwErrorIfUnsuccessful();
 		return resp.getPayload();
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value="/extension-form")
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody
+	public FormCtxtSummary getForm() {
+		ListEntityFormsOp op = new ListEntityFormsOp();
+		op.setEntityType(EntityType.VISIT_EXTN); 
+        
+		RequestEvent<ListEntityFormsOp> req = new RequestEvent<ListEntityFormsOp>(op);
+		ResponseEvent<List<FormCtxtSummary>> resp = formSvc.getEntityForms(req);
+		resp.throwErrorIfUnsuccessful();
+		
+		return CollectionUtils.isNotEmpty(resp.getPayload()) ? resp.getPayload().get(0) : null;
 	}
 	
 	private RequestEvent<EntityQueryCriteria> getVisitQueryReq(Long visitId) {

@@ -1,6 +1,7 @@
 package com.krishagni.catissueplus.core.de.domain;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +27,6 @@ import com.krishagni.catissueplus.core.de.events.ExtensionDetail.AttrDetail;
 import com.krishagni.catissueplus.core.de.repository.DaoFactory;
 
 import edu.common.dynamicextensions.domain.nui.Container;
-import edu.common.dynamicextensions.domain.nui.Control;
 import edu.common.dynamicextensions.domain.nui.SubFormControl;
 import edu.common.dynamicextensions.domain.nui.UserContext;
 import edu.common.dynamicextensions.napi.ControlValue;
@@ -93,6 +93,10 @@ public abstract class DeObject {
 	public void setAttrs(List<Attr> attrs) {
 		this.attrs = attrs;
 	}
+	
+	public Long getFormId() {
+		return getForm().getId(); 
+	}
 
 	public void saveOrUpdate() {
 		try {
@@ -101,15 +105,11 @@ public abstract class DeObject {
 			FormData formData = prepareFormData(form);
 			
 			boolean isInsert = (this.id == null);						
-			Long recordId = formDataMgr.saveOrUpdateFormData(userCtx, formData);
+			this.id = formDataMgr.saveOrUpdateFormData(userCtx, formData);
 			
 			if (isInsert) {
-				Long formCtxtId = getFormContext().getIdentifier();
-				FormRecordEntryBean re = prepareRecordEntry(userCtx, formCtxtId, recordId);
-				daoFactory.getFormDao().saveOrUpdateRecordEntry(re);				
+				saveRecordEntry();			
 			}
-			
-			this.id = recordId;
 			
 			attrs.clear();
 			attrs.addAll(getAttrs(formData));
@@ -118,12 +118,25 @@ public abstract class DeObject {
 		}
 	}
 	
+	public void saveRecordEntry() {
+		UserContext userCtx = getUserCtx();
+		Long formCtxtId = getFormContext().getIdentifier();
+		FormRecordEntryBean re = prepareRecordEntry(userCtx, formCtxtId, getId());
+		daoFactory.getFormDao().saveOrUpdateRecordEntry(re);
+	}
+	
 	public void delete() {
 		if (getId() == null) {
 			return;
 		}
-		
-		FormRecordEntryBean re = daoFactory.getFormDao().getRecordEntry(getId());
+
+		Long formCtxId = getFormContext().getIdentifier();
+		Long objectId = getObjectId();
+		FormRecordEntryBean re = daoFactory.getFormDao().getRecordEntry(formCtxId, objectId, getId());
+		if (re == null) {
+			return;
+		}
+
 		re.setActivityStatus(Status.CLOSED);
 		daoFactory.getFormDao().saveOrUpdateRecordEntry(re);
 	}
@@ -147,18 +160,14 @@ public abstract class DeObject {
 	}
 	
 	protected void loadRecordIfNotLoaded() {
-		if (recordLoaded) {
+		Long recordId = getId();
+		if (recordLoaded || recordId == null) {
 			return;
 		}
 		
 		recordLoaded = true;
 		attrs.clear();
-		
-		Long recordId = getId();
-		if (recordId == null) {
-			return;
-		}
-		
+
 		FormData formData = formDataMgr.getFormData(getForm(), recordId);
 		if (formData == null) {
 			return;
@@ -271,7 +280,7 @@ public abstract class DeObject {
 		
 		List<Attr> attrs = new ArrayList<Attr>();
 		for (AttrDetail attrDetail : detail.getAttrs()) {
-			Attr attr = existingAttrs.get(attrDetail.getName());
+			Attr attr = existingAttrs.remove(attrDetail.getName());
 			if (attr == null) {
 				attr = new Attr();
 			} 
@@ -280,6 +289,7 @@ public abstract class DeObject {
 			attrs.add(attr);
 		}
 		
+		attrs.addAll(existingAttrs.values());
 		extension.setAttrs(attrs);
 		return extension;
 	}
@@ -386,6 +396,8 @@ public abstract class DeObject {
 		private String caption;
 		
 		private Object value;
+		
+		private String type;
 
 		public String getName() {
 			return name;
@@ -419,12 +431,26 @@ public abstract class DeObject {
 			this.value = value;
 		}
 		
+		public String getType() {
+			return type;
+		}
+
+		public void setType(String type) {
+			this.type = type;
+		}
+
 		public static Attr from(ControlValue cv) {
 			Attr attr = new Attr();
 			attr.setName(cv.getControl().getName()); 
 			attr.setUdn(cv.getControl().getUserDefinedName());
-			attr.setCaption(cv.getControl().getCaption()); 
-			attr.setValue(cv.getValue());
+			attr.setCaption(cv.getControl().getCaption());
+			attr.setType(cv.getControl().getCtrlType());
+			
+			Object value = cv.getValue();
+			if (value != null && value.getClass().isArray()) {
+				value = Arrays.asList((String[])value);
+			}
+			attr.setValue(value);
 			
 			return attr;
 		}

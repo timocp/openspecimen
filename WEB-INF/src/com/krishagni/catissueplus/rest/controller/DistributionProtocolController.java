@@ -1,9 +1,11 @@
 
 package com.krishagni.catissueplus.rest.controller;
 
+import java.io.File;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,12 +18,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import com.krishagni.catissueplus.core.administrative.events.DistributionOrderStat;
+import com.krishagni.catissueplus.core.administrative.events.DistributionOrderStatListCriteria;
 import com.krishagni.catissueplus.core.administrative.events.DistributionProtocolDetail;
 import com.krishagni.catissueplus.core.administrative.repository.DpListCriteria;
 import com.krishagni.catissueplus.core.administrative.services.DistributionProtocolService;
 import com.krishagni.catissueplus.core.common.events.DependentEntityDetail;
 import com.krishagni.catissueplus.core.common.events.RequestEvent;
 import com.krishagni.catissueplus.core.common.events.ResponseEvent;
+import com.krishagni.catissueplus.core.common.util.Utility;
 
 @Controller
 @RequestMapping("/distribution-protocols")
@@ -137,6 +142,46 @@ public class DistributionProtocolController {
 		ResponseEvent<DistributionProtocolDetail> resp = dpSvc.updateActivityStatus(req);
 		resp.throwErrorIfUnsuccessful();
 		return resp.getPayload();
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/orders")
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody
+	public List<DistributionOrderStat> getOrderStats(
+			@RequestParam(value = "dpId", required = false)
+			Long dpId,
+			
+			@RequestParam(value = "groupBy", required = false, defaultValue = "")
+			List<String> groupByAttrs) {
+		
+		DistributionOrderStatListCriteria crit = new DistributionOrderStatListCriteria()
+				.dpId(dpId)
+				.groupByAttrs(groupByAttrs);
+		
+		ResponseEvent<List<DistributionOrderStat>> resp = dpSvc.getOrderStats(getRequest(crit));
+		resp.throwErrorIfUnsuccessful();
+		return resp.getPayload();
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/orders-report")
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody
+	public void exportOrderStats(
+			@RequestParam(value = "dpId", required = false)
+			Long dpId,
+			
+			@RequestParam(value = "groupBy", required = false, defaultValue = "")
+			List<String> groupByAttrs,
+			
+			HttpServletResponse response) {
+		
+		DistributionOrderStatListCriteria crit = new DistributionOrderStatListCriteria()
+				.dpId(dpId)
+				.groupByAttrs(groupByAttrs);
+		
+		ResponseEvent<File> resp = dpSvc.exportOrderStats(getRequest(crit));
+		resp.throwErrorIfUnsuccessful();
+		Utility.sendToClient(response, "dp-order-stat.csv", resp.getPayload(), true);
 	}
 	
 	private <T> RequestEvent<T> getRequest(T payload) {

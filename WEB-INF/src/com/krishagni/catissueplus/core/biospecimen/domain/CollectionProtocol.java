@@ -18,6 +18,7 @@ import org.hibernate.envers.NotAudited;
 import com.krishagni.catissueplus.core.administrative.domain.Site;
 import com.krishagni.catissueplus.core.administrative.domain.StorageContainer;
 import com.krishagni.catissueplus.core.administrative.domain.User;
+import com.krishagni.catissueplus.core.biospecimen.domain.SpecimenRequirement.LabelAutoPrintMode;
 import com.krishagni.catissueplus.core.biospecimen.domain.factory.CpErrorCode;
 import com.krishagni.catissueplus.core.biospecimen.domain.factory.CpeErrorCode;
 import com.krishagni.catissueplus.core.common.CollectionUpdater;
@@ -29,6 +30,12 @@ import com.krishagni.catissueplus.core.common.util.Utility;
 @Audited
 @AuditTable(value="CAT_COLLECTION_PROTOCOL_AUD")
 public class CollectionProtocol extends BaseExtensionEntity {
+	public enum SpecimenLabelPrePrintMode {
+		ON_REGISTRATION,
+		ON_VISIT,
+		NONE;
+	}
+	
 	private static final String ENTITY_NAME = "collection_protocol";
 	
 	private static final Pattern digitsPtrn = Pattern.compile("%(\\d+)d");
@@ -70,6 +77,8 @@ public class CollectionProtocol extends BaseExtensionEntity {
 	private Boolean manualVisitNameEnabled;
 	
 	private Boolean manualSpecLabelEnabled;
+	
+	private SpecimenLabelPrePrintMode spmnLabelPrePrintMode = SpecimenLabelPrePrintMode.NONE;
 	
 	private Boolean consentsWaived;
 
@@ -241,6 +250,14 @@ public class CollectionProtocol extends BaseExtensionEntity {
 		return manualSpecLabelEnabled != null ? manualSpecLabelEnabled : false;
 	}
 
+	public SpecimenLabelPrePrintMode getSpmnLabelPrePrintMode() {
+		return spmnLabelPrePrintMode != null ? spmnLabelPrePrintMode : SpecimenLabelPrePrintMode.NONE;
+	}
+
+	public void setSpmnLabelPrePrintMode(SpecimenLabelPrePrintMode spmnLabelPrePrintMode) {
+		this.spmnLabelPrePrintMode = spmnLabelPrePrintMode;
+	}
+
 	public Boolean isConsentsWaived() {
 		return consentsWaived != null ? consentsWaived: false;
 	}
@@ -340,8 +357,9 @@ public class CollectionProtocol extends BaseExtensionEntity {
 		
 		updateCollectionProtocolSites(cp.getSites());
 		CollectionUpdater.update(this.coordinators, cp.getCoordinators());
+		updateLabelPrePrintMode(cp.getSpmnLabelPrePrintMode());
 	}
-		
+	
 	public boolean isValidPpid(String ppid) {
 		String ppidFmt = getPpidFormat();
 		if (StringUtils.isBlank(ppidFmt)) {
@@ -471,6 +489,7 @@ public class CollectionProtocol extends BaseExtensionEntity {
 
 		setTitle(Utility.getDisabledValue(getTitle(), 255));
 		setShortTitle(Utility.getDisabledValue(getShortTitle(), 50));
+		setCode(Utility.getDisabledValue(getCode(), 32));
 		setActivityStatus(Status.ACTIVITY_STATUS_DISABLED.getStatus());
 	}
 	
@@ -506,5 +525,33 @@ public class CollectionProtocol extends BaseExtensionEntity {
 		}
 		
 		getSites().removeAll(existingSites.values());
+	}
+	
+	private void updateLabelPrePrintMode(SpecimenLabelPrePrintMode prePrintMode) {
+		if (getSpmnLabelPrePrintMode() == prePrintMode) {
+			//
+			// Nothing has changed
+			//
+			return;
+		}
+
+		setSpmnLabelPrePrintMode(prePrintMode);
+		if (prePrintMode != SpecimenLabelPrePrintMode.NONE) {
+			//
+			// pre-printing is not disabled
+			//
+			return;
+		}
+
+		//
+		// Disable pre-print for all specimen requirements
+		//
+		for (CollectionProtocolEvent cpe : getCollectionProtocolEvents()) {
+			for (SpecimenRequirement sr : cpe.getSpecimenRequirements()) {
+				if (sr.getLabelAutoPrintMode() == LabelAutoPrintMode.PRE_PRINT) {
+					sr.setLabelAutoPrintMode(LabelAutoPrintMode.NONE);
+				}
+			}
+		}
 	}
 }

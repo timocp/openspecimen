@@ -48,9 +48,9 @@ public class ObjectSchemaFactoryImpl implements ObjectSchemaFactory, Initializin
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		for (ObjectSchema schema : schemaMap.values()) {
-			Record extnRecord = schema.getExtensionRecord();
-			if (extnRecord != null) {
-				populateExtensionRecord(extnRecord);
+			List<Record> extnRecords = schema.getExtensionRecord();
+			for (Record record : extnRecords) {
+				populateExtensionRecord(record);
 			}
 		}
 	}
@@ -80,6 +80,17 @@ public class ObjectSchemaFactoryImpl implements ObjectSchemaFactory, Initializin
 		schemaMap.put(name, schema);
 	}
 	
+	@Override
+	public void registerSchema(String schemaResource) {
+		ObjectSchema schema = parseSchema(schemaResource);
+		List<Record> extnRecords = schema.getExtensionRecord();
+		for (Record record : extnRecords) {
+			populateExtensionRecord(record);
+		}
+		
+		schemaMap.put(schema.getName(), schema);
+	}
+
 	private ObjectSchema parseSchema(String schemaResource) {
 		InputStream in = null;
 		try {

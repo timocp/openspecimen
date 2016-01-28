@@ -200,6 +200,16 @@ public class CollectionProtocolRegistration {
 		setBarcode(Utility.getDisabledValue(getBarcode(), 255));
 		setPpid(Utility.getDisabledValue(getPpid(), 255));
 		setActivityStatus(Status.ACTIVITY_STATUS_DISABLED.getStatus());
+
+		//
+		// If participant is registered to only this deleted registration
+		// then delete participant as well
+		//
+		int regCount = getParticipant().getCprs().size();
+		CollectionProtocolRegistration cpr = getParticipant().getCprs().iterator().next();
+		if (regCount == 1 && this.equals(cpr)) {
+			getParticipant().delete();
+		}
 	}
 
 	public void update(CollectionProtocolRegistration cpr) {
@@ -235,6 +245,13 @@ public class CollectionProtocolRegistration {
 		} else {
 			setPpid(cp.getId() + "_" + participant.getId());
 		}		
+	}
+	
+	public void addVisits(Collection<Visit> visits) {
+		for (Visit visit : visits) {
+			visit.setRegistration(this); 
+			getVisits().add(visit);
+		}
 	}
 
 	private void setConsentTierResponses(Collection<ConsentTierResponse> consentResponses) {

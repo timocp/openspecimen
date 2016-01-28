@@ -26,7 +26,7 @@ angular.module('os.biospecimen.models.participant', ['os.common.models'])
     Participant.prototype.getPmis = function() {
       var pmis = []; 
       angular.forEach(this.pmis, function(pmi) {
-        if (pmi.siteName && pmi.mrn) {
+        if (pmi.siteName) {
           pmis.push(pmi);
         }
       });
@@ -60,10 +60,14 @@ angular.module('os.biospecimen.models.participant', ['os.common.models'])
     };
 
     Participant.prototype.getMatchingParticipants = function() {
+      var that = this;
       var criteria = this.getMatchingCriteria();
       return $http.post(Participant.url() + '/match', criteria)
         .then(function(result) {
-          var response = result.data;
+          var response = result.data.filter(function(matched) {
+            return matched.participant.id != that.id;
+          });
+          
           angular.forEach(response, function(matched) {
             matched.participant = new Participant(matched.participant);
           });

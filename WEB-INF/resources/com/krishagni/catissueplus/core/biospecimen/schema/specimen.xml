@@ -82,6 +82,12 @@
       <attribute>biohazards</attribute>
     </field>
 
+    <field>
+      <type>datetime</type>
+      <caption>#getMessage("specimen_created_on")</caption>
+      <attribute>createdOn</attribute>
+    </field>
+    
     <record>
       <caption>#getMessage("specimen_location")</caption>
       <attribute>storageLocation</attribute>
@@ -101,6 +107,16 @@
         <attribute>positionX</attribute>
       </field>
     </record>
+
+    <field>
+      <caption>#getMessage("specimen_comments")</caption>
+      <attribute>comments</attribute>
+    </field>
+    
+    <field>
+      <caption>#getMessage("specimen_activity_status")</caption>
+      <attribute>activityStatus</attribute>
+    </field>  
 
     <record>
       <caption>#getMessage("specimen_coll_event")</caption>
@@ -167,6 +183,18 @@
         <caption>#getMessage("specimen_received_event_quality")</caption>
         <attribute>receivedQuality</attribute>
       </field>
+    </record>
+
+    <record type="extensions" entityType="SpecimenExtension">
+      <attribute>extensionDetail</attribute>
+    </record>
+
+    <record type="extensions" entityType="DerivativeExtension">
+      <attribute>extensionDetail</attribute>
+    </record>
+
+    <record type="extensions" entityType="AliquotExtension">
+      <attribute>extensionDetail</attribute>
     </record>
   </record>
 </object-schema>

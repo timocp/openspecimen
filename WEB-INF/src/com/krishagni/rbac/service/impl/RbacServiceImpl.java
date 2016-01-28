@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Session;
 
 import com.krishagni.catissueplus.core.administrative.domain.Site;
@@ -413,29 +413,32 @@ public class RbacServiceImpl implements RbacService {
 			}
 			
 			User user = userDao.getById(subject.getId());
-			AccessCtrlMgr.getInstance().ensureUpdateUserRights(user);
-						
 			SubjectRole resp = null;
 			Map<String,Object> oldSrDetails = new HashMap<String, Object>();
 			SubjectRole sr = null;
 			switch (subjectRoleOp.getOp()) {
 				case ADD:
 					sr = createSubjectRole(subjectRoleOp.getSubjectRole());
+					AccessCtrlMgr.getInstance().ensureCreateUpdateUserRolesRights(user, sr.getSite());
 					resp = subject.addRole(sr);
 					break;
 				
 				case UPDATE:
 					SubjectRole oldSr = subject.getRole(subjectRoleOp.getSubjectRole().getId());
+					AccessCtrlMgr.getInstance().ensureCreateUpdateUserRolesRights(user, oldSr.getSite());
 					oldSrDetails.put("site", oldSr.getSite());
 					oldSrDetails.put("collectionProtocol", oldSr.getCollectionProtocol());
 					oldSrDetails.put("role", oldSr.getRole());
 					
 					sr = createSubjectRole(subjectRoleOp.getSubjectRole());
+					AccessCtrlMgr.getInstance().ensureCreateUpdateUserRolesRights(user, sr.getSite());
 					resp = subject.updateRole(sr);
 					break;
 				
 				case REMOVE:
-					resp = subject.removeSubjectRole(subjectRoleOp.getSubjectRole().getId());
+					SubjectRole role = subject.getRole(subjectRoleOp.getSubjectRole().getId());
+					AccessCtrlMgr.getInstance().ensureCreateUpdateUserRolesRights(user, role.getSite());
+					resp = subject.removeSubjectRole(role);
 					break;
 			}
 			
@@ -471,10 +474,10 @@ public class RbacServiceImpl implements RbacService {
 			throw OpenSpecimenException.userError(RbacErrorCode.SUBJECT_NOT_FOUND);
 		}
 		
-		AccessCtrlMgr.getInstance().ensureUpdateUserRights(user);
 		ArrayList<SubjectRole> subjectRoles = new ArrayList<SubjectRole>();
 		for (String role : roleNames) {
 			SubjectRole sr = createSubjectRole(site, cp, role, systemRole);
+			AccessCtrlMgr.getInstance().ensureCreateUpdateUserRolesRights(user, sr.getSite());
 			SubjectRole resp = null;
 			switch (op) {
 				case ADD:
@@ -593,12 +596,12 @@ public class RbacServiceImpl implements RbacService {
 				return ResponseEvent.userError(RbacErrorCode.SUBJECT_NOT_FOUND);
 			}
 			
-			AccessCtrlMgr.getInstance().ensureUpdateUserRights(user);
 			Subject subject = daoFactory.getSubjectDao().getById(user.getId());
 			subject.removeAllSubjectRoles();
 			
 			for (SubjectRolesList.Role srd : rolesList.getRoles()) {
 				SubjectRole sr = createSubjectRole(srd);
+				AccessCtrlMgr.getInstance().ensureCreateUpdateUserRolesRights(user, sr.getSite());
 				subject.addRole(sr);
 			}
 			

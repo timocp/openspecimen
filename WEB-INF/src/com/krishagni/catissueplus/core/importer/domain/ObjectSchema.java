@@ -2,6 +2,7 @@ package com.krishagni.catissueplus.core.importer.domain;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -29,10 +30,14 @@ public class ObjectSchema {
 		this.record = record;
 	}
 	
-	public Record getExtensionRecord() {
-		for (Record rec: record.getSubRecords()) {
-			if (rec.getType() != null && rec.getType().equals("extensions")) {
-				return rec;
+	public List<Record> getExtensionRecord() {
+		return getExtensionRecord(record);
+	}
+	
+	public String getKeyColumnName() {
+		for (Field field : record.getFields()) {
+			if (field.isKey()) {
+				return field.getCaption();
 			}
 		}
 		
@@ -63,6 +68,19 @@ public class ObjectSchema {
 		xstream.addImplicitCollection(Record.class, "fields", "field", Field.class);
 		
 		return xstream;
+	}
+	
+	private List<Record> getExtensionRecord(Record record) {
+		List<Record> extnRecords = new ArrayList<Record>();
+		for (Record subRecord : record.getSubRecords()) {
+			if (subRecord.getType() != null && subRecord.getType().equals("extensions")) {
+				extnRecords.add(subRecord);
+			}
+			
+			extnRecords.addAll(getExtensionRecord(subRecord));
+		}
+		
+		return extnRecords;
 	}
 
 	public static class Record {
@@ -156,6 +174,8 @@ public class ObjectSchema {
 		private String type;
 		
 		private boolean multiple;
+		
+		private boolean key;
 
 		public String getCaption() {
 			return caption;
@@ -187,6 +207,14 @@ public class ObjectSchema {
 
 		public void setMultiple(boolean multiple) {
 			this.multiple = multiple;
-		}		
+		}
+
+		public boolean isKey() {
+			return key;
+		}
+
+		public void setKey(boolean key) {
+			this.key = key;
+		}
 	}
 }

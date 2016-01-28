@@ -5,9 +5,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
@@ -18,10 +20,15 @@ import com.krishagni.catissueplus.core.biospecimen.domain.factory.SrErrorCode;
 import com.krishagni.catissueplus.core.common.errors.OpenSpecimenException;
 import com.krishagni.catissueplus.core.common.util.NumUtil;
 import com.krishagni.catissueplus.core.common.util.Status;
+import com.krishagni.catissueplus.core.common.util.Utility;
 
 @Audited
-public class SpecimenRequirement implements Comparable<SpecimenRequirement>{
-	private Long id;
+public class SpecimenRequirement extends BaseEntity implements Comparable<SpecimenRequirement> {
+	public enum LabelAutoPrintMode {
+		PRE_PRINT,
+		ON_COLLECTION,
+		NONE;
+	}
 	
 	private String name;
 	
@@ -57,23 +64,21 @@ public class SpecimenRequirement implements Comparable<SpecimenRequirement>{
 
 	private String labelFormat;
 	
+	private LabelAutoPrintMode labelAutoPrintMode = LabelAutoPrintMode.NONE;
+	
 	private Integer sortOrder;
 
 	private String activityStatus;
 			
 	private SpecimenRequirement parentSpecimenRequirement;
 	
-	private Set<SpecimenRequirement> childSpecimenRequirements = new HashSet<SpecimenRequirement>();
+	private Set<SpecimenRequirement> childSpecimenRequirements = new LinkedHashSet<SpecimenRequirement>();
+
+	private SpecimenRequirement pooledSpecimenRequirement;
+
+	private Set<SpecimenRequirement> specimenPoolReqs = new LinkedHashSet<SpecimenRequirement>();
 
 	private Set<Specimen> specimens = new HashSet<Specimen>();
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
 
 	public String getName() {
 		return name;
@@ -215,6 +220,14 @@ public class SpecimenRequirement implements Comparable<SpecimenRequirement>{
 	public void setLabelFormat(String labelFormat) {
 		this.labelFormat = labelFormat;
 	}
+	
+	public LabelAutoPrintMode getLabelAutoPrintMode() {
+		return labelAutoPrintMode != null ? labelAutoPrintMode : LabelAutoPrintMode.NONE; 
+	}
+
+	public void setLabelAutoPrintMode(LabelAutoPrintMode labelAutoPrintMode) {
+		this.labelAutoPrintMode = labelAutoPrintMode;
+	}
 
 	public Integer getSortOrder() {
 		return sortOrder;
@@ -257,6 +270,30 @@ public class SpecimenRequirement implements Comparable<SpecimenRequirement>{
 	}
 
 	@NotAudited
+	public SpecimenRequirement getPooledSpecimenRequirement() {
+		return pooledSpecimenRequirement;
+	}
+
+	public void setPooledSpecimenRequirement(SpecimenRequirement pooledSpecimenRequirement) {
+		this.pooledSpecimenRequirement = pooledSpecimenRequirement;
+	}
+
+	@NotAudited
+	public Set<SpecimenRequirement> getSpecimenPoolReqs() {
+		return specimenPoolReqs;
+	}
+
+	public void setSpecimenPoolReqs(Set<SpecimenRequirement> specimenPoolReqs) {
+		this.specimenPoolReqs = specimenPoolReqs;
+	}
+
+	public List<SpecimenRequirement> getOrderedSpecimenPoolReqs() {
+		List<SpecimenRequirement> pool = new ArrayList<SpecimenRequirement>(getSpecimenPoolReqs());
+		Collections.sort(pool);
+		return pool;
+	}
+
+	@NotAudited
 	public Set<Specimen> getSpecimens() {
 		return specimens;
 	}
@@ -277,8 +314,16 @@ public class SpecimenRequirement implements Comparable<SpecimenRequirement>{
 		return getLineage().equals(Specimen.DERIVED);
 	}
 	
+	public boolean isPooledSpecimenReq() {
+		return CollectionUtils.isNotEmpty(getSpecimenPoolReqs());
+	}
+
+	public boolean isSpecimenPoolReq() {
+		return getPooledSpecimenRequirement() != null;
+	}
+
 	public void update(SpecimenRequirement sr) {
-		if (!isAliquot() && !isDerivative()) {
+		if (isPrimary() && !isSpecimenPoolReq()) {
 			updateRequirementAttrs(sr);
 		}
 
@@ -294,9 +339,10 @@ public class SpecimenRequirement implements Comparable<SpecimenRequirement>{
 		setInitialQuantity(sr.getInitialQuantity());
 		setStorageType(sr.getStorageType());
 		setLabelFormat(sr.getLabelFormat());
-		
-		if (!isAliquot()) {
-			update(sr.getConcentration(), sr.getSpecimenClass(), sr.getSpecimenType());
+		setLabelAutoPrintMode(sr.getLabelAutoPrintMode());
+
+		if (!isAliquot() && !isSpecimenPoolReq()) {
+			update(sr.getConcentration(), sr.getSpecimenClass(), sr.getSpecimenType(), sr.getPathologyStatus());
 		}
 
 		if (NumUtil.lessThanZero(getQtyAfterAliquotsUse())) {
@@ -324,8 +370,8 @@ public class SpecimenRequirement implements Comparable<SpecimenRequirement>{
 				throw OpenSpecimenException.userError(SrErrorCode.INSUFFICIENT_QTY);
 			}
 		}
-				
-		return deepCopy(cpe, getParentSpecimenRequirement());
+		
+		return deepCopy(cpe, getParentSpecimenRequirement(), getPooledSpecimenRequirement());
 	}
 		
 	public void addChildRequirement(SpecimenRequirement childReq) {
@@ -339,6 +385,17 @@ public class SpecimenRequirement implements Comparable<SpecimenRequirement>{
 		}
 	}
 	
+	public void addSpecimenPoolReq(SpecimenRequirement spmnPoolReq) {
+		spmnPoolReq.setPooledSpecimenRequirement(this);
+		getSpecimenPoolReqs().add(spmnPoolReq);
+	}
+
+	public void addSpecimenPoolReqs(Collection<SpecimenRequirement> spmnPoolReqs) {
+		for (SpecimenRequirement req : spmnPoolReqs) {
+			addSpecimenPoolReq(req);
+		}
+	}
+
 	public BigDecimal getQtyAfterAliquotsUse() {
 		BigDecimal available = getInitialQuantity();
 		for (SpecimenRequirement childReq : getChildSpecimenRequirements()) {
@@ -381,10 +438,16 @@ public class SpecimenRequirement implements Comparable<SpecimenRequirement>{
 	}
 	
 	public void delete() {
-		this.activityStatus = Status.ACTIVITY_STATUS_DISABLED.getStatus();
 		for (SpecimenRequirement childReq : getChildSpecimenRequirements()) {
 			childReq.delete();
 		}
+		
+		for (SpecimenRequirement poolReq : getSpecimenPoolReqs()) {
+			poolReq.delete();
+		}
+
+		setCode(Utility.getDisabledValue(getCode(), 32));
+		setActivityStatus(Status.ACTIVITY_STATUS_DISABLED.getStatus());
 	}
 		
 	@Override
@@ -406,27 +469,57 @@ public class SpecimenRequirement implements Comparable<SpecimenRequirement>{
 		}
 	}
 
-	private SpecimenRequirement deepCopy(CollectionProtocolEvent cpe, SpecimenRequirement parent) {
+	private SpecimenRequirement deepCopy(CollectionProtocolEvent cpe, SpecimenRequirement parent, SpecimenRequirement pooledReq) {
 		SpecimenRequirement result = copy();
 		result.setCollectionProtocolEvent(cpe);
 		result.setParentSpecimenRequirement(parent);
+		result.setPooledSpecimenRequirement(pooledReq);
 		
-		Set<SpecimenRequirement> childSrs = new HashSet<SpecimenRequirement>();
+		if (isSafeToCopyCode(cpe)) {
+			result.setCode(getCode());
+		}
+
+		Set<SpecimenRequirement> childSrs = new LinkedHashSet<SpecimenRequirement>();
 		int order = 1;
 		for (SpecimenRequirement childSr : getOrderedChildRequirements()) {
-			SpecimenRequirement copiedSr = childSr.deepCopy(cpe, result);
+			SpecimenRequirement copiedSr = childSr.deepCopy(cpe, result, null);
 			copiedSr.setSortOrder(order++);
 			childSrs.add(copiedSr);
 		}
 		
 		result.setChildSpecimenRequirements(childSrs);
+
+		if (!Specimen.NEW.equals(getLineage())) {
+			return result;
+		}
+
+		order = 1;
+		Set<SpecimenRequirement> specimenPoolReqs = new LinkedHashSet<SpecimenRequirement>();
+		for (SpecimenRequirement specimenPoolReq : getSpecimenPoolReqs()) {
+			SpecimenRequirement copiedSr = specimenPoolReq.deepCopy(cpe, null, result);			
+			copiedSr.setSortOrder(order++);
+			specimenPoolReqs.add(copiedSr);
+		}
+
+		result.setSpecimenPoolReqs(specimenPoolReqs);
 		return result;
 	}
 	
+	private boolean isSafeToCopyCode(CollectionProtocolEvent cpe) {
+		if (StringUtils.isBlank(getCode())) {
+			return false;
+		}
+
+		if (cpe.equals(getCollectionProtocolEvent())) {
+			return false;
+		}
+
+		return cpe.getSrByCode(getCode()) == null;
+	}
+
 	private void updateRequirementAttrs(SpecimenRequirement sr) {
 		setAnatomicSite(sr.getAnatomicSite());
 		setLaterality(sr.getLaterality());
-		setPathologyStatus(sr.getPathologyStatus());
 		setCollector(sr.getCollector());
 		setCollectionContainer(sr.getCollectionContainer());
 		setCollectionProcedure(sr.getCollectionProcedure());
@@ -434,17 +527,28 @@ public class SpecimenRequirement implements Comparable<SpecimenRequirement>{
 		
 		for (SpecimenRequirement childSr : getChildSpecimenRequirements()) {
 			childSr.updateRequirementAttrs(sr);
-		}		
+		}
+		
+		for (SpecimenRequirement poolSr : getSpecimenPoolReqs()) {
+			poolSr.updateRequirementAttrs(sr);
+			poolSr.setStorageType(sr.getStorageType());
+			poolSr.setLabelFormat(sr.getLabelFormat());
+		}
 	}
 	
-	private void update(BigDecimal concentration, String specimenClass, String specimenType) {
+	private void update(BigDecimal concentration, String specimenClass, String specimenType, String pathologyStatus) {
 		setConcentration(concentration);
 		setSpecimenClass(specimenClass);
 		setSpecimenType(specimenType);
+		setPathologyStatus(pathologyStatus);
 		for (SpecimenRequirement childSr : getChildSpecimenRequirements()) {
 			if (childSr.isAliquot()) {
-				childSr.update(concentration, specimenClass, specimenType);
+				childSr.update(concentration, specimenClass, specimenType, pathologyStatus);
 			}
+		}
+		
+		for (SpecimenRequirement poolSr : getSpecimenPoolReqs()) {
+			poolSr.update(concentration, specimenClass, specimenType, pathologyStatus);
 		}
 	}
 
@@ -454,6 +558,8 @@ public class SpecimenRequirement implements Comparable<SpecimenRequirement>{
 		"code",
 		"parentSpecimenRequirement",
 		"childSpecimenRequirements",
+		"pooledSpecimenRequirement",
+		"specimenPoolReqs",
 		"specimens"		
 	};
 }

@@ -1,11 +1,14 @@
 
 package com.krishagni.catissueplus.core.biospecimen.domain;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.envers.AuditTable;
 import org.hibernate.envers.Audited;
@@ -16,8 +19,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import com.krishagni.catissueplus.core.administrative.domain.Site;
 import com.krishagni.catissueplus.core.administrative.domain.User;
+import com.krishagni.catissueplus.core.biospecimen.domain.CollectionProtocol.SpecimenLabelPrePrintMode;
+import com.krishagni.catissueplus.core.biospecimen.domain.SpecimenRequirement.LabelAutoPrintMode;
 import com.krishagni.catissueplus.core.biospecimen.domain.factory.SpecimenErrorCode;
 import com.krishagni.catissueplus.core.biospecimen.domain.factory.VisitErrorCode;
+import com.krishagni.catissueplus.core.biospecimen.repository.DaoFactory;
+import com.krishagni.catissueplus.core.biospecimen.services.SpecimenService;
 import com.krishagni.catissueplus.core.common.errors.OpenSpecimenException;
 import com.krishagni.catissueplus.core.common.events.DependentEntityDetail;
 import com.krishagni.catissueplus.core.common.service.LabelGenerator;
@@ -27,7 +34,7 @@ import com.krishagni.catissueplus.core.common.util.Utility;
 @Configurable
 @Audited
 @AuditTable(value="CAT_SPECIMEN_COLL_GROUP_AUD")
-public class Visit {
+public class Visit extends BaseExtensionEntity {
 	private static final String ENTITY_NAME = "visit";
 	
 	public static final String VISIT_STATUS_PENDING = "Pending";
@@ -35,8 +42,6 @@ public class Visit {
 	public static final String VISIT_STATUS_COMPLETED = "Complete";
 
 	public static final String VISIT_STATUS_MISSED = "Missed Collection";
-
-	private Long id;
 
 	private String name;
 	
@@ -78,18 +83,20 @@ public class Visit {
 	@Qualifier("visitNameGenerator")
 	private LabelGenerator labelGenerator;
 	
+	@Autowired
+	@Qualifier("specimenLabelGenerator")
+	private LabelGenerator specimenLabelGenerator;
+	
+	@Autowired
+	private SpecimenService specimenSvc;
+
+	@Autowired
+	private DaoFactory daoFactory;
+	
 	public static String getEntityName() {
 		return ENTITY_NAME;
 	}
 	
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
 	public String getName() {
 		return name;
 	}
@@ -201,12 +208,12 @@ public class Visit {
 	
 	public Set<Specimen> getTopLevelSpecimens() {
 		Set<Specimen> result = new HashSet<Specimen>();
-		if (specimens == null) {
-			return specimens;
+		if (getSpecimens() == null) {
+			return getSpecimens();
 		}
 		
-		for (Specimen specimen : specimens) {
-			if (specimen.getParentSpecimen() == null) {
+		for (Specimen specimen : getSpecimens()) {
+			if (specimen.getParentSpecimen() == null && specimen.getPooledSpecimen() == null) {
 				result.add(specimen);
 			}
 		}
@@ -304,7 +311,7 @@ public class Visit {
 		if (!isActive()) {
 			return;
 		}
-				
+		
 		setName(visit.getName());
 		setClinicalDiagnosis(visit.getClinicalDiagnosis());
 		setClinicalStatus(visit.getClinicalStatus());
@@ -318,6 +325,7 @@ public class Visit {
 		setSurgicalPathologyNumber(visit.getSurgicalPathologyNumber());
 		setVisitDate(visit.getVisitDate());
 		setCohort(visit.getCohort());
+		setExtension(visit.getExtension());
 	}
 
 	public void updateSprName(String sprName) {
@@ -362,29 +370,56 @@ public class Visit {
 	}
 	
 	public void updateSpecimenStatus(String status) {
-		for (Specimen specimen : getTopLevelSpecimens()) {
+		Set<Specimen> topLevelSpmns = getTopLevelSpecimens();
+		for (Specimen specimen : topLevelSpmns) {
 			specimen.updateCollectionStatus(status);
 		}
-		
+
 		if (Specimen.isMissed(status)) {
 			createMissedSpecimens();
+		} else if (Specimen.isPending(status)) {
+			for (Specimen specimen : topLevelSpmns) {
+				if (!specimen.isPooled()) {
+					continue;
+				}
+
+				for (Specimen poolSpmn : specimen.getSpecimensPool()) {
+					poolSpmn.updateCollectionStatus(status);
+				}
+			}
 		}
 	}
-	
+
 	public void createMissedSpecimens() {
 		Set<SpecimenRequirement> anticipated = getCpEvent().getTopLevelAnticipatedSpecimens();
 		for (Specimen specimen : getTopLevelSpecimens()) {
 			if (specimen.getSpecimenRequirement() != null) {
 				anticipated.remove(specimen.getSpecimenRequirement());
-			}			
+			}
+
+			addOrUpdateMissedPoolSpmns(specimen);
 		}
-		
+
 		for (SpecimenRequirement sr : anticipated) {
 			Specimen specimen = sr.getSpecimen();
 			specimen.setVisit(this);
 			specimen.updateCollectionStatus(Specimen.MISSED_COLLECTION);
 			addSpecimen(specimen);
-		}		
+			addOrUpdateMissedPoolSpmns(specimen);
+		}
+	}
+
+	public void createPendingSpecimens() {
+		if (CollectionUtils.isNotEmpty(getSpecimens())) {
+			//
+			// We quit if there is at least one specimen object created for visit
+			//
+			return;
+		}
+
+		for (SpecimenRequirement sr : getCpEvent().getTopLevelAnticipatedSpecimens()) {
+			createPendingSpecimen(sr, null);
+		}
 	}
 	
 	public static boolean isCompleted(String status) {
@@ -397,8 +432,47 @@ public class Visit {
 	
 	public static boolean isMissed(String status) {
 		return Visit.VISIT_STATUS_MISSED.equals(status);
-	}	
+	}
+	
+	public boolean isPrePrintEnabled() {
+		return getCollectionProtocol().getSpmnLabelPrePrintMode() == SpecimenLabelPrePrintMode.ON_VISIT;
+	}
+	
+	public boolean shouldPrePrintLabels(String prevStatus) {
+		if (!isPrePrintEnabled()) {
+			return false;
+		}
 		
+		if (StringUtils.isBlank(prevStatus)) {
+			return !getStatus().equals(VISIT_STATUS_MISSED);
+		} else {
+			return prevStatus.equals(VISIT_STATUS_MISSED) && !getStatus().equals(VISIT_STATUS_MISSED);
+		}
+	}
+	
+	public void prePrintLabels(String prevStatus) {
+		if (!shouldPrePrintLabels(prevStatus)) {
+			return;
+		}
+
+		//
+		// As a first step we create all pending specimens with their labels set
+		//
+		createPendingSpecimens();
+
+		//
+		// Go through individual specimen that have pre print enabled
+		// and queue for printing their labels
+		//
+		List<Specimen> specimens = getSpecimensToPrint(getTopLevelSpecimens());
+		specimenSvc.getLabelPrinter().print(specimens, 1);
+	}
+		
+	@Override
+	public String getEntityType() {
+		return "VisitExtension";
+	}
+	
 	private void ensureNoActiveChildObjects() {
 		for (Specimen specimen : getSpecimens()) {
 			if (specimen.isActiveOrClosed() && specimen.isCollected()) {
@@ -416,5 +490,62 @@ public class Visit {
 		}
 		
 		return count;
+	}
+
+	private void addOrUpdateMissedPoolSpmns(Specimen specimen) {
+		if (!specimen.isPooled()) {
+			return;
+		}
+
+		SpecimenRequirement sr = specimen.getSpecimenRequirement();
+		Set<SpecimenRequirement> anticipated = new HashSet<SpecimenRequirement>(sr.getSpecimenPoolReqs());
+		for (Specimen poolSpecimen : specimen.getSpecimensPool()) {
+			poolSpecimen.updateCollectionStatus(Specimen.MISSED_COLLECTION);
+			anticipated.remove(poolSpecimen.getSpecimenRequirement());
+		}
+
+		for (SpecimenRequirement poolSpecimenReq : anticipated) {
+			Specimen poolSpecimen = poolSpecimenReq.getSpecimen();
+			poolSpecimen.setVisit(this);
+			specimen.addPoolSpecimen(poolSpecimen);
+			poolSpecimen.updateCollectionStatus(Specimen.MISSED_COLLECTION);
+		}
+	}
+
+	private Specimen createPendingSpecimen(SpecimenRequirement sr, Specimen parent) {
+		Specimen specimen = sr.getSpecimen();
+		specimen.setParentSpecimen(parent);
+		specimen.setCollectionStatus(Specimen.PENDING);
+		addSpecimen(specimen);
+		specimen.setLabelIfEmpty();
+
+		daoFactory.getSpecimenDao().saveOrUpdate(specimen);
+
+		for (SpecimenRequirement poolSr : sr.getOrderedSpecimenPoolReqs()) {
+			specimen.addPoolSpecimen(createPendingSpecimen(poolSr, null));
+		}
+
+		for (SpecimenRequirement childSr : sr.getOrderedChildRequirements()) {
+			specimen.addChildSpecimen(createPendingSpecimen(childSr, specimen));
+		}
+
+		return specimen;
+	}
+
+	private List<Specimen> getSpecimensToPrint(Collection<Specimen> specimens) {
+		List<Specimen> specimensToPrint = new ArrayList<Specimen>();
+		specimens = Specimen.sort(specimens);
+
+		for (Specimen specimen : specimens) {
+			if (specimen.getSpecimenRequirement().getLabelAutoPrintMode() == LabelAutoPrintMode.PRE_PRINT) {
+				specimensToPrint.add(specimen);
+			}
+
+
+			specimensToPrint.addAll(getSpecimensToPrint(specimen.getSpecimensPool()));
+			specimensToPrint.addAll(getSpecimensToPrint(specimen.getChildCollection()));
+		}
+		
+		return specimensToPrint;
 	}
 }

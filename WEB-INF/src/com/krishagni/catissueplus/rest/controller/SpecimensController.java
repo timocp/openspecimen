@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -25,6 +26,7 @@ import com.krishagni.catissueplus.core.audit.AuditService;
 import com.krishagni.catissueplus.core.audit.events.AuditDetail;
 import com.krishagni.catissueplus.core.audit.events.RequestAudit;
 import com.krishagni.catissueplus.core.biospecimen.domain.Specimen;
+import com.krishagni.catissueplus.core.administrative.services.ShipmentService;
 import com.krishagni.catissueplus.core.biospecimen.domain.factory.SpecimenErrorCode;
 import com.krishagni.catissueplus.core.biospecimen.events.SpecimenDeleteCriteria;
 import com.krishagni.catissueplus.core.biospecimen.events.SpecimenDetail;
@@ -69,6 +71,9 @@ public class SpecimensController {
 	@Autowired
 	private HttpServletRequest httpServletRequest;
 	
+	@Autowired
+	private ShipmentService shipmentService;
+	
 	@RequestMapping(method = RequestMethod.HEAD)
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody	
@@ -98,7 +103,13 @@ public class SpecimensController {
 			Long dpId,
 			
 			@RequestParam(value = "label", required = false)
-			List<String> labels) {
+			List<String> labels,
+			
+			@RequestParam(value = "sendSiteName", required = false)
+			String sendSiteName,
+			
+			@RequestParam(value = "recvSiteName", required = false)
+			String recvSiteName) {
 				
 		if (cprId != null) { // TODO: Move this to CPR controller
 			VisitSpecimensQueryCriteria crit = new VisitSpecimensQueryCriteria();
@@ -116,6 +127,12 @@ public class SpecimensController {
 				crit.setDpId(dpId);
 				crit.setLabels(labels);
 				resp = distributionService.getSpecimens(getRequest(crit));
+			} else if (StringUtils.isNotBlank(sendSiteName)) {
+				VisitSpecimensQueryCriteria crit = new VisitSpecimensQueryCriteria();
+				crit.setSendSiteName(sendSiteName);
+				crit.setRecvSiteName(recvSiteName);
+				crit.setLabels(labels);
+				resp = shipmentService.getSpecimens(getRequest(crit));
 			} else {
 				resp = specimenSvc.getSpecimens(getRequest(labels));
 			}
@@ -323,6 +340,29 @@ public class SpecimensController {
 		ResponseEvent<List<AuditDetail>> resp = auditSvc.getDetailedAudit(getRequest(req));
 		resp.throwErrorIfUnsuccessful();
 		return resp.getPayload();
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value="/extension-form")
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody
+	public FormCtxtSummary getForm(
+			@RequestParam(value = "lineage", required = false, defaultValue="New")
+			String lineage
+			) {
+		ListEntityFormsOp op = new ListEntityFormsOp();
+		if (lineage.equals("Aliquot")) {
+			op.setEntityType(EntityType.ALIQUOT_EXTN);
+		} else if (lineage.equals("Derived")) {
+			op.setEntityType(EntityType.DERIVATIVE_EXTN);
+		} else {
+			op.setEntityType(EntityType.SPECIMEN_EXTN);
+		}
+        
+		RequestEvent<ListEntityFormsOp> req = new RequestEvent<ListEntityFormsOp>(op);
+		ResponseEvent<List<FormCtxtSummary>> resp = formSvc.getEntityForms(req);
+		resp.throwErrorIfUnsuccessful();
+		
+		return CollectionUtils.isNotEmpty(resp.getPayload()) ? resp.getPayload().get(0) : null;
 	}
 	
 	private <T> RequestEvent<T> getRequest(T payload) {

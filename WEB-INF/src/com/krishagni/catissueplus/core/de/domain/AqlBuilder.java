@@ -168,14 +168,14 @@ public class AqlBuilder {
 				
 		StringBuilder filterExpr = new StringBuilder();
 		filterExpr.append(field).append(" ").append(filter.getOp().symbol()).append(" ");
-		if (filter.getOp() == Op.EXISTS || filter.getOp() == Op.NOT_EXISTS) {
+		if (filter.getOp().isUnary()) {
 			return filterExpr.toString();
 		}
 
 		Container form = null;
 		String ctrlName = null;
 		Control ctrl = null;
-		if (fieldParts[1].equals("extensions")) {
+		if (fieldParts[1].equals("extensions") || fieldParts[1].equals("customFields")) {
 			if (fieldParts.length < 4) {
 				return "";
 			}
@@ -228,7 +228,7 @@ public class AqlBuilder {
 	}
 	
 	private String getLhs(String temporalExpr) {
-		String[] parts = temporalExpr.split("[<=>!]");
+		String[] parts = temporalExpr.split("[<=>!]|\\sany\\s*$|\\sexists\\s*$|\\snot exists\\s*$|\\sbetween\\s");
 		return parts[0];
 	}
 	

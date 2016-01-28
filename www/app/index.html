@@ -53,12 +53,14 @@
     <link rel="stylesheet" href="styles/specimen-list.css">
     <link rel="stylesheet" href="styles/datepicker.css">
     <link rel="stylesheet" href="styles/quick-search.css">
+    <link rel="stylesheet" href="styles/tabs.css">
+    <link rel="stylesheet" href="styles/scrollbar.css">
 
     <!-- custom modules css -->
     <!-- link rel="stylesheet" href="styles/le/styles/le.css" -->
     <!-- endbuild -->
   </head>
-  <body ng-app="openspecimen">
+  <body> <!-- ng-app="openspecimen" -->
     <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
@@ -92,7 +94,6 @@
     <script src="bower_components/angular-translate/angular-translate.js"></script>
     <script src="bower_components/angular-translate-loader-partial/angular-translate-loader-partial.js"></script>
     <script src="bower_components/angular-cookies/angular-cookies.js"></script>
-    <script src="bower_components/angular-load/angular-load.js"></script>
     <!-- endbower -->
     <script src="external_components/blueimp-file-upload/js/jquery.fileupload.js"></script>
     <script src="external_components/blueimp-file-upload/js/jquery.iframe-transport.js"></script>
@@ -102,6 +103,7 @@
     <!-- endbuild -->
 
     <!-- build:js({.tmp,app}) scripts/scripts.js -->
+    <script src="init.js"></script>
     <script src="app.js"></script>
     <script src="modules/user/module.js"></script>
     <script src="modules/common/module.js"></script>
@@ -120,6 +122,7 @@
     <script src="modules/common/right-drawer.js"></script>
     <script src="modules/common/inline-edit.js"></script>
     <script src="modules/common/empty-filter.js"></script>
+    <script src="modules/common/bool-filter.js"></script>
     <script src="modules/common/file-upload.js"></script>
     <script src="modules/common/prefix-http.js"></script>
     <script src="modules/common/editable-items-list.js"></script>
@@ -155,6 +158,11 @@
     <script src="modules/common/unique-item.js"></script>
     <script src="modules/common/content-toggle.js"></script>
     <script src="modules/common/local-storage.js"></script>
+    <script src="modules/common/tabs.js"></script>
+    <script src="modules/common/row-click.js"></script>
+    <script src="modules/common/pv-dropdown.js"></script>
+    <script src="modules/common/number-converter.js"></script>
+    <script src="modules/common/box.js"></script>
 
     <!-- Search module -->
     <script src="modules/common/search/module.js"></script>
@@ -179,10 +187,13 @@
     <script src="modules/administrative/models/site.js"></script>
     <script src="modules/administrative/models/dp.js"></script>
     <script src="modules/administrative/models/order.js"></script>
+    <script src="modules/administrative/models/dpr.js"></script>
+    <script src="modules/administrative/models/shipment.js"></script>
     <script src="modules/administrative/models/container.js"></script>
     <script src="modules/administrative/models/setting.js"></script>
     <script src="modules/administrative/models/auth-domain.js"></script>
     <script src="modules/administrative/models/job.js"></script>
+    <script src="modules/administrative/models/support.js"></script>
 
     <!-- User module -->
     <script src="modules/user/login.js"></script>
@@ -218,12 +229,25 @@
     <script src="modules/administrative/dp/list.js"></script>
     <script src="modules/administrative/dp/addedit.js"></script>
     <script src="modules/administrative/dp/detail.js"></script>
+    <script src="modules/administrative/dp/history.js"></script>
+    
+    <!-- Distribution Order Requirement Module -->
+    <script src="modules/administrative/dp/requirement/module.js"></script>
+    <script src="modules/administrative/dp/requirement/list.js"></script>
+    <script src="modules/administrative/dp/requirement/addedit.js"></script>
 
     <!-- Distribution Order Module -->
     <script src="modules/administrative/order/module.js"></script>
     <script src="modules/administrative/order/list.js"></script>
     <script src="modules/administrative/order/addedit.js"></script>
     <script src="modules/administrative/order/detail.js"></script>
+
+    <!-- Shipping Order Module -->
+    <script src="modules/administrative/shipment/module.js"></script>
+    <script src="modules/administrative/shipment/list.js"></script>
+    <script src="modules/administrative/shipment/addedit.js"></script>
+    <script src="modules/administrative/shipment/detail.js"></script>
+    <script src="modules/administrative/shipment/receive.js"></script>
 
     <!-- Container Module -->
     <script src="modules/administrative/container/module.js"></script>
@@ -248,7 +272,14 @@
     <script src="modules/administrative/form/list.js"></script>
     <script src="modules/administrative/form/addedit.js"></script>
     <script src="modules/administrative/form/association.js"></script>
-
+    
+    <!-- Support Module -->
+    <script src="modules/administrative/support/feedback.js"></script>
+    
+    <!-- Settings Module -->
+    <script src="modules/administrative/settings/module.js"></script>
+    <script src="modules/administrative/settings/list.js"></script>
+    
     <!-- Biospecimen module -->
     <script src="modules/biospecimen/module.js"></script>
 
@@ -275,6 +306,7 @@
     <script src="modules/biospecimen/extensions/extension-overview.js"></script>
     <script src="modules/biospecimen/extensions/fancy/de-users.js"></script>
     <script src="modules/biospecimen/extensions/fancy/de-storage-containers.js"></script>
+    <script src="modules/biospecimen/extensions/fancy/de-sites.js"></script>
 
     <!-- CP module -->
     <script src="modules/biospecimen/cp/module.js"></script>
@@ -286,6 +318,7 @@
     <script src="modules/biospecimen/cp/events.js"></script>
     <script src="modules/biospecimen/cp/specimens.js"></script>
     <script src="modules/biospecimen/cp/config.js"></script>
+    <script src="modules/biospecimen/cp/catalog-settings.js"></script>
 
     <!-- Participant module -->
     <script src="modules/biospecimen/participant/module.js"></script>
@@ -296,7 +329,6 @@
     <script src="modules/biospecimen/participant/detail.js"></script>
     <script src="modules/biospecimen/participant/overview.js"></script>
     <script src="modules/biospecimen/participant/visits.js"></script>
-    <script src="modules/biospecimen/participant/add-visit.js"></script>
     <script src="modules/biospecimen/participant/specimen-tree.js"></script>
     <script src="modules/biospecimen/participant/collect-specimens.js"></script>
     <script src="modules/biospecimen/participant/consents.js"></script>
@@ -307,6 +339,8 @@
     <script src="modules/biospecimen/participant/visit/addedit.js"></script>
     <script src="modules/biospecimen/participant/visit/spr.js"></script>
     <script src="modules/biospecimen/participant/visit/detail.js"></script>
+    <script src="modules/biospecimen/participant/visit/search-service.js"></script>
+
 
     <!-- Specimen detail module -->
     <script src="modules/biospecimen/participant/specimen/module.js"></script>
@@ -314,6 +348,11 @@
     <script src="modules/biospecimen/participant/specimen/detail.js"></script>
     <script src="modules/biospecimen/participant/specimen/overview.js"></script>
     <script src="modules/biospecimen/participant/specimen/close.js"></script>
+    <script src="modules/biospecimen/participant/specimen/add-aliquots.js"></script>
+    <script src="modules/biospecimen/participant/specimen/add-derivative.js"></script>
+    <script src="modules/biospecimen/participant/specimen/util.js"></script>
+
+
 
     <!-- Specimen List module  -->
     <script src="modules/biospecimen/specimen-list/module.js"></script>
@@ -328,6 +367,7 @@
     <script src="modules/biospecimen/common/unique-specimen-label.js"></script>
     <script src="modules/biospecimen/common/specimen-unit.js"></script>
     <script src="modules/biospecimen/common/specimen-desc.js"></script>
+    <script src="modules/biospecimen/common/event-desc.js"></script>
 
     <!-- Query -->
     <script src="modules/query/module.js"></script>

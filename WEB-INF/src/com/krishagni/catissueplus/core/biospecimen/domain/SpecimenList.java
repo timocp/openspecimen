@@ -1,5 +1,6 @@
 package com.krishagni.catissueplus.core.biospecimen.domain;
 
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -8,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.krishagni.catissueplus.core.administrative.domain.User;
+import com.krishagni.catissueplus.core.common.util.Utility;
 
 public class SpecimenList {
 	private Long id;
@@ -15,6 +17,8 @@ public class SpecimenList {
 	private String name;
 	
 	private User owner;
+
+	private String description;
 	
 	private Set<User> sharedWith = new HashSet<User>();
 	
@@ -44,6 +48,14 @@ public class SpecimenList {
 
 	public void setOwner(User owner) {
 		this.owner = owner;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public Set<User> getSharedWith() {
@@ -87,16 +99,6 @@ public class SpecimenList {
 	public void removeSpecimens(List<Specimen> specimens) {
 		this.specimens.removeAll(specimens);
 	}
-	
-	public void removeSpecimensByLabel(List<String> labels) {
-		Iterator<Specimen> iterator = this.specimens.iterator();
-		while (iterator.hasNext()) {
-			Specimen specimen = iterator.next();
-			if (labels.contains(specimen.getLabel())) {
-				iterator.remove();
-			}
-		}		
-	}
 
 	public void addSharedUsers(List<User> users) {
 		sharedWith.addAll(users);
@@ -133,8 +135,14 @@ public class SpecimenList {
 	}	
 	
 	public void update(SpecimenList specimenList) {
-		this.setName(specimenList.getName());
-		this.setSpecimens(specimenList.getSpecimens());
-		this.updateSharedUsers(specimenList.getSharedWith());
+		setName(specimenList.getName());
+		setDescription(specimenList.getDescription());
+		setSpecimens(specimenList.getSpecimens());
+		updateSharedUsers(specimenList.getSharedWith());
+	}
+
+	public void delete() {
+		setName(Utility.getDisabledValue(getName(), 255));
+		setDeletedOn(Calendar.getInstance().getTime());
 	}
 }

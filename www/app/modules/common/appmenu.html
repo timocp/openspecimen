@@ -35,6 +35,11 @@
           </li>
         </ul>
       </li>
+      <li ng-if="global.appProps.feedback_enabled">
+        <a ng-controller="FeedbackCtrl" ng-click="openFeedbackForm()">
+          <span class="fa fa-bullhorn"></span>
+        </a>
+      </li>
     </ul>
   </div>
 
@@ -56,7 +61,7 @@
           <li show-if-admin>
             <a ui-sref="institute-list" translate="menu.institutes">Institutes</a>
           </li>
-          <li>
+          <li show-if-allowed="userCreateUpdateOpts">
             <a ui-sref="user-list" translate="menu.users">Users</a>
           </li>
           <li show-if-allowed="userCreateUpdateOpts">
@@ -83,11 +88,16 @@
           <li show-if-allowed="orderReadOpts">
             <a ui-sref="order-list" translate="menu.distribution_orders">Distribution Orders</a>
           </li>
+          <li show-if-allowed="shipmentReadOpts">
+            <a ui-sref="shipment-list" translate="menu.shipping_and_tracking">Shipping and Tracking</a>
+          </li>
 
           <li show-if-allowed="scheduledJobReadOpts">
             <a ui-sref="job-list" translate="menu.jobs">Jobs</a>
           </li>
-          <!-- li><a href="#" translate="menu.settings">Settings</a></li -->
+          <li show-if-admin>
+            <a ui-sref="settings-list" translate="menu.settings">Settings</a>
+          </li>
         </ul>
       </div>
       <div>

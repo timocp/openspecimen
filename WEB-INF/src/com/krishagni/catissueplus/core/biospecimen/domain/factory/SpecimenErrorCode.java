@@ -56,9 +56,13 @@ public enum SpecimenErrorCode implements ErrorCode {
 	
 	INVALID_ANATOMIC_SITE,
 	
+	ANATOMIC_SITE_NOT_SAME_AS_PARENT,
+	
 	LATERALITY_REQUIRED,
 	
 	INVALID_LATERALITY,
+	
+	LATERALITY_NOT_SAME_AS_PARENT,
 	
 	PATHOLOGY_STATUS_REQUIRED,	
 	
@@ -110,7 +114,11 @@ public enum SpecimenErrorCode implements ErrorCode {
 	
 	NO_PATH_STATUS_ABBR,
 	
-	NO_TYPE_ABBR;
+	NO_TYPE_ABBR,
+
+	NO_POOL_SPMN_COLLECTED,
+	
+	NO_POOLED_SPMN;
 
 	public String code() {
 		return "SPECIMEN_" + this.name();

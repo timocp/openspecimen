@@ -57,10 +57,16 @@ public enum SrErrorCode implements ErrorCode {
 	
 	CPE_REQUIRED,
 	
-	CANNOT_CHANGE_CLASS_OR_TYPE
+	CANNOT_CHANGE_CLASS_OR_TYPE,
 	
-	;
-
+	POOLED_SPMN_REQ,
+	
+	POOLED_SPMN_REQ_NOT_FOUND,
+	
+	INVALID_POOLED_SPMN,
+	
+	INVALID_LABEL_AUTO_PRINT_MODE;
+	
 	@Override
 	public String code() {
 		return "SR_" + this.name();

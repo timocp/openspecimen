@@ -1,8 +1,10 @@
 package com.krishagni.catissueplus.core.biospecimen.domain;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -14,6 +16,7 @@ import com.krishagni.catissueplus.core.administrative.domain.Site;
 import com.krishagni.catissueplus.core.biospecimen.domain.factory.SrErrorCode;
 import com.krishagni.catissueplus.core.common.errors.OpenSpecimenException;
 import com.krishagni.catissueplus.core.common.util.Status;
+import com.krishagni.catissueplus.core.common.util.Utility;
 
 @Audited
 public class CollectionProtocolEvent {
@@ -37,9 +40,11 @@ public class CollectionProtocolEvent {
 	
 	private String activityStatus;
 	
-	private Set<SpecimenRequirement> specimenRequirements = new HashSet<SpecimenRequirement>();
+	private Set<SpecimenRequirement> specimenRequirements = new LinkedHashSet<SpecimenRequirement>();
 
 	private Set<Visit> specimenCollectionGroups = new HashSet<Visit>();
+
+	private transient int offset = 0;
 
 	public static String getEntityName() {
 		return ENTITY_NAME;
@@ -128,13 +133,13 @@ public class CollectionProtocolEvent {
 	}
 	
 	public Set<SpecimenRequirement> getTopLevelAnticipatedSpecimens() {
-		Set<SpecimenRequirement> anticipated = new HashSet<SpecimenRequirement>();
+		Set<SpecimenRequirement> anticipated = new LinkedHashSet<SpecimenRequirement>();
 		if (getSpecimenRequirements() == null) {
 			return anticipated;
 		}
 		
 		for (SpecimenRequirement sr : getSpecimenRequirements()) {
-			if (sr.getParentSpecimenRequirement() == null) {
+			if (sr.getParentSpecimenRequirement() == null && sr.getPooledSpecimenRequirement() == null) {
 				anticipated.add(sr);
 			}
 		}
@@ -150,7 +155,15 @@ public class CollectionProtocolEvent {
 	public void setSpecimenCollectionGroups(Set<Visit> specimenCollectionGroups) {
 		this.specimenCollectionGroups = specimenCollectionGroups;
 	}
-	
+
+	public int getOffset() {
+		return offset;
+	}
+
+	public void setOffset(int offset) {
+		this.offset = offset;
+	}
+
 	// updates all but specimen requirements
 	public void update(CollectionProtocolEvent other) { 
 		setEventPoint(other.getEventPoint());
@@ -164,10 +177,7 @@ public class CollectionProtocolEvent {
 	}
 	
 	public void addSpecimenRequirement(SpecimenRequirement sr) {
-		if (StringUtils.isNotBlank(sr.getCode()) && getSrByCode(sr.getCode()) != null) {
-			throw OpenSpecimenException.userError(SrErrorCode.DUP_CODE, sr.getCode());
-		}
-		
+		ensureUniqueSrCode(sr);
 		getSpecimenRequirements().add(sr);
 		sr.setCollectionProtocolEvent(this);
 	}
@@ -195,11 +205,39 @@ public class CollectionProtocolEvent {
 	}
 	
 	public void delete() {
-		this.activityStatus = Status.ACTIVITY_STATUS_DISABLED.getStatus();
 		for (SpecimenRequirement sr : getSpecimenRequirements()) {
-			if (sr.getParentSpecimenRequirement() == null) {
+			if (sr.isPrimary() && !sr.isSpecimenPoolReq()) {
 				sr.delete();
 			}
+		}
+
+		setEventLabel(Utility.getDisabledValue(getEventLabel(), 255));
+		setCode(Utility.getDisabledValue(getCode(), 32));
+		setActivityStatus(Status.ACTIVITY_STATUS_DISABLED.getStatus());
+	}
+
+	public void ensureUniqueSrCode(SpecimenRequirement sr) {
+		if (StringUtils.isNotBlank(sr.getCode()) && getSrByCode(sr.getCode()) != null) {
+			throw OpenSpecimenException.userError(SrErrorCode.DUP_CODE, sr.getCode());
+		}
+
+		if (sr.isPooledSpecimenReq()) {
+			ensureUniqueSrCodes(sr.getSpecimenPoolReqs());
+		}
+	}
+
+	public void ensureUniqueSrCodes(Collection<SpecimenRequirement> srs) {
+		Set<String> codes = new HashSet<String>();
+		for (SpecimenRequirement sr : srs) {
+			if (StringUtils.isBlank(sr.getCode())) {
+				continue;
+			}
+
+			if (codes.contains(sr.getCode()) || getSrByCode(sr.getCode()) != null) {
+				throw OpenSpecimenException.userError(SrErrorCode.DUP_CODE, sr.getCode());
+			}
+
+			codes.add(sr.getCode());
 		}
 	}
 }

@@ -50,9 +50,12 @@ import com.krishagni.catissueplus.core.common.events.Operation;
 import com.krishagni.catissueplus.core.common.events.RequestEvent;
 import com.krishagni.catissueplus.core.common.events.Resource;
 import com.krishagni.catissueplus.core.common.events.ResponseEvent;
+import com.krishagni.catissueplus.core.de.events.CpCatalogSettingDetail;
 import com.krishagni.catissueplus.core.de.events.FormCtxtSummary;
 import com.krishagni.catissueplus.core.de.events.ListEntityFormsOp;
 import com.krishagni.catissueplus.core.de.events.ListEntityFormsOp.EntityType;
+import com.krishagni.catissueplus.core.de.events.SavedQuerySummary;
+import com.krishagni.catissueplus.core.de.services.CatalogService;
 import com.krishagni.catissueplus.core.de.services.FormService;
 
 import edu.common.dynamicextensions.nutility.IoUtil;
@@ -66,6 +69,9 @@ public class CollectionProtocolsController {
 	
 	@Autowired
 	private FormService formSvc;
+
+	@Autowired
+	private CatalogService catalogSvc;
 
 	@Autowired
 	private HttpServletRequest httpServletRequest;
@@ -94,9 +100,6 @@ public class CollectionProtocolsController {
 			
 			@RequestParam(value = "maxResults", required = false, defaultValue = "100") 
 			int maxResults,
-			
-			@RequestParam(value = "chkPrivilege", required = false, defaultValue = "true")  
-			boolean chkPrivlege,
 			
 			@RequestParam(value = "detailedList", required = false, defaultValue = "false") 
 			boolean detailedList) {
@@ -312,7 +315,69 @@ public class CollectionProtocolsController {
 		resp.throwErrorIfUnsuccessful();
 		return resp.getPayload();
 	}
-	
+
+	//
+	// Catalog settings
+	//
+	@RequestMapping(method = RequestMethod.GET, value="/{id}/catalog-query")
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody
+	public SavedQuerySummary getCatalogQuery(@PathVariable("id") Long cpId) {
+		CollectionProtocolSummary cp = new CollectionProtocolSummary();
+		cp.setId(cpId);
+
+		RequestEvent<CollectionProtocolSummary> req = new RequestEvent<CollectionProtocolSummary>(cp);
+		ResponseEvent<SavedQuerySummary> resp = catalogSvc.getCpCatalogQuery(req);
+		resp.throwErrorIfUnsuccessful();
+		return resp.getPayload();
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value="/{id}/catalog-settings")
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody
+	public CpCatalogSettingDetail getCatalogSetting(@PathVariable("id") Long cpId) {
+		CollectionProtocolSummary cp = new CollectionProtocolSummary();
+		cp.setId(cpId);
+
+		RequestEvent<CollectionProtocolSummary> req = new RequestEvent<CollectionProtocolSummary>(cp);
+		ResponseEvent<CpCatalogSettingDetail> resp = catalogSvc.getCpSetting(req);
+		resp.throwErrorIfUnsuccessful();
+		return resp.getPayload();
+	}
+
+	@RequestMapping(method = RequestMethod.PUT, value="/{id}/catalog-settings")
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody
+	public CpCatalogSettingDetail updateCatalogSetting(
+			@PathVariable("id")
+			Long cpId,
+
+			@RequestBody
+			CpCatalogSettingDetail detail) {
+
+		CollectionProtocolSummary cp = new CollectionProtocolSummary();
+		cp.setId(cpId);
+		detail.setCp(cp);
+
+		RequestEvent<CpCatalogSettingDetail> req = new RequestEvent<CpCatalogSettingDetail>(detail);
+		ResponseEvent<CpCatalogSettingDetail> resp = catalogSvc.saveCpSetting(req);
+		resp.throwErrorIfUnsuccessful();
+		return resp.getPayload();
+	}
+
+	@RequestMapping(method = RequestMethod.DELETE, value="/{id}/catalog-settings")
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody
+	public CpCatalogSettingDetail deleteCatalogSetting(@PathVariable("id") Long cpId) {
+		CollectionProtocolSummary cp = new CollectionProtocolSummary();
+		cp.setId(cpId);
+
+		RequestEvent<CollectionProtocolSummary> req = new RequestEvent<CollectionProtocolSummary>(cp);
+		ResponseEvent<CpCatalogSettingDetail> resp = catalogSvc.deleteCpSetting(req);
+		resp.throwErrorIfUnsuccessful();
+		return resp.getPayload();
+	}
+
 	//
 	// For UI work
 	//

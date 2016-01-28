@@ -7,7 +7,7 @@
 angular.module('openspecimen')
   .factory('PvManager', function($http, $q, $translate, ApiUrls, ApiUtil, Site, Util) {
     var url = ApiUrls.getBaseUrl() + 'permissible-values';
-    
+
     var anatomicSites = [
       'DIGESTIVE ORGANS',
       'SKIN',
@@ -67,13 +67,33 @@ angular.module('openspecimen')
       'Closed'
     ];
 
+    var qualityStatuses = [
+      'Acceptable',
+      'Unacceptable'
+    ];
+
+    var spmnLabelPrePrintModes = [
+      {name: 'ON_VISIT', displayKey:'cp.spmn_label_pre_print_modes.ON_VISIT'},
+      {name: 'NONE', displayKey:'cp.spmn_label_pre_print_modes.NONE'}
+    ];
+
+
+    var spmnLabelAutoPrintModes = [
+      {name: 'PRE_PRINT', displayKey:'srs.spmn_label_auto_print_modes.PRE_PRINT'},
+      {name: 'ON_COLLECTION', displayKey:'srs.spmn_label_auto_print_modes.ON_COLLECTION'},
+      {name: 'NONE', displayKey:'srs.spmn_label_auto_print_modes.NONE'}
+    ];
+
     var pvMap = {
       anatomicSite: anatomicSites,
       'storage-type': storageTypes,
       'visit-status': visitStatuses,
       'specimen-status': specimenStatuses,
       'container-position-labeling-schemes': positionLabelingSchemes,
-      'activity-status': activityStatuses
+      'activity-status': activityStatuses,
+      'quality-status': qualityStatuses,
+      'specimen-label-pre-print-modes': spmnLabelPrePrintModes,
+      'specimen-label-auto-print-modes': spmnLabelAutoPrintModes
     };
 
     var pvIdMap = {
@@ -114,14 +134,17 @@ angular.module('openspecimen')
 
     function loadPvs(attr, srchTerm, transformFn, incOnlyLeaf) {
       var pvId = pvIdMap[attr];
-      if (!pvId) {
+      if (!pvId && pvMap[attr]) {
         return _getPvs(attr);
+      } else if (!pvId) {
+        pvId = attr;
       }
 
       var params = {
         attribute: pvId,
         searchString: srchTerm,
-        includeOnlyLeafValue: incOnlyLeaf
+        includeOnlyLeafValue: incOnlyLeaf,
+        maxResults: 100
       };
 
       return $http.get(url, {params: params}).then(
@@ -134,7 +157,7 @@ angular.module('openspecimen')
     function loadPvsByParent(parentAttr, parentVal, incParentVal, transformFn) {
       var pvId = pvIdMap[parentAttr];
       if (!pvId) {
-        return [];
+        pvId = parentAttr;
       }
 
       var params = {
@@ -155,6 +178,9 @@ angular.module('openspecimen')
       var result = undefined;
       if (pvMap[attr]) {
         result = pvMap[attr];
+        if (hasI18nKey(result) && !isDisplayNameInitialized(result)) {
+          initDisplayNames(result);
+        }
       } else {
         result = [];
       }
@@ -162,6 +188,23 @@ angular.module('openspecimen')
       return deferred.promise;
     };
 
+    function hasI18nKey(pvs) {
+      return !!pvs[0].displayKey;
+    }
+
+    function isDisplayNameInitialized(pvs) {
+      return !!pvs[0].displayName;
+    }
+
+    function initDisplayNames(pvs) {
+      $translate('pvs.not_specified').then(
+        function() {
+          angular.forEach(pvs, function(pv) {
+            pv.displayName = $translate.instant(pv.displayKey);
+          });
+        }
+      );
+    }
 
     return {
       getPvs: function(attr, srchTerm, transformFn) {

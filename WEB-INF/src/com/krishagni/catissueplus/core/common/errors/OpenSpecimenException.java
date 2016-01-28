@@ -4,6 +4,12 @@ package com.krishagni.catissueplus.core.common.errors;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.exception.ConstraintViolationException;
+
+import com.krishagni.catissueplus.core.common.util.MessageUtil;
+
 public class OpenSpecimenException extends RuntimeException {
 	private static final long serialVersionUID = -1473557909717365251L;
 	
@@ -22,9 +28,19 @@ public class OpenSpecimenException extends RuntimeException {
 		this.errorType = type;
 	}
 	
-	public OpenSpecimenException(Throwable exception) {
+	public OpenSpecimenException(Throwable t) {
 		this.errorType = ErrorType.SYSTEM_ERROR;
-		this.exception = exception;
+		this.exception = t;
+
+		if (t instanceof ConstraintViolationException) {
+			ConstraintViolationException cve = (ConstraintViolationException)t;
+			String dbMsg = cve.getConstraintName();
+			if (StringUtils.isBlank(dbMsg)) {
+				dbMsg = cve.getSQLException().getMessage();
+			}
+
+			errors.add(new ParameterizedError(CommonErrorCode.CONSTRAINT_VIOLATION, dbMsg));
+		}
 	}
 	
 	public ErrorType getErrorType() {
@@ -71,6 +87,23 @@ public class OpenSpecimenException extends RuntimeException {
 		throw this;
 	}	
 	
+	public String getMessage() {
+		StringBuilder errorMsg = new StringBuilder();
+
+		if (CollectionUtils.isNotEmpty(errors)) {
+			for (ParameterizedError pe : errors) {
+				errorMsg.append(getMessage(pe)).append(", ");
+			}
+			errorMsg.delete(errorMsg.length() - 2, errorMsg.length());
+		} else if (exception != null) {
+			errorMsg.append(exception.getMessage());
+		} else {
+			errorMsg.append(MessageUtil.getInstance().getMessage("internal_error"));
+		}
+
+		return errorMsg.toString();
+	}
+
 	public static OpenSpecimenException userError(ErrorCode error, Object ... params) {		
 		return new OpenSpecimenException(ErrorType.USER_ERROR, error, params);
 	}
@@ -81,5 +114,9 @@ public class OpenSpecimenException extends RuntimeException {
 	
 	public static OpenSpecimenException serverError(Throwable e) {
 		return new OpenSpecimenException(e);
+	}
+
+	private String getMessage(ParameterizedError error) {
+		return MessageUtil.getInstance().getMessage(error.error().code().toLowerCase(), error.params());
 	}
 }

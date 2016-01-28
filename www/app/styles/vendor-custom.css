@@ -3,8 +3,10 @@
   white-space: normal!important;
 }
 
+.ui-select-bootstrap .form-control.ui-select-toggle,
 .ui-select-bootstrap .form-control.ui-select-match {
   height: auto!important;
+  min-height: 34px;
   white-space: normal!important;
 }
 
@@ -16,7 +18,10 @@
   color: #333;
   opacity: 0.6;
   font-size: 8px;
-  margin-top: 3px;
+  position: absolute;
+  margin-top: -7px;
+  right: 15px;
+  top: 50%;
 }
 
 .ui-select-bootstrap .ui-select-match .btn-link:hover {
@@ -95,6 +100,26 @@
   text-decoration: none;
 }
 
+.dropdown-menu-subgroup > li > span,
+.dropdown-menu > li > span {
+  display: block;
+  padding: 3px 20px;
+  clear: both;
+  font-weight: normal;
+  line-height: 1.42857143;
+  color: #333;
+  white-space: nowrap;
+}
+
+.dropdown-menu-form > li > div {
+  margin: 3px 20px;
+}
+
+.dropdown-menu-subgroup > li > span:hover,
+.dropdown-menu > li > span:hover {
+  background: #eaeaea;
+}
+
 body > .ui-select-bootstrap.open {
   z-index: 2000; 
 }
@@ -144,4 +169,8 @@ body > .ui-select-bootstrap.open {
 .os-offset-form-horizontal {
   margin-right: 15px;
   margin-left: 15px;
+}
+
+.form-horizontal .form-group .form-value {
+  padding-top: 7px;
 }

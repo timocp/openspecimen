@@ -23,7 +23,10 @@
  
       <li class="item" ng-if="!visit.id">
         <strong class="key key-sm" translate="visits.anticipated_visit_date">Anticipated Visit Date</strong>
-        <span class="value value-md">{{visit.anticipatedVisitDate | date: global.dateFmt}}</span>
+        <span class="value value-md" ng-switch on="visit.anticipatedVisitDate != null">
+          <span ng-switch-when="true">{{visit.anticipatedVisitDate | date: global.dateFmt}}</span>
+          <span ng-switch-default translate="visits.end_of_study">End of Study</span>
+        </span>
       </li>
  
       <li class="item">
@@ -56,6 +59,18 @@
         <span class="value value-md">{{visit.missedBy.firstName}} {{visit.missedBy.lastName}}</span>
       </li>
     </ul>
+
+    <div class="os-section os-line-section" ng-if="!!visit.comments">
+      <strong class="key key-sm">
+        <span translate="visits.comments">Comments</span>
+        <span>&nbsp;</span>
+      </strong>
+      <span class="value value-md">{{visit.comments}}</span>
+    </div>
+
+    <div ng-if="!!visit.extensionDetail">
+      <div os-extension-overview ext-object="visit.extensionDetail" show-column="2"></div>
+    </div>
 
     <os-specimen-tree cp="cp" cpr="cpr" visit="visit" specimens="specimens" allowed-ops="specimenAllowedOps" reload="reload()"></div>
   </div>

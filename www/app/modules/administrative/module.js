@@ -7,9 +7,11 @@ angular.module('os.administrative',
     'os.administrative.site',
     'os.administrative.dp',
     'os.administrative.order',
+    'os.administrative.shipment',
     'os.administrative.container',
     'os.administrative.role',
     'os.administrative.form',
-    'os.administrative.job'
+    'os.administrative.job',
+    'os.administrative.setting'
   ]
 );

@@ -1,6 +1,6 @@
 
 angular.module('openspecimen')
-  .factory('Util', function($rootScope, $timeout, $document) {
+  .factory('Util', function($rootScope, $timeout, $document, $q, QueryExecutor, Alerts) {
     var isoDateRe = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*))(?:Z|(\+|-)([\d|:]*))?$/;
     function clear(input) {
       input.splice(0, input.length);
@@ -175,8 +175,39 @@ angular.module('openspecimen')
         formCtxtId: parseInt(extnCtxt.formCtxtId),
         objectId: entity.id,
         showActionBtns: false,
+        showPanel: false, 
         labelAlignment: 'horizontal'
       };
+    }
+    
+    function downloadReport(entity, msgClass) {
+      var alert = Alerts.info(msgClass + '.report_gen_initiated', {}, false);
+      entity.generateReport().then(
+        function(result) {
+          Alerts.remove(alert);
+          if (result.completed) {
+            Alerts.info(msgClass + '.downloading_report');
+            QueryExecutor.downloadDataFile(result.dataFile, entity.name + '.csv');
+          } else if (result.dataFile) {
+            Alerts.info(msgClass + '.report_will_be_emailed');
+          }
+        },
+
+        function() {
+          Alerts.remove(alert);
+        }
+      );
+    }
+
+    function booleanPromise(condition) {
+      var deferred = $q.defer();
+      if (condition) {
+        deferred.resolve(true);
+      } else {
+        deferred.reject(false);
+      }
+      
+      return deferred.promise;
     }
 
     return {
@@ -198,6 +229,10 @@ angular.module('openspecimen')
 
       parseDate: parseDate,
 
-      getExtnOpts: getExtnOpts
+      getExtnOpts: getExtnOpts,
+      
+      downloadReport : downloadReport,
+
+      booleanPromise: booleanPromise
     };
   });

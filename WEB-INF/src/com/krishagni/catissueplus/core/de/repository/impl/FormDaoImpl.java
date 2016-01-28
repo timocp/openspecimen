@@ -2,6 +2,7 @@ package com.krishagni.catissueplus.core.de.repository.impl;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -252,6 +253,16 @@ public class FormDaoImpl extends AbstractDao<FormContextBean> implements FormDao
 	
 	@SuppressWarnings("unchecked")
 	@Override
+	public List<FormRecordEntryBean> getRecordEntries(Long formCtxtId, Long objectId) {
+		return sessionFactory.getCurrentSession()
+				.getNamedQuery(GET_RECORD_ENTRIES)
+				.setLong("formCtxtId", formCtxtId)
+				.setLong("objectId", objectId)
+				.list();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
 	public FormRecordEntryBean getRecordEntry(Long formCtxtId, Long objectId, Long recordId) {
 		List<Object[]> rows = sessionFactory.getCurrentSession()
 				.getNamedQuery(GET_RECORD_ENTRY)
@@ -349,8 +360,13 @@ public class FormDaoImpl extends AbstractDao<FormContextBean> implements FormDao
 	
 	@Override
 	public List<Long> getFormIds(Long cpId, String entityType) {
+		return getFormIds(cpId, Collections.singletonList(entityType));
+	}
+	
+	@Override
+	public List<Long> getFormIds(Long cpId, List<String> entityTypes) {
 		Query query = sessionFactory.getCurrentSession().getNamedQuery(GET_FORM_IDS);
-		query.setLong("cpId", cpId).setString("entityType", entityType);
+		query.setLong("cpId", cpId).setParameterList("entityTypes", entityTypes);
 		
 		List<Long> formIds = new ArrayList<Long>();
 		for (Object id : query.list()) {
@@ -660,6 +676,8 @@ public class FormDaoImpl extends AbstractDao<FormContextBean> implements FormDao
 	
 	private static final String GET_RECORD_ENTRY = RE_FQN + ".getRecordEntry";
 	
+	private static final String GET_RECORD_ENTRIES = RE_FQN + ".getRecordEntries";
+
 	private static final String GET_RECORD_ENTRY_BY_REC_ID = RE_FQN + ".getRecordEntryByRecId";
 	
 	private static final String GET_FORM_IDS = FQN + ".getFormIds";

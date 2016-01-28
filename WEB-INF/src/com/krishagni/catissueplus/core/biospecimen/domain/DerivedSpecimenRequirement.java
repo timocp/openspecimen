@@ -9,11 +9,15 @@ public class DerivedSpecimenRequirement {
 	
 	private String type;
 	
+	private String pathology;
+	
 	private BigDecimal quantity;
 	
 	private BigDecimal concentration;
 	
 	private String labelFmt;
+	
+	private String labelAutoPrintMode;
 	
 	private String name;
 	
@@ -44,6 +48,14 @@ public class DerivedSpecimenRequirement {
 	public void setType(String type) {
 		this.type = type;
 	}
+	
+	public String getPathology() {
+		return pathology;
+	}
+
+	public void setPathology(String pathology) {
+		this.pathology = pathology;
+	}
 
 	public BigDecimal getQuantity() {
 		return quantity;
@@ -67,6 +79,14 @@ public class DerivedSpecimenRequirement {
 
 	public void setLabelFmt(String labelFmt) {
 		this.labelFmt = labelFmt;
+	}
+	
+	public String getLabelAutoPrintMode() {
+		return labelAutoPrintMode;
+	}
+
+	public void setLabelAutoPrintMode(String labelAutoPrintMode) {
+		this.labelAutoPrintMode = labelAutoPrintMode;
 	}
 
 	public String getName() {

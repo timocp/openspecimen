@@ -17,7 +17,8 @@ angular.module('openspecimen')
           cpId: scope.cpId,
           specimenClass: scope.entity.specimenClass,
           specimenType: scope.entity.type,
-          storeSpecimensEnabled: true
+          storeSpecimensEnabled: true,
+          maxRecords: 10
         });
       } else {
         if (!scope.entity.siteName) {
@@ -27,7 +28,13 @@ angular.module('openspecimen')
         angular.extend(params, {site: scope.entity.siteName});
       }
 
-      return Container.query(params).then(
+      var q = scope.containerListCache[JSON.stringify(params)];
+      if (!q) {
+        q = Container.query(params);
+        scope.containerListCache[JSON.stringify(params)] = q;
+      }
+
+      return q.then(
         function(containers) {
           scope.containers = containers.map(
             function(container) { 
@@ -51,6 +58,7 @@ angular.module('openspecimen')
 
     function linker(scope, element, attrs) {
       var entity = scope.entity;
+      scope.containerListCache = scope.containerListCache || {};
 
       scope.onContainerChange = function() {
         entity.storageLocation = {name: entity.storageLocation.name};
@@ -101,7 +109,8 @@ angular.module('openspecimen')
 
       scope: {
         entity: '=',
-        cpId: '='
+        cpId: '=',
+        containerListCache: '=?'
       },
 
       compile: function(tElem, tAttrs) {
@@ -120,7 +129,15 @@ angular.module('openspecimen')
             button.attr('ng-if', tAttrs.editWhen);
           }
 
-          tElem.find('button').addClass('btn-xs');
+          //
+          // make button smaller in size
+          // ensure button is aligned with other text fields;
+          // 15 px is used to display labels for os-md-input fields
+          //
+          button.addClass('btn-xs');
+          if (!tAttrs.hasOwnProperty('hidePlaceholder')) {
+            button.css('margin-top', '15px');
+          }
         }
 
         if (tAttrs.hasOwnProperty('hidePlaceholder')) {

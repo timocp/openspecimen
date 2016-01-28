@@ -13,6 +13,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
@@ -22,6 +23,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 
 import au.com.bytecode.opencsv.CSVWriter;
 
@@ -137,8 +139,12 @@ public class Utility {
 		Calendar cal = Calendar.getInstance();
 		return -1 * cal.get(Calendar.ZONE_OFFSET);		
 	}
-	
+
 	public static void sendToClient(HttpServletResponse httpResp, String fileName, File file) {
+		sendToClient(httpResp, fileName, file, false);
+	}
+
+	public static void sendToClient(HttpServletResponse httpResp, String fileName, File file, boolean deleteOnSend) {
 		InputStream in = null;
 		try {
 			String fileType = getContentType(file);
@@ -151,6 +157,10 @@ public class Utility {
 			throw new RuntimeException("Error sending file", e);
 		} finally {
 			IOUtils.closeQuietly(in);
+
+			if (deleteOnSend && file != null) {
+				file.delete();
+			}
 		}
 	}
 	
@@ -239,5 +249,16 @@ public class Utility {
 		
 		return age;
 	}
-
+	
+	public static boolean isEmpty(Map<?, ?> map) {
+		return map == null || map.isEmpty();
+	}
+	
+	public static Date chopTime(Date date) {
+		if (date == null) {
+			return null;
+		}
+		
+		return DateUtils.truncate(date, Calendar.DATE);
+	}
 }

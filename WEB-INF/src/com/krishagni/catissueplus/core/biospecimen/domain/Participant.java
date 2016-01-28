@@ -213,7 +213,7 @@ public class Participant extends BaseExtensionEntity {
 		setEthnicity(participant.getEthnicity());
 		setBirthDate(participant.getBirthDate());
 		setDeathDate(participant.getDeathDate());
-		setExtension(participant.getExtension());	
+		setExtension(participant.getExtension());
 		CollectionUpdater.update(getRaces(), participant.getRaces());
 		updatePmis(participant);
 	}
@@ -234,7 +234,8 @@ public class Participant extends BaseExtensionEntity {
 		checkActiveDependents();
 
 		disableMrns();		
-		this.uid = Utility.getDisabledValue(this.uid, 50);
+		setUid(Utility.getDisabledValue(getUid(), 50));
+		setEmpi(Utility.getDisabledValue(getEmpi(), 50));
 		this.activityStatus = Status.ACTIVITY_STATUS_DISABLED.getStatus();
 	}
 

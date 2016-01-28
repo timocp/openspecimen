@@ -108,6 +108,14 @@
       </dropDown>
     </row>
     <row>
+      <userField>
+        <name>missedBy</name>
+        <udn>missedBy</udn>
+        <caption>#getMessage("visit_missed_by")</caption>
+        <column>MISSED_BY</column>
+      </userField>
+    </row>
+    <row>
       <dropDown>
         <name>clinicalDiagnosis</name>
         <udn>clinicalDiagnosis</udn>
@@ -203,6 +211,40 @@
             </row>
           </subForm>
         </row>
+        
+        <row>
+          <subForm>
+            <name>specimenShipments</name>
+            <udn>specimenShipments</udn>
+            <caption>#getMessage("specimen_shipment_items")</caption>
+            <table>OS_SHIPMENT_ITEMS</table>
+            <foreignKey>SPECIMEN_ID</foreignKey>
+            <parentKey>IDENTIFIER</parentKey>
+           
+            <row>
+              <subForm>
+                <name>shipment</name>
+                <udn>shipment</udn>
+                <caption>#getMessage("specimen_shipment_items_shipment")</caption>
+                <table>OS_SHIPMENTS</table>
+                <foreignKey>IDENTIFIER</foreignKey>
+                <parentKey>SHIPMENT_ID</parentKey>
+              </subForm>
+            </row>
+          </subForm>
+        </row>
+      </subForm>
+    </row>
+    <row>
+      <subForm>
+        <name>customFields</name>
+        <udn>customFields</udn>
+        <caption>#getMessage("visit_field_extensions")</caption>
+        <table>OS_VISIT_CUST_FIELD_EXTNS_VIEW</table>
+        <foreignKey>SCG_ID</foreignKey>
+        <parentKey>IDENTIFIER</parentKey>
+        <pathLink>true</pathLink>
+        <extnFkCol>RECORD_ID</extnFkCol>
       </subForm>
     </row>
     <row>

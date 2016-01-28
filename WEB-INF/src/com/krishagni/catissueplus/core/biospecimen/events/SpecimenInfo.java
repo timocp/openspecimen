@@ -1,10 +1,9 @@
 
 package com.krishagni.catissueplus.core.biospecimen.events;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -16,7 +15,10 @@ import com.krishagni.catissueplus.core.common.AttributeModifiedSupport;
 import com.krishagni.catissueplus.core.common.ListenAttributeChanges;
 
 @ListenAttributeChanges
-public class SpecimenInfo extends AttributeModifiedSupport implements Comparable<SpecimenInfo> {
+public class SpecimenInfo extends AttributeModifiedSupport implements Comparable<SpecimenInfo>, Serializable {
+	
+	private static final long serialVersionUID = -2766658206691562011L;
+
 	private Long id;
 
 	private Long cpId;
@@ -447,16 +449,4 @@ public class SpecimenInfo extends AttributeModifiedSupport implements Comparable
 		//
 		return 0;
 	}	
-		
-	public static void orderByLabels(final List<SpecimenInfo> list, final List<String> labels) {
-		Collections.sort(list, new Comparator<SpecimenInfo>() {
-			@Override
-			public int compare(SpecimenInfo o1, SpecimenInfo o2) {
-				// Don't think indexOf will have perf impact as long as input labels list is within 500 limit
-				int idx1 = labels.indexOf(o1.getLabel()); 
-				int idx2 = labels.indexOf(o2.getLabel());
-				return idx1 - idx2;
-			}			
-		});
-	}
 }
