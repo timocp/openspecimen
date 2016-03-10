@@ -10,14 +10,14 @@
       <os-assign-to-spmn-list on-add-to-list="addSpecimensToSpecimenList(list)">
       </os-assign-to-spmn-list>
 
-      <div dropdown class="os-inline-btn">
+      <div dropdown os-show-if-menu-items-present class="os-inline-btn">
         <button class="btn btn-default dropdown-toggle">
           <span translate="common.buttons.more">More</span>
           <span class="fa fa-caret-down"></span>
         </button>
         <ul class="dropdown-menu dropdown-menu-right">
-          <li ng-click="printSpecimenLabels()">
-            <a>
+          <li ng-if="!allowedOps || allowedOps.update">
+            <a ng-click="printSpecimenLabels()">
               <span class="fa fa-print"></span>
               <span translate="specimens.buttons.print"> Print </span>
             </a>
@@ -86,12 +86,13 @@
 
                     <span class="fa fa-circle"
                       ng-class="{
-                        'os-status-unplanned': specimen.status == 'Collected' && !specimen.reqId && !specimen.distributed,
+                        'os-status-unplanned': specimen.status == 'Collected' && !specimen.reqId && !specimen.distributionStatus,
                         'os-status-collected': specimen.status == 'Collected',
                         'os-status-pending': specimen.status == 'Pending' || !specimen.status,
                         'os-status-not-collected': specimen.status == 'Missed Collection',
-                        'os-status-closed': specimen.activityStatus == 'Closed' && !specimen.distributed,
-                        'os-status-distributed': !!specimen.distributed}">
+                        'os-status-closed': specimen.activityStatus == 'Closed' && !specimen.distributionStatus,
+                        'os-status-distributed': specimen.distributionStatus == 'Distributed',
+                        'os-status-returned': specimen.distributionStatus == 'Returned'}">
                     </span>
 
                     <a ui-sref="specimen-detail.overview(

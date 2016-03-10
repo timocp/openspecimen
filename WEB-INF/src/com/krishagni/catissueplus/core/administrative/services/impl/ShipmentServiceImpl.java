@@ -1,10 +1,10 @@
 package com.krishagni.catissueplus.core.administrative.services.impl;
 
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -15,8 +15,8 @@ import org.apache.commons.lang3.StringUtils;
 import com.krishagni.catissueplus.core.administrative.domain.Institute;
 import com.krishagni.catissueplus.core.administrative.domain.Shipment;
 import com.krishagni.catissueplus.core.administrative.domain.Shipment.Status;
-import com.krishagni.catissueplus.core.administrative.domain.User;
 import com.krishagni.catissueplus.core.administrative.domain.Site;
+import com.krishagni.catissueplus.core.administrative.domain.User;
 import com.krishagni.catissueplus.core.administrative.domain.factory.ShipmentErrorCode;
 import com.krishagni.catissueplus.core.administrative.domain.factory.ShipmentFactory;
 import com.krishagni.catissueplus.core.administrative.domain.factory.SiteErrorCode;
@@ -37,6 +37,7 @@ import com.krishagni.catissueplus.core.common.errors.OpenSpecimenException;
 import com.krishagni.catissueplus.core.common.events.RequestEvent;
 import com.krishagni.catissueplus.core.common.events.ResponseEvent;
 import com.krishagni.catissueplus.core.common.service.EmailService;
+import com.krishagni.catissueplus.core.common.service.ObjectStateParamsResolver;
 import com.krishagni.catissueplus.core.common.util.ConfigUtil;
 import com.krishagni.catissueplus.core.common.util.MessageUtil;
 import com.krishagni.catissueplus.core.common.util.Utility;
@@ -51,7 +52,7 @@ import com.krishagni.rbac.common.errors.RbacErrorCode;
 
 import edu.common.dynamicextensions.query.WideRowMode;
 
-public class ShipmentServiceImpl implements ShipmentService {
+public class ShipmentServiceImpl implements ShipmentService, ObjectStateParamsResolver {
 	private static final String SHIPMENT_SHIPPED_EMAIL_TMPL = "shipment_shipped";
 	
 	private static final String SHIPMENT_RECEIVED_EMAIL_TMPL = "shipment_received";
@@ -144,14 +145,15 @@ public class ShipmentServiceImpl implements ShipmentService {
 			ensureValidNotifyUsers(shipment, ose);
 			ose.checkAndThrow();
 			
-			//
-			//  Saved to obtain IDs to make shipment events
-			//
-			getShipmentDao().saveOrUpdate(shipment, true);
 			Status status = Status.fromName(detail.getStatus());
 			if (status == Status.SHIPPED) {
 				shipment.ship();
 			}
+			
+			//
+			//  Saved to obtain IDs to make shipment events
+			//
+			getShipmentDao().saveOrUpdate(shipment, true);
 			
 			sendEmailNotifications(shipment, null, detail.isSendMail());
 			return ResponseEvent.response(ShipmentDetail.from(shipment));
@@ -251,7 +253,22 @@ public class ShipmentServiceImpl implements ShipmentService {
 		
 		return new ResponseEvent<QueryDataExportResult>(exportShipmentReport(shipment, query));
 	}
-	
+
+	@Override
+	public String getObjectName() {
+		return "shipment";
+	}
+
+	@Override
+	@PlusTransactional
+	public Map<String, Object> resolve(String key, Object value) {
+		if (key.equals("id")) {
+			value = Long.valueOf(value.toString());
+		}
+
+		return daoFactory.getShipmentDao().getShipmentIds(key, value);
+	}
+
 	private List<Specimen> getValidSpecimens(List<String> specimenLabels, OpenSpecimenException ose) {
 		List<Pair<Long, Long>> siteCpPairs = AccessCtrlMgr.getInstance().getReadAccessSpecimenSiteCps();
 		if (siteCpPairs != null && siteCpPairs.isEmpty()) {
@@ -445,36 +462,39 @@ public class ShipmentServiceImpl implements ShipmentService {
 		return querySvc.exportQueryData(execReportOp, new QueryService.ExportProcessor() {
 			@Override
 			public void headers(OutputStream out) {
-				PrintWriter writer = new PrintWriter(out);
-				writeHeaderLine(writer, "shipment_name", shipment.getName());
-				writeHeaderLine(writer, "shipment_courier_name", shipment.getCourierName());
-				writeHeaderLine(writer, "shipment_tracking_number", shipment.getTrackingNumber());
-				writeHeaderLine(writer, "shipment_tracking_url", shipment.getTrackingUrl());
-				writeHeaderLine(writer, "shipment_sending_site", shipment.getSendingSite().getName());
-				writeHeaderLine(writer, "shipment_sender", shipment.getSender().formattedName());
-				writeHeaderLine(writer, "shipment_shipped_date", Utility.getDateString(shipment.getShippedDate()));
-				writeHeaderLine(writer, "shipment_sender_comments", shipment.getSenderComments());
-				writeHeaderLine(writer, "shipment_recv_site", shipment.getReceivingSite().getName());
+				@SuppressWarnings("serial")
+				Map<String, String> headers = new LinkedHashMap<String, String>() {{
+					put(getMessage("shipment_name"),            shipment.getName());
+					put(getMessage("shipment_courier_name"),    shipment.getCourierName());
+					put(getMessage("shipment_tracking_number"), shipment.getTrackingNumber());
+					put(getMessage("shipment_tracking_url"),    shipment.getTrackingUrl());
+					put(getMessage("shipment_sending_site"),    shipment.getSendingSite().getName());
+					put(getMessage("shipment_sender"),          shipment.getSender().formattedName());
+					put(getMessage("shipment_shipped_date"),    Utility.getDateString(shipment.getShippedDate()));
+					put(getMessage("shipment_sender_comments"), shipment.getSenderComments());
+					put(getMessage("shipment_recv_site"),       shipment.getReceivingSite().getName());
+					
+					if (shipment.getReceiver() != null) {
+						put(getMessage("shipment_receiver"), shipment.getReceiver().formattedName());
+					}
+					
+					if (shipment.getReceivedDate() != null) {
+						put(getMessage("shipment_received_date"), Utility.getDateString(shipment.getReceivedDate()));
+					}
+					
+					put(getMessage("shipment_receiver_comments"), shipment.getReceiverComments());
+					put(getMessage("shipment_status"),            shipment.getStatus().getName());
+
+					put("", ""); // blank line
+				}};
 				
-				if (shipment.getReceiver() != null) {
-					writeHeaderLine(writer, "shipment_receiver", shipment.getReceiver().formattedName());
-				}
-				
-				if (shipment.getReceivedDate() != null) {
-					writeHeaderLine(writer, "shipment_received_date",
-							Utility.getDateString(shipment.getReceivedDate()));
-				}
-				
-				writeHeaderLine(writer, "shipment_receiver_comments", shipment.getReceiverComments());
-				writeHeaderLine(writer, "shipment_status", shipment.getStatus().getName());
-				
-				writer.flush();
+				Utility.writeKeyValuesToCsv(out, headers);
 			}
 		});
 	}
 	
-	private void writeHeaderLine(PrintWriter writer, String msgCode, String value) {
-		writer.println(MessageUtil.getInstance().getMessage(msgCode) + ", " + (value == null ? "" : value));
+	private String getMessage(String code) {
+		return MessageUtil.getInstance().getMessage(code);
 	}
 	
 	private ShipmentDao getShipmentDao() {

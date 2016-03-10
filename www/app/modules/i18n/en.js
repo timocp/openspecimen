@@ -109,6 +109,8 @@
     "match": "This field does not match with above field",
     "dist_qty_gt_avail_qty": "Distribution quantity greater than available",
     "dist_qty_le_zero": "Distribution quantity cannot be less than or equals zero",
+    "ret_qty_gt_dist_qty": "Return quantity greater than distributed",
+    "ret_qty_le_zero": "Return quantity cannot be less than or equals zero",
     "nan": "Not a valid number",
     "dup_item": "Duplicate value"
   },
@@ -157,12 +159,18 @@
     "view_details": "View Details",
     "view_participants": "View Participants",
     "disable_pre_print_warning": "Turning off pre-printing at collection protocol level will turn it off for all specimen requirements too",
+    "print_settings": "Print Settings",
+    "lineage": "Lineage",
+    "when_to_print": "When to Print",
+    "copies": "Copies",
 
     "consents_waived": "Is participant consent waived?",
     "consents_waived_updated": "Participant consent {{waived ? 'waived' : 'enabled'}} successfully.",
     "unsigned_consent_url": "Unsigned Consent Form URL",
     "consent_tiers": "Consent Tiers", 
     "add_consent_tier": "Add Statement...",
+    "no_consents": "No consents to show",
+    "consents_are_waived": "Consents are waived",
 
     "default_site": "Default Site",
     "clinical_diagnosis": "Clinical Diagnosis",
@@ -194,6 +202,7 @@
     },
 
     "menu_options": {
+      "clone": "Clone",
       "delete": "Delete",
       "export": "Export"
     },
@@ -215,8 +224,10 @@
       "repository": "Repository",
       "select_repository": "Select Repository"
     },
+
     "label_formats" : "Label Formats",
     "anticipated_participant_count": "Expected Registrations",
+
     "label_format": {
       "specimen": "Specimen",
       "visit": "Visit",
@@ -235,6 +246,12 @@
     "spmn_label_pre_print_modes": {
       "ON_VISIT": "On Visit",
       "NONE": "None"
+    },
+
+     "spmn_lineages": {
+      "New": "Primary",
+      "Derived": "Derivative",
+      "Aliquot": "Aliquot"
     }
   },
 
@@ -251,7 +268,7 @@
     "last_name": "Last Name",
     "middle_name": "Middle Name",
     "birth_date": "Birth Date",
-    "uid": "National Identity Number",
+    "uid": "National ID",
     "uid_short": "NIN",
     "mpi": "Master Patient Index",
     "gender": "Gender",
@@ -299,9 +316,11 @@
 
     "bulk_reg_participants": "Bulk Register Participants",
     "bulk_update_participants": "Bulk Update Participants",
+    "bulk_import_master_specimens": "Bulk Import Master Specimens",
     "part_updates": "Participant Updates",
     "part_extensions": "Participant Forms",
     "registrations": "Participant Registrations",
+    "master_specimens": "Master Specimens",
     "registered_cps": "Registered Protocols",
     "other_cps": "Other Protocols",
     
@@ -545,6 +564,21 @@
       "created_on_lt_parent": "Created on time of specimen less than that of parent specimen",
       "created_on_gt_curr_time": "Created on time of specimen greater than current time",
       "aliquot_label_mismatch": "There is a mismatch in number of specified labels and aliquots"
+    },
+
+    "bulk_events": {
+      "title": "Bulk Events",
+      "create": "Create Bulk Event",
+      "add_event": "Add Event",
+      "select_specimens": "Select Specimens",
+      "add_event_details": "Add Event Details",
+      "select_event": "Select Event",
+      "no_specimens_in_list": "No specimens in list to add event. Add at least one specimen",
+      "enter_specimen_label": "To add specimens to list, enter labels separated by a comma, tab or newline and click add",
+      "details": "Event Details",
+      "copy_first_to_all": "Copy First To All",
+      "specimens_not_found_or_no_access": "One or more specimens could not be loaded either because they do not exists or you do not have sufficient rights to access them",
+      "events_saved": "Event saved successfully"
     }
   },
 
@@ -566,7 +600,8 @@
     "pathology": "Pathology",
     "storage_type": "Storage Type",
     "label_fmt": "Label Format",
-    "auto_print_label": "Auto Print Label",
+    "when_to_print": "When to Print",
+    "label_print_copies": "Label Print Copies",
     "available_qty": "Available Quantity",
     "aliquot_cnt": "Count of Aliquots",
     "qty_per_aliquot": "Quantity per Aliquot",
@@ -749,10 +784,12 @@
       "specimen_type": "Specimen Type",
       "anatomic_site": "Anatomic Site",
       "pathology_status": "Pathology Status",
+      "clinical_diagnosis": "Clinical Diagnosis",
       "specimens_dist": "Specimens Distributed",
       "specimen_cnt": "Specimen Count",
-      "target": "Target",
-      "distributed": "Distributed",
+      "target_qty": "Target Quantity",
+      "distributed_cnt": "Distributed Count",
+      "distributed_qty": "Distributed Quantity",
       "quantity_specimen": "Quantity Per Specimen",
       "comments": "Comments",
       "confirm_delete_req_title": "Deleting distribution requirement confirmation",
@@ -1020,8 +1057,8 @@
     "confirm_delete": "{{caption}} form will be deleted forever. Are you sure you want to proceed?",
     "confirm_delete_with_data": "You will lose data if you delete the {{caption}} form. Do you want to continue?",
     "form_deleted": "{{caption}} form deleted successfully",
-    "confirm_delete_association": "Are you sure you want to delete this form at <b>{{level.name}}</b> level from <b>{{!collectionProtocol.id ? 'All Protocols' : collectionProtocol.shortTitle}}</b>? \n Please note you will no longer be able to access data for this form",
-    "association_deleted": "Successfully deleted form at {{level.name}} level from {{!collectionProtocol.id ? 'All Protocols' : collectionProtocol.shortTitle}}",
+    "confirm_delete_association": "Are you sure you want to delete this form at <b>{{level.caption}}</b> level from <b>{{!collectionProtocol.id ? 'All Protocols' : collectionProtocol.shortTitle}}</b>? \n Please note you will no longer be able to access data for this form",
+    "association_deleted": "Successfully deleted form at {{level.caption}} level from {{!collectionProtocol.id ? 'All Protocols' : collectionProtocol.shortTitle}}",
 
     "tooltip": {
       "add": "Click to add new Form",
@@ -1029,6 +1066,10 @@
       "delete": "Click to delete Form",
       "search": "Click to search Form",
       "attach_form_to_cp": "Click to attach form to a Collection Protocol"
+    },
+
+    "filter": {
+      "title": "Filters"
     }
   },
 
@@ -1245,7 +1286,8 @@
 
     "catalogs": "Catalogs",
     "search_cp": "Search Collection Protocol",
-    "no_catalog": "No catalog configured for {{shortTitle}}"
+    "no_catalog": "No catalog configured for {{shortTitle}}",
+    "search_filter_value": "Search Filter Value"
   },
 
   "entities": {
@@ -1304,6 +1346,7 @@
       "specimen": "Specimens",
       "specimenAliquot": "Specimen Aliquots",
       "specimenDerivative": "Derived Specimens",
+      "masterSpecimen": "Master Specimens",
       "shipment": "Shipment"
     },
 
@@ -1329,11 +1372,13 @@
     "shared_lists": "Shared Carts",
     "info": "Information",
     "cart_info": "Cart Information",
-    "more_specimens": "One or more specimens in cart could not be displayed because you do not have enough rights to view them",
+    "more_specimens_no_rights": "One or more specimens in cart could not be displayed because you do not have enough rights to view them",
+    "more_specimens_limit_reached": "One or more specimens in cart could not be displayed because only 1000 specimens can be displayed at a time",
     "no_specimens": "There are no specimens to show in selected cart",
     "description": "Description",
     "cp": "Collection Protocol",
     "label": "Label",
+    "location": "Location",
     "quantity": "Quantity",
     "lineage": "Lineage",
     "remove_specimens": "Removing specimens from cart {{name}}",
@@ -1345,7 +1390,10 @@
     "no_specimens_for_deletion": "Please select at least one specimen for deletion",
     "no_specimens_for_distribution": "Please select at least one specimen to create distribution order",
     "no_specimens_for_shipment": "Please select at least one specimen to create shipment",
-    "created_by": "Created By"
+    "created_by": "Created By",
+    "add_event": "Add Event",
+    "location": "Storage Location",
+    "no_specimens_to_add_event": "Please select at least one specimen to add event"
   },
 
   "orders": {
@@ -1379,6 +1427,14 @@
     "report_will_be_emailed": "Generating distribution order report is taking more time than anticipated. Link to download report will be sent to you by email",
 
     "filters": "Filters",
+
+    "return_specimens": "Return Specimens",
+    "get_dist_details": "Get Details",
+    "paste_return_specimen_labels": "Paste or scan labels of specimens to be returned",
+    "specimens_returned": "{{count}} specimens returned successfully",
+    "return_qty": "Return Quantity",
+    "user": "User",
+    "comments": "Comments",
    
     "menu": {
       "overview": "Overview"
@@ -1401,13 +1457,16 @@
 
     "item_statuses": {
       "DISTRIBUTED": "Distribute",
-      "DISTRIBUTED_AND_CLOSED": "Distribute and Close"
+      "DISTRIBUTED_AND_CLOSED": "Distribute and Close",
+      "RETURNED": "Returned"
     },
 
     "buttons": {
       "distribute": "Distribute",
       "save_draft": "Save Draft",
-      "download_report": "Download Report"
+      "download_report": "Download Report",
+      "return_specimens": "Return Specimens",
+      "copy_first_to_all": "Copy First To All"
     },
 
     "tooltip": {
@@ -1586,6 +1645,14 @@
         "verify_token_ip_address": "IP Address Validation",
         "verify_token_ip_address_desc": "Check whether requests are made from the same IP address to which the login token was issued."
       },
+      
+      "administrative": {
+        "title": "Administrative",
+        "dp_expiry_rem_notif": "DP Expiry Reminder",
+        "dp_expiry_rem_notif_desc": "Number of days prior to distribution protocol expiry when email notification should be sent to the PI.",
+        "dp_expiry_rem_rept_inter": "Repeat DP Expiry Reminder",
+        "dp_expiry_rem_rept_inter_desc": "Number of days after which email notification should be repeated for distribution protocol expiry."
+      },
 
       "biospecimen": {
         "title": "Biospecimen",
@@ -1648,7 +1715,9 @@
         "welcome_video_url": "Welcome Video URL",
         "welcome_video_url_desc": "URL for welcome video",
         "shipment_export_report": "Shipment export report",
-        "shipment_export_report_desc": "Export Report format for all shipments"
+        "shipment_export_report_desc": "Export Report format for all shipments",
+        "field_separator": "Field Separator",
+        "field_separator_desc": "A single character that specifies how records in delimited text file should be split into fields. For example: CSV files use comma (,) as the field separator"
       },
 
       "email": {
@@ -1694,7 +1763,11 @@
         "email_users_signed_up": "User Signup Notification",
         "email_users_signed_up_desc": "Email notifications when a new user signs up.",
         "email_shipment_shipped": "Email notifications when specimens' shipment is shipped",
-        "email_shipment_received": "Email notifications when specimens' shipment is received"
+        "email_shipment_received": "Email notifications when specimens' shipment is received",
+        "email_cp_expiring_notification": "CP Expiry Notification",
+        "email_cp_expiring_notification_desc": "Email notifications for collection protocols expiry",
+        "email_dp_expiring_notification": "DP Expiry Notification",
+        "email_dp_expiring_notification_desc": "Email notifications for distribution protocols expiry"
       },
 
       "catalog": {

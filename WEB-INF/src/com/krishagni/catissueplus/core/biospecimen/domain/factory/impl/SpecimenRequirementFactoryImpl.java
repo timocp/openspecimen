@@ -1,12 +1,7 @@
 package com.krishagni.catissueplus.core.biospecimen.domain.factory.impl;
 
 import static com.krishagni.catissueplus.core.biospecimen.domain.factory.SrErrorCode.*;
-import static com.krishagni.catissueplus.core.common.PvAttributes.COLL_PROC;
-import static com.krishagni.catissueplus.core.common.PvAttributes.CONTAINER;
-import static com.krishagni.catissueplus.core.common.PvAttributes.PATH_STATUS;
-import static com.krishagni.catissueplus.core.common.PvAttributes.SPECIMEN_ANATOMIC_SITE;
-import static com.krishagni.catissueplus.core.common.PvAttributes.SPECIMEN_CLASS;
-import static com.krishagni.catissueplus.core.common.PvAttributes.SPECIMEN_LATERALITY;
+import static com.krishagni.catissueplus.core.common.PvAttributes.*;
 import static com.krishagni.catissueplus.core.common.service.PvValidator.isValid;
 
 import java.math.BigDecimal;
@@ -18,11 +13,11 @@ import org.apache.commons.lang.StringUtils;
 
 import com.krishagni.catissueplus.core.administrative.domain.User;
 import com.krishagni.catissueplus.core.biospecimen.domain.AliquotSpecimensRequirement;
+import com.krishagni.catissueplus.core.biospecimen.domain.CollectionProtocol.SpecimenLabelAutoPrintMode;
 import com.krishagni.catissueplus.core.biospecimen.domain.CollectionProtocolEvent;
 import com.krishagni.catissueplus.core.biospecimen.domain.DerivedSpecimenRequirement;
 import com.krishagni.catissueplus.core.biospecimen.domain.Specimen;
 import com.krishagni.catissueplus.core.biospecimen.domain.SpecimenRequirement;
-import com.krishagni.catissueplus.core.biospecimen.domain.SpecimenRequirement.LabelAutoPrintMode;
 import com.krishagni.catissueplus.core.biospecimen.domain.factory.CpeErrorCode;
 import com.krishagni.catissueplus.core.biospecimen.domain.factory.SpecimenRequirementFactory;
 import com.krishagni.catissueplus.core.biospecimen.domain.factory.SrErrorCode;
@@ -67,6 +62,7 @@ public class SpecimenRequirementFactoryImpl implements SpecimenRequirementFactor
 		requirement.setId(detail.getId());
 		requirement.setName(detail.getName());
 		requirement.setLineage(Specimen.NEW);
+		requirement.setLabelPrintCopies(detail.getLabelPrintCopies());
 		
 		setCode(detail, requirement, ose);
 		setLabelFormat(detail, requirement, ose);
@@ -97,14 +93,20 @@ public class SpecimenRequirementFactoryImpl implements SpecimenRequirementFactor
 	@Override
 	public SpecimenRequirement createDerived(DerivedSpecimenRequirement req) {
 		OpenSpecimenException ose = new OpenSpecimenException(ErrorType.USER_ERROR);
+		String cpShortTitle = req.getCpShortTitle();
+		String eventLabel = req.getEventLabel();
+		String srCode = req.getParentSrCode();
 		
-		Long parentId = req.getParentSrId();
-		if (parentId == null) {
+		SpecimenRequirement parent = null;
+		if (req.getParentSrId() != null) {
+			parent = daoFactory.getSpecimenRequirementDao().getById(req.getParentSrId());
+		} else if (StringUtils.isNotBlank(cpShortTitle) && StringUtils.isNotBlank(eventLabel) && StringUtils.isNotBlank(srCode)){
+			parent = daoFactory.getSpecimenRequirementDao().getByCpEventLabelAndSrCode(cpShortTitle, eventLabel, srCode);
+		} else {
 			ose.addError(PARENT_REQ_REQUIRED);
 			throw ose;
 		}
 		
-		SpecimenRequirement parent = daoFactory.getSpecimenRequirementDao().getById(parentId);
 		if (parent == null) {
 			ose.addError(SrErrorCode.PARENT_NOT_FOUND);
 			throw ose;
@@ -123,6 +125,7 @@ public class SpecimenRequirementFactoryImpl implements SpecimenRequirementFactor
 		setLabelAutoPrintMode(req.getLabelAutoPrintMode(), derived, ose);
 		setCode(req.getCode(), derived, ose);
 		derived.setName(req.getName());
+		derived.setLabelPrintCopies(req.getLabelPrintCopies());
 		
 		ose.checkAndThrow();
 		derived.setParentSpecimenRequirement(parent);
@@ -136,6 +139,7 @@ public class SpecimenRequirementFactoryImpl implements SpecimenRequirementFactor
 		OpenSpecimenException ose = new OpenSpecimenException(ErrorType.USER_ERROR);
 		sr.setName(req.getName());
 		sr.setSortOrder(req.getSortOrder());
+		sr.setLabelPrintCopies(req.getLabelPrintCopies());
 		
 		//
 		// Specimen class and type are set here so that properties dependent on these can
@@ -172,14 +176,20 @@ public class SpecimenRequirementFactoryImpl implements SpecimenRequirementFactor
 	@Override
 	public List<SpecimenRequirement> createAliquots(AliquotSpecimensRequirement req) {
 		OpenSpecimenException ose = new OpenSpecimenException(ErrorType.USER_ERROR);
+		String cpShortTitle = req.getCpShortTitle();
+		String eventLabel = req.getEventLabel();
+		String srCode = req.getParentSrCode();
 		
-		Long parentSrId = req.getParentSrId();
-		if (parentSrId == null) {
+		SpecimenRequirement parent = null;
+		if (req.getParentSrId() != null) {
+			parent = daoFactory.getSpecimenRequirementDao().getById(req.getParentSrId());
+		} else if (StringUtils.isNotBlank(cpShortTitle) && StringUtils.isNotBlank(eventLabel) && StringUtils.isNotBlank(srCode)){
+			parent = daoFactory.getSpecimenRequirementDao().getByCpEventLabelAndSrCode(cpShortTitle, eventLabel, srCode);
+		} else {
 			ose.addError(PARENT_REQ_REQUIRED);
 			throw ose;
 		}
 		
-		SpecimenRequirement parent = daoFactory.getSpecimenRequirementDao().getById(parentSrId);
 		if (parent == null) {
 			ose.addError(SrErrorCode.PARENT_NOT_FOUND);
 			throw ose;
@@ -207,6 +217,7 @@ public class SpecimenRequirementFactoryImpl implements SpecimenRequirementFactor
 			setStorageType(req.getStorageType(), aliquot, ose);
 			setLabelFormat(req.getLabelFmt(), aliquot, ose);
 			setLabelAutoPrintMode(req.getLabelAutoPrintMode(), aliquot, ose);
+			aliquot.setLabelPrintCopies(req.getLabelPrintCopies());
 			aliquot.setInitialQuantity(req.getQtyPerAliquot());
 			aliquot.setParentSpecimenRequirement(parent);
 			aliquots.add(aliquot);
@@ -285,9 +296,9 @@ public class SpecimenRequirementFactoryImpl implements SpecimenRequirementFactor
 			return;
 		}
 		
-		LabelAutoPrintMode labelAutoPrintMode = null;
+		SpecimenLabelAutoPrintMode labelAutoPrintMode = null;
 		try {
-			labelAutoPrintMode = LabelAutoPrintMode.valueOf(input); 
+			labelAutoPrintMode = SpecimenLabelAutoPrintMode.valueOf(input);
 		} catch (IllegalArgumentException iae) {
 			ose.addError(INVALID_LABEL_AUTO_PRINT_MODE, input);
 			return;
@@ -419,12 +430,19 @@ public class SpecimenRequirementFactoryImpl implements SpecimenRequirementFactor
 
 	private void setCpe(SpecimenRequirementDetail detail, SpecimenRequirement sr, OpenSpecimenException ose) {
 		Long eventId = detail.getEventId();
-		if (eventId == null) {
+		String cpShortTitle = detail.getCpShortTitle();
+		String eventLabel = detail.getEventLabel();
+		
+		CollectionProtocolEvent cpe = null;
+		if (eventId != null) {
+			cpe = daoFactory.getCollectionProtocolDao().getCpe(eventId);
+		} else if (StringUtils.isNotBlank(cpShortTitle) && StringUtils.isNotBlank(eventLabel)) {
+			cpe = daoFactory.getCollectionProtocolDao().getCpeByShortTitleAndEventLabel(cpShortTitle, eventLabel);
+		} else {
 			ose.addError(CPE_REQUIRED);
 			return;
 		}
 		
-		CollectionProtocolEvent cpe = daoFactory.getCollectionProtocolDao().getCpe(eventId);
 		if (cpe == null) {
 			ose.addError(CpeErrorCode.NOT_FOUND);
 		}
@@ -452,6 +470,7 @@ public class SpecimenRequirementFactoryImpl implements SpecimenRequirementFactor
 		setInitialQty(req, specimenPoolReq, ose);
 		setCode(req, specimenPoolReq, ose);
 		setLabelAutoPrintMode(req, specimenPoolReq, ose);
+		specimenPoolReq.setLabelPrintCopies(req.getLabelPrintCopies());
 		specimenPoolReq.setPooledSpecimenRequirement(pooledSpmnReq);
 		return specimenPoolReq;
 	}
@@ -491,8 +510,10 @@ public class SpecimenRequirementFactoryImpl implements SpecimenRequirementFactor
 		User user = null;
 		if (userSummary.getId() != null) {
 			user = daoFactory.getUserDao().getById(userSummary.getId());
-		} else if (userSummary.getLoginName() != null && userSummary.getDomain() != null) {
+		} else if (StringUtils.isNotBlank(userSummary.getLoginName()) && StringUtils.isNotBlank(userSummary.getDomain())) {
 			user = daoFactory.getUserDao().getUser(userSummary.getLoginName(), userSummary.getDomain());
+		} else if (StringUtils.isNotBlank(userSummary.getEmailAddress())) {
+			user = daoFactory.getUserDao().getUserByEmailAddress(userSummary.getEmailAddress());
 		}
 		
 		if (user == null) {
@@ -500,5 +521,5 @@ public class SpecimenRequirementFactoryImpl implements SpecimenRequirementFactor
 		}
 		
 		return user;		
-	}	
+	}
 }

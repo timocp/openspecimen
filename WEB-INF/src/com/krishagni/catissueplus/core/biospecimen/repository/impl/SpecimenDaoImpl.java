@@ -1,23 +1,28 @@
 
 package com.krishagni.catissueplus.core.biospecimen.repository.impl;
 
+import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Junction;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projection;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.sql.JoinType;
 
 import com.krishagni.catissueplus.core.biospecimen.domain.Specimen;
+import com.krishagni.catissueplus.core.biospecimen.domain.Visit;
 import com.krishagni.catissueplus.core.biospecimen.repository.SpecimenDao;
 import com.krishagni.catissueplus.core.biospecimen.repository.SpecimenListCriteria;
 import com.krishagni.catissueplus.core.common.Pair;
@@ -30,9 +35,10 @@ public class SpecimenDaoImpl extends AbstractDao<Specimen> implements SpecimenDa
 
 	@SuppressWarnings("unchecked")
 	public List<Specimen> getSpecimens(SpecimenListCriteria crit) {
-		Criteria query = getSessionFactory().getCurrentSession().createCriteria(Specimen.class)
-				.addOrder(Order.asc("id"))
-				.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+		Criteria query = getSessionFactory().getCurrentSession()
+			.createCriteria(Specimen.class, "specimen")
+			.addOrder(Order.asc("specimen.id"))
+			.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 
 		if (CollectionUtils.isNotEmpty(crit.ids())) {
 			addIdsCond(query, crit.ids());
@@ -42,16 +48,9 @@ public class SpecimenDaoImpl extends AbstractDao<Specimen> implements SpecimenDa
 			query.setFirstResult(crit.startAt() < 0 ? 0 : crit.startAt())
 				.setMaxResults(crit.maxResults() <= 0 ? 100 : crit.maxResults());
 		}
-		
-		if (CollectionUtils.isNotEmpty(crit.siteCps())) {
-			addSiteCpsCond(query, crit.siteCps());
-		}
-		
-		if (crit.specimenListId() != null) {
-			query.createAlias("specimenLists", "list")
-				.add(Restrictions.eq("list.id", crit.specimenListId()));
-		}
-				
+
+		addSiteCpsCond(query, crit.siteCps(), crit.useMrnSites());
+		addSpecimenListCond(query, crit.specimenListId());
 		return query.list();
 	}
 	
@@ -114,22 +113,30 @@ public class SpecimenDaoImpl extends AbstractDao<Specimen> implements SpecimenDa
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public Map<String, Long> getCprAndVisitIds(Long specimenId) {
-		List<Object[]> rows = sessionFactory.getCurrentSession()
-				.getNamedQuery(GET_CPR_AND_VISIT_IDS)
-				.setLong("specimenId", specimenId)
-				.list();
-		
+	public Map<String, Object> getCprAndVisitIds(String key, Object value) {
+		List<Object[]> rows = getCurrentSession().createCriteria(Specimen.class)
+			.createAlias("visit", "visit")
+			.createAlias("visit.registration", "cpr")
+			.createAlias("cpr.collectionProtocol", "cp")
+			.setProjection(
+				Projections.projectionList()
+					.add(Projections.property("cp.id"))
+					.add(Projections.property("cpr.id"))
+					.add(Projections.property("visit.id"))
+					.add(Projections.property("id")))
+			.add(Restrictions.eq(key, value))
+			.list();
+
 		if (CollectionUtils.isEmpty(rows)) {
 			return null;
 		}
 		
-		Map<String, Long> result = new HashMap<String, Long>();
+		Map<String, Object> result = new HashMap<>();
 		Object[] row = rows.iterator().next();
-		result.put("cpId", (Long)row[0]);
-		result.put("cprId", (Long)row[1]);
-		result.put("visitId", (Long)row[2]);
-		result.put("specimenId", specimenId);
+		result.put("cpId",       row[0]);
+		result.put("cprId",      row[1]);
+		result.put("visitId",    row[2]);
+		result.put("specimenId", row[3]);
 		return result;
 	}
 	
@@ -168,19 +175,57 @@ public class SpecimenDaoImpl extends AbstractDao<Specimen> implements SpecimenDa
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Long> getDistributedSpecimens(List<Long> specimenIds) {
-		return (List<Long>) getSessionFactory().getCurrentSession()
-				.getNamedQuery(GET_DISTRIBUTED_SPECIMENS)
-				.setParameterList("specimenIds", specimenIds)
-				.list();
+	public Map<Long, String> getDistributionStatus(List<Long> specimenIds) {
+		List<Object[]> rows = getSessionFactory().getCurrentSession()
+			.getNamedQuery(GET_LATEST_DISTRIBUTION_AND_RETURN_DATES)
+			.setParameterList("specimenIds", specimenIds)
+			.list();
+
+		return rows.stream().collect(
+			Collectors.toMap(
+				row -> (Long)row[0],
+				row -> getDistributionStatus((Date)row[1], (Date)row[2])
+			));
+	}
+
+	@Override
+	public String getDistributionStatus(Long specimenId) {
+		Map<Long, String> statuses = getDistributionStatus(Collections.singletonList(specimenId));
+		return statuses.get(specimenId);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Visit> getSpecimenVisits(SpecimenListCriteria crit) {
+		boolean noLabels = CollectionUtils.isEmpty(crit.labels());
+		boolean noIds = CollectionUtils.isEmpty(crit.ids());
+
+		if (noLabels && noIds && crit.specimenListId() == null) {
+			throw new IllegalArgumentException("No limiting condition on specimens");
+		}
+
+		Criteria query = getSessionFactory().getCurrentSession()
+			.createCriteria(Visit.class, "visit")
+			.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
+			.createAlias("visit.specimens", "specimen");
+
+		if (!noIds) {
+			addIdsCond(query, crit.ids());
+		} else if (!noLabels) {
+			addLabelsCond(query, crit.labels());
+		}
+
+		addSiteCpsCond(query, crit.siteCps(), crit.useMrnSites());
+		addSpecimenListCond(query, crit.specimenListId());
+		return query.list();
 	}
 
 	private void addIdsCond(Criteria query, List<Long> ids) {
-		addInCond(query, "id", ids);
+		addInCond(query, "specimen.id", ids);
 	}
 
 	private void addLabelsCond(Criteria query, List<String> labels) {
-		addInCond(query, "label", labels);
+		addInCond(query, "specimen.label", labels);
 	}
 
 	private <T> void addInCond(Criteria query, String property, List<T> values) {
@@ -196,9 +241,16 @@ public class SpecimenDaoImpl extends AbstractDao<Specimen> implements SpecimenDa
 		query.add(labelIn);
 	}
 	
-	private void addSiteCpsCond(Criteria query, List<Pair<Long, Long>> siteCps) {
-		query.createAlias("visit", "visit")
-			.createAlias("visit.registration", "cpr")
+	private void addSiteCpsCond(Criteria query, List<Pair<Long, Long>> siteCps, boolean useMrnSites) {
+		if (CollectionUtils.isEmpty(siteCps)) {
+			return;
+		}
+
+		if (!query.getAlias().equals("visit")) {
+			query.createAlias("specimen.visit", "visit");
+		}
+
+		query.createAlias("visit.registration", "cpr")
 			.createAlias("cpr.collectionProtocol", "cp")
 			.createAlias("cp.sites", "cpSite")
 			.createAlias("cpSite.site", "site")
@@ -208,18 +260,37 @@ public class SpecimenDaoImpl extends AbstractDao<Specimen> implements SpecimenDa
 		
 		Disjunction cpSitesCond = Restrictions.disjunction();
 		for (Pair<Long, Long> siteCp : siteCps) {
-			Junction cond = Restrictions.conjunction();
-			
 			Long siteId = siteCp.first();
 			Long cpId = siteCp.second();
-		
-			cond.add(
-				/** mrn site = siteId or cp site = siteId **/
-				Restrictions.disjunction()
-					.add(Restrictions.eq("mrnSite.id", siteId))
-					.add(Restrictions.eq("site.id", siteId))
-			);
 
+
+			Junction siteCond = Restrictions.disjunction();
+			if (useMrnSites) {
+				//
+				// When MRNs exist, site ID should be one of the MRN site
+				//
+				Junction mrnSite = Restrictions.conjunction()
+					.add(Restrictions.isNotEmpty("participant.pmis"))
+					.add(Restrictions.eq("mrnSite.id", siteId));
+
+				//
+				// When no MRNs exist, site ID should be one of CP site
+				//
+				Junction cpSite = Restrictions.conjunction()
+					.add(Restrictions.isEmpty("participant.pmis"))
+					.add(Restrictions.eq("site.id", siteId));
+
+				siteCond.add(mrnSite).add(cpSite);
+			} else {
+				//
+				// Site ID should be either MRN site or CP site
+				//
+				siteCond
+					.add(Restrictions.eq("mrnSite.id", siteId))
+					.add(Restrictions.eq("site.id", siteId));
+			}
+
+			Junction cond = Restrictions.conjunction().add(siteCond);
 			if (cpId != null) {
 				cond.add(Restrictions.eq("cp.id", cpId));
 			}
@@ -230,6 +301,14 @@ public class SpecimenDaoImpl extends AbstractDao<Specimen> implements SpecimenDa
 		query.add(cpSitesCond);
 	}
 
+	private void addSpecimenListCond(Criteria query, Long listId) {
+		if (listId == null) {
+			return;
+		}
+
+		query.createAlias("specimen.specimenLists", "list").add(Restrictions.eq("list.id", listId));
+	}
+
 	@SuppressWarnings("unchecked")
 	private Specimen getByVisitAndSrId(String hql, Long visitId, Long srId) {
 		List<Specimen> specimens = sessionFactory.getCurrentSession()
@@ -238,6 +317,10 @@ public class SpecimenDaoImpl extends AbstractDao<Specimen> implements SpecimenDa
 				.setLong("srId", srId)
 				.list();
 		return specimens.isEmpty() ? null : specimens.iterator().next();
+	}
+
+	private String getDistributionStatus(Date execDate, Date returnDate) {
+		return (returnDate == null || execDate.after(returnDate)) ? "Distributed" : "Returned";
 	}
 
 	private static final String FQN = Specimen.class.getName();
@@ -254,7 +337,5 @@ public class SpecimenDaoImpl extends AbstractDao<Specimen> implements SpecimenDa
 	
 	private static final String GET_BY_VISIT_NAME = FQN + ".getByVisitName";
 	
-	private static final String GET_CPR_AND_VISIT_IDS = FQN + ".getCprAndVisitIds";
-
-	private static final String GET_DISTRIBUTED_SPECIMENS = FQN + ".getDistributedSpecimens";
+	private static final String GET_LATEST_DISTRIBUTION_AND_RETURN_DATES = FQN + ".getLatestDistributionAndReturnDates";
 }

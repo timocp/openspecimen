@@ -36,10 +36,13 @@ import com.krishagni.catissueplus.core.audit.events.RequestAudit;
 import com.krishagni.catissueplus.core.biospecimen.domain.CollectionProtocol;
 import com.krishagni.catissueplus.core.biospecimen.domain.Specimen;
 import com.krishagni.catissueplus.core.biospecimen.events.CollectionProtocolDetail;
+import com.krishagni.catissueplus.core.biospecimen.events.CollectionProtocolEventDetail;
 import com.krishagni.catissueplus.core.biospecimen.events.CollectionProtocolSummary;
 import com.krishagni.catissueplus.core.biospecimen.events.ConsentTierDetail;
 import com.krishagni.catissueplus.core.biospecimen.events.ConsentTierOp;
+import com.krishagni.catissueplus.core.biospecimen.events.CopyCpeOpDetail;
 import com.krishagni.catissueplus.core.biospecimen.events.ConsentTierOp.OP;
+import com.krishagni.catissueplus.core.biospecimen.events.CopyCpOpDetail;
 import com.krishagni.catissueplus.core.biospecimen.events.CpQueryCriteria;
 import com.krishagni.catissueplus.core.biospecimen.events.CpWorkflowCfgDetail;
 import com.krishagni.catissueplus.core.biospecimen.events.CpWorkflowCfgDetail.WorkflowDetail;
@@ -189,6 +192,25 @@ public class CollectionProtocolsController {
 	@ResponseBody
 	public CollectionProtocolDetail updateCollectionProtocol(@RequestBody CollectionProtocolDetail cp) {
 		ResponseEvent<CollectionProtocolDetail> resp = cpSvc.updateCollectionProtocol(getRequest(cp));
+		resp.throwErrorIfUnsuccessful();
+		return resp.getPayload();
+	}
+	
+	@RequestMapping(method = RequestMethod.POST, value="/{cpId}/copy")
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody	
+	public CollectionProtocolDetail copyCollectionProtocol(
+			@PathVariable("cpId") 
+			Long cpId,
+			
+			@RequestBody 
+			CollectionProtocolDetail cpDetail) {
+		
+		CopyCpOpDetail opDetail = new CopyCpOpDetail();
+		opDetail.setCpId(cpId);
+		opDetail.setCp(cpDetail);
+
+		ResponseEvent<CollectionProtocolDetail> resp = cpSvc.copyCollectionProtocol(getRequest(opDetail));
 		resp.throwErrorIfUnsuccessful();
 		return resp.getPayload();
 	}

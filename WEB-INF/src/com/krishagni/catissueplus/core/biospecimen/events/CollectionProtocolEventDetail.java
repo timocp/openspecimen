@@ -2,7 +2,6 @@ package com.krishagni.catissueplus.core.biospecimen.events;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -15,7 +14,7 @@ import com.krishagni.catissueplus.core.biospecimen.domain.SpecimenRequirement;
 
 @JsonFilter("withoutId")
 @JsonInclude(Include.NON_NULL)
-public class CollectionProtocolEventDetail implements Comparable<CollectionProtocolEventDetail> {
+public class CollectionProtocolEventDetail {
 	private Long id;
 	
 	private String eventLabel;
@@ -23,6 +22,8 @@ public class CollectionProtocolEventDetail implements Comparable<CollectionProto
 	private Double eventPoint;
 	
 	private String collectionProtocol;
+	
+	private String cpShortTitle;
 	
 	private String defaultSite;
 	
@@ -71,6 +72,14 @@ public class CollectionProtocolEventDetail implements Comparable<CollectionProto
 
 	public void setCollectionProtocol(String collectionProtocol) {
 		this.collectionProtocol = collectionProtocol;
+	}
+
+	public String getCpShortTitle() {
+		return cpShortTitle;
+	}
+
+	public void setCpShortTitle(String cpShortTitle) {
+		this.cpShortTitle = cpShortTitle;
 	}
 
 	public String getDefaultSite() {
@@ -142,6 +151,7 @@ public class CollectionProtocolEventDetail implements Comparable<CollectionProto
 		detail.setClinicalDiagnosis(event.getClinicalDiagnosis());
 		detail.setClinicalStatus(event.getClinicalStatus());
 		detail.setCollectionProtocol(event.getCollectionProtocol().getTitle());
+		detail.setCpShortTitle(event.getCollectionProtocol().getShortTitle());
 		detail.setActivityStatus(event.getActivityStatus());
 		detail.setCode(event.getCode());
 		detail.setOffset(event.getOffset());
@@ -173,19 +183,6 @@ public class CollectionProtocolEventDetail implements Comparable<CollectionProto
 			result.add(CollectionProtocolEventDetail.from(event, fullObject));
 		}
 		
-		Collections.sort(result);
 		return result;
-	}
-
-	@Override
-	public int compareTo(CollectionProtocolEventDetail other) {
-		Double thisEventPoint = this.eventPoint == null ? 0d : this.eventPoint;
-		Double otherEventPoint = other.eventPoint == null ? 0d : other.eventPoint;
-
-		if (thisEventPoint.equals(otherEventPoint)) {
-			return id.compareTo(other.id);
-		} else {
-			return thisEventPoint.compareTo(otherEventPoint);
-		}		
 	}
 }

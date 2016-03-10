@@ -30,6 +30,7 @@ import edu.common.dynamicextensions.domain.nui.Container;
 import edu.common.dynamicextensions.domain.nui.SubFormControl;
 import edu.common.dynamicextensions.domain.nui.UserContext;
 import edu.common.dynamicextensions.napi.ControlValue;
+import edu.common.dynamicextensions.napi.FileControlValue;
 import edu.common.dynamicextensions.napi.FormData;
 import edu.common.dynamicextensions.napi.FormDataManager;
 
@@ -159,6 +160,16 @@ public abstract class DeObject {
 		return recIds;
 	}
 	
+	public boolean hasPhiFields() {
+		return getForm().hasPhiFields();
+	}
+	
+	public void copyAttrsTo(DeObject other) {
+		for (Attr attr : getAttrs()) {
+			other.getAttrs().add(attr.copy());
+		}
+	}
+	
 	protected void loadRecordIfNotLoaded() {
 		Long recordId = getId();
 		if (recordLoaded || recordId == null) {
@@ -204,6 +215,8 @@ public abstract class DeObject {
 	public abstract Long getCpId();
 	
 	public Map<String, Object> getAttrValues() {
+		loadRecordIfNotLoaded();
+		
 		Map<String, Object> vals = new HashMap<String, Object>();
 		for (Attr attr: attrs) {
 			if (isUseUdn()) {
@@ -398,6 +411,8 @@ public abstract class DeObject {
 		private Object value;
 		
 		private String type;
+		
+		private boolean phi;
 
 		public String getName() {
 			return name;
@@ -439,19 +454,36 @@ public abstract class DeObject {
 			this.type = type;
 		}
 
+		public boolean isPhi() {
+			return phi;
+		}
+
+		public void setPhi(boolean phi) {
+			this.phi = phi;
+		}
+
 		public static Attr from(ControlValue cv) {
 			Attr attr = new Attr();
 			attr.setName(cv.getControl().getName()); 
 			attr.setUdn(cv.getControl().getUserDefinedName());
 			attr.setCaption(cv.getControl().getCaption());
 			attr.setType(cv.getControl().getCtrlType());
+			attr.setPhi(cv.getControl().isPhi());
 			
 			Object value = cv.getValue();
 			if (value != null && value.getClass().isArray()) {
 				value = Arrays.asList((String[])value);
+			} else if (value instanceof FileControlValue) {
+				value = ((FileControlValue) value).toValueMap();
 			}
 			attr.setValue(value);
 			
+			return attr;
+		}
+		
+		public Attr copy() {
+			Attr attr = new Attr();
+			BeanUtils.copyProperties(this, attr);
 			return attr;
 		}
 	}

@@ -3,7 +3,13 @@ package com.krishagni.catissueplus.core.biospecimen.domain;
 import java.math.BigDecimal;
 
 public class AliquotSpecimensRequirement {
+	private String cpShortTitle;
+	
+	private String eventLabel;
+	
 	private Long parentSrId;
+	
+	private String parentSrCode;
 	
 	private Integer noOfAliquots;
 	
@@ -17,12 +23,38 @@ public class AliquotSpecimensRequirement {
 	
 	private String labelAutoPrintMode;
 	
+	private Integer labelPrintCopies;
+	
+	public String getCpShortTitle() {
+		return cpShortTitle;
+	}
+
+	public void setCpShortTitle(String cpShortTitle) {
+		this.cpShortTitle = cpShortTitle;
+	}
+
+	public String getEventLabel() {
+		return eventLabel;
+	}
+
+	public void setEventLabel(String eventLabel) {
+		this.eventLabel = eventLabel;
+	}
+	
 	public Long getParentSrId() {
 		return parentSrId;
 	}
 
 	public void setParentSrId(Long parentSrId) {
 		this.parentSrId = parentSrId;
+	}
+	
+	public String getParentSrCode() {
+		return parentSrCode;
+	}
+
+	public void setParentSrCode(String parentSrCode) {
+		this.parentSrCode = parentSrCode;
 	}
 
 	public Integer getNoOfAliquots() {
@@ -71,5 +103,13 @@ public class AliquotSpecimensRequirement {
 
 	public void setLabelAutoPrintMode(String labelAutoPrintMode) {
 		this.labelAutoPrintMode = labelAutoPrintMode;
+	}
+	
+	public Integer getLabelPrintCopies() {
+		return labelPrintCopies;
+	}
+
+	public void setLabelPrintCopies(Integer labelPrintCopies) {
+		this.labelPrintCopies = labelPrintCopies;
 	}
 }

@@ -30,6 +30,18 @@ public abstract class BaseExtensionEntity extends BaseEntity {
 		
 		extension.saveOrUpdate();
 	}
+	
+	public boolean hasPhiFields() {
+		return getExtension() == null ? false : getExtension().hasPhiFields();
+	}
+	
+	public void copyExtensionTo(BaseExtensionEntity entity) {
+		if (getExtension() == null) {
+			return;
+		}
+		
+		getExtension().copyAttrsTo(entity.getExtension());
+	}
 
 	public DeObject createExtension() {
 		DeObject extnObj = new DeObject() {	
