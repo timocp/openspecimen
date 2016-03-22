@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -42,7 +43,9 @@ import com.krishagni.catissueplus.core.common.util.MessageUtil;
 
 
 public class SpecimenListServiceImpl implements SpecimenListService {
-	
+
+	private static final Pattern DEF_LIST_NAME_PATTERN = Pattern.compile("\\$\\$\\$\\$user_\\d+");
+
 	private SpecimenListFactory specimenListFactory;
 	
 	private DaoFactory daoFactory;
@@ -67,19 +70,30 @@ public class SpecimenListServiceImpl implements SpecimenListService {
 	@PlusTransactional
 	public ResponseEvent<List<SpecimenListSummary>> getUserSpecimenLists(RequestEvent<?> req) {
 		try {
-			Long userId = AuthUtil.getCurrentUser().getId();
+			User currentUser = AuthUtil.getCurrentUser();
 			List<SpecimenList> specimenLists = new ArrayList<SpecimenList>();
 			if (AuthUtil.isAdmin()){
 				specimenLists = daoFactory.getSpecimenListDao().getSpecimenLists();
 			} else {
-				specimenLists = daoFactory.getSpecimenListDao().getUserSpecimenLists(userId);
+				specimenLists = daoFactory.getSpecimenListDao().getUserSpecimenLists(currentUser.getId());
 			}
 
 			List<SpecimenListSummary> result = new ArrayList<SpecimenListSummary>();
+			SpecimenList defUserList = null;
 			for (SpecimenList specimenList : specimenLists) {
+				if (specimenList.isDefaultList(currentUser)) {
+					defUserList = specimenList;
+					continue;
+				}
+
 				result.add(SpecimenListSummary.fromSpecimenList(specimenList));
 			}
-			
+
+			if (defUserList == null) {
+				defUserList = createDefaultList(currentUser, 0L);
+			}
+
+			result.add(0, SpecimenListSummary.fromSpecimenList(defUserList));
 			return ResponseEvent.response(result);
 		} catch (Exception e) {
 			return ResponseEvent.serverError(e);
@@ -213,7 +227,7 @@ public class SpecimenListServiceImpl implements SpecimenListService {
 					break;				
 			}
 			
-			daoFactory.getSpecimenListDao().saveOrUpdate(specimenList);
+			daoFactory.getSpecimenListDao().saveOrUpdate(specimenList, true);
 			
 			Long specimensCount = daoFactory.getSpecimenListDao().getListSpecimensCount(specimenList.getId());
 			List<Specimen> readAccessSpecimens = getReadAccessSpecimens(specimenList.getId(), siteCpPairs);
@@ -289,7 +303,6 @@ public class SpecimenListServiceImpl implements SpecimenListService {
 		try {
 			SpecimenListDetails listDetails = req.getPayload();
 			SpecimenList existing = getSpecimenList(listDetails.getId(), null);
-
 			UserSummary owner = new UserSummary();
 			owner.setId(existing.getOwner().getId());
 			listDetails.setOwner(owner);
@@ -304,8 +317,9 @@ public class SpecimenListServiceImpl implements SpecimenListService {
 			ensureUniqueName(existing, specimenList);
 			ensureValidSpecimensAndUsers(listDetails, specimenList, null);
 			existing.update(specimenList);
+			daoFactory.getSpecimenListDao().saveOrUpdate(existing, true);
 			
-			List<Specimen> readAccessSpecimens = getReadAccessSpecimens(specimenList.getId(), null);
+			List<Specimen> readAccessSpecimens = getReadAccessSpecimens(existing.getId(), null);
 			return ResponseEvent.response(SpecimenListDetails.from(existing, readAccessSpecimens));
 		} catch (OpenSpecimenException ose) {
 			return ResponseEvent.error(ose);
@@ -319,7 +333,12 @@ public class SpecimenListServiceImpl implements SpecimenListService {
 		Object key = null;
 
 		if (listId != null) {
-			list = daoFactory.getSpecimenListDao().getSpecimenList(listId);
+			if (listId != 0) {
+				list = daoFactory.getSpecimenListDao().getSpecimenList(listId);
+			} else {
+				list = getDefaultList(AuthUtil.getCurrentUser(), null);
+			}
+
 			key = listId;
 		} else if (StringUtils.isNotBlank(listName)) {
 			list = daoFactory.getSpecimenListDao().getSpecimenListByName(listName);
@@ -427,24 +446,54 @@ public class SpecimenListServiceImpl implements SpecimenListService {
 	}
 	
 	private void ensureUniqueName(SpecimenList newList) {
-		SpecimenList list = daoFactory.getSpecimenListDao().getSpecimenListByName(newList.getName());
+		String newListName = newList.getName();
+
+		SpecimenList list = daoFactory.getSpecimenListDao().getSpecimenListByName(newListName);
 		if  (list != null) {
-			throw OpenSpecimenException.userError(SpecimenListErrorCode.DUP_NAME, newList.getName());
+			throw OpenSpecimenException.userError(SpecimenListErrorCode.DUP_NAME, newListName);
+		}
+
+		if (DEF_LIST_NAME_PATTERN.matcher(newListName).matches()) {
+			throw OpenSpecimenException.userError(SpecimenListErrorCode.DUP_NAME, newListName);
 		}
 	}
 
+	private SpecimenList createDefaultList(User user, Long id) {
+		SpecimenList list = specimenListFactory.createDefaultSpecimenList(user);
+		list.setId(id);
+		return list;
+	}
+
+	private SpecimenList getDefaultList(User user) {
+		return getDefaultList(user, 0L);
+	}
+
+	private SpecimenList getDefaultList(User user, Long id) {
+		SpecimenList specimenList = daoFactory.getSpecimenListDao().getDefaultSpecimenList(user.getId());
+		if (specimenList == null) {
+			specimenList = createDefaultList(user, id);
+		}
+
+		return specimenList;
+	}
+
 	private ExportedFileDetail exportSpecimenList(SpecimenList list, Collection<Specimen> specimens) {
+		String listName = list.getName();
 		FileWriter fileWriter = null;
 		CsvWriter csvWriter = null;
 		File dataFile = null;
 
 		try {
+			if (list.isDefaultList()) {
+				listName = list.getOwner().formattedName() + " " + getMsg(LIST_DEFAULT);
+			}
+
 			File dataDir = new File(ConfigUtil.getInstance().getDataDir());
 			dataFile = File.createTempFile("specimen-list-", ".csv", dataDir);
 			fileWriter = new FileWriter(dataFile);
 			csvWriter = CsvFileWriter.createCsvFileWriter(fileWriter);
 
-			csvWriter.writeNext(new String[] { getMsg(LIST_NAME), list.getName()});
+			csvWriter.writeNext(new String[] { getMsg(LIST_NAME), listName});
 			csvWriter.writeNext(new String[] { getMsg(LIST_DESC), list.getDescription()});
 			csvWriter.writeNext(new String[0]);
 
@@ -465,7 +514,7 @@ public class SpecimenListServiceImpl implements SpecimenListService {
 			IOUtils.closeQuietly(csvWriter);
 		}
 
-		return new ExportedFileDetail(list.getName(), dataFile);
+		return new ExportedFileDetail(listName, dataFile);
 	}
 
 	private String[] getHeaderRow() {
@@ -513,6 +562,8 @@ public class SpecimenListServiceImpl implements SpecimenListService {
 	private static final String LIST_NAME      = "specimen_list_name";
 
 	private static final String LIST_DESC      = "specimen_list_description";
+
+	private static final String LIST_DEFAULT   = "specimen_list_default_user_list";
 
 	private static final String SPMN_LABEL     = "specimen_label";
 
