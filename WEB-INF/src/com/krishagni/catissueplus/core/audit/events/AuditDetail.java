@@ -6,44 +6,48 @@ import java.util.Map;
 
 public class AuditDetail {
 
-	private Long revisionId;
-	private String action;
-	private String user;
-	private Long time;
+	private String createdBy;
+	
+	private Long createdOn;
+	
+	private String lastModifiedBy;
+	
+	private Long lastModifiedOn;
+	
 	private List<Map<String, Object>> modifiedAttrs;
 	
-	public Long getRevisionId() {
-		return revisionId;
+	public String getCreatedBy() {
+		return createdBy;
 	}
 	
-	public void setRevisionId(Long revisionId) {
-		this.revisionId = revisionId;
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getLastModifiedBy() {
+		return lastModifiedBy;
 	}
 	
-	public String getAction() {
-		return action;
+	public void setLastModifiedBy(String lastModifiedBy) {
+		this.lastModifiedBy = lastModifiedBy;
 	}
 	
-	public void setAction(String action) {
-		this.action = action;
+	public Long getCreatedOn() {
+		return createdOn;
 	}
 	
-	public String getUser() {
-		return user;
+	public void setCreatedOn(Long createdOn) {
+		this.createdOn = createdOn;
 	}
 	
-	public void setUser(String user) {
-		this.user = user;
+	public Long getLastModifiedOn() {
+		return lastModifiedOn;
 	}
-	
-	public Long getTime() {
-		return time;
+
+	public void setLastModifiedOn(Long lastModifiedOn) {
+		this.lastModifiedOn = lastModifiedOn;
 	}
-	
-	public void setTime(Long time) {
-		this.time = time;
-	}
-	
+
 	public List<Map<String, Object>> getModifiedAttrs() {
 		return modifiedAttrs;
 	}

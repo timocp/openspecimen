@@ -109,18 +109,13 @@ public class CollectionProtocolEventsController {
 	@RequestMapping(method = RequestMethod.GET, value="/{id}/audit-trail")
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody	
-	public List<AuditDetail> getAuditDetails(
-			@PathVariable("id") Long cpeId,
-			@RequestParam(value = "maxRecs", required = false, defaultValue = "25") int maxRecs,
-			@RequestParam(value = "startAt", required = false, defaultValue = "0") int  startAt) {
+	public AuditDetail getAuditDetails(@PathVariable("id") Long cpeId) {
 		
 		RequestAudit req = new RequestAudit();
 		req.setEntityType(CollectionProtocolEvent.class.getSimpleName());
 		req.setEntityId(cpeId);
-		req.setMaxRecs(maxRecs);
-		req.setStartAt(startAt);
 		
-		ResponseEvent<List<AuditDetail>> resp = auditSvc.getDetailedAudit(getRequest(req));
+		ResponseEvent<AuditDetail> resp = auditSvc.getAuditDetail(getRequest(req));
 		resp.throwErrorIfUnsuccessful();
 		return resp.getPayload();
 	}

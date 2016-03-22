@@ -790,13 +790,8 @@
     <property name="dataSource" ref="dataSource"/>
   </bean>
   
-  <bean id="auditUtil" class="com.krishagni.catissueplus.core.audit.util.AuditUtil">
-    <property name="daoFactory" ref="biospecimenDaoFactory"/>
-  </bean>
-  
   <bean id="auditSvc" class="com.krishagni.catissueplus.core.audit.services.impl.AuditServiceImpl">
     <property name="daoFactory" ref="biospecimenDaoFactory"/>
-    <property name="auditUtil" ref="auditUtil"/>
   </bean>
   
   <bean id="upgradeLogUpdater" class="com.krishagni.catissueplus.core.init.UpgradeLogUpdater">

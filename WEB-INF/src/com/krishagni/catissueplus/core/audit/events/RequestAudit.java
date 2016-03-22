@@ -6,12 +6,6 @@ public class RequestAudit {
 
 	private Long entityId;
 
-	private Integer startAt;
-
-	private Integer maxRecs;
-
-	private Boolean detailed;
-
 	public String getEntityType() {
 		return entityType;
 	}
@@ -28,31 +22,4 @@ public class RequestAudit {
 		this.entityId = entityId;
 	}
 
-	public Boolean IsDetailed() {
-		return detailed;
-	}
-
-	public void setDetailed(Boolean detailed) {
-		this.detailed = detailed;
-	}
-
-	public Integer getStartAt() {
-		return startAt;
-	}
-
-	public void setStartAt(Integer startAt) {
-		this.startAt = startAt;
-	}
-
-	public Integer getMaxRecs() {
-		return maxRecs;
-	}
-
-	public void setMaxRecs(Integer maxRecs) {
-		this.maxRecs = maxRecs;
-	}
-	
-	public Boolean getDetailed() {
-		return detailed;
-	}
 }

@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.krishagni.catissueplus.core.administrative.domain.StorageContainer;
 import com.krishagni.catissueplus.core.administrative.events.AssignPositionsOp;
-import com.krishagni.catissueplus.core.common.events.ExportedFileDetail;
 import com.krishagni.catissueplus.core.administrative.events.ContainerQueryCriteria;
 import com.krishagni.catissueplus.core.administrative.events.ContainerReplicationDetail;
 import com.krishagni.catissueplus.core.administrative.events.PositionTenantDetail;
@@ -35,8 +34,8 @@ import com.krishagni.catissueplus.core.administrative.services.StorageContainerS
 import com.krishagni.catissueplus.core.audit.AuditService;
 import com.krishagni.catissueplus.core.audit.events.AuditDetail;
 import com.krishagni.catissueplus.core.audit.events.RequestAudit;
-import com.krishagni.catissueplus.core.biospecimen.domain.Specimen;
 import com.krishagni.catissueplus.core.common.events.DependentEntityDetail;
+import com.krishagni.catissueplus.core.common.events.ExportedFileDetail;
 import com.krishagni.catissueplus.core.common.events.RequestEvent;
 import com.krishagni.catissueplus.core.common.events.ResponseEvent;
 
@@ -310,19 +309,14 @@ public class StorageContainersController {
 	@RequestMapping(method = RequestMethod.GET, value="/{id}/audit-trail")
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody	
-	public List<AuditDetail> getAuditDetails(
-			@PathVariable("id") Long containerId,
-			@RequestParam(value = "maxRecs", required = false, defaultValue = "25") int maxRecs,
-			@RequestParam(value = "startAt", required = false, defaultValue = "0") int  startAt) {
+	public AuditDetail getAuditDetails(@PathVariable("id") Long containerId) {
 		
 		RequestAudit req = new RequestAudit();
 		req.setEntityType(StorageContainer.class.getSimpleName());
 		req.setEntityId(containerId);
-		req.setMaxRecs(maxRecs);
-		req.setStartAt(startAt);
 		
 		RequestEvent<RequestAudit> reqEvent = new RequestEvent<RequestAudit>(req);
-		ResponseEvent<List<AuditDetail>> resp = auditSvc.getDetailedAudit(reqEvent);
+		ResponseEvent<AuditDetail> resp = auditSvc.getAuditDetail(reqEvent);
 		resp.throwErrorIfUnsuccessful();
 		return resp.getPayload();
 	}

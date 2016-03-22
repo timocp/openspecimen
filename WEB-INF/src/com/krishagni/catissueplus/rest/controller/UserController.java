@@ -259,19 +259,14 @@ public class UserController {
 	@RequestMapping(method = RequestMethod.GET, value="/{id}/audit-trail")
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody	
-	public List<AuditDetail> getAuditDetails(
-			@PathVariable("id") Long userId,
-			@RequestParam(value = "maxRecs", required = false, defaultValue = "25") int maxRecs,
-			@RequestParam(value = "startAt", required = false, defaultValue = "0") int  startAt) {
+	public AuditDetail getAuditDetails(@PathVariable("id") Long userId) {
 		
 		RequestAudit req = new RequestAudit();
 		req.setEntityType(User.class.getSimpleName());
 		req.setEntityId(userId);
-		req.setMaxRecs(maxRecs);
-		req.setStartAt(startAt);
 		
 		RequestEvent<RequestAudit> reqEvent = new RequestEvent<RequestAudit>(req);
-		ResponseEvent<List<AuditDetail>> resp = auditSvc.getDetailedAudit(reqEvent);
+		ResponseEvent<AuditDetail> resp = auditSvc.getAuditDetail(reqEvent);
 		resp.throwErrorIfUnsuccessful();
 		return resp.getPayload();
 	}

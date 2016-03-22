@@ -153,19 +153,14 @@ public class InstitutesController {
 	@RequestMapping(method = RequestMethod.GET, value="/{id}/audit-trail")
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody	
-	public List<AuditDetail> getAuditDetails(
-			@PathVariable("id") Long instId,
-			@RequestParam(value = "maxRecs", required = false, defaultValue = "25") int maxRecs,
-			@RequestParam(value = "startAt", required = false, defaultValue = "0") int  startAt) {
+	public AuditDetail getAuditDetails(@PathVariable("id") Long instId) {
 		
 		RequestAudit req = new RequestAudit();
 		req.setEntityType(Institute.class.getSimpleName());
 		req.setEntityId(instId);
-		req.setMaxRecs(maxRecs);
-		req.setStartAt(startAt);
 		
 		RequestEvent<RequestAudit> reqEvent = new RequestEvent<RequestAudit>(req);
-		ResponseEvent<List<AuditDetail>> resp = auditSvc.getDetailedAudit(reqEvent);
+		ResponseEvent<AuditDetail> resp = auditSvc.getAuditDetail(reqEvent);
 		resp.throwErrorIfUnsuccessful();
 		return resp.getPayload();
 	}

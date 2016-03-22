@@ -18,8 +18,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.krishagni.catissueplus.core.administrative.domain.Site;
-import com.krishagni.catissueplus.core.administrative.events.InstituteDetail;
-import com.krishagni.catissueplus.core.administrative.events.InstituteQueryCriteria;
 import com.krishagni.catissueplus.core.administrative.events.SiteDetail;
 import com.krishagni.catissueplus.core.administrative.events.SiteQueryCriteria;
 import com.krishagni.catissueplus.core.administrative.events.SiteSummary;
@@ -209,19 +207,14 @@ public class SitesController {
 	@RequestMapping(method = RequestMethod.GET, value="/{id}/audit-trail")
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody	
-	public List<AuditDetail> getAuditDetails(
-			@PathVariable("id") Long siteId,
-			@RequestParam(value = "maxRecs", required = false, defaultValue = "25") int maxRecs,
-			@RequestParam(value = "startAt", required = false, defaultValue = "0") int  startAt) {
+	public AuditDetail getAuditDetails(@PathVariable("id") Long siteId) {
 		
 		RequestAudit req = new RequestAudit();
 		req.setEntityType(Site.class.getSimpleName());
 		req.setEntityId(siteId);
-		req.setMaxRecs(maxRecs);
-		req.setStartAt(startAt);
 		
 		RequestEvent<RequestAudit> reqEvent = new RequestEvent<RequestAudit>(req);
-		ResponseEvent<List<AuditDetail>> resp = auditSvc.getDetailedAudit(reqEvent);
+		ResponseEvent<AuditDetail> resp = auditSvc.getAuditDetail(reqEvent);
 		resp.throwErrorIfUnsuccessful();
 		return resp.getPayload();
 	}
