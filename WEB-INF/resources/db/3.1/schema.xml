@@ -670,4 +670,12 @@
       referencedTableName="OS_SPECIMEN_REQUESTS"
       referencedColumnNames="IDENTIFIER" />
   </changeSet>
+
+  <changeSet author="vgaikwad" id="Number of copies of labels to print">
+    <addColumn tableName="OS_LABEL_PRINT_JOB_ITEMS">
+      <column name="COPIES" type="${int.type}">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+  </changeSet>
 </databaseChangeLog>
