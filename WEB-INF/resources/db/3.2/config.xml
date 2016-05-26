@@ -46,4 +46,48 @@
       //
     </sql>
   </changeSet>
+
+  <changeSet author="vgaikwad" id="To case insensitive search in database, make all indices case insensitive" dbms="oracle">
+    <sql endDelimiter="//">
+      declare cursor create_ci_indices is
+        select
+          index_name, table_name, column_name
+        from
+          user_ind_columns
+        where
+          char_length > 0 and
+          table_name not in ('CATISSUE_AUTH_PROVIDERS', 'CATISSUE_AUTH_DOMAINS', 'OS_AUTH_PROVIDERS', 'OS_AUTH_DOMAINS', 'CATISSUE_CDE') and
+          index_name not in ('OS_SPEC_QTY_UNITS_UQ', 'CATISSUE_CP_PART_UNIQUE_KEY', 'USRID_TAGLABEL_UNIQUE_KEY')
+        order by
+          index_name;
+
+        rec_index create_ci_indices%ROWTYPE;
+        constraint_name user_constraints.constraint_name%TYPE;
+      begin
+        open create_ci_indices;
+        loop
+          fetch create_ci_indices INTO rec_index;
+          exit when create_ci_indices%NOTFOUND;
+
+          begin
+            select constraint_name into constraint_name FROM user_constraints where index_name = rec_index.index_name;
+            dbms_output.put_line('Dropping unique/primary constraint ' ||  rec_index.index_name);
+            execute immediate 'alter table ' || rec_index.table_name || ' drop constraint ' || rec_index.index_name || '';
+            dbms_output.put_line('creating unique index ' || rec_index.index_name);
+            execute immediate 'create unique index ' || rec_index.index_name || ' on ' || rec_index.table_name || ' (NLSSORT (' || rec_index.column_name || ', ''NLS_SORT=BINARY_CI'') )';
+
+            exception when no_data_found
+            then
+              dbms_output.put_line('Dropping index ' || rec_index.index_name);
+              execute immediate 'drop index '|| rec_index.index_name;
+              dbms_output.put_line('Creating index ' || rec_index.index_name);
+              execute IMMEDIATE 'create index ' || rec_index.index_name || ' on ' || rec_index.table_name || ' (NLSSORT (' || rec_index.column_name || ', ''NLS_SORT=BINARY_CI'') )';
+          end;
+        end loop;
+        dbms_output.put_line('Total number of altered indices : '||create_ci_indices%ROWCOUNT);
+        close create_ci_indices;
+      end;
+      //
+    </sql>
+  </changeSet>
 </databaseChangeLog>
