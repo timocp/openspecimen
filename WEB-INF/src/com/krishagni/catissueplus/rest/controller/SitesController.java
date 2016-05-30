@@ -17,8 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import com.krishagni.catissueplus.core.administrative.events.InstituteDetail;
-import com.krishagni.catissueplus.core.administrative.events.InstituteQueryCriteria;
+import com.krishagni.catissueplus.core.administrative.domain.Site;
 import com.krishagni.catissueplus.core.administrative.events.SiteDetail;
 import com.krishagni.catissueplus.core.administrative.events.SiteQueryCriteria;
 import com.krishagni.catissueplus.core.administrative.events.SiteSummary;
@@ -35,7 +34,7 @@ import com.krishagni.catissueplus.core.de.services.FormService;
 
 @Controller
 @RequestMapping("/sites")
-public class SitesController {
+public class SitesController extends BaseController{
 
 	@Autowired
 	private SiteService siteService;
@@ -197,6 +196,12 @@ public class SitesController {
 		resp.throwErrorIfUnsuccessful();
 		
 		return CollectionUtils.isNotEmpty(resp.getPayload()) ? resp.getPayload().get(0) : null;
+	}
+
+
+	@Override
+	public String getObjectType() {
+		return Site.getEntityName();
 	}
 
 }

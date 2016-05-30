@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import com.krishagni.catissueplus.core.administrative.domain.User;
 import com.krishagni.catissueplus.core.administrative.events.InstituteDetail;
 import com.krishagni.catissueplus.core.administrative.events.PasswordDetails;
 import com.krishagni.catissueplus.core.administrative.events.UserDetail;
@@ -31,7 +32,7 @@ import com.krishagni.rbac.events.SubjectRoleDetail;
 
 @Controller
 @RequestMapping("/users")
-public class UserController {
+public class UserController extends BaseController{
 
 	@Autowired
 	private UserService userService;
@@ -247,6 +248,11 @@ public class UserController {
 		ResponseEvent<InstituteDetail> resp = userService.getInstitute(new RequestEvent<Long>(id));
 		resp.throwErrorIfUnsuccessful();
 		return resp.getPayload();
+	}
+
+	@Override
+	public String getObjectType() {
+		return User.getEntityName();
 	}
 
 }

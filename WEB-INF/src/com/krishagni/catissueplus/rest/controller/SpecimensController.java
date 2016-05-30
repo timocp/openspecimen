@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.krishagni.catissueplus.core.administrative.services.DistributionOrderService;
 import com.krishagni.catissueplus.core.administrative.services.ShipmentService;
+import com.krishagni.catissueplus.core.biospecimen.domain.Specimen;
 import com.krishagni.catissueplus.core.biospecimen.domain.factory.SpecimenErrorCode;
 import com.krishagni.catissueplus.core.biospecimen.events.SpecimenDeleteCriteria;
 import com.krishagni.catissueplus.core.biospecimen.events.SpecimenDetail;
@@ -47,7 +48,7 @@ import com.krishagni.catissueplus.core.de.services.FormService;
 
 @Controller
 @RequestMapping("/specimens")
-public class SpecimensController {
+public class SpecimensController extends BaseController {
 
 	@Autowired
 	private SpecimenService specimenSvc;
@@ -343,5 +344,10 @@ public class SpecimensController {
 		ResponseEvent<List<FormRecordsList>> resp = formSvc.getFormRecords(getRequest(opDetail));
 		resp.throwErrorIfUnsuccessful();
 		return resp.getPayload();		
+	}
+
+	@Override
+	public String getObjectType() {
+		return Specimen.getEntityName();
 	}
 }
