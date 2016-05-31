@@ -1,12 +1,12 @@
 angular.module("os.biospecimen.extensions")
   .directive("osExtensionOverview", function(ExtensionsUtil) {
 
-     function processAttrs(formId, recordId, objectId, attrs) {
+     function processAttrs(formId, recordId, attrs) {
        angular.forEach(attrs, function(attr) {
          if (attr.type == 'subForm') {
            if (attr.value instanceof Array) {
              angular.forEach(attr.value, function(sfAttrs) {
-               processAttrs(formId, objectId, sfAttrs);
+               processAttrs(formId, recordId, sfAttrs);
              })
            }
          } else {
@@ -28,7 +28,7 @@ angular.module("os.biospecimen.extensions")
        },
 
        link: function(scope, element, attrs) {
-         processAttrs(scope.extObject.formId, scope.extObject.id, scope.extObject.objectId, scope.extObject.attrs);
+         processAttrs(scope.extObject.formId, scope.extObject.id, scope.extObject.attrs);
        }
      }
   });
