@@ -19,7 +19,8 @@ var osApp = angular.module('openspecimen', [
   'ui.autocomplete',
   'mgcrea.ngStrap.popover',
   'angular-loading-bar',
-  'pascalprecht.translate'
+  'pascalprecht.translate',
+  'chart.js'
   ]);
 
 osApp.config(function(
@@ -38,7 +39,7 @@ osApp.config(function(
     };
 
     $translatePartialLoaderProvider.addPart('modules');
-    $translateProvider.useSanitizeValueStrategy('escapeParameters');
+    $translateProvider.useSanitizeValueStrategy(null);
     $translateProvider.useLoader('$translatePartialLoader', {  
       urlTemplate: '{part}/i18n/{lang}.js',
       loadFailureHandler: 'i18nErrHandler'
@@ -52,6 +53,14 @@ osApp.config(function(
           $scope.alerts = Alerts.messages;
         }
       })
+      .state('alert-msg', {
+        url: '/alert?redirectTo&type&msg',
+        controller: function($state, $stateParams, Alerts) {
+          Alerts.add($stateParams.msg, $stateParams.type);
+          $state.go($stateParams.redirectTo || 'home');
+        },
+        parent: 'default'
+      })
       .state('signed-in', {
         abstract: true,
         templateUrl: 'modules/common/appmenu.html',
@@ -59,8 +68,8 @@ osApp.config(function(
           currentUser: function(User) {
             return User.getCurrentUser();
           },
-          authInit: function(AuthorizationService) {
-            return AuthorizationService.initializeUserRights();
+          authInit: function(currentUser, AuthorizationService) {
+            return AuthorizationService.initializeUserRights(currentUser);
           }
         },
         controller: 'SignedInCtrl'

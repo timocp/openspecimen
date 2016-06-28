@@ -1,4 +1,16 @@
 angular.module('openspecimen')
+  .directive('osCloseSelectOnBlur', function() {
+    return {
+      require: 'uiSelect',
+      link: function(scope, element, attrs, ctrl) {
+        ctrl.searchInput.on('blur', function() {
+          if (!!ctrl.search) {
+            ctrl.select(ctrl.search, true);
+          }
+        });
+      }
+    }
+  })
   .directive('osSelect', function() {
     function linker(scope, element, attrs) {
       var changeFn = undefined
@@ -24,11 +36,11 @@ angular.module('openspecimen')
       restrict: 'E',
       compile: function(tElem, tAttrs) {
         var multiple = angular.isDefined(tAttrs.multiple);
-        var uiSelect = angular.element(multiple ? '<ui-select multiple/>' : '<ui-select/>')
+        var uiSelect = angular.element(multiple ? '<ui-select multiple/>' : '<ui-select os-close-select-on-blur/>')
           .attr('ng-model', tAttrs.ngModel)
           .attr('ng-disabled', tAttrs.ngDisabled)
           .attr('reset-search-input', true)
-          .attr('append-to-body', !!tAttrs.appendToBody)
+          .attr('append-to-body', tAttrs.appendToBody == true)
           .attr('os-tabable', !!tAttrs.osTabable);
     
         if (tAttrs.onSelect) {
@@ -55,6 +67,11 @@ angular.module('openspecimen')
         } else {
           uiSelectChoices.attr('repeat', "item in " + tAttrs.list + " | filter: $select.search");
         }
+
+        if (tAttrs.groupBy) {
+          uiSelectChoices.attr('group-by', tAttrs.groupBy);
+        }
+
         uiSelectChoices.append('<span ng-bind-html="' + searchItem + ' | highlight: $select.search"></span>');
 
         if (multiple) {

@@ -84,6 +84,9 @@ public class SpecimensController extends BaseController {
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody	
 	public List<?> getSpecimens(
+			@RequestParam(value = "cpId", required = false)
+			Long cpId,
+
 			@RequestParam(value = "cprId", required = false) 
 			Long cprId,
 			
@@ -130,7 +133,11 @@ public class SpecimensController extends BaseController {
 			} else {
 				resp = specimenSvc.getSpecimens(getRequest(labels));
 			}
-			
+
+			resp.throwErrorIfUnsuccessful();
+			return resp.getPayload();
+		} else if (cpId != null) {
+			ResponseEvent<List<SpecimenInfo>> resp = specimenSvc.getPrimarySpecimensByCp(getRequest(cpId));
 			resp.throwErrorIfUnsuccessful();
 			return resp.getPayload();
 		} else {
@@ -316,22 +323,17 @@ public class SpecimensController extends BaseController {
 		resp.throwErrorIfUnsuccessful();
 		return resp.getPayload();
 	}
-	
+
 	@RequestMapping(method = RequestMethod.GET, value="/extension-form")
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
-	public FormCtxtSummary getForm(
-			@RequestParam(value = "lineage", required = false, defaultValue="New")
-			String lineage) {
+	public Map<String, Object> getForm(
+			@RequestParam(value = "cpId", required = false, defaultValue = "-1")
+			Long cpId) {
 
-		ListEntityFormsOp op = new ListEntityFormsOp();
-		op.setEntityType(EntityType.SPECIMEN_EXTN);
-
-		ResponseEvent<List<FormCtxtSummary>> resp = formSvc.getEntityForms(getRequest(op));
-		resp.throwErrorIfUnsuccessful();
-		return CollectionUtils.isNotEmpty(resp.getPayload()) ? resp.getPayload().get(0) : null;
+		return formSvc.getExtensionInfo(cpId, Specimen.EXTN);
 	}
-	
+
 	private <T> RequestEvent<T> getRequest(T payload) {
 		return new RequestEvent<T>(payload);
 	}
