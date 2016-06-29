@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import com.krishagni.catissueplus.core.administrative.domain.Institute;
 import com.krishagni.catissueplus.core.administrative.events.InstituteDetail;
 import com.krishagni.catissueplus.core.administrative.events.InstituteQueryCriteria;
 import com.krishagni.catissueplus.core.administrative.events.InstituteSummary;
@@ -28,7 +27,7 @@ import com.krishagni.catissueplus.core.common.events.ResponseEvent;
 
 @Controller
 @RequestMapping("/institutes")
-public class InstitutesController extends BaseController{
+public class InstitutesController {
 
 	@Autowired
 	private InstituteService instituteSvc;
@@ -142,10 +141,5 @@ public class InstitutesController extends BaseController{
 		resp.throwErrorIfUnsuccessful();
 		
 		return resp.getPayload();
-	}
-
-	@Override
-	public String getObjectType() {
-		return Institute.class.getSimpleName();
 	}
 }
