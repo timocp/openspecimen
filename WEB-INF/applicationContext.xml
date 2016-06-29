@@ -265,9 +265,11 @@
     <property name="entityAuditTables">
       <map>
         <entry key="Specimen" value="catissue_specimen_aud"/>
+        <entry key="Site" value="catissue_site_aud"/>
+        <entry key="User" value="catissue_user_aud"/>
+        <entry key="Institute" value="catissue_institution_aud"/>
       </map>
     </property>
-    
   </bean> 
 
   <bean id="userAuthService" class="com.krishagni.catissueplus.core.auth.services.impl.UserAuthenticationServiceImpl">

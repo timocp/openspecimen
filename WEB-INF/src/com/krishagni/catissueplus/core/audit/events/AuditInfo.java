@@ -8,13 +8,13 @@ import com.krishagni.catissueplus.core.common.events.UserSummary;
 public class AuditInfo {
 	private Long objectId;
 
-  private Date createdOn;
+	private Date createdOn;
 
-  private UserSummary createdBy;
+	private UserSummary createdBy;
 
-  private Date lastUpdatedOn;
+	private Date lastUpdatedOn;
 
-  private UserSummary lastUpdatedBy;
+	private UserSummary lastUpdatedBy;
 
 	public Long getObjectId() {
 		return objectId;

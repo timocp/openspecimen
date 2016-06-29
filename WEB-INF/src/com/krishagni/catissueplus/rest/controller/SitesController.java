@@ -190,6 +190,6 @@ public class SitesController extends BaseController{
 
 	@Override
 	public String getObjectType() {
-		return Site.getEntityName();
+		return Site.class.getSimpleName();
 	}
 }

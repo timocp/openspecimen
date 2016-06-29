@@ -69,32 +69,32 @@ public class AuditDaoImpl extends AbstractDao<UserApiCallLog> implements AuditDa
 	}
 
 	private static final String GET_COMMON_AUDIT_DETAIL_SQL = 
-			" select " + 
-			"   creator.c_id, creator.c_first_name, creator.c_last_name, creator.c_domain_name, creator.c_email_address, creator.createdOn, " +
-			"   modifier.m_id, modifier.m_first_name, modifier.m_last_name, modifier.m_domain_name, modifier.m_email_address, modifier.modifiedOn " +
-			" from " +
-			"   (select " +
-			"      aud.identifier, u.identifier as c_id, u.first_name as c_first_name, u.last_name as c_last_name, domain_name as c_domain_name, " +
-			"      email_address as c_email_address, institution_id as c_institution_id, rev.revtstmp as createdOn " +
-			"    from " +
-			"      os_revisions rev " +  
-      "      inner join %s aud on rev.rev = aud.rev " +
-      "      inner join catissue_user u on u.identifier = rev.user_id " +
-      "    where " +
-      "      aud.identifier = :entityId and aud.revtype = 0) creator " +
-      "   left join " + 
-	    "   (select " +
-      "      aud.identifier, u.identifier as m_id, u.first_name as m_first_name, u.last_name as m_last_name, domain_name as m_domain_name, " +
-	    "      email_address as m_email_address, institution_id as m_institution_id, rev.revtstmp as modifiedOn " +
-	    "    from " +
-      "      os_revisions rev " +  
-      "      inner join %s aud on rev.rev = aud.rev " + 
-      "      inner join catissue_user u on u.identifier = rev.user_id " +
-      "    where " +
-      "      aud.identifier = :entityId and aud.revtype = 1 " +
-      "    order by " +
-      "      rev.revtstmp desc limit 1) modifier " +
-      "   on creator.identifier = modifier.identifier ";
+		"select " + 
+		"  creator.c_id, creator.c_first_name, creator.c_last_name, creator.c_domain_name, creator.c_email_address, creator.createdOn, " +
+		"  modifier.m_id, modifier.m_first_name, modifier.m_last_name, modifier.m_domain_name, modifier.m_email_address, modifier.modifiedOn " +
+		"from " +
+		"  (select " +
+		"     aud.identifier, u.identifier as c_id, u.first_name as c_first_name, u.last_name as c_last_name, domain_name as c_domain_name, " +
+		"     email_address as c_email_address, institution_id as c_institution_id, rev.revtstmp as createdOn " +
+		"   from " +
+		"     os_revisions rev " +  
+		"     inner join %s aud on rev.rev = aud.rev " +
+		"     inner join catissue_user u on u.identifier = rev.user_id " +
+		"   where " +
+		"     aud.identifier = :entityId and aud.revtype = 0) creator " +
+		"  left join " + 
+		"   (select " +
+		"      aud.identifier, u.identifier as m_id, u.first_name as m_first_name, u.last_name as m_last_name, domain_name as m_domain_name, " +
+		"      email_address as m_email_address, institution_id as m_institution_id, rev.revtstmp as modifiedOn " +
+		"    from " +
+		"      os_revisions rev " +  
+		"      inner join %s aud on rev.rev = aud.rev " + 
+		"      inner join catissue_user u on u.identifier = rev.user_id " +
+		"    where " +
+		"      aud.identifier = :entityId and aud.revtype = 1 " +
+		"    order by " +
+		"      rev.revtstmp desc limit 1) modifier " +
+		"  on creator.identifier = modifier.identifier ";
 	
 	private static final String FQN = UserApiCallLog.class.getName();
 

@@ -252,7 +252,7 @@ public class UserController extends BaseController{
 
 	@Override
 	public String getObjectType() {
-		return User.getEntityName();
+		return User.class.getSimpleName();
 	}
 
 }

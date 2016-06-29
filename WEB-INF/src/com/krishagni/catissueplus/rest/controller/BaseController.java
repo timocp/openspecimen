@@ -24,13 +24,12 @@ public abstract class BaseController {
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}/audit-info")
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
-  public AuditInfo getAuditInfo(@PathVariable("id") Long objectId) {
+	public AuditInfo getAuditInfo(@PathVariable("id") Long objectId) {
 		RequestAudit req = new RequestAudit(getObjectType(), objectId);
-
 		ResponseEvent<AuditInfo> res = auditSvc.getAuditInfo(new RequestEvent<RequestAudit>(req));
-    return res.getPayload();
+		return res.getPayload();
   }
 
-  public abstract String getObjectType();
+	public abstract String getObjectType();
 
 }

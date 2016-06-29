@@ -14,8 +14,8 @@ public interface AuditService {
 
 	public long getTimeSinceLastApiCall(Long userId, String token);
 
-  public ResponseEvent<AuditInfo> getAuditInfo(RequestEvent<RequestAudit> req);
+	public ResponseEvent<AuditInfo> getAuditInfo(RequestEvent<RequestAudit> req);
 
-  public void addAuditTable(String objectType, String tableName);
+	public void addAuditTable(String objectType, String tableName);
 
 }

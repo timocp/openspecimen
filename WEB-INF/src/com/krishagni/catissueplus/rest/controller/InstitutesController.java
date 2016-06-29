@@ -146,6 +146,6 @@ public class InstitutesController extends BaseController{
 
 	@Override
 	public String getObjectType() {
-		return Institute.getEntityName();
+		return Institute.class.getSimpleName();
 	}
 }
