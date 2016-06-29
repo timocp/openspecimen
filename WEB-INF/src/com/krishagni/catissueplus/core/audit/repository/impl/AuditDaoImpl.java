@@ -49,14 +49,14 @@ public class AuditDaoImpl extends AbstractDao<UserApiCallLog> implements AuditDa
 		detail.setCreatedOn(getTimeStamp(row[5]));
 
 		UserSummary modifier = new UserSummary();
-		modifier.setId(Long.valueOf(String.valueOf(row[0])));
-		modifier.setFirstName(String.valueOf(row[1]));
-		modifier.setLastName(String.valueOf(row[2]));
-		modifier.setDomain(String.valueOf(row[3]));
-		modifier.setEmailAddress(String.valueOf(row[4]));
+		modifier.setId(Long.valueOf(String.valueOf(row[6])));
+		modifier.setFirstName(String.valueOf(row[7]));
+		modifier.setLastName(String.valueOf(row[8]));
+		modifier.setDomain(String.valueOf(row[9]));
+		modifier.setEmailAddress(String.valueOf(row[10]));
 
 		detail.setLastUpdatedBy(modifier);
-		detail.setLastUpdatedOn(getTimeStamp(row[5]));
+		detail.setLastUpdatedOn(getTimeStamp(row[11]));
 
 		return detail;
 	}

@@ -262,6 +262,12 @@
   
   <bean id="auditService" class="com.krishagni.catissueplus.core.audit.services.impl.AuditServiceImpl">
     <property name="daoFactory" ref="biospecimenDaoFactory"/>
+    <property name="entityAuditTables">
+      <map>
+        <entry key="Specimen" value="catissue_specimen_aud"/>
+      </map>
+    </property>
+    
   </bean> 
 
   <bean id="userAuthService" class="com.krishagni.catissueplus.core.auth.services.impl.UserAuthenticationServiceImpl">

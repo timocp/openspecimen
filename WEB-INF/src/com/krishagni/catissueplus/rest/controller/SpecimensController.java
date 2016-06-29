@@ -350,6 +350,6 @@ public class SpecimensController extends BaseController {
 
 	@Override
 	public String getObjectType() {
-		return Specimen.class.getName();
+		return Specimen.class.getSimpleName();
 	}
 }

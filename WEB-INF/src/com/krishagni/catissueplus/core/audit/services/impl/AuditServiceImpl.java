@@ -20,10 +20,14 @@ public class AuditServiceImpl implements AuditService {
 
 	private DaoFactory daoFactory;
 
-	private Map<String, String> ENTITY_AUDIT_TABLE_MAP = new HashMap<String, String>();
+	private Map<String, String> entityAuditTables = new HashMap<String, String>();
 
 	public void setDaoFactory(DaoFactory daoFactory) {
 		this.daoFactory = daoFactory;
+	}
+	
+	public void setEntityAuditTables(Map<String, String> entityAuditTables) {
+		this.entityAuditTables = entityAuditTables;
 	}
 
 	@Override
@@ -46,7 +50,7 @@ public class AuditServiceImpl implements AuditService {
 		RequestAudit reqEntity = req.getPayload();
 		String entityType = reqEntity.getObjectType();
 
-		String auditTable = ENTITY_AUDIT_TABLE_MAP.get(entityType);
+		String auditTable = entityAuditTables.get(entityType);
 		if (auditTable == null) {
 			return ResponseEvent.userError(AuditErrorCode.TABLE_NOT_FOUND);
 		}
@@ -59,6 +63,6 @@ public class AuditServiceImpl implements AuditService {
 
 	@Override
 	public void addAuditTable(String objectType, String tableName) {
-		ENTITY_AUDIT_TABLE_MAP.put(objectType, tableName);
+		entityAuditTables.put(objectType, tableName);
 	}
 }

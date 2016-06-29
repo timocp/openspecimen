@@ -27,7 +27,6 @@ public abstract class BaseController {
   public AuditInfo getAuditInfo(@PathVariable("id") Long objectId) {
 		RequestAudit req = new RequestAudit(getObjectType(), objectId);
 
-		auditSvc.addAuditTable(getObjectType(), "catissue_specimen_aud");
 		ResponseEvent<AuditInfo> res = auditSvc.getAuditInfo(new RequestEvent<RequestAudit>(req));
     return res.getPayload();
   }
