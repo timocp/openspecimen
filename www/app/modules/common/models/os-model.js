@@ -156,6 +156,10 @@ angular.module('os.common.models', [])
         return value;
       }
 
+      Model.prototype.getAuditInfo = function () {
+        return $http.get(url + this.$id() + "/audit-info").then(Model.noTransform);
+      };
+
       Model.getExtensionCtxt = function(params) {
         return $http.get(url + "extension-form", {params: params}).then(function(result) { return result.data; });
       }

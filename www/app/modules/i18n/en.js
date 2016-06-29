@@ -1890,5 +1890,13 @@
         "max_recs_in_memory": "In-memory Records Limit",
         "max_recs_in_memory_desc": "Maximum number of query records that are allowed to be cached in-memory. When limit is reached, excessive records are spooled to disk"
       }
+    },
+
+    "entity_info": {
+      "activity": "Activity",
+      "created_on": "Created On",
+      "created_by": "Created By",
+      "updated_on": "Last Modified On",
+      "updated_by": "Last Modified By"
     }
 }
