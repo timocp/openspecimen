@@ -39,26 +39,34 @@ public class AuditDaoImpl extends AbstractDao<UserApiCallLog> implements AuditDa
 	private AuditInfo getRevisionEntity(Object[] row) {
 		AuditInfo detail = new AuditInfo();
 		UserSummary creator = new UserSummary();
-		creator.setId(Long.valueOf(String.valueOf(row[0])));
-		creator.setFirstName(String.valueOf(row[1]));
-		creator.setLastName(String.valueOf(row[2]));
-		creator.setDomain(String.valueOf(row[3]));
-		creator.setEmailAddress(String.valueOf(row[4]));
+		creator.setId(getLong(row[0]));
+		creator.setFirstName(getString(row[1]));
+		creator.setLastName(getString(row[2]));
+		creator.setDomain(getString(row[3]));
+		creator.setEmailAddress(getString(row[4]));
 
 		detail.setCreatedBy(creator);
 		detail.setCreatedOn(getTimeStamp(row[5]));
 
 		UserSummary modifier = new UserSummary();
-		modifier.setId(Long.valueOf(String.valueOf(row[6])));
-		modifier.setFirstName(String.valueOf(row[7]));
-		modifier.setLastName(String.valueOf(row[8]));
-		modifier.setDomain(String.valueOf(row[9]));
-		modifier.setEmailAddress(String.valueOf(row[10]));
+		modifier.setId(getLong(row[6]));
+		modifier.setFirstName(getString(row[7]));
+		modifier.setLastName(getString(row[8]));
+		modifier.setDomain(getString(row[9]));
+		modifier.setEmailAddress(getString(row[10]));
 
 		detail.setLastUpdatedBy(modifier);
 		detail.setLastUpdatedOn(getTimeStamp(row[11]));
 
 		return detail;
+	}
+
+	private String getString(Object val) {
+		return val == null ? "" : String.valueOf(val);
+	}
+	
+	private Long getLong(Object val) {
+		return val == null ? null : Long.valueOf(String.valueOf(val));
 	}
 
 	private Date getTimeStamp(Object timestamp) {
