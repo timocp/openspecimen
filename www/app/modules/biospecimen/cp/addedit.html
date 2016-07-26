@@ -63,7 +63,7 @@
       <div class="form-group">
         <label class="control-label col-xs-3" translate="cp.title">Title</label>
         <div class="col-xs-6">
-          <input type="text" name="title" ng-model="cp.title" 
+          <input type="text" name="title" ng-model="cp.title" ng-maxlength="255"
             class="form-control" placeholder="{{'cp.title' | translate}}" required>
           <div os-field-error field="cpForm.title"></div>
         </div>
