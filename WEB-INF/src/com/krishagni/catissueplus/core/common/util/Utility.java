@@ -35,6 +35,8 @@ import org.apache.commons.lang3.time.DateUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.krishagni.catissueplus.core.common.PdfUtil;
+import com.krishagni.catissueplus.core.common.errors.CommonErrorCode;
+import com.krishagni.catissueplus.core.common.errors.OpenSpecimenException;
 
 import au.com.bytecode.opencsv.CSVWriter;
 
@@ -388,6 +390,16 @@ public class Utility {
 			return new ObjectMapper().writeValueAsString(map);
 		} catch (IOException e) {
 			throw new RuntimeException("Error on converting Map to JSON", e);
+		}
+	}
+
+	public static void isValidMaxLength(String field, String input, int length, OpenSpecimenException ose) {
+		if (input == null) {
+			return;
+		}
+
+		if (input.length() > length) {
+			ose.addError(CommonErrorCode.INVALID_MAX_LENGTH, MessageUtil.getInstance().getMessage(field), length);
 		}
 	}
 }

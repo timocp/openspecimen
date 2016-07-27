@@ -33,6 +33,7 @@ import com.krishagni.catissueplus.core.common.errors.OpenSpecimenException;
 import com.krishagni.catissueplus.core.common.events.UserSummary;
 import com.krishagni.catissueplus.core.common.service.LabelGenerator;
 import com.krishagni.catissueplus.core.common.util.Status;
+import com.krishagni.catissueplus.core.common.util.Utility;
 import com.krishagni.catissueplus.core.de.domain.DeObject;
 
 public class CollectionProtocolFactoryImpl implements CollectionProtocolFactory {
@@ -78,16 +79,16 @@ public class CollectionProtocolFactoryImpl implements CollectionProtocolFactory 
 		setPrincipalInvestigator(input, cp, ose);
 		setCoordinators(input, cp, ose);
 		setDate(input, cp, ose);
+		setIrbIdentifier(input, cp, ose);
 
-		cp.setIrbIdentifier(input.getIrbId());
 		cp.setPpidFormat(input.getPpidFmt());
 		cp.setManualPpidEnabled(input.getManualPpidEnabled());
 		cp.setEnrollment(input.getAnticipatedParticipantsCount());
-		cp.setSopDocumentUrl(input.getSopDocumentUrl());
 		cp.setSopDocumentName(input.getSopDocumentName());
 		cp.setDescriptionURL(input.getDescriptionUrl());
 		cp.setConsentsWaived(input.getConsentsWaived());
 
+		setSopDocumentUrl(input, cp, ose);
 		setVisitNameFmt(input, cp, ose);
 		setLabelFormats(input, cp, ose);
 		setVisitNamePrintMode(input, cp, ose);
@@ -180,29 +181,31 @@ public class CollectionProtocolFactoryImpl implements CollectionProtocolFactory 
  	}
 
 	private void setTitle(CollectionProtocolDetail input, CollectionProtocol result, OpenSpecimenException ose) {
-		if (StringUtils.isBlank(input.getTitle())) {
+		String title = input.getTitle();
+		if (StringUtils.isBlank(title)) {
 			ose.addError(CpErrorCode.TITLE_REQUIRED);
 			return;
 		}
 
-		result.setTitle(input.getTitle());
+		Utility.isValidMaxLength("cp_title", title, 255, ose);
+		result.setTitle(title);
 	}
 	
 	private void setShortTitle(CollectionProtocolDetail input, CollectionProtocol result, OpenSpecimenException ose) {
-		if (StringUtils.isBlank(input.getShortTitle())) {
+		String shortTitle = input.getShortTitle();
+		if (StringUtils.isBlank(shortTitle)) {
 			ose.addError(CpErrorCode.SHORT_TITLE_REQUIRED);
 			return;
 		}
 
-		result.setShortTitle(input.getShortTitle());
+		Utility.isValidMaxLength("cp_short_title", shortTitle, 50, ose);
+		result.setShortTitle(shortTitle);
 	}
 	
 	private void setCode(CollectionProtocolDetail input, CollectionProtocol result, OpenSpecimenException ose) {
-		if (StringUtils.isNotBlank(input.getCode())) {
-			result.setCode(input.getCode().trim());
-		} else {
-			result.setCode(null);
-		}
+		String code = input.getCode();
+		Utility.isValidMaxLength("cp_code", code, 16, ose);
+		result.setCode(code != null ? code.trim() : null);
 	}
 
 	private void setPrincipalInvestigator(CollectionProtocolDetail input, CollectionProtocol result, OpenSpecimenException ose) {
@@ -253,6 +256,12 @@ public class CollectionProtocolFactoryImpl implements CollectionProtocolFactory 
 		}
 	}
 
+	private void setIrbIdentifier(CollectionProtocolDetail input, CollectionProtocol result, OpenSpecimenException ose) {
+		String irbId = input.getIrbId();
+		Utility.isValidMaxLength("cp_irb_id", irbId, 255, ose);
+		result.setIrbIdentifier(input.getIrbId());
+	}
+
 	private void setActivityStatus(CollectionProtocolDetail input, CollectionProtocol result, OpenSpecimenException ose) {
 		String status = input.getActivityStatus();
 		
@@ -290,6 +299,12 @@ public class CollectionProtocolFactoryImpl implements CollectionProtocolFactory 
 		String nameFmt = ensureValidVisitNameFmt(input.getVisitNameFmt(), ose);
 		result.setVisitNameFormat(nameFmt);
 		result.setManualVisitNameEnabled(input.getManualVisitNameEnabled());
+	}
+
+	private void setSopDocumentUrl(CollectionProtocolDetail input, CollectionProtocol result, OpenSpecimenException ose) {
+		String sopDocUrl = input.getSopDocumentUrl();
+		Utility.isValidMaxLength("cp_sop_dec_url", sopDocUrl, 255, ose);
+		result.setSopDocumentUrl(sopDocUrl);
 	}
 	
 	private String ensureValidVisitNameFmt(String nameFmt, OpenSpecimenException ose) {

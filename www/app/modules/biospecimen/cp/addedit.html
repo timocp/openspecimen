@@ -121,7 +121,9 @@
       <div class="form-group">
         <label class="control-label col-xs-3" translate="cp.ethics_approval_id">Ethics Approval ID</label>
         <div class="col-xs-6">
-          <input type="text" ng-model="cp.irbId" class="form-control" placeholder="{{'cp.ethics_approval_id' | translate}}">
+          <input type="text" name="irbId" ng-model="cp.irbId" class="form-control" ng-maxlength="255"
+            placeholder="{{'cp.ethics_approval_id' | translate}}">
+          <div os-field-error field="cpForm.endDate"></div>
         </div>
       </div>
 
@@ -130,8 +132,9 @@
           Anticipated Participants Count
         </label>
         <div class="col-xs-6">
-          <input type="text" ng-model="cp.anticipatedParticipantsCount" class="form-control" 
-            placeholder="{{'cp.anticipated_participants_cnt' | translate}}">
+          <input type="text" name="anticipatedParticipantsCount" ng-model="cp.anticipatedParticipantsCount"
+            class="form-control" ng-pattern="/^[0-9]*$/" placeholder="{{'cp.anticipated_participants_cnt' | translate}}">
+          <div os-field-error field="cpForm.anticipatedParticipantsCount"></div>
         </div>
       </div>
 
@@ -140,9 +143,10 @@
           SOP Document URL
         </label>
         <div class="col-xs-6">
-          <input type="text" ng-model="cp.sopDocumentUrl" class="form-control" 
-            placeholder="{{'cp.sop_document_url' | translate}}"
+          <input type="text" name="sopDocumentUrl" ng-model="cp.sopDocumentUrl" class="form-control" 
+            placeholder="{{'cp.sop_document_url' | translate}}" ng-maxlength="255"
             ng-disabled="!!sopDocUploader.ctrl.data || !!cp.sopDocumentName">
+          <div os-field-error field="cpForm.sopDocumentUrl"></div>
         </div>
       </div>
 
