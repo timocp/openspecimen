@@ -79,6 +79,13 @@ angular.module('os.biospecimen.cp',
                 showImportType: false,
                 importType:     'CREATE'
               });
+            } else if (objectType == 'otherCpr') {
+              angular.extend(importDetail, {
+                title:          'participant.bulk_reg_to_other_protocols',
+                showImportType: false,
+                importType:     'CREATE'
+              });
+
             } else if (objectType == 'participant') {
               angular.extend(importDetail, {
                 title:          'participant.bulk_update_participants',
@@ -148,7 +155,7 @@ angular.module('os.biospecimen.cp',
               breadcrumbs: [{state: 'cp-list', title: 'cp.list'}],
               title: 'cp.bulk_import_biospecimen_obj_jobs',
               objectTypes: [
-                'cpr', 'participant', 'consent', 'visit', 
+                'cpr', 'otherCpr', 'participant', 'consent', 'visit', 
                 'specimen', 'specimenDerivative', 'specimenAliquot',
                 'masterSpecimen', 'extensions'
               ]

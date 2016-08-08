@@ -35,6 +35,12 @@
               <span translate="participant.registrations">Participant Registrations</span>
             </a>
           </li>
+          <li show-if-allowed="participantResource.createOpts">
+            <a ui-sref="import-biospecimen-objs({objectType: 'otherCpr'})">
+              <i class="fa fa-user"></i>
+              <span translate="participant.reg_to_other_protocols">Register to Other Protocols</span>
+            </a>
+          </li>
           <li show-if-allowed="participantResource.updateOpts">
             <a ui-sref="import-biospecimen-objs({objectType: 'participant'})">
               <i class="fa fa-user"></i>

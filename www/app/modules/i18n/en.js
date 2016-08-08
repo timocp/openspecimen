@@ -323,6 +323,7 @@
     },
 
     "bulk_reg_participants": "Bulk Register Participants",
+    "bulk_reg_to_other_protocols": "Bulk Register to Other Protocols",
     "bulk_update_participants": "Bulk Update Participants",
     "bulk_import_master_specimens": "Bulk Import Master Specimens",
     "part_updates": "Participant Updates",
@@ -330,6 +331,7 @@
     "consents": "Consents",
     "bulk_import_consents": "Bulk Import Consents",
     "registrations": "Participant Registrations",
+    "reg_to_other_protocols": "Register to Other Protocols",
     "master_specimens": "Master Specimens",
     "registered_cps": "Registered Protocols",
     "other_cps": "Other Protocols",
@@ -1397,6 +1399,7 @@
       "site": "Sites",
       "storageContainer": "Storage Containers",
       "cpr": "Collection Protocol Registrations",
+      "otherCpr": "Register to Other Protocols",
       "participant": "Participants",
       "consent": "Consents",
       "visit": "Visits",
