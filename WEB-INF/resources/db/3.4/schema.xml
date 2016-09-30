@@ -62,4 +62,16 @@
       tableName="CATISSUE_COLL_PROT_REG"
       columnNames="COLLECTION_PROTOCOL_ID, PROTOCOL_PARTICIPANT_ID"/>
   </changeSet>
+
+  <changeSet author="vpawar" id="Entity audit metadata">
+    <createTable tableName="OS_ENTITY_METADATA">
+      <column name="ENTITY_NAME" type="${text.type}(128)">
+        <constraints nullable="false"/>
+      </column>
+
+      <column name="SQL" type="${clob.type}">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
 </databaseChangeLog>

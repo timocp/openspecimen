@@ -1,12 +1,16 @@
 package com.krishagni.catissueplus.core.audit.services;
 
+import java.util.Date;
+
 import com.krishagni.catissueplus.core.audit.domain.UserApiCallLog;
 
 public interface AuditService {
+
+	void exportRevisionData(String entity, Long entityId, Date from, Date to);
 	
 	// Internal APIs
 	
-	public void insertApiCallLog(UserApiCallLog userAuditLog);
+	void insertApiCallLog(UserApiCallLog userAuditLog);
 	
-	public long getTimeSinceLastApiCall(Long userId, String token);
+	long getTimeSinceLastApiCall(Long userId, String token);
 }
