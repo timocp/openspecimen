@@ -16,10 +16,10 @@
     <property name="userId" column="USER_ID" />
     
     <property name="ipAddress" column="IP_ADDRESS" />
-    
-    <set name="entityNames" table="OS_REVISION_ENTITIES">
+
+    <set name="details" table="OS_ENTITY_REVISION_DETAILS" inverse="true" cascade="all-delete-orphan">
       <key column="REV"/>
-      <element column="ENTITYNAME" type="string"></element>
+      <one-to-many class="com.krishagni.catissueplus.core.audit.domain.EntityRevisionDetail"/>
     </set>
   </class>
 </hibernate-mapping>

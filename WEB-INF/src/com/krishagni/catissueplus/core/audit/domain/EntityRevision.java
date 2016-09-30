@@ -25,7 +25,9 @@ public class EntityRevision {
 	private String ipAddress;
 
 	@ModifiedEntityNames
-	private Set<String> entityNames;
+	private Set<String> modifiedEntityNames;
+
+	private Set<EntityRevisionDetail> details = new HashSet<>();
 
 	public long getId() {
 		return id;
@@ -59,11 +61,19 @@ public class EntityRevision {
 		this.ipAddress = ipAddress;
 	}
 
-	public Set<String> getEntityNames() {
-		return entityNames;
+	public Set<String> getModifiedEntityNames() {
+		return modifiedEntityNames;
 	}
 
-	public void setEntityNames(Set<String> entityNames) {
-		this.entityNames = entityNames;
+	public void setEntityNames(Set<String> modifiedEntityNames) {
+		this.modifiedEntityNames = modifiedEntityNames;
+	}
+
+	public Set<EntityRevisionDetail> getDetails() {
+		return details;
+	}
+
+	public void setDetails(Set<EntityRevisionDetail> details) {
+		this.details = details;
 	}
 }
