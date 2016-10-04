@@ -9,8 +9,7 @@ angular.module('os.biospecimen.cp',
     'os.biospecimen.cp.consents',
     'os.biospecimen.cp.events',
     'os.biospecimen.cp.specimens',
-    'os.biospecimen.cp.catalog',
-    'os.common.audit'
+    'os.biospecimen.cp.catalog'
   ])
 
   .config(function($stateProvider) {
@@ -271,34 +270,6 @@ angular.module('os.biospecimen.cp',
           }
         },
         controller: 'CpReportSettingsCtrl'
-      })
-      .state('cp-detail.revisions', {
-        url: '/revisions',
-        templateUrl: 'modules/common/audit/revision-list.html',
-        resolve: {
-          opts: function($stateParams) {
-            var cpId = $stateParams.cpId;
-
-            return {
-              entityName: 'collection_protocol_bio',
-              entityId  : cpId,
-              exportSref: 'cp-export-revisions({cpId: ' + cpId + '})'
-            };
-          },
-        },
-        controller: 'AuditRevListCtrl',
-        parent: 'cp-detail'
-      })
-      .state('cp-export-revisions', {
-        url: '/:cpId/export-revisions',
-        templateUrl: 'modules/biospecimen/cp/export-revisions.html',
-        resolve: {
-          cp: function($stateParams, CollectionProtocol) {
-            return CollectionProtocol.getById($stateParams.cpId);
-          }
-        },
-        controller: 'CpExportRevisionsCtrl',
-        parent: 'cps'
       })
     });
   
