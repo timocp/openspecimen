@@ -63,13 +63,13 @@
       columnNames="COLLECTION_PROTOCOL_ID, PROTOCOL_PARTICIPANT_ID"/>
   </changeSet>
 
-  <changeSet author="vpawar" id="Entity audit metadata">
-    <createTable tableName="OS_ENTITY_METADATA">
+  <changeSet author="vpawar" id="Audit entity metadata like revision SQL">
+    <createTable tableName="OS_AUDIT_ENTITY_METADATA">
       <column name="ENTITY_NAME" type="${text.type}(128)">
         <constraints nullable="false"/>
       </column>
 
-      <column name="SQL" type="${clob.type}">
+      <column name="REV_SQL" type="${clob.type}">
         <constraints nullable="false"/>
       </column>
     </createTable>

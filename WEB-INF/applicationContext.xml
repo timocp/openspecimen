@@ -176,6 +176,7 @@
     <property name="daoFactory" ref="biospecimenDaoFactory"/>
     <property name="listGenerator" ref="listGenerator"/>
     <property name="rptSettingsFactory" ref="reportSettingsFact"/>
+    <property name="auditSvc" ref="auditService"/>
   </bean>
   
   <bean id="participantFactory" class="com.krishagni.catissueplus.core.biospecimen.domain.factory.impl.ParticipantFactoryImpl">
@@ -255,6 +256,7 @@
   
   <bean id="auditService" class="com.krishagni.catissueplus.core.audit.services.impl.AuditServiceImpl">
     <property name="daoFactory" ref="biospecimenDaoFactory"/>
+    <property name="taskExecutor" ref="taskExecutor"/>
   </bean> 
 
   <bean id="userAuthService" class="com.krishagni.catissueplus.core.auth.services.impl.UserAuthenticationServiceImpl">

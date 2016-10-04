@@ -1,0 +1,69 @@
+<div>
+  <div os-page-header>
+    <div class="os-page-header-content">
+      <ul os-breadcrumbs>
+        <li>
+          <a ui-sref="cp-list">
+            <span translate="cp.list">Collection Protocols</span>
+          </a>
+        </li>
+        <li>
+          <a ui-sref="cp-detail.overview({cpId: cp.id})">
+            <span>{{cp.shortTitle}}</span>
+          </a>
+        </li>
+      </ul>
+      <h3>
+        <span translate="common.audit.export_report">
+          Export Audit Report
+        </span>
+      </h3>
+    </div>
+  </div>
+
+  <div class="container">
+    <form name="expForm" os-form-validator="expForm" class="form-horizontal" novalidate>
+      <div class="form-group">
+        <label class="control-label col-xs-3">
+          <span translate="common.audit.report_interval">Report Interval</span>
+        </label>
+        <div class="col-xs-3">
+          <os-date-picker name="startDate" date="expCtx.startDate" date-only="true"
+            required placeholder="{{'common.audit.start_date' | translate}}">
+          </os-date-picker>
+          <div os-field-error field="expForm.startDate"></div>
+        </div>
+        <div class="col-xs-3">
+          <os-date-picker name="endDate" date="expCtx.endDate" date-only="true"
+            required placeholder="{{'common.audit.end_date' | translate}}">
+          </os-date-picker>
+          <div os-field-error field="expForm.endDate"></div>
+        </div>
+      </div>
+
+      <div class="form-group clearfix">
+        <div class="col-xs-offset-3 col-xs-6 os-text-checkbox">
+          <div class="checkbox">
+            <os-checkbox ng-model="expCtx.incBiospecimen"></os-checkbox>
+          </div>
+          <div class="message os-ctrl-padding-top">
+            <span translate="cp.audit.inc_biospecimen">Include biospecimen records</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="os-divider"></div>
+
+      <div class="form-group">
+        <div class="col-xs-offset-3 col-xs-6">
+          <button class="btn btn-primary" os-form-submit="exportReport()"> 
+            <span translate="common.buttons.export">Export</span>
+          </button>
+          <button class="btn os-btn-text" ng-click="back()">
+            <span translate="common.buttons.discard">Discard</span>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

@@ -26,6 +26,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,6 +35,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.krishagni.catissueplus.core.administrative.domain.Site;
 import com.krishagni.catissueplus.core.administrative.domain.StorageContainer;
 import com.krishagni.catissueplus.core.administrative.domain.User;
+import com.krishagni.catissueplus.core.audit.services.AuditService;
 import com.krishagni.catissueplus.core.biospecimen.ConfigParams;
 import com.krishagni.catissueplus.core.biospecimen.WorkflowUtil;
 import com.krishagni.catissueplus.core.biospecimen.domain.AliquotSpecimensRequirement;
@@ -103,7 +105,7 @@ import com.krishagni.rbac.common.errors.RbacErrorCode;
 import com.krishagni.rbac.service.RbacService;
 
 
-public class CollectionProtocolServiceImpl implements CollectionProtocolService, ObjectStateParamsResolver {
+public class CollectionProtocolServiceImpl implements CollectionProtocolService, ObjectStateParamsResolver, InitializingBean {
 
 	private ThreadPoolTaskExecutor taskExecutor;
 
@@ -122,6 +124,8 @@ public class CollectionProtocolServiceImpl implements CollectionProtocolService,
 	private ListGenerator listGenerator;
 
 	private CpReportSettingsFactory rptSettingsFactory;
+
+	private AuditService auditSvc;
 
 	private Map<String, Function<Map<String, Object>, ListConfig>> listConfigFns = new HashMap<>();
 	
@@ -159,6 +163,10 @@ public class CollectionProtocolServiceImpl implements CollectionProtocolService,
 
 	public void setRptSettingsFactory(CpReportSettingsFactory rptSettingsFactory) {
 		this.rptSettingsFactory = rptSettingsFactory;
+	}
+
+	public void setAuditSvc(AuditService auditSvc) {
+		this.auditSvc = auditSvc;
 	}
 
 	public CollectionProtocolServiceImpl() {
@@ -1192,6 +1200,12 @@ public class CollectionProtocolServiceImpl implements CollectionProtocolService,
 		return daoFactory.getCollectionProtocolDao().getCpIds(key, value);
 	}
 
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		auditSvc.registerRevFileHdrProc(CollectionProtocol.getEntityName(), this::getAuditReportHeaders);
+		auditSvc.registerRevFileHdrProc(CollectionProtocol.getEntityNameBio(), this::getAuditReportHeaders);
+	}
+
 	private CpListCriteria addCpListCriteria(CpListCriteria crit) {
 		Set<Long> cpIds = AccessCtrlMgr.getInstance().getReadableCpIds();
 		if (cpIds != null && cpIds.isEmpty()) {
@@ -1873,6 +1887,16 @@ public class CollectionProtocolServiceImpl implements CollectionProtocolService,
 
 		cfg.setStartAt(startAt);
 		cfg.setMaxResults(maxResults);
+	}
+
+	@PlusTransactional
+	private Map<String, String> getAuditReportHeaders(Long cpId) {
+		CollectionProtocol cp = daoFactory.getCollectionProtocolDao().getById(cpId);
+		if (cp == null) {
+			return Collections.emptyMap();
+		}
+
+		return Collections.singletonMap("$displayName", cp.getShortTitle());
 	}
 
 	private static final String PPID_MSG                     = "cp_ppid";

@@ -672,7 +672,7 @@ public class CollectionProtocolsController {
 			@PathVariable("id")
 			Long cpId,
 
-			@RequestParam(value = "listName", required = true)
+			@RequestParam(value = "listName")
 			String listName,
 
 			@RequestParam(value = "startAt", required = false, defaultValue = "0")

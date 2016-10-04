@@ -52,6 +52,8 @@ public class CollectionProtocol extends BaseExtensionEntity {
 	public static final String EXTN = "CollectionProtocolExtension";
 
 	private static final String ENTITY_NAME = "collection_protocol";
+
+	private static final String ENTITY_NAME_BIO = "collection_protocol_bio";
 	
 	private String title;
 
@@ -123,6 +125,10 @@ public class CollectionProtocol extends BaseExtensionEntity {
 	
 	public static String getEntityName() {
 		return ENTITY_NAME;
+	}
+
+	public static String getEntityNameBio() {
+		return ENTITY_NAME_BIO;
 	}
 	
 	public String getTitle() {

@@ -1,0 +1,77 @@
+<div ng-switch on="histCtx.loading">
+  <div ng-switch-when="true" class="os-alert-container inline show">
+    <div class="alert alert-info">
+      <span translate="common.audit.loading_revisions">Loading revisions. Please wait for a moment ...</span>
+    </div>
+  </div>
+
+  <div ng-switch-default>
+    <div class="os-page-commands">
+      <div class="left">
+        <button show-if-admin class="default" ui-sref="{{histCtx.exportSref}}">
+          <span class="fa fa-download"></span>
+          <span translate="common.buttons.export">Export</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="clearfix">
+      <div class="col-xs-12">
+        <table class="os-table">
+          <thead class="os-table-head">
+            <tr class="row">
+              <th class="col">
+                <span translate="common.audit.revision_id">Revision ID</span>
+              </th>
+              <th class="col">
+                <span translate="common.audit.revision_time">Date & Time</span>
+              </th>
+              <th class="col">
+                <span translate="common.audit.user">User</span>
+              </th>
+              <th class="col">
+                <span translate="common.audit.op">Operation</span>
+              </th>
+              <th class="col">
+                <span translate="common.audit.record_type">Record</span>
+              </th>
+              <th class="col">
+                <span translate="common.audit.record_key">Key</span>
+              </th>
+              <th class="col">
+                <span translate="common.audit.record_value">Value</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody class="os-table-body">
+            <tr class="row" ng-repeat="rev in histCtx.revisions">
+              <td class="col">
+                <span>{{rev.id}}</span>
+              </td>
+              <td class="col">
+                <span>{{rev.time | date: global.dateTimeFmt}}</span>
+              </td>
+              <td class="col">
+                <a ui-sref="user-detail.overview({userId: rev.user.id})">
+                  <span>{{rev.user | osUserDisplayName}}</span>
+                </a>
+              </td>
+              <td class="col">
+                <span>{{rev.op}}</span>
+              </td>
+              <td class="col">
+                <span>{{rev.entityType}}</span>
+              </td>
+              <td class="col">
+                <span>{{rev.entityKey}}</span>
+              </td>
+              <td class="col">
+                <span>{{rev.entityKeyValue}}</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

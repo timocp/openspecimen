@@ -110,6 +110,22 @@
       "list_view": "List View",
       "disable": "Disable",
       "help": "Help"
+    },
+
+    "audit": {
+      "revision_id": "Revision ID",
+      "revision_time": "Date & Time",
+      "user": "User",
+      "op": "Operation",
+      "record_type": "Record Type",
+      "record_key": "Key",
+      "record_value": "Value",
+      "loading_revisions": "Loading revisions. Please wait for a moment ...",
+      "report_interval": "Report Interval",
+      "start_date": "Start Date",
+      "end_date": "End Date",
+      "export_report"  : "Export Audit Report",
+      "report_exported": "Audit report is being prepared. It will be emailed to you in few moments..."
     }
   },
 
@@ -309,7 +325,12 @@
       "none": "Custom report settings not created for the CP. Create by clicking on \"Customise Report\" button.",
       "malformed_metrics": "Metrics Configuration JSON syntax is incorrect.",
       "malformed_data_cfg": "Data Configuration JSON is incorrect."
+    },
+
+    "audit": {
+      "inc_biospecimen": "Include biospecimen records"
     }
+
   },
 
   "participant": {
