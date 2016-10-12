@@ -28,6 +28,26 @@
           <li><a ui-sref="login({logout:true})"  translate="user.logout">Log Out</a></li>
         </ul>
       </li>
+      <li class="dropdown os-notifications" ng-controller="notificationCtrl">
+        <a class="dropdown-toggle" ng-click="markVisited()">
+          <span class="fa fa-bell-o"></span>
+          <span ng-if="!visited" class="os-notify-count">{{notificationCount}}</span>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-right">
+          <li class="header">Notifications</li>
+          <li class="item" ng-class="{'unread': notification.status == 'Unread'}" ng-repeat="notification in notifications">
+            <a ng-click="markAsRead($index)">
+              <span class="msg">{{notification.msg}}</span>
+              <div class="footer" ng-switch on="notification.operation">
+                <span class="date">{{notification.date}}</span>
+                <span ng-switch-when="Create" class="fa fa-plus"></span>
+                <span ng-switch-when="Update" class="fa fa-edit"></span>
+                <span ng-switch-when="Delete" class="fa fa-trash"></span>
+              </div>
+            </a>
+          </li>
+        </ul>
+      </li>
       <os-info></os-info>
       <li ng-if="global.appProps.feedback_enabled">
         <a ng-controller="FeedbackCtrl" ng-click="openFeedbackForm()">
