@@ -1031,6 +1031,12 @@
     "one": "One",
     "two": "Two",
     "dimension": "Dimension",
+    "capacity": "Capacity",
+    "specimens": "specimens",
+    "out_of": "out of",
+    "stored": "Stored",
+    "stored_spmns": "Stored Specimens",
+    "utilisation": "Occupied v/s Free",
     "horizontal_dimension": "Columns",
     "vertical_dimension": "Rows",
     "labeling_scheme": "Labeling Scheme",
@@ -1113,6 +1119,10 @@
 
     "menu_options": {
       "delete": "Delete"
+    },
+
+    "chart": {
+      "top_5_spmn_types": "Top 5 specimen types"
     }
   },
 
@@ -1599,7 +1609,8 @@
     "search_def_list_tip": "Use $$ to search users' default carts",
     "add_child_specimens": "Add Child Specimens",
     "child_specimens_added": "Successfully added {{count}} child specimens",
-    "available_spmns": "Available Specimens"
+    "available_spmns": "Available Specimens",
+    "enter_specimen_label": "Enter specimen labels separated by a comma, tab or newline"
   },
 
   "orders": {
@@ -1936,7 +1947,9 @@
         "pending_spmns_disp_interval": "Anticipated Specimens Display Interval",
         "pending_spmns_disp_interval_desc": "Anticipated specimens will be automatically hidden in specimen tree after specified number of days have elapsed since collection of parent specimen or visit",
         "two_step_patient_reg": "Two Step Participant Registration",
-        "two_step_patient_reg_desc": "Enable or disable two step participant registration workflow"
+        "two_step_patient_reg_desc": "Enable or disable two step participant registration workflow",
+        "add_patient_on_lookup_fail": "Add Participant on No Match",
+        "add_patient_on_lookup_fail_desc": "Allow or disallow users to add new participants when lookup yields no matching participants in two step registration workflow"
       },
 
       "common": {
