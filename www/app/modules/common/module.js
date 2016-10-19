@@ -5,4 +5,4 @@ angular.module('os.common', [
   'os.common.delete',
   'os.common.search',
   'os.common.notifications'
-  ]);
+]);
