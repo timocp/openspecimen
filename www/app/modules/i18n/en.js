@@ -2084,5 +2084,10 @@
       "of": "of",
       "many_more": "many more",
       "records": "records"
+    },
+
+    "notification": {
+      "notifications": "Notifications",
+      "see_more": "See All Notifications"
     }
 }

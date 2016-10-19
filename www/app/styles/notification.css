@@ -1,0 +1,79 @@
+.os-notifications .os-notify-count {
+  position: absolute;
+  top: 4px;
+}
+
+.os-notifications .header {
+  font-size: 12px;
+  border-bottom: 1px solid #c4c4c4;
+}
+
+.os-notifications .footer {
+  text-align: center;
+}
+
+.os-notifications .header span:hover,
+.os-notifications .footer a:hover {
+  background-color: white;
+}
+
+.os-notifications ul {
+  width: 400px;
+  max-height: 80vh;
+  overflow: auto;
+}
+
+.os-notifications .item:hover {
+  box-shadow: 0px 0px 5px rgba(0,0,0,0.3);
+}
+
+.os-notifications .item a {
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid #c4c4c4;
+}
+
+.os-notifications .item .msg {
+  white-space: normal;
+  font-size: 13px;
+  height: 40px;
+}
+
+.os-notifications .item .footer {
+  font-size: 12px;
+  color: #777777;
+}
+
+.os-notifications .item .footer {
+  text-align: left;
+}
+
+.os-notifications .item .footer .date {
+  float: right;
+}
+
+.os-notifications .item .footer .create:before {
+  font-family: FontAwesome;
+  content: "\f0fe";
+  color: #5cb85c;
+}
+
+.os-notifications .item .footer .update:before {
+  font-family: FontAwesome;
+  content: "\f044";
+  color: #f0ad4e;
+}
+
+.os-notifications .item .footer .delete:before {
+  font-family: FontAwesome;
+  content: "\f1f8";
+  color: #d43f3a;
+}
+
+.os-notifications .unread {
+  background-color: #ecf0f7;
+}
+
+.os-modal-body.os-notifications {
+  list-style: none;
+}
