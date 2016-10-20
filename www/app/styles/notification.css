@@ -1,8 +1,8 @@
-.os-notif.os-notify {
+.os-notif.notify {
   background-color: #EB5A46;
 }
 
-.os-notif.os-notify:hover {
+.os-notif.notify:hover {
   background-color: #ff8225;
 }
 
