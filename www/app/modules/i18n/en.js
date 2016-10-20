@@ -2086,8 +2086,8 @@
       "records": "records"
     },
 
-    "notification": {
-      "notifications": "Notifications",
-      "see_more": "See All Notifications"
+    "notif": {
+      "list": "Notifications",
+      "show_more": "Show More Notifications"
     }
 }

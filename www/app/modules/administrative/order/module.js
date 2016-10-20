@@ -123,4 +123,7 @@ angular.module('os.administrative.order',
         controller: 'OrderReturnSpecimensCtrl',
         parent: 'order-root'
       });
+  })
+  .run(function(ObjectStateResolver) {
+    ObjectStateResolver.regObjState("order", "order-detail.overview");
   });

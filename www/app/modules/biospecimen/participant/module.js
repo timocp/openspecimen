@@ -472,7 +472,7 @@ angular.module('os.biospecimen.participant',
       });
   })
 
-  .run(function(QuickSearchSvc, ParticipantSearchSvc) {
+  .run(function(QuickSearchSvc, ParticipantSearchSvc, ObjectStateResolver) {
     var opts = {
       template: 'modules/biospecimen/participant/quick-search.html',
       caption: 'entities.participant',
@@ -481,4 +481,5 @@ angular.module('os.biospecimen.participant',
     };
 
     QuickSearchSvc.register('participant', opts);
+    ObjectStateResolver.regObjState("cpr", "participant-detail.overview");
   });

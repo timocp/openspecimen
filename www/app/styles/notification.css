@@ -1,79 +1,86 @@
-.os-notifications .os-notif-count {
-  position: absolute;
-  top: 4px;
+.os-notif.os-notify {
+  background-color: #EB5A46;
 }
 
-.os-notifications .header {
+.os-notif.os-notify:hover {
+  background-color: #ff8225;
+}
+
+.os-notif ul {
+  width: 400px;
+}
+
+.os-notif .header {
   font-size: 12px;
+  color: #333333;
+  padding: 0px 0px 4px 4px;
   border-bottom: 1px solid #c4c4c4;
 }
 
-.os-notifications .footer {
-  text-align: center;
-}
-
-.os-notifications .header span:hover,
-.os-notifications .footer a:hover {
-  background-color: white;
-}
-
-.os-notifications ul {
-  width: 400px;
+.os-notif .body {
   max-height: 80vh;
   overflow: auto;
 }
 
-.os-notifications .item:hover {
+.os-notif .body .item {
+  border-bottom: 1px solid #c4c4c4;
+  font-weight: normal;
+}
+
+.os-notif .body .item.unread {
+  background-color: #ecf0f7;
+}
+
+.os-notif .body .item a {
+  color: #333333;
+  text-decoration: none;
+}
+
+.os-notif .body .item:hover {
   box-shadow: 0px 0px 5px rgba(0,0,0,0.3);
 }
 
-.os-notifications .item a {
-  display: flex;
-  flex-direction: column;
-  border-bottom: 1px solid #c4c4c4;
+.os-notif .body .item .icon {
+  padding-left: 4px;
 }
 
-.os-notifications .item .msg {
-  white-space: normal;
+.os-notif .body .item .content {
+  display: inline-block;
+  width: 360px;
+}
+
+.os-notif .body .item .content .msg {
   font-size: 13px;
-  height: 40px;
+  display: block;
+  height: 36px;
 }
 
-.os-notifications .item .footer {
+.os-notif .body .item .date {
   font-size: 12px;
   color: #777777;
-}
-
-.os-notifications .item .footer {
-  text-align: left;
-}
-
-.os-notifications .item .footer .date {
   float: right;
 }
 
-.os-notifications .item .footer .create:before {
+.os-notif .body .item .create:before {
   font-family: FontAwesome;
   content: "\f0fe";
   color: #5cb85c;
 }
 
-.os-notifications .item .footer .update:before {
+.os-notif .body .item .update:before {
   font-family: FontAwesome;
   content: "\f044";
   color: #f0ad4e;
 }
 
-.os-notifications .item .footer .delete:before {
+.os-notif .body .item .delete:before {
   font-family: FontAwesome;
   content: "\f1f8";
   color: #d43f3a;
 }
 
-.os-notifications .unread {
-  background-color: #ecf0f7;
-}
-
-.os-modal-body.os-notifications {
-  list-style: none;
+.os-notif div.footer {
+  text-align: center;
+  color: #333333;
+  border-top: 1px solid #c4c4c4;
 }

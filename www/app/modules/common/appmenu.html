@@ -28,31 +28,30 @@
           <li><a ui-sref="login({logout:true})"  translate="user.logout">Log Out</a></li>
         </ul>
       </li>
-      <li class="dropdown os-notifications" ng-controller="NotificationListCtrl">
+      <li class="dropdown os-notif" ng-class="{'os-notify': !!notifCtx.notify}" ng-controller="NotificationListCtrl">
         <a class="dropdown-toggle" ng-click="markVisited()">
-          <span class="fa fa-bell-o"></span>
-          <span ng-if="!notifCtx.visited" class="os-notif-count">{{notifCtx.counter}}</span>
+          <span class="fa fa-bell"></span>
         </a>
-        <ul class="dropdown-menu dropdown-menu-right">
-          <li class="header">
-            <span translate="notification.notifications">Notifications</span>
-          </li>
-          <li class="item" ng-class="{'unread': notification.status == 'UNREAD'}"
-            ng-repeat="notification in notifCtx.notificationList">
-            <a ng-click="markAsRead($index)">
-              <span class="msg">{{notification.msg}}</span>
-              <div class="footer">
-                <span class="date">{{notification.date}}</span>
-                <span ng-class="{'create': notification.operation == 'CREATE',
-                                 'update': notification.operation == 'UPDATE',
-                                 'delete': notification.operation == 'DELETE'}">
+        <ul class="dropdown-menu dropdown-menu-right" ng-click="$event.stopPropagation()">
+          <div class="header">
+            <span translate="notif.list">Notifications</span>
+            <span>({{notifCtx.count}})</span>
+          </div>
+          <div class="body">
+            <li class="item" ng-class="{'unread': notif.status == 'UNREAD'}"
+              ng-repeat="notif in notifCtx.notifications" ng-click="markAsRead($index)">
+              <a ng-href="{{notif.op != 'DELETE' ? notif.url : ''}}">
+                <span class="icon" ng-class="{CREATE: 'create', UPDATE: 'update', DELETE: 'delete'}[notif.op]"></span>
+                <span class="content">
+                  <span class="msg">{{notif.msg}}</span>
+                  <span class="date">{{notif.date}}</span>
                 </span>
-              </div>
-            </a>
-          </li>
-          <li class="footer">
-            <a ng-click="loadMoreNotifications()" translate="notification.see_more">See more notifications</a>
-          </li>
+              </a>
+            </li>
+          </div>
+          <div class="footer" ng-if="notifCtx.showMore">
+            <a ng-click="loadMoreNotifications()" translate="notif.show_more">Show More Notifications</a>
+          </div>
         </ul>
       </li>
       <os-info></os-info>

@@ -1,47 +1,84 @@
 
 angular.module('os.common.notifications.ctrl', [])
-  .controller('NotificationListCtrl', function($scope, $state, NotificationSvc) {
+  .controller('NotificationListCtrl', function($scope, $state, NotificationSvc, ObjectStateResolver, Util) {
+
+    var page = 0, maxResults = 3;
 
     function init() {
-      $scope.notifCtx = {};
-      loadNotifications();
-      $scope.notifCtx.counter = getUnreadNotificationsCount();
-    }
+      $scope.notifCtx = {
+        notifications: [],
+        showMore: false
+      };
 
-    function loadNotifications() {
-      $scope.notifCtx.notificationList = NotificationSvc.getNotifications();
+      getUnreadNotificationsCount();
+      loadNotifications();
+      NotificationSvc.register($scope.pushNotifications);           // For testing purpose
     }
 
     function getUnreadNotificationsCount() {
-      var count = 0;
-      angular.forEach($scope.notifCtx.notificationList, function(notification) {
-        if (notification.status == 'UNREAD')
-          count ++;
-        });
-
-      return count;
+      NotificationSvc.getUnreadNotificationsCount().then(
+        function(count) {
+          $scope.notifCtx.count = count;
+        }
+      );
     }
 
-    $scope.markAsRead = function(index) {
-      var notification = $scope.notifCtx.notificationList[index];
-      if (notification.status == 'UNREAD') {
-        notification.status = 'READ';
-        NotificationSvc.markAsRead(notification.id);
+    function loadNotifications() {
+      var startAt = maxResults * page;
+      NotificationSvc.getNotifications(startAt, maxResults + 1).then(
+        function(notifications) {
+          setNotificationList(notifications);
+        }
+      );
+
+      page++;
+    }
+
+    function setNotificationList(notifications) {
+      if (notifications.length > maxResults) {
+        $scope.notifCtx.showMore = true;
+        notifications.splice(maxResults, notifications.length);
       }
 
-      if (notification.operation == 'DELETE')
-        return;
+      Util.appendAll($scope.notifCtx.notifications, setUrl(notifications));
+    }
 
-      $state.go('notification-state-resolver', {notificationId: notification.id});
+    function setUrl(notifications) {
+      angular.forEach(notifications, function(notif) {
+        if (notif.op != 'DELETE')
+          notif.url = ObjectStateResolver.getUrl(notif.objName, "id", notif.objId);
+      });
+
+      return notifications;
+    }
+
+    function notifyUser() {
+      $scope.notifCtx.notify = true;
+    }
+
+    $scope.loadMoreNotifications = loadNotifications;
+
+    $scope.markAsRead = function(index) {
+      var notification = $scope.notifCtx.notifications[index];
+      if (notification.status == 'UNREAD') {
+        NotificationSvc.markAsRead(notification.id).then(
+          function(resp) {
+            notification.status = 'READ';
+            $scope.notifCtx.count--;
+          }
+        );
+      }
     }
 
     $scope.markVisited = function() {
-      $scope.notifCtx.visited = true;
+      $scope.notifCtx.notify = false;
       NotificationSvc.markVisited();
     }
 
-    $scope.loadMoreNotifications = function() {
-      $scope.notifCtx.notificationList.concat(NotificationSvc.getNotifications());
+    $scope.pushNotifications = function(notifications) {
+      notifyUser();
+      $scope.notifCtx.count += notifications.length;
+      Util.unshiftAll($scope.notifCtx.notifications, setUrl(notifications));
     }
 
     init();
