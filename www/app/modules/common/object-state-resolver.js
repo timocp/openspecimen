@@ -1,20 +1,24 @@
 
 angular.module('openspecimen')
   .factory('ObjectStateResolver', function() {
-    var objStateMap = {};
+    var objViewStateMap = {};
 
-    function regObjState(objName, state) {
-      objStateMap[objName] = state;
+    function regState(objName, state) {
+      objViewStateMap[objName] = state;
     }
 
-    function getUrl(objName, key, value) {
-      return "#/object-state-params-resolver?stateName=" + objStateMap[objName] + "&objectName=" + objName
-        + "&key=" + key + "&value=" + value;
+    function getState(objName, key, value) {
+      return 'object-state-params-resolver({' +
+        'stateName:' + objViewStateMap[objName] +
+        ',objectName:' + objName +
+        ',key:' + key +
+        ',value:' + value +
+      '})';
     }
 
     return {
-      regObjState: regObjState,
+      regState: regState,
 
-      getUrl: getUrl
+      getState: getState
     }
   });

@@ -57,5 +57,5 @@ angular.module('os.administrative.dp',
       });
   })
   .run(function(ObjectStateResolver) {
-    ObjectStateResolver.regObjState("distributionProtocol", "dp-detail.overview");
+    ObjectStateResolver.regState('distributionProtocol', 'dp-detail.overview');
   });

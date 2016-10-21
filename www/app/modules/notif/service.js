@@ -1,6 +1,6 @@
 
-angular.module('os.common.notifications.service', [])
-  .service('NotificationSvc', function($q, $timeout) {
+angular.module('os.common.notif')
+  .service('NotifSvc', function($q, $timeout) {
 
     var notifications = [
       {id: "1", msg: "You have been added as PI in Test CP", op: "CREATE", objName: "cp",
@@ -33,7 +33,7 @@ angular.module('os.common.notifications.service', [])
       // $http call to get all notification list.
     }
 
-    function getUnreadNotifCount() {
+    function getUnreadCount() {
       return getPromise(3);
       // $http call to get notification based on id.
     }
@@ -59,7 +59,7 @@ angular.module('os.common.notifications.service', [])
 
       getNotifications: getNotifications,
 
-      getUnreadNotificationsCount: getUnreadNotifCount,
+      getUnreadCount: getUnreadCount,
 
       markAsRead: markAsRead,
 

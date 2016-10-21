@@ -83,5 +83,5 @@ angular.module('os.administrative.site',
       });
   })
   .run(function(ObjectStateResolver) {
-    ObjectStateResolver.regObjState("site", "site-detail.overview");
+    ObjectStateResolver.regState('site', 'site-detail.overview');
   });

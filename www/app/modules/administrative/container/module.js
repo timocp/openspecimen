@@ -188,5 +188,5 @@ angular.module('os.administrative.container',
     };
 
     QuickSearchSvc.register('container', opts);
-    ObjectStateResolver.regObjState("container", "container-detail.overview");
+    ObjectStateResolver.regState('container', 'container-detail.overview');
   });

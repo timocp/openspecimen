@@ -146,5 +146,5 @@ angular.module('os.biospecimen.visit', [
     };
 
     QuickSearchSvc.register('visit', opts);
-    ObjectStateResolver.regObjState("visit", "visit-detail.overview");
+    ObjectStateResolver.regState('visit', 'visit-detail.overview');
   });

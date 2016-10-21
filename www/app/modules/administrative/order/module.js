@@ -125,5 +125,5 @@ angular.module('os.administrative.order',
       });
   })
   .run(function(ObjectStateResolver) {
-    ObjectStateResolver.regObjState("order", "order-detail.overview");
+    ObjectStateResolver.regState('order', 'order-detail.overview');
   });

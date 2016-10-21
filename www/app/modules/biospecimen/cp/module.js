@@ -273,6 +273,6 @@ angular.module('os.biospecimen.cp',
       })
     })
     .run(function(ObjectStateResolver) {
-      ObjectStateResolver.regObjState("cp", "cp-detail.overview");
+      ObjectStateResolver.regState('cp', 'cp-detail.overview');
     });
   

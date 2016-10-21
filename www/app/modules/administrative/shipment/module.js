@@ -147,5 +147,5 @@ angular.module('os.administrative.shipment',
       })
   })
   .run(function(ObjectStateResolver) {
-    ObjectStateResolver.regObjState("shipment", "shipment-detail.overview");
+    ObjectStateResolver.regState('shipment', 'shipment-detail.overview');
   });
