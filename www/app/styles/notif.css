@@ -6,6 +6,11 @@
   background-color: #ff8225;
 }
 
+.os-notif .unread-count {
+  position: absolute;
+  top: 2px;
+}
+
 .os-notif ul {
   width: 400px;
 }

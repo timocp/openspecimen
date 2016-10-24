@@ -28,9 +28,10 @@
           <li><a ui-sref="login({logout:true})"  translate="user.logout">Log Out</a></li>
         </ul>
       </li>
-      <li class="dropdown os-notif" ng-class="{'notify': !!notifCtx.newNotifs}" ng-controller="NotifListCtrl">
-        <a class="dropdown-toggle" ng-click="markVisited()">
+      <li class="dropdown os-notif" ng-class="{'notify': notifCtx.newNotifCount > 0}" ng-controller="NotifListCtrl">
+        <a class="dropdown-toggle" ng-click="loadNotifs()">
           <span class="fa fa-bell"></span>
+          <span ng-if="notifCtx.newNotifCount > 0" class="unread-count">{{notifCtx.newNotifCount}}</span>
         </a>
         <ul class="dropdown-menu dropdown-menu-right" ng-click="$event.stopPropagation()">
           <div class="header">
@@ -40,7 +41,7 @@
           <div class="body">
             <li class="item" ng-class="{'unread': notif.status == 'UNREAD'}"
               ng-repeat="notif in notifCtx.notifications" ng-click="markAsRead(notif)">
-              <a ui-sref="{{notif.op != 'DELETE' ? notif.sref : '.'}}">
+              <a ng-href="{{$state.href(notif.sref.name, notif.sref.params)}}">
                 <span class="icon" ng-class="{CREATE: 'create', UPDATE: 'update', DELETE: 'delete'}[notif.op]">
                 </span>
                 <span class="content">

@@ -8,12 +8,15 @@ angular.module('openspecimen')
     }
 
     function getState(objName, key, value) {
-      return 'object-state-params-resolver({' +
-        'stateName:' + objViewStateMap[objName] +
-        ',objectName:' + objName +
-        ',key:' + key +
-        ',value:' + value +
-      '})';
+      return {
+        name: 'object-state-params-resolver',
+        params: {
+          stateName : objViewStateMap[objName],
+          objectName: objName,
+          key       : key,
+          value     : value
+        }
+      };
     }
 
     return {
