@@ -1,9 +1,7 @@
 package com.krishagni.catissueplus.core.de.services.impl;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -25,6 +23,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
@@ -240,11 +239,11 @@ public class QueryServiceImpl implements QueryService {
 			daoFactory.getSavedQueryDao().saveOrUpdate(savedQuery);
 			return ResponseEvent.response(SavedQueryDetail.fromSavedQuery(savedQuery));
 		} catch (QueryParserException qpe) {
-			return ResponseEvent.userError(SavedQueryErrorCode.MALFORMED);
+			return ResponseEvent.userError(SavedQueryErrorCode.MALFORMED, qpe.getMessage());
 		} catch (QueryException qe) {
-			return ResponseEvent.userError(getErrorCode(qe.getErrorCode()));
+			return ResponseEvent.userError(getErrorCode(qe.getErrorCode()), qe.getMessage());
 		} catch (IllegalArgumentException iae) {
-			return ResponseEvent.userError(SavedQueryErrorCode.MALFORMED);
+			return ResponseEvent.userError(SavedQueryErrorCode.MALFORMED, iae.getMessage());
 		} catch (Exception e) {
 			return ResponseEvent.serverError(e);
 		}	
@@ -277,11 +276,11 @@ public class QueryServiceImpl implements QueryService {
 			daoFactory.getSavedQueryDao().saveOrUpdate(existing);	
 			return ResponseEvent.response(SavedQueryDetail.fromSavedQuery(existing));
 		} catch (QueryParserException qpe) {
-			return ResponseEvent.userError(SavedQueryErrorCode.MALFORMED);
+			return ResponseEvent.userError(SavedQueryErrorCode.MALFORMED, qpe.getMessage());
 		} catch (QueryException qe) {
-			return ResponseEvent.userError(getErrorCode(qe.getErrorCode()));
+			return ResponseEvent.userError(getErrorCode(qe.getErrorCode()), qe.getMessage());
 		} catch (IllegalArgumentException iae) {
-			return ResponseEvent.userError(SavedQueryErrorCode.MALFORMED);
+			return ResponseEvent.userError(SavedQueryErrorCode.MALFORMED, iae.getMessage());
 		} catch (Exception e) {
 			return ResponseEvent.serverError(e);
 		}
@@ -342,13 +341,13 @@ public class QueryServiceImpl implements QueryService {
 					.setColumnIndices(indices)
 			);
 		} catch (QueryParserException qpe) {
-			return ResponseEvent.userError(SavedQueryErrorCode.MALFORMED);
+			return ResponseEvent.userError(SavedQueryErrorCode.MALFORMED, qpe.getMessage());
 		} catch (QueryException qe) {
-			return ResponseEvent.userError(getErrorCode(qe.getErrorCode()));
+			return ResponseEvent.userError(getErrorCode(qe.getErrorCode()), qe.getMessage());
 		} catch (IllegalArgumentException iae) {
-			return ResponseEvent.userError(SavedQueryErrorCode.MALFORMED);
+			return ResponseEvent.userError(SavedQueryErrorCode.MALFORMED, iae.getMessage());
 		} catch (IllegalAccessError iae) {
-			return ResponseEvent.userError(SavedQueryErrorCode.OP_NOT_ALLOWED);
+			return ResponseEvent.userError(SavedQueryErrorCode.OP_NOT_ALLOWED, iae.getMessage());
 		} catch (OpenSpecimenException ose) {
 			return ResponseEvent.error(ose);
 		} catch (Exception e) {
@@ -403,7 +402,7 @@ public class QueryServiceImpl implements QueryService {
 			op.setWideRowMode(input.getWideRowMode());
 			op.setSavedQueryId(query.getId());
 			op.setAql(query.getAql() + " limit " + input.getStartAt() + ", " + input.getMaxResults());
-			return executeQuery(new RequestEvent<ExecuteQueryEventOp>(op));
+			return executeQuery(new RequestEvent<>(op));
 		} catch (OpenSpecimenException ose) {
 			return ResponseEvent.error(ose);
 		} catch (Exception e) {
@@ -419,13 +418,13 @@ public class QueryServiceImpl implements QueryService {
 			queryCntIncremented = incConcurrentQueriesCnt();
 			return ResponseEvent.response(exportQueryData(req.getPayload(), null));
 		} catch (QueryParserException qpe) {
-			return ResponseEvent.userError(SavedQueryErrorCode.MALFORMED);		
+			return ResponseEvent.userError(SavedQueryErrorCode.MALFORMED, qpe.getMessage());
 		} catch (QueryException qe) {
-			return ResponseEvent.userError(getErrorCode(qe.getErrorCode()));
+			return ResponseEvent.userError(getErrorCode(qe.getErrorCode()), qe.getMessage());
 		} catch (IllegalArgumentException iae) {
-			return ResponseEvent.userError(SavedQueryErrorCode.MALFORMED);
+			return ResponseEvent.userError(SavedQueryErrorCode.MALFORMED, iae.getMessage());
 		} catch (IllegalAccessError iae) {
-			return ResponseEvent.userError(SavedQueryErrorCode.OP_NOT_ALLOWED);
+			return ResponseEvent.userError(SavedQueryErrorCode.OP_NOT_ALLOWED, iae.getMessage());
 		} catch (OpenSpecimenException ose) {
 			return ResponseEvent.error(ose);
 		} catch (Exception e) {
@@ -632,7 +631,7 @@ public class QueryServiceImpl implements QueryService {
 			List<Long> queryIds = opDetail.getQueries();
 			
 			if (queryIds == null || queryIds.isEmpty()) {
-				savedQueries = new ArrayList<SavedQuery>();
+				savedQueries = new ArrayList<>();
 			} else {
 				savedQueries = daoFactory.getSavedQueryDao().getQueriesByIds(queryIds);
 			}
@@ -652,11 +651,10 @@ public class QueryServiceImpl implements QueryService {
 			}
 			
 			daoFactory.getQueryFolderDao().saveOrUpdate(queryFolder);			
-			List<SavedQuerySummary> result = new ArrayList<SavedQuerySummary>();
-			for (SavedQuery query : queryFolder.getSavedQueries()) {
-				result.add(SavedQuerySummary.fromSavedQuery(query));
-			}
-			
+
+			List<SavedQuerySummary> result = queryFolder.getSavedQueries().stream()
+				.map(SavedQuerySummary::fromSavedQuery)
+				.collect(Collectors.toList());
 			return ResponseEvent.response(result);
 		} catch (Exception e) {
 			return ResponseEvent.serverError(e);
@@ -684,7 +682,7 @@ public class QueryServiceImpl implements QueryService {
 			List<User> users = null;
 			List<Long> userIds = opDetail.getUserIds();
 			if (userIds == null || userIds.isEmpty()) {
-				users = new ArrayList<User>();
+				users = new ArrayList<>();
 			} else {
 				users = userDao.getUsersByIds(userIds);
 			}
@@ -705,11 +703,10 @@ public class QueryServiceImpl implements QueryService {
 			}
 											
 			daoFactory.getQueryFolderDao().saveOrUpdate(queryFolder);			
-			List<UserSummary> result = new ArrayList<UserSummary>();
-			for (User sharedUser : queryFolder.getSharedWith()) {
-				result.add(UserSummary.from(sharedUser));
-			}
-			
+			List<UserSummary> result = queryFolder.getSharedWith().stream()
+				.map(UserSummary::from)
+				.collect(Collectors.toList());
+
 			if (newUsers != null && !newUsers.isEmpty()) {
 				sendFolderSharedEmail(user, queryFolder, newUsers);
 			}
@@ -758,7 +755,6 @@ public class QueryServiceImpl implements QueryService {
 						}						
 						break;
 				}
-								
 			} else {
 				auditLogs = logDao.getAuditLogs(savedQueryId, userId, startAt, maxRecs);
 			}
@@ -889,11 +885,9 @@ public class QueryServiceImpl implements QueryService {
 	public ResponseEvent<List<FacetDetail>> getFacetValues(RequestEvent<GetFacetValuesOp> req) {
 		try {
 			GetFacetValuesOp op = req.getPayload();
-			List<FacetDetail> result = new ArrayList<FacetDetail>();
-			for (String facet : op.getFacets()) {
-				result.add(getFacetDetail(op.getCpId(), facet, op.getSearchTerm()));
-			}
-
+			List<FacetDetail> result = op.getFacets().stream()
+				.map(facet -> getFacetDetail(op.getCpId(), facet, op.getSearchTerm()))
+				.collect(Collectors.toList());
 			return ResponseEvent.response(result);
 		} catch (OpenSpecimenException ose) {
 			return ResponseEvent.error(ose);
@@ -911,7 +905,7 @@ public class QueryServiceImpl implements QueryService {
 
 			for (Resource resource : resources) {
 				String filename = "query-forms/" + dirName + "/" + resource.getFilename();
-				templates.append(templateService.render(filename, new HashMap<String, Object>()));
+				templates.append(templateService.render(filename, new HashMap<>()));
 			}
 		} catch (Exception e) {
 			logger.error("Error rendering query forms", e);
@@ -945,7 +939,7 @@ public class QueryServiceImpl implements QueryService {
 	}
 
 	private Query getQuery(ExecuteQueryEventOp op) {
-		boolean countQuery = op.getRunType().equals("Count");
+		boolean countQuery = "Count".equals(op.getRunType());
 		User user = AuthUtil.getCurrentUser();
 
 		String rootForm = cprForm;
