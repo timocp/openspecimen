@@ -1,11 +1,11 @@
 angular.module('os.common.notif')
-  .controller('NotifListCtrl', function($rootScope, $scope, $state, $interval, ObjectStateResolver, Util, Notification) {
+  .controller('NotifListCtrl', function($scope, $state, $interval, ObjectStateResolver, Util, Notification) {
 
     var pageNo = 0, pageSize = 10;
     var reload = true;
 
     function init() {
-      $rootScope.$state = $state;
+      $scope.$state = $state;
 
       $scope.notifCtx = {
         notifications: [],
@@ -88,7 +88,7 @@ angular.module('os.common.notif')
         return;
       }
 
-      Notification.markAsRead(notif.id).then(
+      notif.markAsRead(notif.id).then(
         function(resp) {
           notif.status = 'READ';
           $scope.notifCtx.unreadCount--;

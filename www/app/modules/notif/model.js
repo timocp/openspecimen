@@ -46,6 +46,17 @@ angular.module('os.notif.model', ['os.common.models'])
 
     /* TODO: Remove upto here... */
 
+    Notification.modelArrayRespTransform = function(response) {
+      var collection = response.data;
+
+      return collection.map(function(notif){
+        if (notif.op != 'DELETE')
+          notif.sref = ObjectStateResolver.getState(notif.objName, 'id', notif.objId);
+
+        return new Notification(notif);
+      });
+    }
+
     Notification.list = function(opts) {
       //return Notification.query(opts).then(Notification.modelArrayRespTransform);
       return getNotifications().then(Notification.modelArrayRespTransform);
@@ -56,13 +67,8 @@ angular.module('os.notif.model', ['os.common.models'])
       return getUnreadCount().then(Notification.noTransform);
     }
 
-    Notification.markAsRead = function(id) {
-      //return $http.put(Notification.url() + '/' + id + '/mark-read').then(Notification.noTransform);
-      return markAsRead().then(Notification.noTransform);
-    }
-
     Notification.markVisited = function() {
-      return $http.put(Notification.url() + '/mark-visited')
+      //return $http.put(Notification.url() + '/mark-visited')
     }
 
     Notification.checkForNewNotifs = function() {
@@ -70,15 +76,9 @@ angular.module('os.notif.model', ['os.common.models'])
       return checkForNewNotifs().then(Notification.noTransform);
     }
 
-    Notification.modelArrayRespTransform = function(response) {
-      var collection = response.data;
-
-      return collection.map(function(notif){
-        if (notif.op != 'DELETE')
-          notif.sref = ObjectStateResolver.getState(notif.objName, 'id', notif.objId);
-
-        return new Notification(notif);
-      });
+    Notification.prototype.markAsRead = function(id) {
+      //return $http.put(Notification.url() + '/' + id + '/mark-read').then(Notification.noTransform);
+      return markAsRead().then(Notification.noTransform);
     }
 
     return Notification;
