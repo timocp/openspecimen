@@ -509,6 +509,13 @@ public class ConfigurationServiceImpl implements ConfigurationService, Initializ
 		});
 	}
 	
+	@Override
+	public String getSettingFilesDir() {
+		String dir = getDataDir() + File.separator + "config-setting-files";
+		new File(dir).mkdirs();
+		return dir + File.separator;
+	}
+	
 	private boolean isValidSetting(ConfigProperty property, String setting) {
 		if (StringUtils.isBlank(setting)) {
 			return true;
@@ -589,12 +596,6 @@ public class ConfigurationServiceImpl implements ConfigurationService, Initializ
 	private boolean isAutoEmpiEnabled() {
 		return StringUtils.isNotBlank(getStrSetting("biospecimen", "mpi_format", "")) || 
 				StringUtils.isNotBlank(getStrSetting("biospecimen", "mpi_generator", ""));
-	}
-
-	private String getSettingFilesDir() {
-		String dir = getDataDir() + File.separator + "config-setting-files";
-		new File(dir).mkdirs();
-		return dir + File.separator;
 	}
 
 	private void deleteOldSettingFile(ConfigSetting oldSetting) {

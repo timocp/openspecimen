@@ -146,6 +146,8 @@ public class DefaultSpecimenLabelPrinter extends AbstractLabelPrinter<Specimen> 
 		if (rulesFile.startsWith("classpath:")) {
 			rulesFile = rulesFile.substring(10);
 			classpath = true;
+		} else {
+			rulesFile = cfgSvc.getSettingFilesDir() + rulesFile;
 		}
 				
 		List<SpecimenLabelPrintRule> rules = new ArrayList<SpecimenLabelPrintRule>();

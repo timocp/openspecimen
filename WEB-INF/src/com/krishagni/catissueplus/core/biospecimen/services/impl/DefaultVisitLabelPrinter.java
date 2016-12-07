@@ -12,7 +12,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.MessageSource;
 import org.springframework.security.web.util.matcher.IpAddressMatcher;
@@ -146,6 +145,8 @@ public class DefaultVisitLabelPrinter extends AbstractLabelPrinter<Visit> implem
 		if (rulesFile.startsWith("classpath:")) {
 			rulesFile = rulesFile.substring(10);
 			classpath = true;
+		} else {
+			rulesFile = cfgSvc.getSettingFilesDir() + rulesFile;
 		}
 				
 		List<VisitLabelPrintRule> rules = new ArrayList<VisitLabelPrintRule>();

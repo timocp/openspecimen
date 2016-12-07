@@ -248,4 +248,23 @@
       );
     </sql>
   </changeSet>
+  
+  <changeSet author="mdnasim" id="Make label print rules file upload instead of path for specimen and visit">
+    <sql>
+      update
+        os_cfg_props
+      set
+        data_type = 'FILE'
+      where
+        name in('specimen_label_print_rules', 'visit_label_print_rules') and
+        module_id = (
+          select
+            identifier
+          from
+            os_modules
+          where
+            name = 'biospecimen'
+        )
+    </sql>
+  </changeSet>
 </databaseChangeLog>
