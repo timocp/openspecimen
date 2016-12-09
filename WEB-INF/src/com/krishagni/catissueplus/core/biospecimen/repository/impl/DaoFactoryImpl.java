@@ -34,6 +34,7 @@ import com.krishagni.catissueplus.core.auth.repository.impl.AuthDaoImpl;
 import com.krishagni.catissueplus.core.biospecimen.repository.AnonymizeEventDao;
 import com.krishagni.catissueplus.core.biospecimen.repository.CollectionProtocolDao;
 import com.krishagni.catissueplus.core.biospecimen.repository.CollectionProtocolRegistrationDao;
+import com.krishagni.catissueplus.core.biospecimen.repository.CpConsentDao;
 import com.krishagni.catissueplus.core.biospecimen.repository.CpReportSettingsDao;
 import com.krishagni.catissueplus.core.biospecimen.repository.DaoFactory;
 import com.krishagni.catissueplus.core.biospecimen.repository.LabelPrintJobDao;
@@ -261,6 +262,13 @@ public class DaoFactoryImpl implements DaoFactory {
 	public UnhandledExceptionDao getUnhandledExceptionDao() {
 		UnhandledExceptionDaoImpl dao = new UnhandledExceptionDaoImpl();
 		setSessionFactory(dao);
+		return dao;
+	}
+	
+	@Override
+	public CpConsentDao getCpConsentDao() {
+		CpConsentDaoImpl dao = new CpConsentDaoImpl();
+		setSessionFactory(dao);;
 		return dao;
 	}
 }

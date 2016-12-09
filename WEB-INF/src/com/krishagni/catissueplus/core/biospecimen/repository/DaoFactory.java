@@ -76,4 +76,6 @@ public interface DaoFactory {
 	public CpReportSettingsDao getCpReportSettingsDao();
 	
 	public UnhandledExceptionDao getUnhandledExceptionDao();
+	
+	CpConsentDao getCpConsentDao();
 } 

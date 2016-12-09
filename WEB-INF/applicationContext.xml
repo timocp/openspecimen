@@ -533,6 +533,13 @@
     <property name="daoFactory" ref="biospecimenDaoFactory"/>
   </bean>
   
+  <bean id="consentFactory" class="com.krishagni.catissueplus.core.biospecimen.domain.factory.impl.CpConsentFactoryImpl"/>
+  
+  <bean id="consentSvc" class="com.krishagni.catissueplus.core.biospecimen.services.impl.CpConsentServiceImpl">
+    <property name="daoFactory" ref="biospecimenDaoFactory"/>
+    <property name="consentFactory" ref="consentFactory"/>
+  </bean>
+  
   <bean id="messageSource" class="com.krishagni.catissueplus.core.common.WildcardReloadableResourceBundle">
     <constructor-arg value="${plugin.dir}"/>
     <property name="basenames">
