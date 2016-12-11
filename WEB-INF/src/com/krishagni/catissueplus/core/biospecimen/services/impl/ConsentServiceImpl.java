@@ -125,9 +125,8 @@ public class ConsentServiceImpl implements ConsentService {
 	
 	private Consent getConsent(Long id) {
 		Consent consent = daoFactory.getConsentDao().getById(id);
-		
 		if (consent == null) {
-			throw OpenSpecimenException.userError(ConsentErrorCode.NOT_FOUND, id);
+			throw OpenSpecimenException.userError(ConsentErrorCode.NOT_FOUND);
 		}
 		
 		return consent;

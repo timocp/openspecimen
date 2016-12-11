@@ -24,7 +24,7 @@ public class ConsentDaoImpl extends AbstractDao<Consent> implements ConsentDao {
 	@SuppressWarnings("unchecked")
 	public List<Consent> getConsents(ConsentListCriteria listCrit) {
 		Criteria query = getConsentListQuery(listCrit)
-			.addOrder(Order.asc("consent.code"))
+			.addOrder(Order.asc("code"))
 			.setMaxResults(listCrit.maxResults());
 		
 		return query.list();
@@ -58,9 +58,9 @@ public class ConsentDaoImpl extends AbstractDao<Consent> implements ConsentDao {
 	@SuppressWarnings("unchecked")
 	public Consent getConsentByCode(String code) {
 		List<Consent> result = getCurrentSession()
-				.getNamedQuery(GET_CONSENT_BY_CODE)
-				.setString("code", code)
-				.list();
+			.getNamedQuery(GET_CONSENT_BY_CODE)
+			.setString("code", code)
+			.list();
 		
 		return result.isEmpty() ? null : result.get(0);
 	}
