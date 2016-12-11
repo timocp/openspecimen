@@ -487,32 +487,4 @@
       baseTableName="OS_PARTICIPANT_ANON_EVENTS" baseColumnNames="ANONYMIZED_BY"
       referencedTableName="CATISSUE_USER" referencedColumnNames="IDENTIFIER"/>
   </changeSet>
-  
-  <changeSet author="mdnasim" id="Consent table">
-    <createTable tableName="OS_CONSENTS">
-      <column name="IDENTIFIER" type="${int.type}" autoIncrement="${autoIncrement}">
-        <constraints primaryKey="true" nullable="false"/>
-      </column>
-      
-      <column name="CODE" type="${text.type}(32)">
-        <constraints unique="true" nullable="false"/>
-      </column>
-      
-      <column name="STATEMENT" type="${text.type}(255)">
-        <constraints nullable="false"/>
-      </column>
-      
-      <column name="ACTIVITY_STATUS" type="${text.type}(16)">
-        <constraints nullable="false"/>
-      </column>
-    </createTable>
-  </changeSet>
-  
-  <changeSet author="mdnasim" id="Consent sequence" dbms="oracle">
-    <createSequence
-      sequenceName="OS_CONSENT_SEQ"
-      startValue="1"
-      incrementBy="1"
-      ordered="true" />
-  </changeSet>
 </databaseChangeLog>

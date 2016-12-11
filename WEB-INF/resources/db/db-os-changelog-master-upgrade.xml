@@ -69,4 +69,6 @@
   <include file="db/3.4/seed-data.xml"/>
   <include file="db/3.4/permissible-values.xml"/>
   <include file="db/3.4/audit.xml"/>
+
+  <include file="db/3.5/schema.xml"/>
 </databaseChangeLog>
