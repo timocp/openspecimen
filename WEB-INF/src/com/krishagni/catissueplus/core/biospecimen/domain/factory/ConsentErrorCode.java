@@ -2,7 +2,9 @@ package com.krishagni.catissueplus.core.biospecimen.domain.factory;
 
 import com.krishagni.catissueplus.core.common.errors.ErrorCode;
 
-public enum CpConsentErrorCode implements ErrorCode {
+public enum ConsentErrorCode implements ErrorCode {
+	NOT_FOUND,
+	
 	CODE_REQUIRED,
 	
 	STATEMENT_REQUIRED,
@@ -11,6 +13,6 @@ public enum CpConsentErrorCode implements ErrorCode {
 	
 	@Override
 	public String code() {
-		return "CP_CONSENT_" + this.name();
+		return "CONSENT_" + this.name();
 	}
 }

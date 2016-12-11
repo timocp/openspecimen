@@ -2,20 +2,20 @@ package com.krishagni.catissueplus.core.biospecimen.domain.factory.impl;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.krishagni.catissueplus.core.biospecimen.domain.CpConsent;
-import com.krishagni.catissueplus.core.biospecimen.domain.factory.CpConsentErrorCode;
-import com.krishagni.catissueplus.core.biospecimen.domain.factory.CpConsentFactory;
-import com.krishagni.catissueplus.core.biospecimen.events.CpConsentDetail;
+import com.krishagni.catissueplus.core.biospecimen.domain.Consent;
+import com.krishagni.catissueplus.core.biospecimen.domain.factory.ConsentErrorCode;
+import com.krishagni.catissueplus.core.biospecimen.domain.factory.ConsentFactory;
+import com.krishagni.catissueplus.core.biospecimen.events.ConsentDetail;
 import com.krishagni.catissueplus.core.common.errors.ActivityStatusErrorCode;
 import com.krishagni.catissueplus.core.common.errors.ErrorType;
 import com.krishagni.catissueplus.core.common.errors.OpenSpecimenException;
 import com.krishagni.catissueplus.core.common.util.Status;
 
-public class CpConsentFactoryImpl implements CpConsentFactory {
+public class ConsentFactoryImpl implements ConsentFactory {
 	
 	@Override
-	public CpConsent createCpConsent(CpConsentDetail detail) {
-		CpConsent consent = new CpConsent();
+	public Consent createConsent(ConsentDetail detail) {
+		Consent consent = new Consent();
 		OpenSpecimenException ose = new OpenSpecimenException(ErrorType.USER_ERROR);
 
 		setConsentCode(detail, consent, ose);
@@ -26,27 +26,27 @@ public class CpConsentFactoryImpl implements CpConsentFactory {
 		return consent;
 	}
 	
-	private void setConsentCode(CpConsentDetail summary, CpConsent consent, OpenSpecimenException ose) {
-		String code = summary.getCode();
+	private void setConsentCode(ConsentDetail detail, Consent consent, OpenSpecimenException ose) {
+		String code = detail.getCode();
 		if (StringUtils.isBlank(code)) {
-			ose.addError(CpConsentErrorCode.CODE_REQUIRED);
+			ose.addError(ConsentErrorCode.CODE_REQUIRED);
 			return;
 		}
 		
 		consent.setCode(code);
 	}
 	
-	private void setConsentStatement(CpConsentDetail detail, CpConsent consent, OpenSpecimenException ose) {
+	private void setConsentStatement(ConsentDetail detail, Consent consent, OpenSpecimenException ose) {
 		String statement = detail.getStatement();
 		if (StringUtils.isBlank(statement)) {
-			ose.addError(CpConsentErrorCode.STATEMENT_REQUIRED);
+			ose.addError(ConsentErrorCode.STATEMENT_REQUIRED);
 			return;
 		}
 		
 		consent.setStatement(statement);
 	}
 	
-	private void setActivityStatus(CpConsentDetail detail, CpConsent consent, OpenSpecimenException ose) {
+	private void setActivityStatus(ConsentDetail detail, Consent consent, OpenSpecimenException ose) {
 		String activityStatus = detail.getActivityStatus();
 		if (StringUtils.isBlank(activityStatus)) {
 			activityStatus = Status.ACTIVITY_STATUS_ACTIVE.getStatus();

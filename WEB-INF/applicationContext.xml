@@ -533,9 +533,9 @@
     <property name="daoFactory" ref="biospecimenDaoFactory"/>
   </bean>
   
-  <bean id="consentFactory" class="com.krishagni.catissueplus.core.biospecimen.domain.factory.impl.CpConsentFactoryImpl"/>
+  <bean id="consentFactory" class="com.krishagni.catissueplus.core.biospecimen.domain.factory.impl.ConsentFactoryImpl"/>
   
-  <bean id="consentSvc" class="com.krishagni.catissueplus.core.biospecimen.services.impl.CpConsentServiceImpl">
+  <bean id="consentSvc" class="com.krishagni.catissueplus.core.biospecimen.services.impl.ConsentServiceImpl">
     <property name="daoFactory" ref="biospecimenDaoFactory"/>
     <property name="consentFactory" ref="consentFactory"/>
   </bean>

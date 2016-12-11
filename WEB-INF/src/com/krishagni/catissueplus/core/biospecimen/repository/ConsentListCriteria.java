@@ -2,13 +2,13 @@ package com.krishagni.catissueplus.core.biospecimen.repository;
 
 import com.krishagni.catissueplus.core.common.events.AbstractListCriteria;
 
-public class CpConsentListCriteria extends AbstractListCriteria<CpConsentListCriteria> {
+public class ConsentListCriteria extends AbstractListCriteria<ConsentListCriteria> {
 	private String code;
 	
 	private String statement;
 	
 	@Override
-	public CpConsentListCriteria self() {
+	public ConsentListCriteria self() {
 		return this;
 	}
 
@@ -16,7 +16,7 @@ public class CpConsentListCriteria extends AbstractListCriteria<CpConsentListCri
 		return code;
 	}
 
-	public CpConsentListCriteria code(String code) {
+	public ConsentListCriteria code(String code) {
 		this.code = code;
 		return self();
 	}
@@ -25,7 +25,7 @@ public class CpConsentListCriteria extends AbstractListCriteria<CpConsentListCri
 		return statement;
 	}
 
-	public CpConsentListCriteria statement(String statement) {
+	public ConsentListCriteria statement(String statement) {
 		this.statement = statement;
 		return self();
 	}
