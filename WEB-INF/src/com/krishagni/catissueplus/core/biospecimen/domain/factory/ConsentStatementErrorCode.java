@@ -13,6 +13,6 @@ public enum ConsentStatementErrorCode implements ErrorCode {
 	
 	@Override
 	public String code() {
-		return "CONSENT_STATEMENT" + this.name();
+		return "CONSENT_STATEMENT_" + this.name();
 	}
 }

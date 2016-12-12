@@ -48,6 +48,19 @@ public class ConsentStatementServiceImpl implements ConsentStatementService {
 	
 	@Override
 	@PlusTransactional
+	public ResponseEvent<Long> getStatementsCount(RequestEvent<ConsentStatementListCriteria> req) {
+		try {
+			ConsentStatementListCriteria listCrit = req.getPayload();
+			return ResponseEvent.response(daoFactory.getConsentStatementDao().getStatementsCount(listCrit));
+		} catch (OpenSpecimenException ose) {
+			return ResponseEvent.error(ose);
+		} catch (Exception e) {
+			return ResponseEvent.serverError(e);
+		}
+	}
+	
+	@Override
+	@PlusTransactional
 	public ResponseEvent<ConsentStatementDetail> getStatement(RequestEvent<EntityQueryCriteria> req) {
 		try {
 			EntityQueryCriteria crit = req.getPayload();

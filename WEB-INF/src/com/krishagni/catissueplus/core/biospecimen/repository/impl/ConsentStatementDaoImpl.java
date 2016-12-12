@@ -6,6 +6,7 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 import com.krishagni.catissueplus.core.biospecimen.domain.ConsentStatement;
@@ -28,6 +29,14 @@ public class ConsentStatementDaoImpl extends AbstractDao<ConsentStatement> imple
 			.setFirstResult(listCrit.startAt())
 			.setMaxResults(listCrit.maxResults())
 			.list();
+	}
+	
+	@Override
+	public Long getStatementsCount(ConsentStatementListCriteria listCrit) {
+		Number count = ((Number)getStatementListCriteria(listCrit)
+			.setProjection(Projections.rowCount())
+			.uniqueResult());
+		return count.longValue();
 	}
 	
 	@Override

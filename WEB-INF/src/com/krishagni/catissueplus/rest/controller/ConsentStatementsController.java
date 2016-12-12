@@ -1,6 +1,8 @@
 package com.krishagni.catissueplus.rest.controller;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -53,6 +55,26 @@ public class ConsentStatementsController {
 		ResponseEvent<List<ConsentStatementDetail>> resp = consentStmtsSvc.getStatements(req);
 		resp.throwErrorIfUnsuccessful();
 		return resp.getPayload();
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/count")
+	@ResponseBody
+	@ResponseStatus(HttpStatus.OK)
+	public Map<String, Long> getStatementsCount(
+			@RequestParam(value = "code", required = false)
+			String code,
+			
+			@RequestParam(value="statement", required = false)
+			String statement) {
+		
+		ConsentStatementListCriteria crit = new ConsentStatementListCriteria()
+			.code(code)
+			.query(statement);
+		
+		RequestEvent<ConsentStatementListCriteria> req = new RequestEvent<>(crit);
+		ResponseEvent<Long> resp = consentStmtsSvc.getStatementsCount(req);
+		resp.throwErrorIfUnsuccessful();
+		return Collections.singletonMap("count", resp.getPayload());
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value="{id}")

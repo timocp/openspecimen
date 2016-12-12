@@ -11,6 +11,8 @@ import com.krishagni.catissueplus.core.common.events.ResponseEvent;
 public interface ConsentStatementService {
 	ResponseEvent<List<ConsentStatementDetail>> getStatements(RequestEvent<ConsentStatementListCriteria> req);
 	
+	ResponseEvent<Long> getStatementsCount(RequestEvent<ConsentStatementListCriteria> req);
+	
 	ResponseEvent<ConsentStatementDetail> getStatement(RequestEvent<EntityQueryCriteria> req);
 	
 	ResponseEvent<ConsentStatementDetail> createStatement(RequestEvent<ConsentStatementDetail> req);
