@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.krishagni.catissueplus.core.biospecimen.events.CollectionProtocolRegistrationDetail;
-import com.krishagni.catissueplus.core.biospecimen.events.CpConsentDetail;
+import com.krishagni.catissueplus.core.biospecimen.events.ConsentDetail;
 import com.krishagni.catissueplus.core.biospecimen.events.CpEntityDeleteCriteria;
 import com.krishagni.catissueplus.core.biospecimen.events.CprSummary;
 import com.krishagni.catissueplus.core.biospecimen.events.FileDetail;
@@ -307,11 +307,11 @@ public class CollectionProtocolRegistrationsController {
 	@RequestMapping(method=RequestMethod.GET, value="/{id}/consents")
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
-	public CpConsentDetail getConsents(@PathVariable("id") Long cprId) {
+	public ConsentDetail getConsents(@PathVariable("id") Long cprId) {
 		RegistrationQueryCriteria crit = new RegistrationQueryCriteria();
 		crit.setCprId(cprId);
 		
-		ResponseEvent<CpConsentDetail> resp = cprSvc.getConsents(getRequest(crit));
+		ResponseEvent<ConsentDetail> resp = cprSvc.getConsents(getRequest(crit));
 		resp.throwErrorIfUnsuccessful();
 		return resp.getPayload();
 	}
@@ -319,9 +319,9 @@ public class CollectionProtocolRegistrationsController {
 	@RequestMapping(method= RequestMethod.PUT, value="/{id}/consents")
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
-	public CpConsentDetail saveConsents(@PathVariable("id") Long cprId, @RequestBody CpConsentDetail detail) {
+	public ConsentDetail saveConsents(@PathVariable("id") Long cprId, @RequestBody ConsentDetail detail) {
 		detail.setCprId(cprId);
-		ResponseEvent<CpConsentDetail> resp = cprSvc.saveConsents(getRequest(detail));
+		ResponseEvent<ConsentDetail> resp = cprSvc.saveConsents(getRequest(detail));
 		resp.throwErrorIfUnsuccessful();
 		return resp.getPayload();
 	}

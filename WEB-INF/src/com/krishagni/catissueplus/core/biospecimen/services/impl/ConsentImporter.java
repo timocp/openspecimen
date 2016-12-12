@@ -10,7 +10,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.krishagni.catissueplus.core.biospecimen.domain.factory.CprErrorCode;
-import com.krishagni.catissueplus.core.biospecimen.events.CpConsentDetail;
+import com.krishagni.catissueplus.core.biospecimen.events.ConsentDetail;
 import com.krishagni.catissueplus.core.biospecimen.events.FileDetail;
 import com.krishagni.catissueplus.core.biospecimen.services.CollectionProtocolRegistrationService;
 import com.krishagni.catissueplus.core.common.errors.OpenSpecimenException;
@@ -19,7 +19,7 @@ import com.krishagni.catissueplus.core.common.events.ResponseEvent;
 import com.krishagni.catissueplus.core.importer.events.ImportObjectDetail;
 import com.krishagni.catissueplus.core.importer.services.ObjectImporter;
 
-public class ConsentImporter implements ObjectImporter<CpConsentDetail, CpConsentDetail> {
+public class ConsentImporter implements ObjectImporter<ConsentDetail, ConsentDetail> {
 	
 	private CollectionProtocolRegistrationService cprSvc;
 	
@@ -28,10 +28,10 @@ public class ConsentImporter implements ObjectImporter<CpConsentDetail, CpConsen
 	}
 
 	@Override
-	public ResponseEvent<CpConsentDetail> importObject(RequestEvent<ImportObjectDetail<CpConsentDetail>> req) {
+	public ResponseEvent<ConsentDetail> importObject(RequestEvent<ImportObjectDetail<ConsentDetail>> req) {
 		try {
-			ImportObjectDetail<CpConsentDetail> importDetail = req.getPayload();
-			CpConsentDetail consentDetail = importDetail.getObject();
+			ImportObjectDetail<ConsentDetail> importDetail = req.getPayload();
+			ConsentDetail consentDetail = importDetail.getObject();
 
 			uploadConsentFile(importDetail.getUploadedFilesDir(), consentDetail);
 			return cprSvc.saveConsents(new RequestEvent<>(consentDetail));
@@ -42,7 +42,7 @@ public class ConsentImporter implements ObjectImporter<CpConsentDetail, CpConsen
 		}
 	}
 
-	private void uploadConsentFile(String uploadedFilesDir, CpConsentDetail consentDetail) {
+	private void uploadConsentFile(String uploadedFilesDir, ConsentDetail consentDetail) {
 		String filename = consentDetail.getConsentDocumentName();
 		if (StringUtils.isBlank(filename)) {
 			return;

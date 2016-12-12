@@ -34,7 +34,7 @@ public class CollectionProtocolRegistrationDetail extends AttributeModifiedSuppo
 
 	private Date registrationDate;
 
-	private CpConsentDetail consentDetails;
+	private ConsentDetail consentDetails;
 	
 	/** For UI efficiency **/
 	private String specimenLabelFmt;
@@ -120,11 +120,11 @@ public class CollectionProtocolRegistrationDetail extends AttributeModifiedSuppo
 		this.registrationDate = registrationDate;
 	}
 
-	public CpConsentDetail getConsentDetails() {
+	public ConsentDetail getConsentDetails() {
 		return consentDetails;
 	}
 
-	public void setConsentDetails(CpConsentDetail consentDetails) {
+	public void setConsentDetails(ConsentDetail consentDetails) {
 		this.consentDetails = consentDetails;
 	}
 

@@ -14,7 +14,7 @@ import com.krishagni.catissueplus.core.biospecimen.domain.ConsentTier;
 import com.krishagni.catissueplus.core.biospecimen.domain.ConsentTierResponse;
 import com.krishagni.catissueplus.core.biospecimen.domain.factory.ConsentResponsesFactory;
 import com.krishagni.catissueplus.core.biospecimen.domain.factory.CprErrorCode;
-import com.krishagni.catissueplus.core.biospecimen.events.CpConsentDetail;
+import com.krishagni.catissueplus.core.biospecimen.events.ConsentDetail;
 import com.krishagni.catissueplus.core.biospecimen.events.ConsentTierResponseDetail;
 import com.krishagni.catissueplus.core.biospecimen.repository.DaoFactory;
 import com.krishagni.catissueplus.core.common.errors.ErrorType;
@@ -30,7 +30,7 @@ public class ConsentResponsesFactoryImpl implements ConsentResponsesFactory {
 	}
 	
 	@Override
-	public ConsentResponses createConsentResponses(CollectionProtocolRegistration cpr, CpConsentDetail detail) {
+	public ConsentResponses createConsentResponses(CollectionProtocolRegistration cpr, ConsentDetail detail) {
 		OpenSpecimenException ose = new OpenSpecimenException(ErrorType.USER_ERROR);
 
 		ConsentResponses consentResponses = new ConsentResponses();
@@ -43,7 +43,7 @@ public class ConsentResponsesFactoryImpl implements ConsentResponsesFactory {
 		return consentResponses;
 	}
 	
-	private void setConsentSignDate(CpConsentDetail detail, CollectionProtocolRegistration cpr, ConsentResponses consentResponses) {
+	private void setConsentSignDate(ConsentDetail detail, CollectionProtocolRegistration cpr, ConsentResponses consentResponses) {
 		if (detail.isAttrModified("consentSignatureDate")) {
 			consentResponses.setConsentSignDate(detail.getConsentSignatureDate());
 		} else {
@@ -51,7 +51,7 @@ public class ConsentResponsesFactoryImpl implements ConsentResponsesFactory {
 		}
 	}
 	
-	private void setConsentWitness(CpConsentDetail detail, ConsentResponses consentResponses, OpenSpecimenException ose) {
+	private void setConsentWitness(ConsentDetail detail, ConsentResponses consentResponses, OpenSpecimenException ose) {
 		UserSummary user = detail.getWitness();
 		if (user == null) {
 			return;
@@ -74,7 +74,7 @@ public class ConsentResponsesFactoryImpl implements ConsentResponsesFactory {
 	}
 	
 	private void setConsentWitness(
-			CpConsentDetail detail,
+			ConsentDetail detail,
 			CollectionProtocolRegistration cpr,
 			ConsentResponses consentResponses,
 			OpenSpecimenException ose) {
@@ -86,7 +86,7 @@ public class ConsentResponsesFactoryImpl implements ConsentResponsesFactory {
 		}
 	}
 	
-	private void setConsentComments(CpConsentDetail detail, CollectionProtocolRegistration cpr, ConsentResponses consentResponses) {
+	private void setConsentComments(ConsentDetail detail, CollectionProtocolRegistration cpr, ConsentResponses consentResponses) {
 		if (detail.isAttrModified("comments")) {
 			consentResponses.setConsentComments(detail.getComments());
 		} else {
@@ -95,7 +95,7 @@ public class ConsentResponsesFactoryImpl implements ConsentResponsesFactory {
 	}
 
 	private void setConsentResponses(
-			CpConsentDetail detail,
+			ConsentDetail detail,
 			CollectionProtocolRegistration cpr,
 			ConsentResponses consentResponses,
 			OpenSpecimenException ose) {

@@ -5,7 +5,7 @@ import java.io.File;
 import java.util.List;
 
 import com.krishagni.catissueplus.core.biospecimen.events.CollectionProtocolRegistrationDetail;
-import com.krishagni.catissueplus.core.biospecimen.events.CpConsentDetail;
+import com.krishagni.catissueplus.core.biospecimen.events.ConsentDetail;
 import com.krishagni.catissueplus.core.biospecimen.events.CpEntityDeleteCriteria;
 import com.krishagni.catissueplus.core.biospecimen.events.FileDetail;
 import com.krishagni.catissueplus.core.biospecimen.events.ParticipantRegistrationsList;
@@ -51,8 +51,8 @@ public interface CollectionProtocolRegistrationService {
 
 	public ResponseEvent<Boolean> deleteConsentForm(RequestEvent<RegistrationQueryCriteria> req);
 
-	public ResponseEvent<CpConsentDetail> saveConsents(RequestEvent<CpConsentDetail> req);
+	public ResponseEvent<ConsentDetail> saveConsents(RequestEvent<ConsentDetail> req);
 
-	public ResponseEvent<CpConsentDetail> getConsents(RequestEvent<RegistrationQueryCriteria> req);
+	public ResponseEvent<ConsentDetail> getConsents(RequestEvent<RegistrationQueryCriteria> req);
 }
 

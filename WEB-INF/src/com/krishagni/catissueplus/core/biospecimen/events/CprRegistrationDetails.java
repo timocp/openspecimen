@@ -13,7 +13,7 @@ public class CprRegistrationDetails {
 	
 	private String cpTitle;
 	
-	private CpConsentDetail consentResponseDetail;
+	private ConsentDetail consentResponseDetail;
 
 	public Long getCpId() {
 		return cpId;
@@ -55,11 +55,11 @@ public class CprRegistrationDetails {
 		this.cpTitle = cpTitle;
 	}
 
-	public CpConsentDetail getConsentResponseDetail() {
+	public ConsentDetail getConsentResponseDetail() {
 		return consentResponseDetail;
 	}
 
-	public void setConsentResponseDetail(CpConsentDetail consentResponseDetail) {
+	public void setConsentResponseDetail(ConsentDetail consentResponseDetail) {
 		this.consentResponseDetail = consentResponseDetail;
 	}
 }

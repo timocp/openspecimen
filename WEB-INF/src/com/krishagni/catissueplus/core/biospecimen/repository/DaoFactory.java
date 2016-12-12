@@ -77,5 +77,5 @@ public interface DaoFactory {
 	
 	public UnhandledExceptionDao getUnhandledExceptionDao();
 	
-	ConsentDao getConsentDao();
+	ConsentStatementDao getConsentStatementDao();
 } 

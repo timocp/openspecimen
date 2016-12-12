@@ -1,6 +1,6 @@
 package com.krishagni.catissueplus.core.biospecimen.domain;
 
-public class Consent extends BaseEntity {
+public class ConsentStatement extends BaseEntity {
 	private String code;
 	
 	private String statement;
@@ -31,10 +31,9 @@ public class Consent extends BaseEntity {
 		this.activityStatus = activityStatus;
 	}
 	
-	public void update(Consent other) {
+	public void update(ConsentStatement other) {
 		setCode(other.getCode());
 		setStatement(other.getStatement());
 		setActivityStatus(other.getActivityStatus());
 	}
-
 }

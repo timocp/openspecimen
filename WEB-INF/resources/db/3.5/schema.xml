@@ -5,8 +5,8 @@
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
   
-  <changeSet author="mdnasim" id="Consent table">
-    <createTable tableName="OS_CONSENTS">
+  <changeSet author="mdnasim" id="Coded consent statements">
+    <createTable tableName="OS_CONSENT_STATEMENTS">
       <column name="IDENTIFIER" type="${int.type}" autoIncrement="${autoIncrement}">
         <constraints primaryKey="true" nullable="false"/>
       </column>
@@ -25,11 +25,7 @@
     </createTable>
   </changeSet>
   
-  <changeSet author="mdnasim" id="Consent sequence" dbms="oracle">
-    <createSequence
-      sequenceName="OS_CONSENT_SEQ"
-      startValue="1"
-      incrementBy="1"
-      ordered="true" />
+  <changeSet author="mdnasim" id="Identifier sequence for coded consent statements" dbms="oracle">
+    <createSequence sequenceName="OS_CONSENT_STMTS_SEQ" startValue="1" incrementBy="1" ordered="true" />
   </changeSet>
 </databaseChangeLog>
