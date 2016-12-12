@@ -533,7 +533,7 @@
     <property name="daoFactory" ref="biospecimenDaoFactory"/>
   </bean>
   
-  <bean id="consentSvc" class="com.krishagni.catissueplus.core.biospecimen.services.impl.ConsentStatementServiceImpl">
+  <bean id="consentStmtSvc" class="com.krishagni.catissueplus.core.biospecimen.services.impl.ConsentStatementServiceImpl">
     <property name="daoFactory" ref="biospecimenDaoFactory"/>
     <property name="consentStatementFactory">
       <bean class="com.krishagni.catissueplus.core.biospecimen.domain.factory.impl.ConsentStatementFactoryImpl"/>
