@@ -39,6 +39,9 @@ public class ConsentStatementsController {
 		@RequestParam(value="statement", required = false)
 		String statement,
 
+		@RequestParam(value = "searchString", required = false)
+		String searchString,
+
 		@RequestParam(value = "startAt", required = false, defaultValue = "0")
 		int startAt,
 
@@ -48,7 +51,8 @@ public class ConsentStatementsController {
 		ConsentStatementListCriteria crit = new ConsentStatementListCriteria()
 			.code(code)
 			.startAt(startAt)
-			.query(statement)
+			.statement(statement)
+			.query(searchString)
 			.maxResults(maxResults);
 		
 		RequestEvent<ConsentStatementListCriteria> req = new RequestEvent<>(crit);
@@ -65,11 +69,15 @@ public class ConsentStatementsController {
 		String code,
 			
 		@RequestParam(value="statement", required = false)
-		String statement) {
+		String statement,
+
+		@RequestParam(value = "searchString", required = false)
+		String searchString) {
 		
 		ConsentStatementListCriteria crit = new ConsentStatementListCriteria()
 			.code(code)
-			.query(statement);
+			.statement(statement)
+			.query(searchString);
 		
 		RequestEvent<ConsentStatementListCriteria> req = new RequestEvent<>(crit);
 		ResponseEvent<Long> resp = consentStmtsSvc.getStatementsCount(req);

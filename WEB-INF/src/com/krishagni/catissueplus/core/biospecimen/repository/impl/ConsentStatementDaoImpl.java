@@ -48,8 +48,19 @@ public class ConsentStatementDaoImpl extends AbstractDao<ConsentStatement> imple
 
 	private Criteria getStatementListCriteria(ConsentStatementListCriteria listCrit) {
 		Criteria query = getCurrentSession().createCriteria(ConsentStatement.class);
-		addCodeRestriction(query, listCrit.code());
-		addStatementRestriction(query, listCrit.query());
+		String searchString = listCrit.query();
+
+		if (StringUtils.isBlank(searchString)) {
+			addCodeRestriction(query, listCrit.code());
+			addStatementRestriction(query, listCrit.statement());
+		} else {
+			query.add(
+				Restrictions.disjunction()
+					.add(Restrictions.ilike("code", searchString, MatchMode.ANYWHERE))
+					.add(Restrictions.ilike("statement", searchString, MatchMode.ANYWHERE))
+			);
+		}
+
 		return query;
 	}
 
@@ -59,9 +70,9 @@ public class ConsentStatementDaoImpl extends AbstractDao<ConsentStatement> imple
 		}
 	}
 
-	private void addStatementRestriction(Criteria query, String code) {
-		if (StringUtils.isNotBlank(code)) {
-			query.add(Restrictions.ilike("statement", code, MatchMode.ANYWHERE));
+	private void addStatementRestriction(Criteria query, String statement) {
+		if (StringUtils.isNotBlank(statement)) {
+			query.add(Restrictions.ilike("statement", statement, MatchMode.ANYWHERE));
 		}
 	}
 

@@ -4,6 +4,8 @@ import com.krishagni.catissueplus.core.common.events.AbstractListCriteria;
 
 public class ConsentStatementListCriteria extends AbstractListCriteria<ConsentStatementListCriteria> {
 	private String code;
+
+	private String statement;
 	
 	@Override
 	public ConsentStatementListCriteria self() {
@@ -16,6 +18,15 @@ public class ConsentStatementListCriteria extends AbstractListCriteria<ConsentSt
 
 	public ConsentStatementListCriteria code(String code) {
 		this.code = code;
+		return self();
+	}
+
+	public String statement() {
+		return statement;
+	}
+
+	public ConsentStatementListCriteria statement(String statement) {
+		this.statement = statement;
 		return self();
 	}
 }
