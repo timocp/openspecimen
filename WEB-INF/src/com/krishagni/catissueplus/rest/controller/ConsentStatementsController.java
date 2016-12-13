@@ -61,11 +61,11 @@ public class ConsentStatementsController {
 	@ResponseBody
 	@ResponseStatus(HttpStatus.OK)
 	public Map<String, Long> getStatementsCount(
-			@RequestParam(value = "code", required = false)
-			String code,
+		@RequestParam(value = "code", required = false)
+		String code,
 			
-			@RequestParam(value="statement", required = false)
-			String statement) {
+		@RequestParam(value="statement", required = false)
+		String statement) {
 		
 		ConsentStatementListCriteria crit = new ConsentStatementListCriteria()
 			.code(code)

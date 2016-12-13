@@ -1,11 +1,5 @@
 
-angular.module('os.biospecimen.consentstatement',
-  [
-    'os.biospecimen.consentstatement.list',
-    'os.biospecimen.consentstatement.addedit',
-    'os.biospecimen.consentstatement.detail'
-  ])
-
+angular.module('os.biospecimen.consentstatement', ['os.biospecimen.models'])
   .config(function($stateProvider) {
     $stateProvider
       .state('consent-statement-list', {
@@ -15,36 +9,18 @@ angular.module('os.biospecimen.consentstatement',
         parent: 'signed-in'
       })
       .state('consent-statement-addedit', {
-        url: '/consent-statement-addedit/:consentStatementId',
+        url: '/consent-statement-addedit/:stmtId',
         templateUrl: 'modules/biospecimen/consent-statement/addedit.html',
         resolve: {
           consentStatement: function($stateParams, ConsentStatement) {
-            if ($stateParams.consentStatementId) {
-              return ConsentStatement.getById($stateParams.consentStatementId);
+            if ($stateParams.stmtId) {
+              return ConsentStatement.getById($stateParams.stmtId);
             }
+
             return new ConsentStatement();
           }
         },
         controller: 'ConsentStatementAddEditCtrl',
         parent: 'signed-in'
-      })
-      .state('consent-statement-detail', {
-        url: '/consent-statements/:consentStatementId',
-        templateUrl: 'modules/biospecimen/consent-statement/detail.html',
-        resolve: {
-          consentStatement: function($stateParams, ConsentStatement) {
-            return ConsentStatement.getById($stateParams.consentStatementId);
-          }
-        },
-        controller: 'ConsentStatementDetailCtrl',
-        parent: 'signed-in'
-      })
-      .state('consent-statement-detail.overview', {
-        url: '/overview',
-        templateUrl: 'modules/biospecimen/consent-statement/overview.html',
-        controller: function() {
-        },
-        parent: 'consent-statement-detail'
       });
   });
-

@@ -1,22 +1,26 @@
-angular.module('os.biospecimen.consentstatement.list', ['os.biospecimen.models'])
+angular.module('os.biospecimen.consentstatement')
   .controller('ConsentStatementListCtrl', function($scope, $state, ConsentStatement, Util) {
 
     function init() {
-      $scope.consentStatementFilterOpts = {};
-      loadConsentStatements($scope.consentStatementFilterOpts);
-      Util.filter($scope, 'consentStatementFilterOpts', loadConsentStatements);
+      $scope.ctx = {
+        statements: [],
+        filterOpts: {}
+      };
+
+      loadStmts();
+      Util.filter($scope, 'ctx.filterOpts', loadStmts);
     }
 
-    function loadConsentStatements(filterOpts) {
+    function loadStmts(filterOpts) {
       ConsentStatement.query(filterOpts).then(
-        function(consentStatementList) {
-          $scope.consentStatementList = consentStatementList;
+        function(statements) {
+          $scope.ctx.statements = statements;
         }
       );
     }
 
-    $scope.showConsentStatementOverview = function(consentStatement) {
-      $state.go('consent-statement-detail.overview', {consentStatementId: consentStatement.id});
+    $scope.showStatementEdit = function(stmt) {
+      $state.go('consent-statement-addedit', {stmtId: stmt.id});
     };
 
     init();

@@ -36,7 +36,7 @@
     "shipping_and_tracking_desc": "Create, ship, track and receive specimen shipments",
     "jobs_desc": "Create, schedule, execute jobs",
     "training_desc": "User manual and training videos portal",
-    "consent_statements_desc": "Create and update consent statement"
+    "consent_statements_desc": "Manage coded consent statements"
   },
 
   "common": {
@@ -1892,18 +1892,13 @@
     
   "consent_statement": {
     "list": "Consent Statements",
-    "create_consent": "Create Consent Statement",
+    "create_stmt": "Create Statement",
     "code": "Code",
     "statement": "Statement",
 
     "tooltip": {
       "add": "Click to add new Consent Statement",
-      "edit": "Click to edit Consent Statement",
       "search": "Click to search Consent Statements"
-    },
-
-    "menu": {
-      "overview": "Overview"
     },
 
     "filter": {

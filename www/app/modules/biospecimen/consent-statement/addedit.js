@@ -1,7 +1,7 @@
-angular.module('os.biospecimen.consentstatement.addedit', ['os.biospecimen.models'])
+angular.module('os.biospecimen.consentstatement')
   .controller('ConsentStatementAddEditCtrl', function($scope, $state, consentStatement) {
 
-    var init = function() {
+    function init() {
       $scope.consentStatement = consentStatement; 
     }
 
