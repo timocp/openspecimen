@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+  http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+  <changeSet author="mdnasim" id="Audit coded consent statements">
+    <createTable tableName="OS_CONSENT_STATEMENTS_AUD">
+      <column name="IDENTIFIER" type="${int.type}">
+        <constraints nullable="false"/>
+      </column>
+
+      <column name="REV" type="${int.type}">
+        <constraints nullable="false"/>
+      </column>
+
+      <column name="REVTYPE" type="${smallint.type}"/>
+
+      <column name="CODE" type="${text.type}(32)"/>
+
+      <column name="code_MOD" type="${bit.type}"/>
+
+      <column name="STATEMENT" type="${text.type}(255)"/>
+
+      <column name="statement_MOD" type="${bit.type}"/>
+
+      <column name="ACTIVITY_STATUS" type="${text.type}(16)"/>
+
+      <column name="activityStatus_MOD" type="${bit.type}"/>
+    </createTable>
+  </changeSet>
+</databaseChangeLog>
