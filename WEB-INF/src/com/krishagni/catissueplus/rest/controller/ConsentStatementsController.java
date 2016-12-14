@@ -50,9 +50,9 @@ public class ConsentStatementsController {
 
 		ConsentStatementListCriteria crit = new ConsentStatementListCriteria()
 			.code(code)
-			.startAt(startAt)
 			.statement(statement)
 			.query(searchString)
+			.startAt(startAt)
 			.maxResults(maxResults);
 		
 		RequestEvent<ConsentStatementListCriteria> req = new RequestEvent<>(crit);

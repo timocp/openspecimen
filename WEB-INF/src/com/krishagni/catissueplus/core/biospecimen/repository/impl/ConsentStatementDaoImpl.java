@@ -56,7 +56,7 @@ public class ConsentStatementDaoImpl extends AbstractDao<ConsentStatement> imple
 		} else {
 			query.add(
 				Restrictions.disjunction()
-					.add(Restrictions.ilike("code", searchString, MatchMode.ANYWHERE))
+					.add(Restrictions.ilike("code",      searchString, MatchMode.ANYWHERE))
 					.add(Restrictions.ilike("statement", searchString, MatchMode.ANYWHERE))
 			);
 		}
