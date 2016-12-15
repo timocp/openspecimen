@@ -250,7 +250,7 @@ public class DistributionProtocolController {
 	@RequestMapping(method = RequestMethod.POST, value = "/{dpId}/consent-tiers")
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
-	public List<DpConsentTierDetail> createDpConsentTier(
+	public DpConsentTierDetail createDpConsentTier(
 		@PathVariable("dpId")
 		Long dpId,
 
@@ -259,7 +259,7 @@ public class DistributionProtocolController {
 
 		dpConsent.setDpId(dpId);
 		RequestEvent<DpConsentTierDetail> req = new RequestEvent<>(dpConsent);
-		ResponseEvent<List<DpConsentTierDetail>> resp = dpSvc.createDpConsentTier(req);
+		ResponseEvent<DpConsentTierDetail> resp = dpSvc.createDpConsentTier(req);
 
 		resp.throwErrorIfUnsuccessful();
 		return resp.getPayload();
@@ -268,7 +268,7 @@ public class DistributionProtocolController {
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{dpId}/consent-tiers/{consentId}")
 	@ResponseBody
 	@ResponseStatus(HttpStatus.OK)
-	public List<DpConsentTierDetail> deleteDpConsentTier(
+	public DpConsentTierDetail deleteDpConsentTier(
 		@PathVariable("dpId")
 		Long dpId,
 
@@ -279,7 +279,7 @@ public class DistributionProtocolController {
 		dpConsent.setDpId(dpId);
 		dpConsent.setConsentStmtId(consentId);
 		RequestEvent<DpConsentTierDetail> req = new RequestEvent<>(dpConsent);
-		ResponseEvent<List<DpConsentTierDetail>> resp  = dpSvc.deleteDpConsentTier(req);
+		ResponseEvent<DpConsentTierDetail> resp  = dpSvc.deleteDpConsentTier(req);
 
 		resp.throwErrorIfUnsuccessful();
 		return resp.getPayload();

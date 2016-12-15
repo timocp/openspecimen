@@ -51,7 +51,7 @@ public interface DistributionProtocolService {
 	
 	ResponseEvent<List<DpConsentTierDetail>> getDpConsentTiers(RequestEvent<Long> req);
 	
-	ResponseEvent<List<DpConsentTierDetail>> createDpConsentTier(RequestEvent<DpConsentTierDetail> req);
+	ResponseEvent<DpConsentTierDetail> createDpConsentTier(RequestEvent<DpConsentTierDetail> req);
 	
-	ResponseEvent<List<DpConsentTierDetail>> deleteDpConsentTier(RequestEvent<DpConsentTierDetail> req);
+	ResponseEvent<DpConsentTierDetail> deleteDpConsentTier(RequestEvent<DpConsentTierDetail> req);
 }

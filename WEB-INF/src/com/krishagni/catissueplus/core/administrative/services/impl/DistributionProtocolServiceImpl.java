@@ -491,7 +491,7 @@ public class DistributionProtocolServiceImpl implements DistributionProtocolServ
 	
 	@Override
 	@PlusTransactional
-	public ResponseEvent<List<DpConsentTierDetail>> createDpConsentTier(RequestEvent<DpConsentTierDetail> req) {
+	public ResponseEvent<DpConsentTierDetail> createDpConsentTier(RequestEvent<DpConsentTierDetail> req) {
 		try {
 			DpConsentTierDetail detail = req.getPayload();
 			DistributionProtocol dp = getDistributionProtocol(detail);
@@ -499,7 +499,7 @@ public class DistributionProtocolServiceImpl implements DistributionProtocolServ
 
 			dp.getConsentStmts().add(consentStmt);
 			daoFactory.getDistributionProtocolDao().saveOrUpdate(dp);
-			return ResponseEvent.response(DpConsentTierDetail.from(dp));
+			return ResponseEvent.response(DpConsentTierDetail.from(dp, consentStmt));
 		} catch (OpenSpecimenException ose) {
 			return ResponseEvent.error(ose);
 		} catch (Exception e) {
@@ -509,7 +509,7 @@ public class DistributionProtocolServiceImpl implements DistributionProtocolServ
 	
 	@Override
 	@PlusTransactional
-	public ResponseEvent<List<DpConsentTierDetail>> deleteDpConsentTier(RequestEvent<DpConsentTierDetail> req) {
+	public ResponseEvent<DpConsentTierDetail> deleteDpConsentTier(RequestEvent<DpConsentTierDetail> req) {
 		try {
 			DpConsentTierDetail detail = req.getPayload();
 			DistributionProtocol dp = getDistributionProtocol(detail);
@@ -517,7 +517,7 @@ public class DistributionProtocolServiceImpl implements DistributionProtocolServ
 			
 			dp.getConsentStmts().remove(consentStmt);
 			daoFactory.getDistributionProtocolDao().saveOrUpdate(dp);
-			return ResponseEvent.response(DpConsentTierDetail.from(dp));
+			return ResponseEvent.response(DpConsentTierDetail.from(dp, consentStmt));
 		} catch (OpenSpecimenException ose) {
 			return ResponseEvent.error(ose);
 		} catch (Exception e) {

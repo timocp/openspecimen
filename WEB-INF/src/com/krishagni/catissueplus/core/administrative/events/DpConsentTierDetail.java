@@ -76,6 +76,10 @@ public class DpConsentTierDetail {
 		return details;
 	}
 
+	public static DpConsentTierDetail from(DistributionProtocol dp, ConsentStatement cs) {
+		return getDpConsentTierDetail(dp, cs);
+	}
+
 	private static DpConsentTierDetail getDpConsentTierDetail(DistributionProtocol dp, ConsentStatement cs) {
 		DpConsentTierDetail detail = new DpConsentTierDetail();
 		detail.setConsentStmtId(cs.getId());

@@ -65,9 +65,11 @@
       <filter name="activeEntity"/>
     </set>
 
-    <set name="consentStmts" table="OS_DP_CONSENT_TIERS" cascade="all-delete-orphan">
+    <set name="consentStmts" table="OS_DP_CONSENT_TIERS">
       <key column="DP_ID" not-null="true"/>
-      <many-to-many class="com.krishagni.catissueplus.core.biospecimen.domain.ConsentStatement" column="CONSENT_STMT_ID"/>
+      <many-to-many class="com.krishagni.catissueplus.core.biospecimen.domain.ConsentStatement" column="CONSENT_STMT_ID">
+        <filter name="activeEntity"/>
+      </many-to-many>
     </set>
 
     <filter name="activeEntity"/>
