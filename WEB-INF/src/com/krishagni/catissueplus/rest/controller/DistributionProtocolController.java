@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import com.krishagni.catissueplus.core.administrative.events.DistributionOrderStat;
 import com.krishagni.catissueplus.core.administrative.events.DistributionOrderStatListCriteria;
 import com.krishagni.catissueplus.core.administrative.events.DistributionProtocolDetail;
+import com.krishagni.catissueplus.core.administrative.events.DpConsentTierDetail;
 import com.krishagni.catissueplus.core.administrative.repository.DpListCriteria;
 import com.krishagni.catissueplus.core.administrative.services.DistributionProtocolService;
 import com.krishagni.catissueplus.core.common.events.DependentEntityDetail;
@@ -233,6 +234,57 @@ public class DistributionProtocolController {
 		return resp.getPayload();
 	}
 	
+	@RequestMapping(method = RequestMethod.GET, value = "/{dpId}/consent-tiers")
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody
+	public List<DpConsentTierDetail> getDpConsentTier(
+		@PathVariable("dpId")
+		Long dpId) {
+
+		RequestEvent<Long> req = new RequestEvent<>(dpId);
+		ResponseEvent<List<DpConsentTierDetail>> resp = dpSvc.getDpConsentTiers(req);
+		resp.throwErrorIfUnsuccessful();
+		return resp.getPayload();
+	}
+
+	@RequestMapping(method = RequestMethod.POST, value = "/{dpId}/consent-tiers")
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody
+	public List<DpConsentTierDetail> createDpConsentTier(
+		@PathVariable("dpId")
+		Long dpId,
+
+		@RequestBody
+		DpConsentTierDetail dpConsent) {
+
+		dpConsent.setDpId(dpId);
+		RequestEvent<DpConsentTierDetail> req = new RequestEvent<>(dpConsent);
+		ResponseEvent<List<DpConsentTierDetail>> resp = dpSvc.createDpConsentTier(req);
+
+		resp.throwErrorIfUnsuccessful();
+		return resp.getPayload();
+	}
+
+	@RequestMapping(method = RequestMethod.DELETE, value = "/{dpId}/consent-tiers/{consentId}")
+	@ResponseBody
+	@ResponseStatus(HttpStatus.OK)
+	public List<DpConsentTierDetail> deleteDpConsentTier(
+		@PathVariable("dpId")
+		Long dpId,
+
+		@PathVariable("consentId")
+		Long consentId) {
+
+		DpConsentTierDetail dpConsent = new DpConsentTierDetail();
+		dpConsent.setDpId(dpId);
+		dpConsent.setConsentStmtId(consentId);
+		RequestEvent<DpConsentTierDetail> req = new RequestEvent<>(dpConsent);
+		ResponseEvent<List<DpConsentTierDetail>> resp  = dpSvc.deleteDpConsentTier(req);
+
+		resp.throwErrorIfUnsuccessful();
+		return resp.getPayload();
+	}
+
 	private <T> RequestEvent<T> getRequest(T payload) {
 		return new RequestEvent<T>(payload);
 	}

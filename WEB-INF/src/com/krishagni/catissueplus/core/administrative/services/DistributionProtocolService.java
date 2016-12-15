@@ -8,6 +8,7 @@ import java.util.Map;
 import com.krishagni.catissueplus.core.administrative.events.DistributionOrderStat;
 import com.krishagni.catissueplus.core.administrative.events.DistributionOrderStatListCriteria;
 import com.krishagni.catissueplus.core.administrative.events.DistributionProtocolDetail;
+import com.krishagni.catissueplus.core.administrative.events.DpConsentTierDetail;
 import com.krishagni.catissueplus.core.administrative.events.DpRequirementDetail;
 import com.krishagni.catissueplus.core.administrative.repository.DpListCriteria;
 import com.krishagni.catissueplus.core.common.events.DependentEntityDetail;
@@ -47,4 +48,10 @@ public interface DistributionProtocolService {
 	public ResponseEvent<File> exportOrderStats(RequestEvent<DistributionOrderStatListCriteria> req);
 
 	public ResponseEvent<Map<String, Object>> getExtensionForm();
+	
+	ResponseEvent<List<DpConsentTierDetail>> getDpConsentTiers(RequestEvent<Long> req);
+	
+	ResponseEvent<List<DpConsentTierDetail>> createDpConsentTier(RequestEvent<DpConsentTierDetail> req);
+	
+	ResponseEvent<List<DpConsentTierDetail>> deleteDpConsentTier(RequestEvent<DpConsentTierDetail> req);
 }
