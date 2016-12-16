@@ -32,7 +32,6 @@ import com.krishagni.catissueplus.core.administrative.repository.DpRequirementDa
 import com.krishagni.catissueplus.core.administrative.services.DistributionProtocolService;
 import com.krishagni.catissueplus.core.biospecimen.domain.ConsentStatement;
 import com.krishagni.catissueplus.core.biospecimen.domain.factory.ConsentStatementErrorCode;
-import com.krishagni.catissueplus.core.biospecimen.repository.ConsentStatementDao;
 import com.krishagni.catissueplus.core.biospecimen.repository.DaoFactory;
 import com.krishagni.catissueplus.core.common.PlusTransactional;
 import com.krishagni.catissueplus.core.common.access.AccessCtrlMgr;
@@ -40,6 +39,7 @@ import com.krishagni.catissueplus.core.common.errors.ActivityStatusErrorCode;
 import com.krishagni.catissueplus.core.common.errors.ErrorType;
 import com.krishagni.catissueplus.core.common.errors.OpenSpecimenException;
 import com.krishagni.catissueplus.core.common.events.DependentEntityDetail;
+import com.krishagni.catissueplus.core.common.events.EntityQueryCriteria;
 import com.krishagni.catissueplus.core.common.events.RequestEvent;
 import com.krishagni.catissueplus.core.common.events.ResponseEvent;
 import com.krishagni.catissueplus.core.common.service.ObjectStateParamsResolver;
@@ -474,12 +474,10 @@ public class DistributionProtocolServiceImpl implements DistributionProtocolServ
 	
 	@Override
 	@PlusTransactional
-	public ResponseEvent<List<DpConsentTierDetail>> getDpConsentTiers(RequestEvent<Long> req) {
+	public ResponseEvent<List<DpConsentTierDetail>> getDpConsentTiers(RequestEvent<EntityQueryCriteria> req) {
 		try {
-			DistributionProtocol existing = daoFactory.getDistributionProtocolDao().getById(req.getPayload());
-			if (existing == null) {
-				return ResponseEvent.userError(DistributionProtocolErrorCode.NOT_FOUND);
-			}
+			EntityQueryCriteria crit = req.getPayload();
+			DistributionProtocol existing = getDistributionProtocol(crit.getId(), crit.getName(), null);
 			
 			return ResponseEvent.response(DpConsentTierDetail.from(existing));
 		} catch (OpenSpecimenException ose) {
@@ -494,10 +492,18 @@ public class DistributionProtocolServiceImpl implements DistributionProtocolServ
 	public ResponseEvent<DpConsentTierDetail> createDpConsentTier(RequestEvent<DpConsentTierDetail> req) {
 		try {
 			DpConsentTierDetail detail = req.getPayload();
-			DistributionProtocol dp = getDistributionProtocol(detail);
-			ConsentStatement consentStmt = getStatement(detail);
+			DistributionProtocol dp = getDistributionProtocol(
+					detail.getDpId(), detail.getDpShortTitle(), detail.getDpShortTitle());
 
-			dp.getConsentStmts().add(consentStmt);
+			AccessCtrlMgr.getInstance().ensureCreateUpdateDeleteDpRights(dp);
+
+			ConsentStatement consentStmt = getStatement(detail.getConsentStmtId(), detail.getConsentStmtCode());
+			if (dp.getConsentStmts().contains(consentStmt)) {
+				return ResponseEvent.userError(DistributionProtocolErrorCode.DUP_CONSENT);
+			} else {
+				dp.getConsentStmts().add(consentStmt);
+			}
+
 			daoFactory.getDistributionProtocolDao().saveOrUpdate(dp);
 			return ResponseEvent.response(DpConsentTierDetail.from(dp, consentStmt));
 		} catch (OpenSpecimenException ose) {
@@ -512,10 +518,17 @@ public class DistributionProtocolServiceImpl implements DistributionProtocolServ
 	public ResponseEvent<DpConsentTierDetail> deleteDpConsentTier(RequestEvent<DpConsentTierDetail> req) {
 		try {
 			DpConsentTierDetail detail = req.getPayload();
-			DistributionProtocol dp = getDistributionProtocol(detail);
-			ConsentStatement consentStmt = getStatement(detail);
+			ConsentStatement consentStmt = getStatement(detail.getConsentStmtId(), detail.getConsentStmtCode());
+			DistributionProtocol dp = getDistributionProtocol(
+				detail.getDpId(), detail.getDpShortTitle(), detail.getDpShortTitle());
+
+			AccessCtrlMgr.getInstance().ensureCreateUpdateDeleteDpRights(dp);
+			if (dp.getConsentStmts().contains(consentStmt)) {
+				dp.getConsentStmts().remove(consentStmt);
+			} else {
+				return ResponseEvent.userError(DistributionProtocolErrorCode.CONSENT_TIER_NOT_FOUND);
+			}
 			
-			dp.getConsentStmts().remove(consentStmt);
 			daoFactory.getDistributionProtocolDao().saveOrUpdate(dp);
 			return ResponseEvent.response(DpConsentTierDetail.from(dp, consentStmt));
 		} catch (OpenSpecimenException ose) {
@@ -678,15 +691,15 @@ public class DistributionProtocolServiceImpl implements DistributionProtocolServ
 		return data.toArray(new String[0]);
 	}
 	
-	private DistributionProtocol getDistributionProtocol(DpConsentTierDetail detail) {
+	private DistributionProtocol getDistributionProtocol(Long id, String dpShortTitle, String dpTitle) {
 		DistributionProtocol dp = null;
 		DistributionProtocolDao dpDao = daoFactory.getDistributionProtocolDao();
-		if (detail.getDpId() != null) {
-			dp = dpDao.getById(detail.getDpId());
-		} else if (StringUtils.isNotBlank(detail.getDpTitle())) {
-			dp = dpDao.getDistributionProtocol(detail.getDpTitle());
-		} else if (StringUtils.isNotBlank(detail.getDpShortTitle())) {
-			dp = dpDao.getByShortTitle(detail.getDpShortTitle());
+		if (id != null) {
+			dp = dpDao.getById(id);
+		} else if (StringUtils.isNotBlank(dpShortTitle)) {
+			dp = dpDao.getDistributionProtocol(dpShortTitle);
+		} else if (StringUtils.isNotBlank(dpTitle)) {
+			dp = dpDao.getByShortTitle(dpTitle);
 		}
 		
 		if (dp == null) {
@@ -696,11 +709,9 @@ public class DistributionProtocolServiceImpl implements DistributionProtocolServ
 		return dp;
 	}
 	
-	private ConsentStatement getStatement(DpConsentTierDetail detail) {
+	private ConsentStatement getStatement(Long id, String code) {
 		ConsentStatement result = null;
 		Object key = null;
-		Long id = detail.getConsentStmtId();
-		String code = detail.getConsentStmtCode();
 
 		if (id != null) {
 			key = id;

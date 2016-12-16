@@ -12,6 +12,7 @@ import com.krishagni.catissueplus.core.administrative.events.DpConsentTierDetail
 import com.krishagni.catissueplus.core.administrative.events.DpRequirementDetail;
 import com.krishagni.catissueplus.core.administrative.repository.DpListCriteria;
 import com.krishagni.catissueplus.core.common.events.DependentEntityDetail;
+import com.krishagni.catissueplus.core.common.events.EntityQueryCriteria;
 import com.krishagni.catissueplus.core.common.events.RequestEvent;
 import com.krishagni.catissueplus.core.common.events.ResponseEvent;
 
@@ -49,7 +50,7 @@ public interface DistributionProtocolService {
 
 	public ResponseEvent<Map<String, Object>> getExtensionForm();
 	
-	ResponseEvent<List<DpConsentTierDetail>> getDpConsentTiers(RequestEvent<Long> req);
+	ResponseEvent<List<DpConsentTierDetail>> getDpConsentTiers(RequestEvent<EntityQueryCriteria> req);
 	
 	ResponseEvent<DpConsentTierDetail> createDpConsentTier(RequestEvent<DpConsentTierDetail> req);
 	

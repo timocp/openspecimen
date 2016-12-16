@@ -27,6 +27,7 @@ import com.krishagni.catissueplus.core.administrative.events.DpConsentTierDetail
 import com.krishagni.catissueplus.core.administrative.repository.DpListCriteria;
 import com.krishagni.catissueplus.core.administrative.services.DistributionProtocolService;
 import com.krishagni.catissueplus.core.common.events.DependentEntityDetail;
+import com.krishagni.catissueplus.core.common.events.EntityQueryCriteria;
 import com.krishagni.catissueplus.core.common.events.RequestEvent;
 import com.krishagni.catissueplus.core.common.events.ResponseEvent;
 import com.krishagni.catissueplus.core.common.util.Utility;
@@ -241,7 +242,7 @@ public class DistributionProtocolController {
 		@PathVariable("dpId")
 		Long dpId) {
 
-		RequestEvent<Long> req = new RequestEvent<>(dpId);
+		RequestEvent<EntityQueryCriteria> req = new RequestEvent<>(new EntityQueryCriteria(dpId));
 		ResponseEvent<List<DpConsentTierDetail>> resp = dpSvc.getDpConsentTiers(req);
 		resp.throwErrorIfUnsuccessful();
 		return resp.getPayload();
