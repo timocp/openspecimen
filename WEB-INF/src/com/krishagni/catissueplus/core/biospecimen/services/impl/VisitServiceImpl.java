@@ -21,11 +21,11 @@ import com.krishagni.catissueplus.core.biospecimen.domain.factory.VisitErrorCode
 import com.krishagni.catissueplus.core.biospecimen.domain.factory.VisitFactory;
 import com.krishagni.catissueplus.core.biospecimen.events.CpEntityDeleteCriteria;
 import com.krishagni.catissueplus.core.biospecimen.events.FileDetail;
+import com.krishagni.catissueplus.core.biospecimen.events.FileDownloadDetail;
 import com.krishagni.catissueplus.core.biospecimen.events.LabelPrintJobSummary;
 import com.krishagni.catissueplus.core.biospecimen.events.PrintVisitNameDetail;
 import com.krishagni.catissueplus.core.biospecimen.events.SpecimenDetail;
 import com.krishagni.catissueplus.core.biospecimen.events.SprDetail;
-import com.krishagni.catissueplus.core.biospecimen.events.FileDownloadDetail;
 import com.krishagni.catissueplus.core.biospecimen.events.SprLockDetail;
 import com.krishagni.catissueplus.core.biospecimen.events.VisitDetail;
 import com.krishagni.catissueplus.core.biospecimen.events.VisitSpecimenDetail;
@@ -146,8 +146,7 @@ public class VisitServiceImpl implements VisitService, ObjectStateParamsResolver
 	@PlusTransactional
 	public ResponseEvent<VisitDetail> addVisit(RequestEvent<VisitDetail> req) {
 		try {
-			VisitDetail respPayload = saveOrUpdateVisit(req.getPayload(), false, false);
-			return ResponseEvent.response(respPayload);
+			return ResponseEvent.response(addVisit(req.getPayload(), true));
 		} catch (OpenSpecimenException ose) {
 			return ResponseEvent.error(ose);
 		} catch (Exception e) {
@@ -461,6 +460,14 @@ public class VisitServiceImpl implements VisitService, ObjectStateParamsResolver
 		return daoFactory.getSpecimenDao().getSpecimenVisits(crit);
 	}
 
+	public VisitDetail addVisit(VisitDetail input, boolean checkPermission) {
+		if (checkPermission) {
+			return saveOrUpdateVisit(input, false, false);
+		} else {
+			return saveOrUpdateVisit(visitFactory.createVisit(input), null);
+		}
+	}
+
 	@Override
 	public String getObjectName() {
 		return "visit";
@@ -478,27 +485,30 @@ public class VisitServiceImpl implements VisitService, ObjectStateParamsResolver
 
 	private VisitDetail saveOrUpdateVisit(VisitDetail input, boolean update, boolean partial) {
 		Visit existing = null;
-		String prevStatus = null;   
-		
+
 		if (update && (input.getId() != null || StringUtils.isNotBlank(input.getName()))) {
 			existing = getVisit(input.getId(), input.getName());
 			AccessCtrlMgr.getInstance().ensureCreateOrUpdateVisitRights(existing);
-			prevStatus = existing.getStatus();
 		}
-		
+
 		if (update && existing == null) {
 			throw OpenSpecimenException.userError(VisitErrorCode.NOT_FOUND);
 		}
 
-		Visit visit = null;		
+		Visit visit = null;
 		if (partial) {
 			visit = visitFactory.createVisit(existing, input);
 		} else {
 			visit = visitFactory.createVisit(input);
 		}
-		
+
 		AccessCtrlMgr.getInstance().ensureCreateOrUpdateVisitRights(visit);
-		
+		return saveOrUpdateVisit(visit, existing);
+	}
+
+	private VisitDetail saveOrUpdateVisit(Visit visit, Visit existing) {
+		String prevVisitStatus = existing != null ? existing.getStatus() : null;
+
 		OpenSpecimenException ose = new OpenSpecimenException(ErrorType.USER_ERROR);
 		ensureValidAndUniqueVisitName(existing, visit, ose);
 		ose.checkAndThrow();
@@ -516,7 +526,7 @@ public class VisitServiceImpl implements VisitService, ObjectStateParamsResolver
 		existing.setNameIfEmpty();
 		daoFactory.getVisitsDao().saveOrUpdate(existing);
 		existing.addOrUpdateExtension();
-		existing.printLabels(prevStatus);
+		existing.printLabels(prevVisitStatus);
 		return VisitDetail.from(existing, false, false);
 	}
 	

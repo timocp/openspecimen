@@ -88,7 +88,7 @@ public class CollectionProtocol extends BaseExtensionEntity {
 	private String ppidFormat;
 	
 	private String visitNameFormat;
-	
+
 	private String unsignedConsentDocumentURL;
 	
 	private Boolean manualPpidEnabled;
@@ -96,6 +96,8 @@ public class CollectionProtocol extends BaseExtensionEntity {
 	private Boolean manualVisitNameEnabled;
 	
 	private Boolean manualSpecLabelEnabled;
+
+	private Boolean bulkPartRegEnabled;
 
 	private Boolean barcodingEnabled;
 
@@ -305,6 +307,14 @@ public class CollectionProtocol extends BaseExtensionEntity {
 		return manualSpecLabelEnabled != null ? manualSpecLabelEnabled : false;
 	}
 
+	public boolean isBulkPartRegEnabled() {
+		return bulkPartRegEnabled != null ? bulkPartRegEnabled : false;
+	}
+
+	public void setBulkPartRegEnabled(Boolean bulkPartRegEnabled) {
+		this.bulkPartRegEnabled = bulkPartRegEnabled;
+	}
+
 	public boolean isBarcodingEnabled() {
 		return barcodingEnabled != null ? barcodingEnabled : false;
 	}
@@ -479,6 +489,7 @@ public class CollectionProtocol extends BaseExtensionEntity {
 		setDerivativeLabelFormat(cp.getDerivativeLabelFormat());
 		setAliquotLabelFormat(cp.getAliquotLabelFormat());
 		setManualSpecLabelEnabled(cp.isManualSpecLabelEnabled());
+		setBulkPartRegEnabled(cp.isBulkPartRegEnabled());
 		setBarcodingEnabled(cp.isBarcodingEnabled());
 		setContainerSelectionStrategy(cp.getContainerSelectionStrategy());
 		setAliquotsInSameContainer(cp.getAliquotsInSameContainer());
@@ -516,6 +527,7 @@ public class CollectionProtocol extends BaseExtensionEntity {
 		cp.setAliquotLabelFormat(getAliquotLabelFormat());
 		cp.setDerivativeLabelFormat(getDerivativeLabelFormat());
 		cp.setManualSpecLabelEnabled(isManualSpecLabelEnabled());
+		cp.setBulkPartRegEnabled(isBulkPartRegEnabled());
 		cp.setBarcodingEnabled(isBarcodingEnabled());
 		cp.setVisitNamePrintMode(getVisitNamePrintMode());
 		cp.setVisitNamePrintCopies(getVisitNamePrintCopies());

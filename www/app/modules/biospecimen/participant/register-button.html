@@ -1,4 +1,27 @@
-<button show-if-allowed="partRegOpts" class="default" title="{{'participant.tooltip.register' | translate}}"
+<div ng-if="!!cp.bulkPartRegEnabled" dropdown class="os-inline-btn">
+  <button class="default dropdown-toggle" title="{{'participant.tooltip.register' | translate}}"
+    ui-sref="participant-addedit({cprId: -1, cpId: cp.id})">
+    <span class="fa fa-plus"></span>
+    <span translate="participant.buttons.register">Register</span>
+  </button>
+
+  <ul class="dropdown-menu">
+    <li>
+      <a ui-sref="participant-addedit({cprId: -1, cpId: cp.id})">
+        <span class="fa fa-user"></span>
+        <span translate="participant.buttons.single">Single</span>
+      </a>
+    </li>
+    <li>
+      <a ui-sref="participant-bulkreg">
+        <span class="fa fa-users"></span>
+        <span translate="participant.buttons.multiple">Multiple</span>
+      </a>
+    </li>
+  </ul>
+</div>
+
+<button ng-if="!cp.bulkPartRegEnabled" class="default" title="{{'participant.tooltip.register' | translate}}"
   ui-sref="participant-addedit({cprId: -1, cpId: cp.id})">
   <span class="fa fa-plus"></span>
   <span translate="participant.buttons.register">Register</span>

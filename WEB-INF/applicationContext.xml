@@ -225,6 +225,7 @@
     <property name="cprFactory" ref="cprFactory"/>
     <property name="consentResponsesFactory" ref="consentResponsesFactory"/>
     <property name="participantService" ref="participantSvc"/>
+    <property name="visitSvc" ref="visitService"/>
     <property name="cfgSvc" ref="cfgSvc"/>
     <property name="labelGenerator" ref="ppidGenerator"/>
     <property name="anonymizer" ref="participantAnonymizer"/>

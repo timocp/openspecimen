@@ -4,6 +4,7 @@ package com.krishagni.catissueplus.core.biospecimen.services;
 import java.io.File;
 import java.util.List;
 
+import com.krishagni.catissueplus.core.biospecimen.events.BulkRegistrationsDetail;
 import com.krishagni.catissueplus.core.biospecimen.events.CollectionProtocolRegistrationDetail;
 import com.krishagni.catissueplus.core.biospecimen.events.ConsentDetail;
 import com.krishagni.catissueplus.core.biospecimen.events.CpEntityDeleteCriteria;
@@ -23,7 +24,9 @@ public interface CollectionProtocolRegistrationService {
 	public ResponseEvent<CollectionProtocolRegistrationDetail> getRegistration(RequestEvent<RegistrationQueryCriteria> req);
 	
 	public ResponseEvent<CollectionProtocolRegistrationDetail> createRegistration(RequestEvent<CollectionProtocolRegistrationDetail> req);
-	
+
+	public ResponseEvent<List<CollectionProtocolRegistrationDetail>> bulkRegistration(RequestEvent<BulkRegistrationsDetail> req);
+
 	public ResponseEvent<List<DependentEntityDetail>> getDependentEntities(RequestEvent<RegistrationQueryCriteria> req);
 	
 	public ResponseEvent<CollectionProtocolRegistrationDetail> deleteRegistration(RequestEvent<CpEntityDeleteCriteria> req);

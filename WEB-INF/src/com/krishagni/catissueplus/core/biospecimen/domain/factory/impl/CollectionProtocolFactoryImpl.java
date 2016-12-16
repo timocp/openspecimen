@@ -95,6 +95,7 @@ public class CollectionProtocolFactoryImpl implements CollectionProtocolFactory 
 		cp.setExtractSprText(input.getExtractSprText());
 		cp.setDescriptionURL(input.getDescriptionUrl());
 		cp.setConsentsWaived(input.getConsentsWaived());
+		cp.setBulkPartRegEnabled(input.getBulkPartRegEnabled());
 
 		setPpidFormat(input, cp, ose);
 		setLabelFormats(input, cp, ose);

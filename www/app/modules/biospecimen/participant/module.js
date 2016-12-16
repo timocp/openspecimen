@@ -9,6 +9,7 @@ angular.module('os.biospecimen.participant',
     'os.biospecimen.participant.overview',
     'os.biospecimen.participant.visits',
     'os.biospecimen.participant.addedit',
+    'os.biospecimen.participant.bulkregistration',
     'os.biospecimen.participant.newreg',
     'os.biospecimen.participant.collect-specimens',
     'os.biospecimen.participant.consents',
@@ -27,6 +28,7 @@ angular.module('os.biospecimen.participant',
         controller: function($scope, cp, cpViewCtx) {
           $scope.cp = cp;
           $scope.cpViewCtx = cpViewCtx;
+          cpViewCtx.codingEnabled = $scope.global.appProps.cp_coding_enabled;
 
           var sites = cp.cpSites.map(function(cpSite) { return cpSite.siteName; });
           $scope.partRegOpts =        {cp: cp.shortTitle, sites: sites, resource: 'ParticipantPhi', operations: ['Create']};
@@ -342,6 +344,17 @@ angular.module('os.biospecimen.participant',
           lockedFields: function(cpr, CpConfigSvc) {
             var participant = cpr.participant || {};
             return CpConfigSvc.getLockedParticipantFields(participant.source || 'OpenSpecimen');
+          }
+        },
+        parent: 'participant-root'
+      })
+      .state('participant-bulkreg', {
+        url: '/bulk-registration',
+        templateUrl: 'modules/biospecimen/participant/bulk-registration.html',
+        controller: 'BulkRegistrationCtrl',
+        resolve: {
+          events: function(cp, CollectionProtocolEvent) {
+            return CollectionProtocolEvent.listFor(cp.id);
           }
         },
         parent: 'participant-root'

@@ -22,6 +22,11 @@ angular.module('os.biospecimen.models.cpr',
       return CollectionProtocolRegistration.getCount(prepareFilterOpts(cpId, includeStats, filterOpts));
     }
 
+    CollectionProtocolRegistration.bulkRegistration = function(bulkRegDetail) {
+      var url = CollectionProtocolRegistration.url() + '/bulk';
+      return $http.post(url, bulkRegDetail).then(CollectionProtocolRegistration.modelRespTransform);
+    }
+
     function prepareFilterOpts(cpId, includeStats, filterOpts) {
       var params = {cpId: cpId, includeStats: !!includeStats};
       angular.extend(params, filterOpts || {});

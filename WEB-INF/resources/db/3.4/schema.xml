@@ -504,4 +504,11 @@
     </addColumn>
   </changeSet>
 
+  <changeSet author="vgaikwad" id="Flag to specify whether bulk registration of participants is allowed">
+    <addColumn tableName="CATISSUE_COLLECTION_PROTOCOL">
+      <column name="BULK_PART_REG_ALLOWED" type="${boolean.type}" defaultValueBoolean="0">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+  </changeSet>
 </databaseChangeLog>

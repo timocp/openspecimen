@@ -176,6 +176,7 @@
     "store_all_aliquots_in_same_container": "Store all Aliquots in same Container",
     "visit_name_fmt": "Visit Name Format",
     "manual_enabled_for": "User Inputs Allowed For",
+    "bulk_part_reg_allowed": "Bulk Registrations",
     "pre_print_spmn_labels": "Pre-print Labels",
     "ppids": "Participant Protocol IDs",
     "visit_names": "Visit Names",
@@ -369,6 +370,11 @@
     "confirm_anonymize": "Are you sure you want to erase all PHI data of participant?",
     "anonymized_successfully": "Successfully erased participant PHI data",
 
+    "bulk_registration": "Bulk Participant Registration",
+    "num_of_participants": "Number of Participants",
+    "collection_site": "Collection Site",
+    "participant_registered": "{{numOfParticipants}} participants registered successfully.",
+
     "consent": {
       "signed_form": "Signed Consent Form",
       "deleting_form": "Deleting Signed Consent Form",
@@ -405,6 +411,8 @@
       "ignore_matches": "Ignore Matches and Proceed",
       "lookup": "Lookup",
       "bulk_register": "Bulk Register",
+      "single": "Single",
+      "multiple": "Multiple",
       "specimen_catalog": "Specimen Catalog",
       "import": "Import",
       "anonymize": "Anonymize"

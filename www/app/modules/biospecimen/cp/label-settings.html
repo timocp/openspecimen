@@ -52,8 +52,16 @@
       </li>
 
       <li class="item">
-        <strong class="key key-sm" translate="cp.label_format.manual">User Inputs Allowed for</strong>
+        <strong class="key key-sm" translate="cp.label_format.manual">User Inputs Allowed</strong>
         <span class="value value-md">{{settingCtx.userInputLabels | osNoValue}}</span>
+      </li>
+
+      <li class="item">
+        <strong class="key key-sm" translate="cp.bulk_part_reg_allowed">Bulk Participant Registration Allowed</strong>
+        <span class="value value-md" ng-switch on="settingCtx.cp.bulkPartRegEnabled">
+          <span ng-switch-when="true" translate="common.enabled">Enabled</span>
+          <span ng-switch-default translate="common.disabled">Disabled</span>
+        </span>
       </li>
 
       <li class="item">
@@ -207,15 +215,33 @@
 
     <div class="form-group">
       <label class="control-label col-xs-3">
+        <span translate="cp.bulk_part_reg_allowed">Bulk Registrations</span>
+      </label>
+      <div class="col-xs-6">
+        <label class="radio-inline">
+          <input type="radio" name="bulkPartReg" ng-model="settingCtx.cp.bulkPartRegEnabled" ng-value="true">
+          <span translate="common.enabled">Enabled</span>
+        </label>
+        <label class="radio-inline">
+          <input type="radio" name="bulkPartReg" ng-model="settingCtx.cp.bulkPartRegEnabled" ng-value="false">
+          <span translate="common.disabled">Disabled</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-xs-3">
         <span translate="cp.label_format.barcoding">Specimen Barcoding</span>
       </label>
       <div class="col-xs-6">
-        <div class="btn-group">
-          <button type="button" class="btn btn-default" name="barcoding" ng-model="settingCtx.cp.barcodingEnabled"
-            btn-radio="true" required translate="common.enabled">Enabled</button>
-          <button type="button" class="btn btn-default" name="barcoding" ng-model="settingCtx.cp.barcodingEnabled"
-            btn-radio="false" required translate="common.disabled">Disabled</button>
-        </div>
+        <label class="radio-inline">
+          <input type="radio" name="barcoding" ng-model="settingCtx.cp.barcodingEnabled" ng-value="true">
+          <span translate="common.enabled">Enabled</span>
+        </label>
+        <label class="radio-inline">
+          <input type="radio" name="barcoding" ng-model="settingCtx.cp.barcodingEnabled" ng-value="false">
+          <span translate="common.disabled">Disabled</span>
+        </label>
       </div>
     </div>
 

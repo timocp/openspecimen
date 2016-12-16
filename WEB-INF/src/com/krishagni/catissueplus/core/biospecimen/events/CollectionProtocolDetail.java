@@ -44,6 +44,8 @@ public class CollectionProtocolDetail extends CollectionProtocolSummary {
 	
 	private Boolean manualSpecLabelEnabled;
 
+	private Boolean bulkPartRegEnabled;
+
 	private Boolean barcodingEnabled;
 
 	private String containerSelectionStrategy;
@@ -197,6 +199,14 @@ public class CollectionProtocolDetail extends CollectionProtocolSummary {
 		this.manualSpecLabelEnabled = manualSpecLabelEnabled;
 	}
 
+	public Boolean getBulkPartRegEnabled() {
+		return bulkPartRegEnabled;
+	}
+
+	public void setBulkPartRegEnabled(Boolean bulkPartRegEnabled) {
+		this.bulkPartRegEnabled = bulkPartRegEnabled;
+	}
+
 	public Boolean getBarcodingEnabled() {
 		return barcodingEnabled;
 	}
@@ -308,6 +318,7 @@ public class CollectionProtocolDetail extends CollectionProtocolSummary {
 		result.setManualPpidEnabled(cp.isManualPpidEnabled());
 		result.setManualVisitNameEnabled(cp.isManualVisitNameEnabled());
 		result.setManualSpecLabelEnabled(cp.isManualSpecLabelEnabled());
+		result.setBulkPartRegEnabled(cp.isBulkPartRegEnabled());
 		result.setBarcodingEnabled(cp.isBarcodingEnabled());
 		result.setContainerSelectionStrategy(cp.getContainerSelectionStrategy());
 		result.setAliquotsInSameContainer(cp.getAliquotsInSameContainer());
