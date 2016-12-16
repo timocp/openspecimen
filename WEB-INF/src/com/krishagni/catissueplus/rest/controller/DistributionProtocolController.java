@@ -238,12 +238,10 @@ public class DistributionProtocolController {
 	@RequestMapping(method = RequestMethod.GET, value = "/{dpId}/consent-tiers")
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
-	public List<DpConsentTierDetail> getDpConsentTier(
-		@PathVariable("dpId")
-		Long dpId) {
-
+	public List<DpConsentTierDetail> getDpConsentTier(@PathVariable("dpId") Long dpId) {
 		RequestEvent<EntityQueryCriteria> req = new RequestEvent<>(new EntityQueryCriteria(dpId));
 		ResponseEvent<List<DpConsentTierDetail>> resp = dpSvc.getDpConsentTiers(req);
+
 		resp.throwErrorIfUnsuccessful();
 		return resp.getPayload();
 	}

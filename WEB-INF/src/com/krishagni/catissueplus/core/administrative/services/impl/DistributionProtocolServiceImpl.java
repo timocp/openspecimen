@@ -479,6 +479,7 @@ public class DistributionProtocolServiceImpl implements DistributionProtocolServ
 			EntityQueryCriteria crit = req.getPayload();
 			DistributionProtocol existing = getDistributionProtocol(crit.getId(), crit.getName(), null);
 			
+			AccessCtrlMgr.getInstance().ensureReadDpRights(existing);
 			return ResponseEvent.response(DpConsentTierDetail.from(existing));
 		} catch (OpenSpecimenException ose) {
 			return ResponseEvent.error(ose);
@@ -493,10 +494,9 @@ public class DistributionProtocolServiceImpl implements DistributionProtocolServ
 		try {
 			DpConsentTierDetail detail = req.getPayload();
 			DistributionProtocol dp = getDistributionProtocol(
-					detail.getDpId(), detail.getDpShortTitle(), detail.getDpShortTitle());
+				detail.getDpId(), detail.getDpShortTitle(), detail.getDpShortTitle());
 
 			AccessCtrlMgr.getInstance().ensureCreateUpdateDeleteDpRights(dp);
-
 			ConsentStatement consentStmt = getStatement(detail.getConsentStmtId(), detail.getConsentStmtCode());
 			if (dp.getConsentStmts().contains(consentStmt)) {
 				return ResponseEvent.userError(DistributionProtocolErrorCode.DUP_CONSENT);

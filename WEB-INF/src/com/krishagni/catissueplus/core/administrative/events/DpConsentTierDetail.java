@@ -67,20 +67,7 @@ public class DpConsentTierDetail {
 		this.consentStmt = consentStmt;
 	}
 
-	public static List<DpConsentTierDetail> from(DistributionProtocol dp) {
-		List<DpConsentTierDetail> details = dp.getConsentStmts()
-			.stream()
-			.map(cs -> getDpConsentTierDetail(dp, cs))
-			.collect(Collectors.toList());
-		
-		return details;
-	}
-
 	public static DpConsentTierDetail from(DistributionProtocol dp, ConsentStatement cs) {
-		return getDpConsentTierDetail(dp, cs);
-	}
-
-	private static DpConsentTierDetail getDpConsentTierDetail(DistributionProtocol dp, ConsentStatement cs) {
 		DpConsentTierDetail detail = new DpConsentTierDetail();
 		detail.setConsentStmtId(cs.getId());
 		detail.setConsentStmtCode(cs.getCode());
@@ -88,8 +75,14 @@ public class DpConsentTierDetail {
 		detail.setDpId(dp.getId());
 		detail.setDpTitle(dp.getTitle());
 		detail.setDpShortTitle(dp.getShortTitle());
-		
 		return detail;
+	}
+
+	public static List<DpConsentTierDetail> from(DistributionProtocol dp) {
+		return dp.getConsentStmts()
+			.stream()
+			.map(cs -> from(dp, cs))
+			.collect(Collectors.toList());
 	}
 
 }
