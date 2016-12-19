@@ -41,28 +41,24 @@
     </createTable>
   </changeSet>
 
-  <changeSet author="mdnasim" id="Unique constraint on dp id and consent statment of dp consent tier table">
+  <changeSet author="mdnasim" id="Unique constraint on (DP, consent statement) tuple">
     <addUniqueConstraint
+      constraintName="DP_CONSENT_STMT_UQ"
       tableName="OS_DP_CONSENT_TIERS"
-      columnNames="DP_ID,CONSENT_STMT_ID"
-      constraintName="DP_ID_CONSNET_STMT_ID"/>
+      columnNames="DP_ID, CONSENT_STMT_ID"/>
   </changeSet>
 
   <changeSet author="mdnasim" id="FK on DP ID of DP coded consent statements">
     <addForeignKeyConstraint
       constraintName="FK_DP_CONSENT_STMTS_DP_ID"
-      baseTableName="OS_DP_CONSENT_TIERS"
-      baseColumnNames="DP_ID"
-      referencedTableName="CATISSUE_DISTRIBUTION_PROTOCOL"
-      referencedColumnNames="IDENTIFIER"/>
+      baseTableName="OS_DP_CONSENT_TIERS" baseColumnNames="DP_ID"
+      referencedTableName="CATISSUE_DISTRIBUTION_PROTOCOL" referencedColumnNames="IDENTIFIER"/>
   </changeSet>
 
   <changeSet author="mdnasim" id="FK on consent ID of DP consent statements">
     <addForeignKeyConstraint
       constraintName="FK_DP_CONSENT_TIERS_CONSENT_ID"
-      baseTableName="OS_DP_CONSENT_TIERS"
-      baseColumnNames="CONSENT_STMT_ID"
-      referencedTableName="OS_CONSENT_STATEMENTS"
-      referencedColumnNames="IDENTIFIER"/>
+      baseTableName="OS_DP_CONSENT_TIERS" baseColumnNames="CONSENT_STMT_ID"
+      referencedTableName="OS_CONSENT_STATEMENTS" referencedColumnNames="IDENTIFIER"/>
   </changeSet>
 </databaseChangeLog>

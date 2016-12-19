@@ -239,9 +239,7 @@ public class DistributionProtocolController {
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
 	public List<DpConsentTierDetail> getDpConsentTier(@PathVariable("dpId") Long dpId) {
-		RequestEvent<EntityQueryCriteria> req = new RequestEvent<>(new EntityQueryCriteria(dpId));
-		ResponseEvent<List<DpConsentTierDetail>> resp = dpSvc.getDpConsentTiers(req);
-
+		ResponseEvent<List<DpConsentTierDetail>> resp = dpSvc.getConsentTiers(getRequest(new EntityQueryCriteria(dpId)));
 		resp.throwErrorIfUnsuccessful();
 		return resp.getPayload();
 	}
@@ -257,9 +255,7 @@ public class DistributionProtocolController {
 		DpConsentTierDetail dpConsent) {
 
 		dpConsent.setDpId(dpId);
-		RequestEvent<DpConsentTierDetail> req = new RequestEvent<>(dpConsent);
-		ResponseEvent<DpConsentTierDetail> resp = dpSvc.createDpConsentTier(req);
-
+		ResponseEvent<DpConsentTierDetail> resp = dpSvc.createConsentTier(getRequest(dpConsent));
 		resp.throwErrorIfUnsuccessful();
 		return resp.getPayload();
 	}
@@ -277,9 +273,8 @@ public class DistributionProtocolController {
 		DpConsentTierDetail dpConsent = new DpConsentTierDetail();
 		dpConsent.setDpId(dpId);
 		dpConsent.setConsentStmtId(consentId);
-		RequestEvent<DpConsentTierDetail> req = new RequestEvent<>(dpConsent);
-		ResponseEvent<DpConsentTierDetail> resp  = dpSvc.deleteDpConsentTier(req);
 
+		ResponseEvent<DpConsentTierDetail> resp  = dpSvc.deleteConsentTier(getRequest(dpConsent));
 		resp.throwErrorIfUnsuccessful();
 		return resp.getPayload();
 	}

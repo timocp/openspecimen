@@ -50,9 +50,9 @@ public interface DistributionProtocolService {
 
 	public ResponseEvent<Map<String, Object>> getExtensionForm();
 	
-	ResponseEvent<List<DpConsentTierDetail>> getDpConsentTiers(RequestEvent<EntityQueryCriteria> req);
+	ResponseEvent<List<DpConsentTierDetail>> getConsentTiers(RequestEvent<EntityQueryCriteria> req);
 	
-	ResponseEvent<DpConsentTierDetail> createDpConsentTier(RequestEvent<DpConsentTierDetail> req);
+	ResponseEvent<DpConsentTierDetail> createConsentTier(RequestEvent<DpConsentTierDetail> req);
 	
-	ResponseEvent<DpConsentTierDetail> deleteDpConsentTier(RequestEvent<DpConsentTierDetail> req);
+	ResponseEvent<DpConsentTierDetail> deleteConsentTier(RequestEvent<DpConsentTierDetail> req);
 }
