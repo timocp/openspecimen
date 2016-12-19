@@ -9,12 +9,12 @@ import com.krishagni.catissueplus.core.biospecimen.domain.ConsentStatement;
 public class DpConsentTierDetail {
 	private Long dpId;
 	
-	private Long consentStmtId;
-	
 	private String dpTitle;
 	
 	private String dpShortTitle;
-	
+
+	private Long consentStmtId;
+
 	private String consentStmtCode;
 	
 	private String consentStmt;
@@ -25,14 +25,6 @@ public class DpConsentTierDetail {
 
 	public void setDpId(Long dpId) {
 		this.dpId = dpId;
-	}
-
-	public Long getConsentStmtId() {
-		return consentStmtId;
-	}
-
-	public void setConsentStmtId(Long consentStmtId) {
-		this.consentStmtId = consentStmtId;
 	}
 
 	public String getDpTitle() {
@@ -49,6 +41,14 @@ public class DpConsentTierDetail {
 
 	public void setDpShortTitle(String dpShortTitle) {
 		this.dpShortTitle = dpShortTitle;
+	}
+
+	public Long getConsentStmtId() {
+		return consentStmtId;
+	}
+
+	public void setConsentStmtId(Long consentStmtId) {
+		this.consentStmtId = consentStmtId;
 	}
 
 	public String getConsentStmtCode() {
@@ -79,10 +79,7 @@ public class DpConsentTierDetail {
 	}
 
 	public static List<DpConsentTierDetail> from(DistributionProtocol dp) {
-		return dp.getConsentStmts()
-			.stream()
-			.map(cs -> from(dp, cs))
-			.collect(Collectors.toList());
+		return dp.getConsentStmts().stream().map(cs -> from(dp, cs)).collect(Collectors.toList());
 	}
 
 }

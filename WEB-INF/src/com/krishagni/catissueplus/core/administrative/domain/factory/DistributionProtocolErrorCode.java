@@ -34,8 +34,8 @@ public enum DistributionProtocolErrorCode implements ErrorCode {
 	EXPIRED,
 	
 	DUP_CONSENT,
-	
-	CONSENT_TIER_NOT_FOUND;
+
+	CONSENT_NOT_FOUND;
 
 	@Override
 	public String code() {
