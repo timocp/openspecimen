@@ -1,7 +1,13 @@
 
 angular.module('os.administrative.models.dp', ['os.common.models'])
   .factory('DistributionProtocol', function(osModel, $http) {
-    var DistributionProtocol = osModel('distribution-protocols');
+    var DistributionProtocol =
+      osModel(
+        'distribution-protocols',
+        function(dp) {
+          dp.consentModel = osModel('distribution-protocols/' + dp.$id() + '/consent-tiers');
+        }
+      );
 
     DistributionProtocol.prototype.getType = function() {
       return 'distribution_protocol';
@@ -10,6 +16,10 @@ angular.module('os.administrative.models.dp', ['os.common.models'])
     DistributionProtocol.prototype.getDisplayName = function() {
       return this.title;
     }
+
+    DistributionProtocol.prototype.getConsentTiers = function() {
+      return this.consentModel.query();
+    };
     
     DistributionProtocol.prototype.close = function() {
       return updateActivityStatus(this, 'Closed');

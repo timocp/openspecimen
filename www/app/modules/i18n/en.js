@@ -849,6 +849,8 @@
     "confirm_close": "Are you sure you want to close the distribution protocol {{shortTitle}} ?",
     "add_requirement": "Add Specimen Requirement",
     "dist_spmns_count": "Distributed Specimens",
+    "consent_tiers": "Consent Tiers",
+    "add_consent_tier": "Add Statement...",
 
     "tooltip": {
       "view_details": "Click to view Distribution Protocol details",
@@ -861,6 +863,7 @@
     
     "menu": {
       "overview": "Overview",
+      "consents": "Consents",
       "history": "History",
       "requirements": "Requirements"
     },
