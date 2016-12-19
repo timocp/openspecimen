@@ -6,6 +6,14 @@ angular.module('os.administrative.models.dp', ['os.common.models'])
         'distribution-protocols',
         function(dp) {
           dp.consentModel = osModel('distribution-protocols/' + dp.$id() + '/consent-tiers');
+
+          dp.consentModel.prototype.getDisplayName = function() {
+            return this.consentStmtCode;
+          }
+
+          dp.consentModel.prototype.getType = function() {
+            return 'consent';
+          }
         }
       );
 
@@ -19,6 +27,10 @@ angular.module('os.administrative.models.dp', ['os.common.models'])
 
     DistributionProtocol.prototype.getConsentTiers = function() {
       return this.consentModel.query();
+    };
+
+    DistributionProtocol.prototype.newConsentTier = function(consentTier) {
+      return new this.consentModel(consentTier);
     };
     
     DistributionProtocol.prototype.close = function() {

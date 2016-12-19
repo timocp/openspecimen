@@ -1,8 +1,9 @@
 <div class="clearfix">
   <div class="col-xs-8">
     <os-editable-item-list
-      items="consents.tiers" text-attr="{{consents.stmtAttr}}" list-title="{{'dp.consent_tiers' | translate}}"
-      add-caption="{{'dp.add_consent_tier' | translate}}" allow-edit="allowEditConsent">
+      items="consents.tiers" text-attr="{{consents.stmtAttr}}" text-code="{{consents.stmtCode}}" 
+      list-title="{{'dp.consent_tiers' | translate}}" add-caption="{{'dp.add_consent_tier' | translate}}" 
+      list-changed="listChanged" allow-edit="allowEditConsent">
     </os-editable-item-list>
   </div>
 </div>

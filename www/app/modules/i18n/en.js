@@ -851,6 +851,7 @@
     "dist_spmns_count": "Distributed Specimens",
     "consent_tiers": "Consent Tiers",
     "add_consent_tier": "Add Statement...",
+    "consent_statement": "Consent Statement",
 
     "tooltip": {
       "view_details": "Click to view Distribution Protocol details",
