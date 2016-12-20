@@ -1,14 +1,16 @@
 angular.module('openspecimen')
-  .directive('osEditableItemList', function($q, $timeout, ConsentStatement) {
+  .directive('osEditableItemList', function($q, $timeout) {
     return {
       restrict: 'E',
 
       scope: {
         items: '=',
+        listConsent: '=',
         allowEdit: '=',
 
         textAttr: '@',
         textCode: '@',
+        selectAttr: '@',
         listTitle: '@',
         addCaption: '@',
 
@@ -28,25 +30,7 @@ angular.module('openspecimen')
           scope.addMode = true;
           scope.newItem.text = '';
           scope.editItemIdx = undefined;
-
-          loadStmts();
         };
-
-        function loadStmts() {
-          ConsentStatement.query().then(
-            function(stmts) {
-              scope.stmts = stmts;
-              angular.forEach(scope.stmts, function(input) {
-                input = addDisplayValue(input);
-              });
-            }
-          );
-        }
-
-        function addDisplayValue(input) {
-          scope.displayValue = input.statement + ' (' + input.code + ') ';
-          return angular.extend(input, {'displayValue': scope.displayValue});
-       }
 
         scope.addItem = function() {
           if (scope.newItem.text.trim().length == 0) {
@@ -54,7 +38,11 @@ angular.module('openspecimen')
           }
 
           var item = {};
-          item[scope.textCode] = scope.newItem.text;
+          if (scope.textCode) {
+            item[scope.textCode] = scope.newItem.text;
+          } else {
+            item[scope.textAttr] = scope.newItem.text;
+          }
 
           if (scope.listChanged) {
             scope.saving = true;
@@ -123,6 +111,10 @@ angular.module('openspecimen')
         };
 
         scope.revertAdd = function() {
+          if (scope.saving) {
+            return;
+          }
+
           scope.addMode = false;
         };
 

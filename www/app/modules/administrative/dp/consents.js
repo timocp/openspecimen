@@ -1,21 +1,51 @@
 
 angular.module('os.administrative.dp.consents', ['os.administrative.models'])
-  .controller('DpConsentsCtrl', function($scope, $http, $q, distributionProtocol, consentTiers, DeleteUtil) {
+  .controller('DpConsentsCtrl', function($scope, $http, $q, distributionProtocol, 
+    currentUser, consentTiers, DeleteUtil, ConsentStatement) {
     $scope.dp = distributionProtocol;
-    $scope.allowEditConsent = true;
+    $scope.allowEditConsent = currentUser.admin || currentUser.instituteAdmin;
+    setConsentTiers();
+    loadStmts();
+    $scope.stmts = [];
 
-    var consents = {
+    $scope.consents = {
       tiers: consentTiers,
-      stmtAttr: 'consentStmt',
-      stmtCode: 'consentStmtCode'
+      list: [],
+      stmtAttr: 'displayValue',
+      stmtCode: 'consentStmtCode',
+      selectProp: 'code'
     };
 
-    $scope.consents = consents;
+    function setConsentTiers() {
+      angular.forEach(consentTiers, function(input) {
+        input = addDisplayValue(input, input.consentStmtCode, input.consentStmt);
+      });
+    }
+
+    function loadStmts() {
+      ConsentStatement.query().then(
+        function(stmts) {
+          $scope.consents.list = stmts;
+          angular.forEach($scope.consents.list, function(input) {
+            input = addDisplayValue(input, input.code, input.statement);
+          });
+        }
+      );
+    }
+
+    function addDisplayValue(input, code, statement) {
+      var displayValue = statement + ' (' + code + ') ';
+      return angular.extend(input, {'displayValue': displayValue});
+    }
 
     $scope.listChanged = function(action, stmt) {
       if (action == 'add') {
         stmt = distributionProtocol.newConsentTier(stmt);
-        return stmt.$saveOrUpdate();
+        return stmt.$saveOrUpdate().then(
+          function(result) {
+            return addDisplayValue(result, result.consentStmtCode, result.consentStmt);
+          }
+        );
       } else if (action == 'remove') {
         stmt.id = stmt.consentStmtId;
         var deferred = $q.defer();
