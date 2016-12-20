@@ -11,7 +11,7 @@
         </div>
         <div class="col-xs-2" ng-if="allowEdit">
           <div class="btn-group pull-right">
-            <button class="btn btn-xs btn-default" ng-click="openForEdit($index)">
+            <button class="btn btn-xs btn-default" ng-click="openForEdit($index)" ng-if="!listConsent>
               <span class="fa fa-pencil"></span>
             </button>
             <button class="btn btn-xs btn-default" ng-click="removeItem($index)">
@@ -39,25 +39,16 @@
       {{addCaption}}
     </a>
 
-    <div class="list-group-item" ng-if="addMode && listConsent"">
-      <fieldset>
-        <div class="form-group">
+    <div class="list-group-item" ng-if="addMode">
+      <fieldset ng-disabled="saving" ng-switch on="!!listConsent">
+        <div class="form-group" ng-switch-when="true">
           <os-select ng-model="newItem.text" list="listConsent" name="statement" display-prop="displayValue"
             select-prop="code" placeholder="{{'dp.consent_statement' | translate}}"
             ui-keyup="{'enter': 'addItem()', 'esc': 'revertAdd()'}">
           </os-select>
         </div>
-        <div>
-          <input type="submit" class="btn btn-success" value="Add" ng-click="addItem()">
-          <a class="btn os-btn-text-secondary" ng-click="revertAdd()" translate="common.buttons.cancel"></a>
-        </div>
-      </fieldset>
-    </div>
-
-    <div class="list-group-item" ng-if="addMode && !listConsent">
-      <fieldset ng-disabled="saving">
-        <div class="form-group">
-          <textarea os-focus="true" class="form-control" ng-model="newItem.text" 
+        <div class="form-group" ng-switch-when="false">
+          <textarea os-focus="true" class="form-control" ng-model="newItem.text"
             ui-keyup="{'enter': 'addItem()', 'esc': 'revertAdd()'}">
           </textarea> 
         </div>

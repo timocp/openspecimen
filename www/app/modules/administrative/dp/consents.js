@@ -2,23 +2,24 @@
 angular.module('os.administrative.dp.consents', ['os.administrative.models'])
   .controller('DpConsentsCtrl', function($scope, $http, $q, distributionProtocol, 
     currentUser, consentTiers, DeleteUtil, ConsentStatement) {
-    $scope.dp = distributionProtocol;
-    $scope.allowEditConsent = currentUser.admin || currentUser.instituteAdmin;
-    setConsentTiers();
-    loadStmts();
-    $scope.stmts = [];
+    function init() {
+      $scope.allowEditConsent = currentUser.admin || currentUser.instituteAdmin;
 
-    $scope.consents = {
-      tiers: consentTiers,
-      list: [],
-      stmtAttr: 'displayValue',
-      stmtCode: 'consentStmtCode',
-      selectProp: 'code'
-    };
+      setConsentTiers();
+      loadStmts();
+
+      $scope.consents = {
+        tiers: consentTiers,
+        list: [],
+        stmtAttr: 'displayValue',
+        stmtCode: 'consentStmtCode',
+        selectProp: 'code'
+      };
+    }
 
     function setConsentTiers() {
       angular.forEach(consentTiers, function(input) {
-        input = addDisplayValue(input, input.consentStmtCode, input.consentStmt);
+        addDisplayValue(input, input.consentStmtCode, input.consentStmt);
       });
     }
 
@@ -27,21 +28,19 @@ angular.module('os.administrative.dp.consents', ['os.administrative.models'])
         function(stmts) {
           $scope.consents.list = stmts;
           angular.forEach($scope.consents.list, function(input) {
-            input = addDisplayValue(input, input.code, input.statement);
+            addDisplayValue(input, input.code, input.statement);
           });
         }
       );
     }
 
     function addDisplayValue(input, code, statement) {
-      var displayValue = statement + ' (' + code + ') ';
-      return angular.extend(input, {'displayValue': displayValue});
+      return angular.extend(input, {displayValue: statement + ' (' + code + ') '});
     }
 
     $scope.listChanged = function(action, stmt) {
       if (action == 'add') {
-        stmt = distributionProtocol.newConsentTier(stmt);
-        return stmt.$saveOrUpdate().then(
+        return distributionProtocol.newConsentTier(stmt).$saveOrUpdate().then(
           function(result) {
             return addDisplayValue(result, result.consentStmtCode, result.consentStmt);
           }
@@ -73,4 +72,6 @@ angular.module('os.administrative.dp.consents', ['os.administrative.models'])
         deferred.reject();
       }
     }
+
+    init();
   });
