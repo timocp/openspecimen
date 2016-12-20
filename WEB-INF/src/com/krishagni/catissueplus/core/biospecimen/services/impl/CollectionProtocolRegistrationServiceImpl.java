@@ -54,6 +54,7 @@ import com.krishagni.catissueplus.core.biospecimen.repository.VisitsListCriteria
 import com.krishagni.catissueplus.core.biospecimen.services.Anonymizer;
 import com.krishagni.catissueplus.core.biospecimen.services.CollectionProtocolRegistrationService;
 import com.krishagni.catissueplus.core.biospecimen.services.ParticipantService;
+import com.krishagni.catissueplus.core.biospecimen.services.SpecimenKitService;
 import com.krishagni.catissueplus.core.biospecimen.services.VisitService;
 import com.krishagni.catissueplus.core.common.PlusTransactional;
 import com.krishagni.catissueplus.core.common.access.AccessCtrlMgr;
@@ -85,6 +86,8 @@ public class CollectionProtocolRegistrationServiceImpl implements CollectionProt
 	private LabelGenerator labelGenerator;
 
 	private Anonymizer<CollectionProtocolRegistration> anonymizer;
+
+	private SpecimenKitService specimenKitSvc;
 	
 	public void setDaoFactory(DaoFactory daoFactory) {
 		this.daoFactory = daoFactory;
@@ -116,6 +119,10 @@ public class CollectionProtocolRegistrationServiceImpl implements CollectionProt
 
 	public void setAnonymizer(Anonymizer<CollectionProtocolRegistration> anonymizer) {
 		this.anonymizer = anonymizer;
+	}
+
+	public void setSpecimenKitSvc(SpecimenKitService specimenKitSvc) {
+		this.specimenKitSvc = specimenKitSvc;
 	}
 
 	@Override
@@ -154,12 +161,23 @@ public class CollectionProtocolRegistrationServiceImpl implements CollectionProt
 			BulkRegistrationsDetail detail = req.getPayload();
 			Date regDate = Calendar.getInstance().getTime();
 
-			List<CollectionProtocolRegistrationDetail> registrations = new ArrayList<>();
+			List<CollectionProtocolRegistrationDetail> result = new ArrayList<>();
+			List<Visit> visits = new ArrayList<>();
 			for (int i = 0; i < detail.getRegCount(); i++) {
-				registrations.add(registerAndCreateVisits(detail, regDate, i == 0));
+				CollectionProtocolRegistrationDetail cpr = null;
+				result.add((cpr = registerParticipant(detail, regDate, i == 0)));
+
+				visits.addAll(addVisits(cpr.getId(), detail.getEvents(), i == 0));
 			}
 
-			return ResponseEvent.response(registrations);
+			if (detail.getKitDetail() != null) {
+				List<Specimen> spmns = visits.stream()
+					.flatMap(visit -> visit.getSpecimens().stream())
+					.collect(Collectors.toList());
+				specimenKitSvc.createSpecimenKit(detail.getKitDetail(), spmns);
+			}
+
+			return ResponseEvent.response(result);
 		} catch (OpenSpecimenException ose) {
 			return ResponseEvent.error(ose);
 		} catch (Exception ex) {
@@ -884,36 +902,27 @@ public class CollectionProtocolRegistrationServiceImpl implements CollectionProt
 			.collect(Collectors.toList());
 	}
 
-	private CollectionProtocolRegistrationDetail registerAndCreateVisits(BulkRegistrationsDetail bulkRegDetail, Date regDate, boolean checkPermission) {
+	private CollectionProtocolRegistrationDetail registerParticipant(BulkRegistrationsDetail bulkRegDetail, Date regDate, boolean checkPermission) {
 		CollectionProtocolRegistrationDetail cprDetail = new CollectionProtocolRegistrationDetail();
 		cprDetail.setRegistrationDate(regDate);
 		cprDetail.setCpId(bulkRegDetail.getCpId());
 		cprDetail.setCpTitle(bulkRegDetail.getCpTitle());
 		cprDetail.setCpShortTitle(bulkRegDetail.getCpShortTitle());
 
-		//
-		// Register participant
-		//
 		CollectionProtocolRegistrationDetail cpr = null;
 		if (checkPermission) {
-			cpr = saveOrUpdateRegistration(cprDetail, null, true);
+			return saveOrUpdateRegistration(cprDetail, null, true);
 		} else {
-			cpr = saveOrUpdateRegistration(cprFactory.createCpr(cprDetail), null, true);
+			return saveOrUpdateRegistration(cprFactory.createCpr(cprDetail), null, true);
 		}
-
-		//
-		// Create pending visits
-		//
-		addVisits(cpr.getId(), bulkRegDetail.getEvents(), checkPermission);
-		return cpr;
 	}
 
-	private List<VisitDetail> addVisits(Long cprId, List<CollectionProtocolEventDetail> events, boolean checkPermission) {
+	private List<Visit> addVisits(Long cprId, List<CollectionProtocolEventDetail> events, boolean checkPermission) {
 		if (CollectionUtils.isEmpty(events)) {
 			return Collections.emptyList();
 		}
 
-		List<VisitDetail> visits = new ArrayList<>();
+		List<Visit> visits = new ArrayList<>();
 		for (CollectionProtocolEventDetail cpeDetail : events) {
 			VisitDetail visitDetail = new VisitDetail();
 			visitDetail.setCprId(cprId);

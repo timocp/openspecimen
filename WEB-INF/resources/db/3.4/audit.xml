@@ -85,4 +85,39 @@
       <column name="bulkPartRegEnabled_MOD" type="${bit.type}"/>
     </addColumn>
   </changeSet>
+
+  <changeSet author="vgaikwad" id="Audit specimen kits">
+    <createTable tableName="OS_SPECIMEN_KITS_AUD">
+      <column name="IDENTIFIER" type="${int.type}">
+        <constraints nullable="false"/>
+      </column>
+
+      <column name="REV" type="${int.type}">
+        <constraints nullable="false"/>
+      </column>
+
+      <column name="REVTYPE" type="${smallint.type}"/>
+
+      <column name="CP_ID" type="${int.type}"/>
+      <column name="collectionProtocol_MOD" type="${bit.type}"/>
+
+      <column name="SENDING_SITE_ID" type="${int.type}"/>
+      <column name="sendingSite_MOD" type="${bit.type}"/>
+
+      <column name="RECEIVING_SITE_ID" type="${int.type}"/>
+      <column name="receivingSite_MOD" type="${bit.type}"/>
+
+      <column name="SENDER_ID" type="${int.type}"/>
+      <column name="sender_MOD" type="${bit.type}"/>
+
+      <column name="SENDING_DATE" type="${timestamp.type}"/>
+      <column name="sendingDate_MOD" type="${bit.type}"/>
+
+      <column name="COMMENTS" type="${text.type}(255)"/>
+      <column name="comments_MOD" type="${bit.type}"/>
+
+      <column name="ACTIVITY_STATUS" type="${text.type}(16)"/>
+      <column name="activityStatus_MOD" type="${bit.type}"/>
+    </createTable>
+  </changeSet>
 </databaseChangeLog>

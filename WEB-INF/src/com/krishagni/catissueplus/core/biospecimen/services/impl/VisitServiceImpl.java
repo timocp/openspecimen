@@ -146,7 +146,7 @@ public class VisitServiceImpl implements VisitService, ObjectStateParamsResolver
 	@PlusTransactional
 	public ResponseEvent<VisitDetail> addVisit(RequestEvent<VisitDetail> req) {
 		try {
-			return ResponseEvent.response(addVisit(req.getPayload(), true));
+			return ResponseEvent.response(saveOrUpdateVisit(req.getPayload(), false, false));
 		} catch (OpenSpecimenException ose) {
 			return ResponseEvent.error(ose);
 		} catch (Exception e) {
@@ -158,8 +158,7 @@ public class VisitServiceImpl implements VisitService, ObjectStateParamsResolver
 	@PlusTransactional
 	public ResponseEvent<VisitDetail> updateVisit(RequestEvent<VisitDetail> req) {
 		try {
-			VisitDetail respPayload = saveOrUpdateVisit(req.getPayload(), true, false);
-			return ResponseEvent.response(respPayload);
+			return ResponseEvent.response(saveOrUpdateVisit(req.getPayload(), true, false));
 		} catch (OpenSpecimenException ose) {
 			return ResponseEvent.error(ose);
 		} catch (Exception e) {
@@ -460,9 +459,9 @@ public class VisitServiceImpl implements VisitService, ObjectStateParamsResolver
 		return daoFactory.getSpecimenDao().getSpecimenVisits(crit);
 	}
 
-	public VisitDetail addVisit(VisitDetail input, boolean checkPermission) {
+	public Visit addVisit(VisitDetail input, boolean checkPermission) {
 		if (checkPermission) {
-			return saveOrUpdateVisit(input, false, false);
+			return saveOrUpdateVisit0(input, false, false);
 		} else {
 			return saveOrUpdateVisit(visitFactory.createVisit(input), null);
 		}
@@ -484,6 +483,10 @@ public class VisitServiceImpl implements VisitService, ObjectStateParamsResolver
 	}
 
 	private VisitDetail saveOrUpdateVisit(VisitDetail input, boolean update, boolean partial) {
+		return VisitDetail.from(saveOrUpdateVisit0(input, update, partial));
+	}
+
+	private Visit saveOrUpdateVisit0(VisitDetail input, boolean update, boolean partial) {
 		Visit existing = null;
 
 		if (update && (input.getId() != null || StringUtils.isNotBlank(input.getName()))) {
@@ -506,7 +509,7 @@ public class VisitServiceImpl implements VisitService, ObjectStateParamsResolver
 		return saveOrUpdateVisit(visit, existing);
 	}
 
-	private VisitDetail saveOrUpdateVisit(Visit visit, Visit existing) {
+	private Visit saveOrUpdateVisit(Visit visit, Visit existing) {
 		String prevVisitStatus = existing != null ? existing.getStatus() : null;
 
 		OpenSpecimenException ose = new OpenSpecimenException(ErrorType.USER_ERROR);
@@ -527,9 +530,9 @@ public class VisitServiceImpl implements VisitService, ObjectStateParamsResolver
 		daoFactory.getVisitsDao().saveOrUpdate(existing);
 		existing.addOrUpdateExtension();
 		existing.printLabels(prevVisitStatus);
-		return VisitDetail.from(existing, false, false);
+		return existing;
 	}
-	
+
 	private Visit getVisit(Long visitId, String visitName) {
 		Visit visit = null;
 		

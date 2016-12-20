@@ -13,6 +13,11 @@ public class BulkRegistrationsDetail {
 
     private List<CollectionProtocolEventDetail> events;
 
+    //
+    // optionally specify details of kit to be created
+    //
+    private SpecimenKitDetail kitDetail;
+
     public Long getCpId() {
         return cpId;
     }
@@ -51,5 +56,13 @@ public class BulkRegistrationsDetail {
 
     public void setEvents(List<CollectionProtocolEventDetail> events) {
         this.events = events;
+    }
+
+    public SpecimenKitDetail getKitDetail() {
+        return kitDetail;
+    }
+
+    public void setKitDetail(SpecimenKitDetail kitDetail) {
+        this.kitDetail = kitDetail;
     }
 }

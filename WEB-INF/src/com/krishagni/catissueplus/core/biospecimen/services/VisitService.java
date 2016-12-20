@@ -61,5 +61,5 @@ public interface VisitService {
 
 	public List<Visit> getSpecimenVisits(List<String> specimenLabels);
 
-	public VisitDetail addVisit(VisitDetail input, boolean checkPermission);
+	public Visit addVisit(VisitDetail input, boolean checkPermission);
 }
