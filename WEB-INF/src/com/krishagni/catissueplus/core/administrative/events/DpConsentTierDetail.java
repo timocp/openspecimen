@@ -16,6 +16,8 @@ public class DpConsentTierDetail {
 	private Long consentStmtId;
 
 	private String consentStmtCode;
+
+	private String newConsentStmtCode;
 	
 	private String consentStmt;
 
@@ -59,6 +61,14 @@ public class DpConsentTierDetail {
 		this.consentStmtCode = consentStmtCode;
 	}
 	
+	public String getNewConsentStmtCode() {
+		return newConsentStmtCode;
+	}
+
+	public void setNewConsentStmtCode(String newConsentStmtCode) {
+		this.newConsentStmtCode = newConsentStmtCode;
+	}
+
 	public String getConsentStmt() {
 		return consentStmt;
 	}

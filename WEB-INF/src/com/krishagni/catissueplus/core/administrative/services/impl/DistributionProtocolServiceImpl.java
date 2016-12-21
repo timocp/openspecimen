@@ -511,6 +511,37 @@ public class DistributionProtocolServiceImpl implements DistributionProtocolServ
 			return ResponseEvent.serverError(e);
 		}
 	}
+
+	@Override
+	@PlusTransactional
+	public ResponseEvent<DpConsentTierDetail> updateConsentTier(RequestEvent<DpConsentTierDetail> req) {
+		try {
+			DpConsentTierDetail detail = req.getPayload();
+
+			DistributionProtocol dp = getDistributionProtocol(
+				detail.getDpId(), detail.getDpShortTitle(), detail.getDpShortTitle());
+			AccessCtrlMgr.getInstance().ensureCreateUpdateDeleteDpRights(dp);
+
+			ConsentStatement oldStmt = getStatement(dp, detail.getConsentStmtId(), null);
+			if (oldStmt.getCode().equals(detail.getNewConsentStmtCode())) {
+				return ResponseEvent.response(DpConsentTierDetail.from(dp, oldStmt));
+			}
+
+			ConsentStatement newStmt = getStatement(null, detail.getNewConsentStmtCode());
+			if (dp.getConsentStmts().contains(newStmt)) {
+				return ResponseEvent.userError(DistributionProtocolErrorCode.DUP_CONSENT, newStmt.getCode(), dp.getShortTitle());
+			}
+
+			dp.getConsentStmts().remove(oldStmt);
+			dp.getConsentStmts().add(newStmt);
+			daoFactory.getDistributionProtocolDao().saveOrUpdate(dp);
+			return ResponseEvent.response(DpConsentTierDetail.from(dp, newStmt));
+		} catch (OpenSpecimenException ose) {
+			return ResponseEvent.error(ose);
+		} catch (Exception e) {
+			return ResponseEvent.serverError(e);
+		}
+	}
 	
 	@Override
 	@PlusTransactional

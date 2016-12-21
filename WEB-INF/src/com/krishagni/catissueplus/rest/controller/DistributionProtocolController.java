@@ -260,6 +260,27 @@ public class DistributionProtocolController {
 		return resp.getPayload();
 	}
 
+	@RequestMapping(method = RequestMethod.PUT, value="/{dpId}/consent-tiers/{consentId}")
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody
+	public DpConsentTierDetail updateDpConsentTier(
+		@PathVariable("dpId")
+		Long dpId,
+
+		@PathVariable("consentId")
+		Long consentId,
+
+		@RequestBody
+		DpConsentTierDetail dpConsent) {
+
+		dpConsent.setDpId(dpId);
+		dpConsent.setConsentStmtId(consentId);
+
+		ResponseEvent<DpConsentTierDetail> resp  = dpSvc.updateConsentTier(getRequest(dpConsent));
+		resp.throwErrorIfUnsuccessful();
+		return resp.getPayload();
+	}
+
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{dpId}/consent-tiers/{consentId}")
 	@ResponseBody
 	@ResponseStatus(HttpStatus.OK)
