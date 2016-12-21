@@ -5,12 +5,11 @@ angular.module('openspecimen')
 
       scope: {
         items: '=',
-        listConsent: '=',
         allowEdit: '=',
 
+        itemPvs:    '=',
+
         textAttr: '@',
-        textCode: '@',
-        selectAttr: '@',
         listTitle: '@',
         addCaption: '@',
 
@@ -38,8 +37,8 @@ angular.module('openspecimen')
           }
 
           var item = {};
-          if (scope.textCode) {
-            item[scope.textCode] = scope.newItem.text;
+          if (scope.itemPvs) {
+            item.itemKey = scope.newItem.text;
           } else {
             item[scope.textAttr] = scope.newItem.text;
           }
@@ -58,6 +57,10 @@ angular.module('openspecimen')
                 /** This is trick to enable auto focus on add */
                 scope.addMode = false;
                 $timeout(function() { scope.addMode = true; }, 0);
+              },
+
+              function() {
+                scope.saving = false;
               } 
             );
           } else {
@@ -71,8 +74,9 @@ angular.module('openspecimen')
             return;
           }
 
+          var prop = !scope.itemPvs ? scope.textAttr : 'itemKey';
           scope.editItemIdx = idx;
-          scope.editItem = {text: scope.items[idx][scope.textAttr]};
+          scope.editItem = {text: scope.items[idx][prop]};
           scope.addMode = false;
         };
 

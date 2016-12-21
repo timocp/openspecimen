@@ -11,7 +11,7 @@
         </div>
         <div class="col-xs-2" ng-if="allowEdit">
           <div class="btn-group pull-right">
-            <button class="btn btn-xs btn-default" ng-click="openForEdit($index)" ng-if="!listConsent>
+            <button class="btn btn-xs btn-default" ng-click="openForEdit($index)">
               <span class="fa fa-pencil"></span>
             </button>
             <button class="btn btn-xs btn-default" ng-click="removeItem($index)">
@@ -21,8 +21,13 @@
         </div>
       </div>
       <div ng-if="$index == editItemIdx">
-        <fieldset ng-disabled="saving">
-          <div class="form-group">
+        <fieldset ng-disabled="saving" ng-switch on="!!itemPvs">
+          <div class="form-group" ng-switch-when="true">
+            <os-select ng-model="editItem.text" list="itemPvs" display-prop="displayValue" select-prop="itemKey"
+              ui-keyup="{'enter': 'updateItem()', 'esc': 'revertEdit()'}">
+            </os-select>
+          </div>
+          <div class="form-group" ng-switch-when="false">
             <textarea ui-keyup="{'esc': 'revertEdit()', 'enter': 'updateItem()'}" 
               os-focus="$index == editItemIdx" class="form-control" 
               ng-model="editItem.text">
@@ -40,10 +45,9 @@
     </a>
 
     <div class="list-group-item" ng-if="addMode">
-      <fieldset ng-disabled="saving" ng-switch on="!!listConsent">
+      <fieldset ng-disabled="saving" ng-switch on="!!itemPvs">
         <div class="form-group" ng-switch-when="true">
-          <os-select ng-model="newItem.text" list="listConsent" name="statement" display-prop="displayValue"
-            select-prop="code" placeholder="{{'dp.consent_statement' | translate}}"
+          <os-select ng-model="newItem.text" list="itemPvs" display-prop="displayValue" select-prop="itemKey"
             ui-keyup="{'enter': 'addItem()', 'esc': 'revertAdd()'}">
           </os-select>
         </div>

@@ -1,77 +1,75 @@
 
 angular.module('os.administrative.dp.consents', ['os.administrative.models'])
-  .controller('DpConsentsCtrl', function($scope, $http, $q, distributionProtocol, 
+  .controller('DpConsentsCtrl',function(
+    $scope, $http, $q, distributionProtocol,
     currentUser, consentTiers, DeleteUtil, ConsentStatement) {
+
     function init() {
-      $scope.allowEditConsent = currentUser.admin || currentUser.instituteAdmin;
-
-      setConsentTiers();
-      loadStmts();
-
-      $scope.consents = {
-        tiers: consentTiers,
-        list: [],
-        stmtAttr: 'displayValue',
-        stmtCode: 'consentStmtCode',
-        selectProp: 'code'
+      $scope.consentCtx = {
+        allowEdit: currentUser.admin || currentUser.instituteAdmin,
+        tiers: initConsentTiers(consentTiers),
+        stmts: [],
       };
+
+      loadConsentStmts();
     }
 
-    function setConsentTiers() {
-      angular.forEach(consentTiers, function(input) {
-        addDisplayValue(input, input.consentStmtCode, input.consentStmt);
-      });
+    function initConsentTiers(consentTiers) {
+      angular.forEach(consentTiers,
+        function(consentTier) {
+          addDisplayValue(consentTier, consentTier.consentStmtCode, consentTier.consentStmt);
+        }
+      );
+
+      return consentTiers;
     }
 
-    function loadStmts() {
-      ConsentStatement.query().then(
+    function loadConsentStmts(searchString) {
+      ConsentStatement.query({searchString: searchString}).then(
         function(stmts) {
-          $scope.consents.list = stmts;
-          angular.forEach($scope.consents.list, function(input) {
-            addDisplayValue(input, input.code, input.statement);
-          });
+          $scope.consentCtx.stmts = stmts;
+          angular.forEach(stmts,
+            function(stmt) {
+              addDisplayValue(stmt, stmt.code, stmt.statement);
+            }
+          );
         }
       );
     }
 
-    function addDisplayValue(input, code, statement) {
-      return angular.extend(input, {displayValue: statement + ' (' + code + ') '});
+    function addDisplayValue(obj, code, statement) {
+      return angular.extend(obj, {itemKey: code, displayValue: statement + ' (' + code + ')'});
     }
+
+    $scope.loadConsentStmts = loadConsentStmts;
 
     $scope.listChanged = function(action, stmt) {
       if (action == 'add') {
-        return distributionProtocol.newConsentTier(stmt).$saveOrUpdate().then(
+        return distributionProtocol.newConsentTier({consentStmtCode: stmt.itemKey}).$saveOrUpdate().then(
           function(result) {
             return addDisplayValue(result, result.consentStmtCode, result.consentStmt);
           }
         );
       } else if (action == 'remove') {
-        stmt.id = stmt.consentStmtId;
         var deferred = $q.defer();
-        DeleteUtil.delete(
-          stmt,
-          {
-            deleteWithoutCheck: true,
-            onDeletion: onConsentDeletion(deferred),
-            onDeleteFail: onConsentDeleteFail(deferred)
-          }
-        );
+        var opts = {
+          deleteWithoutCheck: true,
+          onDeletion: function() { deferred.resolve(true); },
+          onDeleteFail: function() { deferred.reject(); }
+        }
+
+        stmt.id = stmt.consentStmtId;
+        DeleteUtil.delete(stmt, opts);
         return deferred.promise;
+      } else if (action == 'update') {
+        //
+        // TODO:
+        //
+        alert("handle: " + action + ": " + JSON.stringify(stmt));
       }
+
       return undefined;
     };
-
-    function onConsentDeletion(deferred) {
-      return function() {
-        deferred.resolve(true);
-      }
-    }
-
-    function onConsentDeleteFail(deferred) {
-      return function() {
-        deferred.reject();
-      }
-    }
 
     init();
   });
