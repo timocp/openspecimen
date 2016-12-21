@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+  http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+  <changeSet author="vgaikwad" id="Flag to specify whether bulk registration of participants is allowed">
+    <addColumn tableName="CATISSUE_COLLECTION_PROTOCOL">
+      <column name="BULK_PART_REG_ALLOWED" type="${boolean.type}" defaultValueBoolean="0">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+  </changeSet>
+
+  <changeSet author="vgaikwad" id="Specimen kits">
+    <createTable tableName="OS_SPECIMEN_KITS">
+      <column name="IDENTIFIER" type="${int.type}" autoIncrement="${autoIncrement}">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+
+      <column name="CP_ID" type="${int.type}">
+        <constraints nullable="false"/>
+      </column>
+
+      <column name="SENDING_SITE_ID" type="${int.type}">
+        <constraints nullable="false"/>
+      </column>
+
+      <column name="RECEIVING_SITE_ID" type="${int.type}">
+        <constraints nullable="false"/>
+      </column>
+
+      <column name="SENDER_ID" type="${int.type}">
+        <constraints nullable="false"/>
+      </column>
+
+      <column name="SENDING_DATE" type="${timestamp.type}">
+        <constraints nullable="false"/>
+      </column>
+
+      <column name="COMMENTS" type="${text.type}(255)"/>
+
+      <column name="ACTIVITY_STATUS" type="${text.type}(64)">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+
+  <changeSet author="vgaikwad" id="Specimen kits identifier sequence" dbms="oracle">
+    <createSequence sequenceName="OS_SPECIMEN_KITS_SEQ" startValue="1" incrementBy="1" ordered="true"/>
+  </changeSet>
+
+  <changeSet author="vgaikwad" id="Add FK on specimen kit's collection protocol">
+    <addForeignKeyConstraint constraintName="FK_SPMN_KIT_CP_ID"
+      baseTableName="OS_SPECIMEN_KITS" baseColumnNames="CP_ID"
+      referencedTableName="CATISSUE_COLLECTION_PROTOCOL" referencedColumnNames="IDENTIFIER" />
+  </changeSet>
+
+  <changeSet author="vgaikwad" id="Add FK on specimen kit's sending site">
+    <addForeignKeyConstraint constraintName="FK_SPMN_KIT_SENDING_SITE_ID"
+      baseTableName="OS_SPECIMEN_KITS" baseColumnNames="SENDING_SITE_ID"
+      referencedTableName="CATISSUE_SITE" referencedColumnNames="IDENTIFIER" />
+  </changeSet>
+
+  <changeSet author="vgaikwad" id="Add FK on specimen kit's receiving site">
+    <addForeignKeyConstraint constraintName="FK_SPMN_KIT_RECEIVING_SITE_ID"
+      baseTableName="OS_SPECIMEN_KITS" baseColumnNames="RECEIVING_SITE_ID"
+      referencedTableName="CATISSUE_SITE" referencedColumnNames="IDENTIFIER" />
+  </changeSet>
+
+  <changeSet author="vgaikwad" id="Add FK on specimen kit's sender">
+    <addForeignKeyConstraint constraintName="FK_SPMN_KIT_SENDER_ID"
+      baseTableName="OS_SPECIMEN_KITS" baseColumnNames="SENDER_ID"
+      referencedTableName="CATISSUE_USER" referencedColumnNames="IDENTIFIER"/>
+  </changeSet>
+
+  <changeSet author="vgaikwad" id="Kit specimens">
+    <createTable tableName="OS_KIT_SPECIMENS">
+      <column name="KIT_ID" type="${int.type}">
+        <constraints nullable="false"/>
+      </column>
+
+      <column name="SPECIMEN_ID" type="${int.type}">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+
+  <changeSet author="vgaikwad" id="Add FK on kit of specimen">
+    <addForeignKeyConstraint constraintName="FK_KIT_SPECIMENS_KIT_ID"
+      baseTableName="OS_KIT_SPECIMENS" baseColumnNames="KIT_ID"
+      referencedTableName="OS_SPECIMEN_KITS" referencedColumnNames="IDENTIFIER"/>
+  </changeSet>
+
+  <changeSet author="vgaikwad" id="Add FK on specimens in a kit">
+    <addForeignKeyConstraint constraintName="FK_KIT_SPECIMENS_SPECIMEN_ID"
+      baseTableName="OS_KIT_SPECIMENS" baseColumnNames="SPECIMEN_ID"
+      referencedTableName="CATISSUE_SPECIMEN" referencedColumnNames="IDENTIFIER"/>
+  </changeSet>
+
+  <changeSet author="vgaikwad" id="Unique specimen in a kit">
+    <addUniqueConstraint
+      constraintName="OS_KIT_SPECIMENS_UQ"
+      tableName="OS_KIT_SPECIMENS"
+      columnNames="KIT_ID, SPECIMEN_ID"/>
+  </changeSet>
+</databaseChangeLog>
