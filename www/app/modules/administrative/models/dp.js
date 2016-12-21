@@ -32,7 +32,16 @@ angular.module('os.administrative.models.dp', ['os.common.models'])
     DistributionProtocol.prototype.newConsentTier = function(consentTier) {
       return new this.consentModel(consentTier);
     };
-    
+
+    DistributionProtocol.prototype.updateConsentTier = function(consentTier) {
+      return $http.put(DistributionProtocol.url() + this.$id() + '/consent-tiers/' + consentTier.consentStmtId,
+        {newConsentStmtCode: consentTier.displayValue}).then(
+        function(result) {
+          return result.data;
+        }
+      );
+    };
+
     DistributionProtocol.prototype.close = function() {
       return updateActivityStatus(this, 'Closed');
     }

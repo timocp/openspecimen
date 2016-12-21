@@ -54,6 +54,7 @@ angular.module('os.administrative.dp.consents', ['os.administrative.models'])
         var deferred = $q.defer();
         var opts = {
           deleteWithoutCheck: true,
+          confirmDelete: 'dp.delete_consent_tier',
           onDeletion: function() { deferred.resolve(true); },
           onDeleteFail: function() { deferred.reject(); }
         }
@@ -62,10 +63,11 @@ angular.module('os.administrative.dp.consents', ['os.administrative.models'])
         DeleteUtil.delete(stmt, opts);
         return deferred.promise;
       } else if (action == 'update') {
-        //
-        // TODO:
-        //
-        alert("handle: " + action + ": " + JSON.stringify(stmt));
+        return distributionProtocol.updateConsentTier(stmt).then(
+          function(result) {
+            return addDisplayValue(result, result.consentStmtCode, result.consentStmt);
+          }
+        );
       }
 
       return undefined;

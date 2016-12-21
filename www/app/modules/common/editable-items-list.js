@@ -13,7 +13,8 @@ angular.module('openspecimen')
         listTitle: '@',
         addCaption: '@',
 
-        listChanged: '&'
+        listChanged: '&',
+        refresh: '&'
       },
 
       link: function(scope, element, attrs) {
@@ -141,7 +142,11 @@ angular.module('openspecimen')
 
                 scope.editItemIdx = undefined;
                 scope.saving = false;
-              } 
+              },
+
+              function(result) {
+                scope.saving = false;
+              }
             );
           } else {
             scope.items[scope.editItemIdx] = item;
