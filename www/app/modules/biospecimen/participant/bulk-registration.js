@@ -1,12 +1,18 @@
 angular.module('os.biospecimen.participant.bulkregistration', ['os.biospecimen.models'])
-  .controller('BulkRegistrationCtrl', function($scope, $state, events, cp, CollectionProtocolRegistration, Alerts) {
+  .controller('BulkRegistrationCtrl', function(
+    $scope, $state, currentUser, events, cp, CollectionProtocolRegistration, Alerts) {
 
     function init() {
       $scope.ctx = {
         cpEvents: events,
+        cpSites: cp.cpSites.map(function(cs) { return cs.siteName; }),
         cpId: cp.id,
         selection: {
           events: []
+        },
+        kitDetail: {
+          sendingDate : new Date(),
+          sender: currentUser
         }
       };
     }
@@ -39,11 +45,15 @@ angular.module('os.biospecimen.participant.bulkregistration', ['os.biospecimen.m
       $scope.ctx.selection.all = (events.length == $scope.ctx.cpEvents.length);
     };
 
-    $scope.registerParticipants = function() {
+    $scope.registerParticipants = function(saveKit) {
       var bulkRegDetail = {
         cpId: $scope.ctx.cpId,
         regCount: $scope.ctx.regCount,
         events: angular.copy($scope.ctx.selection.events)
+      }
+
+      if (saveKit) {
+        bulkRegDetail.kitDetail = $scope.ctx.kitDetail;
       }
 
       angular.forEach(bulkRegDetail.events, function(event) {
@@ -53,9 +63,14 @@ angular.module('os.biospecimen.participant.bulkregistration', ['os.biospecimen.m
       CollectionProtocolRegistration.bulkRegistration(bulkRegDetail).then(
         function(cprList) {
           $state.go('participant-list', {cpId: $scope.cp.id});
-          Alerts.success('participant.participant_registered', {numOfParticipants: bulkRegDetail.regCount});
+          var key = !!saveKit ? 'participant.spmn_kit_created' : 'participant.participant_registered';
+          Alerts.success(key, {numOfParticipants: bulkRegDetail.regCount});
         }
       )
+    }
+
+    $scope.passThrough = function() {
+      return true;
     }
 
     init();

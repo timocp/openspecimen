@@ -374,6 +374,7 @@
     "num_of_participants": "Number of Participants",
     "collection_site": "Collection Site",
     "participant_registered": "{{numOfParticipants}} participants registered successfully.",
+    "spmn_kit_created": "Successfully created specimen kit for {{numOfParticipants}} newly registered participants.",
 
     "consent": {
       "signed_form": "Signed Consent Form",
@@ -415,7 +416,9 @@
       "multiple": "Multiple",
       "specimen_catalog": "Specimen Catalog",
       "import": "Import",
-      "anonymize": "Anonymize"
+      "anonymize": "Anonymize",
+      "prepare_kit": "Prepare Specimen Kit",
+      "reg_participants": "Register Participants"
     },
 
     "menu": {
@@ -433,6 +436,15 @@
       "search": "Click to filter Participants",
       "bulk_register": "Click to register participants",
       "specimen_catalog": "Click to view collection protocol specimens"
+    },
+
+    "specimen_kit": {
+      "prepare_kit": "Prepare Specimen Kit",
+      "sending_site": "Sending Site",
+      "receiving_site": "Receiving Site",
+      "sending_date": "Sending Date",
+      "sender": "Sender",
+      "comments": "Comments"
     }
   },
 

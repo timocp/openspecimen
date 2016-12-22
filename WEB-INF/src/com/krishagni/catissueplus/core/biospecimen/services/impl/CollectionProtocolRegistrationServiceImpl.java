@@ -170,10 +170,11 @@ public class CollectionProtocolRegistrationServiceImpl implements CollectionProt
 				visits.addAll(addVisits(cpr.getId(), detail.getEvents(), i == 0));
 			}
 
-			if (detail.getKitDetail() != null) {
+			if (detail.getKitDetail() != null && !result.isEmpty()) {
 				List<Specimen> spmns = visits.stream()
 					.flatMap(visit -> visit.getSpecimens().stream())
 					.collect(Collectors.toList());
+				detail.getKitDetail().setCpId(result.get(0).getCpId());
 				specimenKitSvc.createSpecimenKit(detail.getKitDetail(), spmns);
 			}
 
