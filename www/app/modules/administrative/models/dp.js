@@ -35,8 +35,8 @@ angular.module('os.administrative.models.dp', ['os.common.models'])
 
     DistributionProtocol.prototype.updateConsentTier = function(consentTier) {
       var that = this;
-      return $http.put(this.consentModel.url() + consentTier.consentStmtId,
-        {newConsentStmtCode: consentTier.displayValue}).then(
+      var url = this.consentModel.url();
+      return $http.put(url + consentTier.consentStmtId, {newConsentStmtCode: consentTier.displayValue}).then(
         function(result) {
           return that.newConsentTier(result.data);
         }
