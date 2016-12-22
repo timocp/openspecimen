@@ -522,7 +522,7 @@ public class DistributionProtocolServiceImpl implements DistributionProtocolServ
 				detail.getDpId(), detail.getDpShortTitle(), detail.getDpShortTitle());
 			AccessCtrlMgr.getInstance().ensureCreateUpdateDeleteDpRights(dp);
 
-			ConsentStatement oldStmt = getStatement(dp, detail.getConsentStmtId(), null);
+			ConsentStatement oldStmt = getStatement(dp, detail.getConsentStmtId(), detail.getConsentStmtCode());
 			if (oldStmt.getCode().equals(detail.getNewConsentStmtCode())) {
 				return ResponseEvent.response(DpConsentTierDetail.from(dp, oldStmt));
 			}

@@ -34,10 +34,11 @@ angular.module('os.administrative.models.dp', ['os.common.models'])
     };
 
     DistributionProtocol.prototype.updateConsentTier = function(consentTier) {
-      return $http.put(DistributionProtocol.url() + this.$id() + '/consent-tiers/' + consentTier.consentStmtId,
+      var that = this;
+      return $http.put(this.consentModel.url() + consentTier.consentStmtId,
         {newConsentStmtCode: consentTier.displayValue}).then(
         function(result) {
-          return result.data;
+          return that.newConsentTier(result.data);
         }
       );
     };
