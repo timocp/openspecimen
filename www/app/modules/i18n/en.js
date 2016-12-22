@@ -18,6 +18,7 @@
     "shipping_and_tracking": "Shipping and Tracking",
     "jobs": "Jobs",
     "training": "Training",
+    "consent_statements": "Consent Statements",
 
     "cp_desc": "Create, update SOP of visits and specimens",
     "rde_desc": "Rapidly capture patients, visits and specimens data",
@@ -34,7 +35,8 @@
     "distribution_orders_desc": "Create, execute request orders for distributing specimens",
     "shipping_and_tracking_desc": "Create, ship, track and receive specimen shipments",
     "jobs_desc": "Create, schedule, execute jobs",
-    "training_desc": "User manual and training videos portal"
+    "training_desc": "User manual and training videos portal",
+    "consent_statements_desc": "Manage coded consent statements"
   },
 
   "common": {
@@ -1915,6 +1917,22 @@
       "success_message": "Feedback sent successfully"
     },
     
+  "consent_statement": {
+    "list": "Consent Statements",
+    "create_stmt": "Create Statement",
+    "code": "Code",
+    "statement": "Statement",
+
+    "tooltip": {
+      "add": "Click to add new Consent Statement",
+      "search": "Click to search Consent Statements"
+    },
+
+    "filter": {
+      "title": "Filters"
+    }
+  },
+
     "settings": {
       "title": "Settings",
       "modules": "Modules",
