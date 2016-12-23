@@ -4,27 +4,37 @@ angular.module('os.administrative.dp.consents', ['os.administrative.models'])
     $scope, $http, $q, distributionProtocol,
     currentUser, consentTiers, DeleteUtil, ConsentStatement) {
 
+    var defStmts;
+
     function init() {
       $scope.consentCtx = {
         allowEdit: currentUser.admin || currentUser.instituteAdmin,
         tiers: initConsentTiers(consentTiers),
-        stmts: [],
+        stmts: []
       };
 
       loadConsentStmts();
     }
 
     function initConsentTiers(consentTiers) {
-      angular.forEach(consentTiers,
-        function(consentTier) {
-          addDisplayValue(consentTier, consentTier.consentStmtCode, consentTier.consentStmt);
-        }
-      );
-
+      angular.forEach(consentTiers, initConsentTier);
       return consentTiers;
     }
 
+    function initConsentTier(consentTier) {
+      return addDisplayValue(consentTier, consentTier.consentStmtCode, consentTier.consentStmt);
+    }
+
     function loadConsentStmts(searchString) {
+      if (defStmts && !searchString) {
+        $scope.consentCtx.stmts = defStmts;
+        return;
+      }
+
+      if (defStmts && defStmts.length < 100) {
+        return;
+      }
+
       ConsentStatement.query({searchString: searchString}).then(
         function(stmts) {
           $scope.consentCtx.stmts = stmts;
@@ -33,6 +43,10 @@ angular.module('os.administrative.dp.consents', ['os.administrative.models'])
               addDisplayValue(stmt, stmt.code, stmt.statement);
             }
           );
+
+          if (!searchString) {
+            defStmts = stmts;
+          }
         }
       );
     }
@@ -45,11 +59,7 @@ angular.module('os.administrative.dp.consents', ['os.administrative.models'])
 
     $scope.listChanged = function(action, stmt) {
       if (action == 'add') {
-        return distributionProtocol.newConsentTier({consentStmtCode: stmt.itemKey}).$saveOrUpdate().then(
-          function(result) {
-            return addDisplayValue(result, result.consentStmtCode, result.consentStmt);
-          }
-        );
+        return distributionProtocol.newConsentTier({consentStmtCode: stmt.itemKey}).$saveOrUpdate().then(initConsentTier);
       } else if (action == 'remove') {
         var deferred = $q.defer();
         var opts = {
@@ -63,11 +73,10 @@ angular.module('os.administrative.dp.consents', ['os.administrative.models'])
         DeleteUtil.delete(stmt, opts);
         return deferred.promise;
       } else if (action == 'update') {
-        return distributionProtocol.updateConsentTier(stmt).then(
-          function(result) {
-            return addDisplayValue(result, result.consentStmtCode, result.consentStmt);
-          }
-        );
+        return distributionProtocol.newConsentTier({
+          consentStmtId: stmt.consentStmtId,
+          newConsentStmtCode: stmt.displayValue
+        }).$saveOrUpdate().then(initConsentTier);
       }
 
       return undefined;

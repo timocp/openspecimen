@@ -3,9 +3,12 @@ package com.krishagni.catissueplus.core.administrative.events;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
 import com.krishagni.catissueplus.core.administrative.domain.DistributionProtocol;
 import com.krishagni.catissueplus.core.biospecimen.domain.ConsentStatement;
 
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class DpConsentTierDetail {
 	private Long dpId;
 	
@@ -17,9 +20,9 @@ public class DpConsentTierDetail {
 
 	private String consentStmtCode;
 
-	private String newConsentStmtCode;
-	
 	private String consentStmt;
+
+	private String newConsentStmtCode;
 
 	public Long getDpId() {
 		return dpId;
@@ -61,20 +64,20 @@ public class DpConsentTierDetail {
 		this.consentStmtCode = consentStmtCode;
 	}
 	
-	public String getNewConsentStmtCode() {
-		return newConsentStmtCode;
-	}
-
-	public void setNewConsentStmtCode(String newConsentStmtCode) {
-		this.newConsentStmtCode = newConsentStmtCode;
-	}
-
 	public String getConsentStmt() {
 		return consentStmt;
 	}
 
 	public void setConsentStmt(String consentStmt) {
 		this.consentStmt = consentStmt;
+	}
+
+	public String getNewConsentStmtCode() {
+		return newConsentStmtCode;
+	}
+
+	public void setNewConsentStmtCode(String newConsentStmtCode) {
+		this.newConsentStmtCode = newConsentStmtCode;
 	}
 
 	public static DpConsentTierDetail from(DistributionProtocol dp, ConsentStatement cs) {
@@ -91,5 +94,4 @@ public class DpConsentTierDetail {
 	public static List<DpConsentTierDetail> from(DistributionProtocol dp) {
 		return dp.getConsentStmts().stream().map(cs -> from(dp, cs)).collect(Collectors.toList());
 	}
-
 }
