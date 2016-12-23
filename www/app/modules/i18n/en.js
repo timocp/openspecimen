@@ -875,6 +875,9 @@
     "add_requirement": "Add Specimen Requirement",
     "dist_spmns_count": "Distributed Specimens",
     "all_sites": "All current and future sites",
+    "consent_tiers": "Consent Tiers",
+    "add_consent_tier": "Add Consent Tier ...",
+    "delete_consent_tier": "{{entityType}} {{entityName}} of {{entity.dpShortTitle}} will be deleted forever. Are you sure you want to proceed?",
 
     "tooltip": {
       "view_details": "Click to view Distribution Protocol details",
@@ -887,6 +890,7 @@
     
     "menu": {
       "overview": "Overview",
+      "consents": "Consents",
       "history": "History",
       "requirements": "Requirements"
     },

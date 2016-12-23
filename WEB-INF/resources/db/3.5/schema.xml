@@ -28,4 +28,37 @@
   <changeSet author="mdnasim" id="Identifier sequence for coded consent statements" dbms="oracle">
     <createSequence sequenceName="OS_CONSENT_STMTS_SEQ" startValue="1" incrementBy="1" ordered="true" />
   </changeSet>
+
+  <changeSet author="mdnasim" id="DP coded consent statements">
+    <createTable tableName="OS_DP_CONSENT_TIERS">
+      <column name="DP_ID" type="${int.type}">
+        <constraints nullable="false"/>
+      </column>
+
+      <column name="CONSENT_STMT_ID" type="${int.type}">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+
+  <changeSet author="mdnasim" id="Unique constraint on (DP, consent statement) tuple">
+    <addUniqueConstraint
+      constraintName="DP_CONSENT_STMT_UQ"
+      tableName="OS_DP_CONSENT_TIERS"
+      columnNames="DP_ID, CONSENT_STMT_ID"/>
+  </changeSet>
+
+  <changeSet author="mdnasim" id="FK on DP ID of DP coded consent statements">
+    <addForeignKeyConstraint
+      constraintName="FK_DP_CONSENT_STMTS_DP_ID"
+      baseTableName="OS_DP_CONSENT_TIERS" baseColumnNames="DP_ID"
+      referencedTableName="CATISSUE_DISTRIBUTION_PROTOCOL" referencedColumnNames="IDENTIFIER"/>
+  </changeSet>
+
+  <changeSet author="mdnasim" id="FK on consent ID of DP consent statements">
+    <addForeignKeyConstraint
+      constraintName="FK_DP_CONSENT_TIERS_CONSENT_ID"
+      baseTableName="OS_DP_CONSENT_TIERS" baseColumnNames="CONSENT_STMT_ID"
+      referencedTableName="OS_CONSENT_STATEMENTS" referencedColumnNames="IDENTIFIER"/>
+  </changeSet>
 </databaseChangeLog>

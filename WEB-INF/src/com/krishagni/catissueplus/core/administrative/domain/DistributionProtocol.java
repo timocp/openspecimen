@@ -9,10 +9,12 @@ import java.util.stream.Collectors;
 
 import org.hibernate.envers.AuditTable;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 import com.krishagni.catissueplus.core.administrative.domain.factory.DistributionProtocolErrorCode;
 import com.krishagni.catissueplus.core.biospecimen.domain.BaseExtensionEntity;
+import com.krishagni.catissueplus.core.biospecimen.domain.ConsentStatement;
 import com.krishagni.catissueplus.core.common.CollectionUpdater;
 import com.krishagni.catissueplus.core.common.errors.OpenSpecimenException;
 import com.krishagni.catissueplus.core.common.events.DependentEntityDetail;
@@ -54,6 +56,8 @@ public class DistributionProtocol extends BaseExtensionEntity {
 	private Set<DpDistributionSite> distributingSites = new HashSet<DpDistributionSite>();
 	
 	private Set<DpRequirement> requirements = new HashSet<DpRequirement>();
+	
+	private Set<ConsentStatement> consentStmts = new HashSet<>();
 	
 	public static String getEntityName() {
 		return ENTITY_NAME;
@@ -169,6 +173,15 @@ public class DistributionProtocol extends BaseExtensionEntity {
 
 	public void setRequirements(Set<DpRequirement> requirements) {
 		this.requirements = requirements;
+	}
+
+	@NotAudited
+	public Set<ConsentStatement> getConsentStmts() {
+		return consentStmts;
+	}
+
+	public void setConsentStmts(Set<ConsentStatement> consentStmts) {
+		this.consentStmts = consentStmts;
 	}
 
 	public void update(DistributionProtocol dp) {
