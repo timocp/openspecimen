@@ -493,8 +493,7 @@ public class DistributionProtocolServiceImpl implements DistributionProtocolServ
 		try {
 			DpConsentTierDetail detail = req.getPayload();
 
-			DistributionProtocol dp = getDistributionProtocol(
-				detail.getDpId(), detail.getDpShortTitle(), detail.getDpShortTitle());
+			DistributionProtocol dp = getDistributionProtocol(detail.getDpId(), detail.getDpShortTitle(), detail.getDpTitle());
 			AccessCtrlMgr.getInstance().ensureCreateUpdateDeleteDpRights(dp);
 
 			ConsentStatement stmt = getStatement(detail.getConsentStmtId(), detail.getConsentStmtCode());
@@ -518,8 +517,7 @@ public class DistributionProtocolServiceImpl implements DistributionProtocolServ
 		try {
 			DpConsentTierDetail detail = req.getPayload();
 
-			DistributionProtocol dp = getDistributionProtocol(
-				detail.getDpId(), detail.getDpShortTitle(), detail.getDpShortTitle());
+			DistributionProtocol dp = getDistributionProtocol(detail.getDpId(), detail.getDpShortTitle(), detail.getDpTitle());
 			AccessCtrlMgr.getInstance().ensureCreateUpdateDeleteDpRights(dp);
 
 			ConsentStatement oldStmt = getStatement(dp, detail.getConsentStmtId(), detail.getConsentStmtCode());
@@ -548,8 +546,7 @@ public class DistributionProtocolServiceImpl implements DistributionProtocolServ
 	public ResponseEvent<DpConsentTierDetail> deleteConsentTier(RequestEvent<DpConsentTierDetail> req) {
 		try {
 			DpConsentTierDetail detail = req.getPayload();
-			DistributionProtocol dp = getDistributionProtocol(
-				detail.getDpId(), detail.getDpShortTitle(), detail.getDpShortTitle());
+			DistributionProtocol dp = getDistributionProtocol(detail.getDpId(), detail.getDpShortTitle(), detail.getDpTitle());
 			AccessCtrlMgr.getInstance().ensureCreateUpdateDeleteDpRights(dp);
 
 			ConsentStatement stmt = getStatement(dp, detail.getConsentStmtId(), detail.getConsentStmtCode());
