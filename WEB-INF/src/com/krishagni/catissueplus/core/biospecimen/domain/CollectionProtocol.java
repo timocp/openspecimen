@@ -116,6 +116,8 @@ public class CollectionProtocol extends BaseExtensionEntity {
 	private Boolean consentsWaived;
 
 	private Set<ConsentTier> consentTier = new HashSet<ConsentTier>();
+
+	private Set<ConsentStatement> consentStmts = new HashSet<ConsentStatement>();
 	
 	private Set<User> coordinators = new HashSet<User>();
 	
@@ -404,6 +406,15 @@ public class CollectionProtocol extends BaseExtensionEntity {
 
 	public void setConsentTier(Set<ConsentTier> consentTier) {
 		this.consentTier = consentTier;
+	}
+
+	@NotAudited
+	public Set<ConsentStatement> getConsentStmts() {
+		return consentStmts;
+	}
+
+	public void setConsentStmts(Set<ConsentStatement> consentStmts) {
+		this.consentStmts = consentStmts;
 	}
 
 	public ConsentTier addConsentTier(ConsentTier ct) {

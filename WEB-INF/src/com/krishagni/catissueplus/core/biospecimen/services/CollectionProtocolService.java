@@ -29,6 +29,7 @@ import com.krishagni.catissueplus.core.biospecimen.repository.CprListCriteria;
 import com.krishagni.catissueplus.core.common.events.DeleteEntityOp;
 import com.krishagni.catissueplus.core.common.events.DependentEntityDetail;
 import com.krishagni.catissueplus.core.common.events.EntityDeleteResp;
+import com.krishagni.catissueplus.core.common.events.EntityQueryCriteria;
 import com.krishagni.catissueplus.core.common.events.RequestEvent;
 import com.krishagni.catissueplus.core.common.events.ResponseEvent;
 import com.krishagni.catissueplus.core.query.ListConfig;
@@ -71,7 +72,7 @@ public interface CollectionProtocolService {
 	//
 	// Consent Tier APIs
 	//
-	public ResponseEvent<List<ConsentTierDetail>> getConsentTiers(RequestEvent<Long> req);
+	public ResponseEvent<List<ConsentTierDetail>> getConsentTiers(RequestEvent<EntityQueryCriteria> req);
 
 	public ResponseEvent<ConsentTierDetail> updateConsentTier(RequestEvent<ConsentTierOp> req);
 

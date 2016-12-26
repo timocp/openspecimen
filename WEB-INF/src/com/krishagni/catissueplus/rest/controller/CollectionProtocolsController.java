@@ -51,6 +51,7 @@ import com.krishagni.catissueplus.core.biospecimen.services.CollectionProtocolSe
 import com.krishagni.catissueplus.core.common.events.DeleteEntityOp;
 import com.krishagni.catissueplus.core.common.events.DependentEntityDetail;
 import com.krishagni.catissueplus.core.common.events.EntityDeleteResp;
+import com.krishagni.catissueplus.core.common.events.EntityQueryCriteria;
 import com.krishagni.catissueplus.core.common.events.Operation;
 import com.krishagni.catissueplus.core.common.events.RequestEvent;
 import com.krishagni.catissueplus.core.common.events.Resource;
@@ -324,51 +325,51 @@ public class CollectionProtocolsController {
 		return resp.getPayload();
 	}
 	
-	@RequestMapping(method = RequestMethod.GET, value="/{id}/consent-tiers")
+	@RequestMapping(method = RequestMethod.GET, value="/{cpid}/consent-tiers")
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
-	public List<ConsentTierDetail> getConsentTiers(@PathVariable("id") Long cpId) {
-		ResponseEvent<List<ConsentTierDetail>> resp = cpSvc.getConsentTiers(getRequest(cpId));
+	public List<ConsentTierDetail> getConsentTiers(@PathVariable("cpid") Long cpId) {
+		ResponseEvent<List<ConsentTierDetail>> resp = cpSvc.getConsentTiers(getRequest(new EntityQueryCriteria(cpId)));
 		resp.throwErrorIfUnsuccessful();		
 		return resp.getPayload();
 	}
 	
-	@RequestMapping(method = RequestMethod.POST, value="/{id}/consent-tiers")
+	@RequestMapping(method = RequestMethod.POST, value="/{cpId}/consent-tiers")
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody	
-	public ConsentTierDetail addConsentTier(@PathVariable("id") Long cpId, @RequestBody ConsentTierDetail consentTier) {
+	public ConsentTierDetail addConsentTier(@PathVariable("cpId") Long cpId, @RequestBody ConsentTierDetail consentTier) {
 		return performConsentTierOp(OP.ADD, cpId, consentTier);
 	}
 
-	@RequestMapping(method = RequestMethod.PUT, value="/{id}/consent-tiers/{tierId}")
+	@RequestMapping(method = RequestMethod.PUT, value="/{cpId}/consent-tiers/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody	
 	public ConsentTierDetail updateConsentTier(
-			@PathVariable("id") 
+			@PathVariable("cpId")
 			Long cpId,
 			
-			@PathVariable("tierId") 
-			Long tierId,
+			@PathVariable("id")
+			Long id,
 			
 			@RequestBody 
 			ConsentTierDetail consentTier) {
 		
-		consentTier.setId(tierId);
+		consentTier.setId(id);
 		return performConsentTierOp(OP.UPDATE, cpId, consentTier);
 	}
 
-	@RequestMapping(method = RequestMethod.DELETE, value="/{id}/consent-tiers/{tierId}")
+	@RequestMapping(method = RequestMethod.DELETE, value="/{cpId}/consent-tiers/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody	
 	public ConsentTierDetail removeConsentTier(
-			@PathVariable("id") 
+			@PathVariable("cpId")
 			Long cpId,
 			
-			@PathVariable("tierId") 
-			Long tierId) {
+			@PathVariable("id")
+			Long id) {
 		
 		ConsentTierDetail consentTier = new ConsentTierDetail();
-		consentTier.setId(tierId);
+		consentTier.setId(id);
 		return performConsentTierOp(OP.REMOVE, cpId, consentTier);		
 	}
 	
@@ -736,9 +737,9 @@ public class CollectionProtocolsController {
 	}
 
 	private ConsentTierDetail performConsentTierOp(OP op, Long cpId, ConsentTierDetail consentTier) {
-		ConsentTierOp req = new ConsentTierOp();		
+		ConsentTierOp req = new ConsentTierOp();
+		consentTier.setCpId(cpId);
 		req.setConsentTier(consentTier);
-		req.setCpId(cpId);
 		req.setOp(op);
 		
 		ResponseEvent<ConsentTierDetail> resp = cpSvc.updateConsentTier(getRequest(req));
