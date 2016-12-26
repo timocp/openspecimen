@@ -5,12 +5,15 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.krishagni.catissueplus.core.biospecimen.domain.CollectionProtocol;
 import com.krishagni.catissueplus.core.biospecimen.domain.ConsentStatement;
 import com.krishagni.catissueplus.core.biospecimen.domain.ConsentTier;
 
 @JsonFilter("withoutId")
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class ConsentTierDetail {
 	private Long cpId;
 	

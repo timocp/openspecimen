@@ -22,7 +22,7 @@ angular.module('os.biospecimen.cp.consents', ['os.biospecimen.models'])
     }
 
     function initConsentTier(consentTier) {
-      return addDisplayValue(consentTier, consentTier.consentStmtCode, consentTier.consentStmt);
+      return addDisplayValue(consentTier, consentTier.consentStmtCode, consentTier.statement);
     }
 
     function loadConsentStmts(searchString) {
@@ -73,7 +73,7 @@ angular.module('os.biospecimen.cp.consents', ['os.biospecimen.models'])
         return deferred.promise;
       } else if (action == 'update') {
         return cp.newConsentTier({
-          id: stmt.consentStmtId,
+          id: stmt.id,
           newConsentStmtCode: stmt.displayValue
         }).$saveOrUpdate().then(initConsentTier);
       }
