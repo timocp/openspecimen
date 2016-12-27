@@ -11,13 +11,16 @@ import java.util.Set;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.springframework.util.CollectionUtils;
 
+import com.krishagni.catissueplus.core.administrative.events.StorageLocationSummary;
 import com.krishagni.catissueplus.core.biospecimen.domain.Specimen;
 import com.krishagni.catissueplus.core.biospecimen.domain.SpecimenRequirement;
 import com.krishagni.catissueplus.core.common.ListenAttributeChanges;
 import com.krishagni.catissueplus.core.de.events.ExtensionDetail;
 
+@JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)
 @ListenAttributeChanges
 public class SpecimenDetail extends SpecimenInfo {
 
@@ -44,6 +47,15 @@ public class SpecimenDetail extends SpecimenInfo {
 	private String pooledSpecimenLabel;
 
 	private List<SpecimenDetail> specimensPool;
+
+	//
+	// Properties required for auto-creation of containers
+	//
+	private StorageLocationSummary containerLocation;
+
+	private Long containerTypeId;
+
+	private String containerTypeName;
 
 	// This is needed for creation of derivatives from BO for closing parent specimen.
 	private Boolean closeParent;
@@ -125,6 +137,30 @@ public class SpecimenDetail extends SpecimenInfo {
 
 	public void setSpecimensPool(List<SpecimenDetail> specimensPool) {
 		this.specimensPool = specimensPool;
+	}
+
+	public StorageLocationSummary getContainerLocation() {
+		return containerLocation;
+	}
+
+	public void setContainerLocation(StorageLocationSummary containerLocation) {
+		this.containerLocation = containerLocation;
+	}
+
+	public Long getContainerTypeId() {
+		return containerTypeId;
+	}
+
+	public void setContainerTypeId(Long containerTypeId) {
+		this.containerTypeId = containerTypeId;
+	}
+
+	public String getContainerTypeName() {
+		return containerTypeName;
+	}
+
+	public void setContainerTypeName(String containerTypeName) {
+		this.containerTypeName = containerTypeName;
 	}
 
 	public Set<String> getBiohazards() {

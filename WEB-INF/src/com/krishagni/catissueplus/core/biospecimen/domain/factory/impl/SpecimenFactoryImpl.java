@@ -18,7 +18,9 @@ import com.krishagni.catissueplus.core.administrative.domain.StorageContainerPos
 import com.krishagni.catissueplus.core.administrative.domain.User;
 import com.krishagni.catissueplus.core.administrative.domain.factory.StorageContainerErrorCode;
 import com.krishagni.catissueplus.core.administrative.domain.factory.UserErrorCode;
+import com.krishagni.catissueplus.core.administrative.events.StorageContainerDetail;
 import com.krishagni.catissueplus.core.administrative.events.StorageLocationSummary;
+import com.krishagni.catissueplus.core.administrative.services.StorageContainerService;
 import com.krishagni.catissueplus.core.biospecimen.domain.Specimen;
 import com.krishagni.catissueplus.core.biospecimen.domain.SpecimenCollectionEvent;
 import com.krishagni.catissueplus.core.biospecimen.domain.SpecimenEvent;
@@ -48,12 +50,18 @@ public class SpecimenFactoryImpl implements SpecimenFactory {
 
 	private SpecimenResolver specimenResolver;
 
+	private StorageContainerService containerSvc;
+
 	public void setDaoFactory(DaoFactory daoFactory) {
 		this.daoFactory = daoFactory;
 	}
 
 	public void setSpecimenResolver(SpecimenResolver specimenResolver) {
 		this.specimenResolver = specimenResolver;
+	}
+
+	public void setContainerSvc(StorageContainerService containerSvc) {
+		this.containerSvc = containerSvc;
 	}
 
 	@Override
@@ -730,6 +738,14 @@ public class SpecimenFactoryImpl implements SpecimenFactory {
 		} else {
 			key = location.getName();
 			container = daoFactory.getStorageContainerDao().getByName(location.getName());
+
+			if (container == null) {
+				//
+				// Check the possibility of auto creating container
+				//
+				container = createContainer(detail, ose);
+				ose.checkAndThrow();
+			}
 		} 
 		
 		if (container == null) {
@@ -789,7 +805,45 @@ public class SpecimenFactoryImpl implements SpecimenFactory {
 			specimen.setPosition(position);
 		}
 	}
-	
+
+	private StorageContainer createContainer(SpecimenDetail detail, OpenSpecimenException ose) {
+		StorageLocationSummary containerLocation = detail.getContainerLocation();
+		Long containerTypeId = detail.getContainerTypeId();
+		String containerTypeName = detail.getContainerTypeName();
+
+		if (containerLocation == null && containerTypeId == null && StringUtils.isBlank(containerTypeName)) {
+			//
+			// no auto creation of containers
+			//
+			return null;
+		} else if (containerLocation == null) {
+			//
+			// auto creation but parent container details missing
+			//
+			ose.addError(SpecimenErrorCode.PARENT_CONTAINER_REQ);
+			return null;
+		} else if (containerTypeId == null && StringUtils.isBlank(containerTypeName)) {
+			//
+			// auto creation but container type details missing
+			//
+			ose.addError(SpecimenErrorCode.CONTAINER_TYPE_REQ);
+			return null;
+		}
+
+		//
+		// rows = columns = 0 to allow their values to be picked from container type
+		// null is used for dimensionless containers
+		//
+		StorageContainerDetail containerDetail = new StorageContainerDetail();
+		containerDetail.setName(detail.getStorageLocation().getName());
+		containerDetail.setTypeId(containerTypeId);
+		containerDetail.setTypeName(containerTypeName);
+		containerDetail.setNoOfRows(0);
+		containerDetail.setNoOfColumns(0);
+		containerDetail.setStorageLocation(containerLocation);
+		return containerSvc.createStorageContainer(null, containerDetail);
+	}
+
 	private void setSpecimenPosition(SpecimenDetail detail, Specimen existing, Specimen specimen, OpenSpecimenException ose) {
 		if (existing == null || detail.isAttrModified("storageLocation")) {
 			setSpecimenPosition(detail, specimen, ose);

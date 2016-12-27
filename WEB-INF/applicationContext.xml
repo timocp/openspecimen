@@ -191,6 +191,7 @@
   <bean id="specimenFactory" class="com.krishagni.catissueplus.core.biospecimen.domain.factory.impl.SpecimenFactoryImpl">
     <property name="daoFactory" ref="biospecimenDaoFactory" />
     <property name="specimenResolver" ref="specimenResolver"/>
+    <property name="containerSvc" ref="storageContainerSvc"/>
   </bean>
 
   <bean id="visitFactory" class="com.krishagni.catissueplus.core.biospecimen.domain.factory.impl.VisitFactoryImpl">

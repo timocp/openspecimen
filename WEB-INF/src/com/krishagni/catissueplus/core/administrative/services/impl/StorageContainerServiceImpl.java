@@ -182,30 +182,14 @@ public class StorageContainerServiceImpl implements StorageContainerService, Obj
 	@PlusTransactional
 	public ResponseEvent<StorageContainerDetail> createStorageContainer(RequestEvent<StorageContainerDetail> req) {
 		try {
-			StorageContainerDetail input = req.getPayload();			
-			StorageContainer container = containerFactory.createStorageContainer(input);
-			AccessCtrlMgr.getInstance().ensureCreateContainerRights(container);
-			
-			ensureUniqueConstraints(null, container);
-			container.validateRestrictions();
-
-			if (container.isStoreSpecimenEnabled()) {
-				container.setFreezerCapacity();
-			}
-
-			if (container.getPosition() != null) {
-				container.getPosition().occupy();
-			}
-
-			daoFactory.getStorageContainerDao().saveOrUpdate(container, true);
-			return ResponseEvent.response(StorageContainerDetail.from(container));
+			return ResponseEvent.response(StorageContainerDetail.from(createStorageContainer(null, req.getPayload())));
 		} catch (OpenSpecimenException ose) {
 			return ResponseEvent.error(ose);
 		} catch (Exception e) {
 			return ResponseEvent.serverError(e);
 		}
 	}
-	
+
 	@Override
 	@PlusTransactional
 	public ResponseEvent<StorageContainerDetail> updateStorageContainer(RequestEvent<StorageContainerDetail> req) {
@@ -606,6 +590,26 @@ public class StorageContainerServiceImpl implements StorageContainerService, Obj
 	}
 
 	@Override
+	public StorageContainer createStorageContainer(StorageContainer base, StorageContainerDetail input) {
+		StorageContainer container = containerFactory.createStorageContainer(base, input);
+		AccessCtrlMgr.getInstance().ensureCreateContainerRights(container);
+
+		ensureUniqueConstraints(null, container);
+		container.validateRestrictions();
+
+		if (container.isStoreSpecimenEnabled()) {
+			container.setFreezerCapacity();
+		}
+
+		if (container.getPosition() != null) {
+			container.getPosition().occupy();
+		}
+
+		daoFactory.getStorageContainerDao().saveOrUpdate(container, true);
+		return container;
+	}
+
+	@Override
 	public String getObjectName() {
 		return "container";
 	}
@@ -892,17 +896,8 @@ public class StorageContainerServiceImpl implements StorageContainerService, Obj
 		storageLocation.setPositionY(dest.getPosTwo());
 		storageLocation.setPosition(dest.getPosition());
 		detail.setStorageLocation(storageLocation);
-		
-		StorageContainer replica = containerFactory.createStorageContainer(getContainerCopy(srcContainer), detail);
-		AccessCtrlMgr.getInstance().ensureCreateContainerRights(replica);
-		
-		ensureUniqueConstraints(null, replica);
-		replica.validateRestrictions();
-		daoFactory.getStorageContainerDao().saveOrUpdate(replica);
-		
-		if (replica.getParentContainer() != null && replica.getPosition() != null) {
-			replica.getParentContainer().addPosition(replica.getPosition());
-		}
+
+		createStorageContainer(getContainerCopy(srcContainer), detail);
 	}
 
 	private void createContainerHierarchy(ContainerType containerType, StorageContainer parentContainer) {

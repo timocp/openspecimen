@@ -116,7 +116,11 @@ public enum SpecimenErrorCode implements ErrorCode {
 
 	DISPOSAL_DT_LT_CREATED_ON,
 
-	CONTAINER_ACCESS_DENIED;
+	CONTAINER_ACCESS_DENIED,
+
+	PARENT_CONTAINER_REQ,
+
+	CONTAINER_TYPE_REQ;
 
 	public String code() {
 		return "SPECIMEN_" + this.name();
