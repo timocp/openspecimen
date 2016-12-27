@@ -24,6 +24,11 @@
       class="com.krishagni.catissueplus.core.biospecimen.domain.CollectionProtocol"
       column="COLL_PROTOCOL_ID"/>
       
+    <many-to-one
+      name="consentStmt"
+      class="com.krishagni.catissueplus.core.biospecimen.domain.ConsentStatement"
+      column="CONSENT_STMT_ID"/>
+      
     <filter name="activeEntity"/>	
   </class>
 </hibernate-mapping>

@@ -3,6 +3,7 @@ package com.krishagni.catissueplus.core.biospecimen.domain;
 import java.util.List;
 
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -18,6 +19,8 @@ public class ConsentTier extends BaseEntity {
 	private CollectionProtocol collectionProtocol;
 	
 	private String activityStatus;
+	
+	private ConsentStatement consentStmt;
 
 	@Autowired 
 	private DaoFactory daoFactory;
@@ -46,6 +49,15 @@ public class ConsentTier extends BaseEntity {
 		this.activityStatus = activityStatus;
 	}
 	
+	@NotAudited
+	public ConsentStatement getConsentStmt() {
+		return consentStmt;
+	}
+
+	public void setConsentStmt(ConsentStatement consentStmt) {
+		this.consentStmt = consentStmt;
+	}
+
 	public List<DependentEntityDetail> getDependentEntities() {
 		CollectionProtocolDao cpDao = daoFactory.getCollectionProtocolDao(); 
 		int responseCount = cpDao.getConsentRespsCount(this.getId());

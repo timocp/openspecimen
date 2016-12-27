@@ -592,7 +592,10 @@ public class CollectionProtocol extends BaseExtensionEntity {
 			throw OpenSpecimenException.userError(CpErrorCode.CONSENT_TIER_NOT_FOUND);
 		}
 		
-		existing.setStatement(ct.getStatement());
+		existing.setStatement(ct.getConsentStmt().getStatement());
+		existing.setConsentStmt(ct.getConsentStmt());
+		
+		ct.setCollectionProtocol(this);
 		return ct;		
 	}
 	
@@ -604,7 +607,7 @@ public class CollectionProtocol extends BaseExtensionEntity {
 		
 		List<DependentEntityDetail> dependentEntities = ct.getDependentEntities();
 		if (!dependentEntities.isEmpty()) {
-			throw OpenSpecimenException.userError(CpErrorCode.CONSENT_REF_ENTITY_FOUND, ct.getStatement());
+			throw OpenSpecimenException.userError(CpErrorCode.CONSENT_REF_ENTITY_FOUND, ct.getConsentStmt().getCode());
 		}
 		ct.setActivityStatus(Status.ACTIVITY_STATUS_DISABLED.getStatus());
 		return ct;

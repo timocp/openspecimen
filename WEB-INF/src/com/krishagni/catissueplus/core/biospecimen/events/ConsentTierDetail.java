@@ -15,9 +15,11 @@ import com.krishagni.catissueplus.core.biospecimen.domain.ConsentTier;
 @JsonFilter("withoutId")
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class ConsentTierDetail {
+	private Long id;
+	
 	private Long cpId;
 	
-	private Long id;
+	private Long consentId;
 
 	private String cpTitle;
 	
@@ -43,6 +45,14 @@ public class ConsentTierDetail {
 
 	public void setCpId(Long cpId) {
 		this.cpId = cpId;
+	}
+
+	public Long getConsentId() {
+		return consentId;
+	}
+
+	public void setConsentId(Long consentId) {
+		this.consentId = consentId;
 	}
 
 	public String getCpTitle() {
@@ -92,7 +102,12 @@ public class ConsentTierDetail {
 		
 		ConsentTierDetail detail = new ConsentTierDetail();
 		detail.setId(ct.getId());
-		detail.setStatement(ct.getStatement());
+		detail.setCpId(ct.getCollectionProtocol().getId());
+		detail.setCpShortTitle(ct.getCollectionProtocol().getShortTitle());
+		detail.setCpTitle(ct.getCollectionProtocol().getTitle());
+		detail.setConsentId(ct.getConsentStmt().getId());
+		detail.setConsentStmtCode(ct.getConsentStmt().getCode());
+		detail.setStatement(ct.getConsentStmt().getStatement());
 		return detail;
 	}
 	
@@ -120,10 +135,11 @@ public class ConsentTierDetail {
 		return cp.getConsentStmts().stream().map(cs -> from(cp, cs)).collect(Collectors.toList());
 	}
 	
-	public ConsentTier toConsentTier() {
+	public ConsentTier toConsentTier(ConsentStatement stmt) {
 		ConsentTier ct = new ConsentTier();
 		ct.setId(id);
-		ct.setStatement(statement);
+		ct.setStatement(stmt.getStatement());
+		ct.setConsentStmt(stmt);
 		return ct;
 	}
 }

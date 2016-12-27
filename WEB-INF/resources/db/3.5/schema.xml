@@ -61,4 +61,17 @@
       baseTableName="OS_DP_CONSENT_TIERS" baseColumnNames="CONSENT_STMT_ID"
       referencedTableName="OS_CONSENT_STATEMENTS" referencedColumnNames="IDENTIFIER"/>
   </changeSet>
+
+  <changeSet author="mdnasim" id="Added consent statement id column in catissue_consent_tier table">
+    <addColumn tableName="CATISSUE_CONSENT_TIER">
+      <column defaultValueNumeric="0" name="CONSENT_STMT_ID" type="${int.type}"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet author="mdnasim" id="FK on consent ID of CP consent tiers">
+    <addForeignKeyConstraint
+      constraintName="FK_CP_CONSENT_TIERS_CONSENT_ID"
+      baseTableName="CATISSUE_CONSENT_TIER" baseColumnNames="CONSENT_STMT_ID"
+      referencedTableName="OS_CONSENT_STATEMENTS" referencedColumnNames="IDENTIFIER"/>
+  </changeSet>
 </databaseChangeLog>
