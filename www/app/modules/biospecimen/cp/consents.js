@@ -60,6 +60,11 @@ angular.module('os.biospecimen.cp.consents', ['os.biospecimen.models'])
     $scope.listChanged = function(action, stmt) {
       if (action == 'add') {
         return cp.newConsentTier({consentStmtCode: stmt.itemKey}).$saveOrUpdate().then(initConsentTier);
+      } else if (action == 'update') {
+        return cp.newConsentTier({
+          id: stmt.id,
+          newConsentStmtCode: stmt.displayValue
+        }).$saveOrUpdate().then(initConsentTier);
       } else if (action == 'remove') {
         var deferred = $q.defer();
         var opts = {
@@ -70,11 +75,6 @@ angular.module('os.biospecimen.cp.consents', ['os.biospecimen.models'])
 
         DeleteUtil.delete(stmt, opts);
         return deferred.promise;
-      } else if (action == 'update') {
-        return cp.newConsentTier({
-          id: stmt.id,
-          newConsentStmtCode: stmt.displayValue
-        }).$saveOrUpdate().then(initConsentTier);
       }
 
       return undefined;
