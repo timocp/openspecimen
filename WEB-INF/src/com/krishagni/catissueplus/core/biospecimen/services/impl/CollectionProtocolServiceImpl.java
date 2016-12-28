@@ -566,7 +566,7 @@ public class CollectionProtocolServiceImpl implements CollectionProtocolService,
 					
 				case UPDATE:
 					ensureUniqueConsentStatement(input, cp);
-					stmt = getStatement(input.getConsentId(), input.getNewConsentStmtCode());
+					stmt = getStatement(null, input.getNewConsentStmtCode());
 					resp = cp.updateConsentTier(input.toConsentTier(stmt));
 					break;
 					

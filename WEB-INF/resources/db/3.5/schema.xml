@@ -64,7 +64,7 @@
 
   <changeSet author="mdnasim" id="Added consent statement id column in catissue_consent_tier table">
     <addColumn tableName="CATISSUE_CONSENT_TIER">
-      <column defaultValueNumeric="0" name="CONSENT_STMT_ID" type="${int.type}"/>
+      <column name="CONSENT_STMT_ID" type="${int.type}"/>
     </addColumn>
   </changeSet>
 
