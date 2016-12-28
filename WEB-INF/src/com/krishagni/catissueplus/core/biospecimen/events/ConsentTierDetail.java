@@ -21,10 +21,6 @@ public class ConsentTierDetail {
 	
 	private Long consentId;
 
-	private String cpTitle;
-	
-	private String cpShortTitle;
-
 	private String consentStmtCode;
 
 	private String newConsentStmtCode;
@@ -53,22 +49,6 @@ public class ConsentTierDetail {
 
 	public void setConsentId(Long consentId) {
 		this.consentId = consentId;
-	}
-
-	public String getCpTitle() {
-		return cpTitle;
-	}
-
-	public void setCpTitle(String cpTitle) {
-		this.cpTitle = cpTitle;
-	}
-
-	public String getCpShortTitle() {
-		return cpShortTitle;
-	}
-
-	public void setCpShortTitle(String cpShortTitle) {
-		this.cpShortTitle = cpShortTitle;
 	}
 
 	public String getConsentStmtCode() {
@@ -103,8 +83,6 @@ public class ConsentTierDetail {
 		ConsentTierDetail detail = new ConsentTierDetail();
 		detail.setId(ct.getId());
 		detail.setCpId(ct.getCollectionProtocol().getId());
-		detail.setCpShortTitle(ct.getCollectionProtocol().getShortTitle());
-		detail.setCpTitle(ct.getCollectionProtocol().getTitle());
 		detail.setConsentId(ct.getConsentStmt().getId());
 		detail.setConsentStmtCode(ct.getConsentStmt().getCode());
 		detail.setStatement(ct.getConsentStmt().getStatement());
@@ -119,22 +97,7 @@ public class ConsentTierDetail {
 		
 		return tiers;
 	}
-	
-	public static ConsentTierDetail from(CollectionProtocol cp, ConsentStatement cs) {
-		ConsentTierDetail detail = new ConsentTierDetail();
-		detail.setId(cs.getId());
-		detail.setConsentStmtCode(cs.getCode());
-		detail.setStatement(cs.getStatement());
-		detail.setCpId(cp.getId());
-		detail.setCpTitle(cp.getTitle());
-		detail.setCpShortTitle(cp.getShortTitle());
-		return detail;
-	}
-	
-	public static List<ConsentTierDetail> from(CollectionProtocol cp) {
-		return cp.getConsentStmts().stream().map(cs -> from(cp, cs)).collect(Collectors.toList());
-	}
-	
+
 	public ConsentTier toConsentTier(ConsentStatement stmt) {
 		ConsentTier ct = new ConsentTier();
 		ct.setId(id);

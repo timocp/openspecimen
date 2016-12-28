@@ -63,7 +63,6 @@ angular.module('os.biospecimen.cp.consents', ['os.biospecimen.models'])
       } else if (action == 'remove') {
         var deferred = $q.defer();
         var opts = {
-          deleteWithoutCheck: true,
           confirmDelete: 'cp.delete_consent_tier',
           onDeletion: function() { deferred.resolve(true); },
           onDeleteFail: function() { deferred.reject(); }

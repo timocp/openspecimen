@@ -325,51 +325,51 @@ public class CollectionProtocolsController {
 		return resp.getPayload();
 	}
 	
-	@RequestMapping(method = RequestMethod.GET, value="/{cpid}/consent-tiers")
+	@RequestMapping(method = RequestMethod.GET, value="/{id}/consent-tiers")
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
-	public List<ConsentTierDetail> getConsentTiers(@PathVariable("cpid") Long cpId) {
+	public List<ConsentTierDetail> getConsentTiers(@PathVariable("id") Long cpId) {
 		ResponseEvent<List<ConsentTierDetail>> resp = cpSvc.getConsentTiers(getRequest(new EntityQueryCriteria(cpId)));
 		resp.throwErrorIfUnsuccessful();		
 		return resp.getPayload();
 	}
 	
-	@RequestMapping(method = RequestMethod.POST, value="/{cpId}/consent-tiers")
+	@RequestMapping(method = RequestMethod.POST, value="/{id}/consent-tiers")
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody	
-	public ConsentTierDetail addConsentTier(@PathVariable("cpId") Long cpId, @RequestBody ConsentTierDetail consentTier) {
+	public ConsentTierDetail addConsentTier(@PathVariable("id") Long cpId, @RequestBody ConsentTierDetail consentTier) {
 		return performConsentTierOp(OP.ADD, cpId, consentTier);
 	}
 
-	@RequestMapping(method = RequestMethod.PUT, value="/{cpId}/consent-tiers/{id}")
+	@RequestMapping(method = RequestMethod.PUT, value="/{id}/consent-tiers/{tierId}")
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody	
 	public ConsentTierDetail updateConsentTier(
-			@PathVariable("cpId")
+			@PathVariable("id")
 			Long cpId,
 			
-			@PathVariable("id")
-			Long id,
+			@PathVariable("tierId")
+			Long tierId,
 			
 			@RequestBody 
 			ConsentTierDetail consentTier) {
 		
-		consentTier.setId(id);
+		consentTier.setId(tierId);
 		return performConsentTierOp(OP.UPDATE, cpId, consentTier);
 	}
 
-	@RequestMapping(method = RequestMethod.DELETE, value="/{cpId}/consent-tiers/{id}")
+	@RequestMapping(method = RequestMethod.DELETE, value="/{id}/consent-tiers/{tierId}")
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody	
 	public ConsentTierDetail removeConsentTier(
-			@PathVariable("cpId")
+			@PathVariable("id")
 			Long cpId,
 			
-			@PathVariable("id")
-			Long id) {
+			@PathVariable("tierId")
+			Long tierId) {
 		
 		ConsentTierDetail consentTier = new ConsentTierDetail();
-		consentTier.setId(id);
+		consentTier.setId(tierId);
 		return performConsentTierOp(OP.REMOVE, cpId, consentTier);		
 	}
 	
@@ -738,8 +738,8 @@ public class CollectionProtocolsController {
 
 	private ConsentTierDetail performConsentTierOp(OP op, Long cpId, ConsentTierDetail consentTier) {
 		ConsentTierOp req = new ConsentTierOp();
-		consentTier.setCpId(cpId);
 		req.setConsentTier(consentTier);
+		req.setCpId(cpId);
 		req.setOp(op);
 		
 		ResponseEvent<ConsentTierDetail> resp = cpSvc.updateConsentTier(getRequest(req));
