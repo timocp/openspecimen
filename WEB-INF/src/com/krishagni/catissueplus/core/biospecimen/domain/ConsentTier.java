@@ -3,7 +3,6 @@ package com.krishagni.catissueplus.core.biospecimen.domain;
 import java.util.List;
 
 import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 

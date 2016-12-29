@@ -51,7 +51,6 @@ import com.krishagni.catissueplus.core.biospecimen.services.CollectionProtocolSe
 import com.krishagni.catissueplus.core.common.events.DeleteEntityOp;
 import com.krishagni.catissueplus.core.common.events.DependentEntityDetail;
 import com.krishagni.catissueplus.core.common.events.EntityDeleteResp;
-import com.krishagni.catissueplus.core.common.events.EntityQueryCriteria;
 import com.krishagni.catissueplus.core.common.events.Operation;
 import com.krishagni.catissueplus.core.common.events.RequestEvent;
 import com.krishagni.catissueplus.core.common.events.Resource;
@@ -345,10 +344,10 @@ public class CollectionProtocolsController {
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody	
 	public ConsentTierDetail updateConsentTier(
-			@PathVariable("id")
+			@PathVariable("id") 
 			Long cpId,
 			
-			@PathVariable("tierId")
+			@PathVariable("tierId") 
 			Long tierId,
 			
 			@RequestBody 
@@ -362,10 +361,10 @@ public class CollectionProtocolsController {
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody	
 	public ConsentTierDetail removeConsentTier(
-			@PathVariable("id")
+			@PathVariable("id") 
 			Long cpId,
 			
-			@PathVariable("tierId")
+			@PathVariable("tierId") 
 			Long tierId) {
 		
 		ConsentTierDetail consentTier = new ConsentTierDetail();
@@ -737,7 +736,7 @@ public class CollectionProtocolsController {
 	}
 
 	private ConsentTierDetail performConsentTierOp(OP op, Long cpId, ConsentTierDetail consentTier) {
-		ConsentTierOp req = new ConsentTierOp();
+		ConsentTierOp req = new ConsentTierOp();		
 		req.setConsentTier(consentTier);
 		req.setCpId(cpId);
 		req.setOp(op);
