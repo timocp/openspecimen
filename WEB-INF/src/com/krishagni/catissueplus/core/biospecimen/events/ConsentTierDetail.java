@@ -23,8 +23,6 @@ public class ConsentTierDetail {
 
 	private String consentStmtCode;
 
-	private String newConsentStmtCode;
-	
 	private String statement;
 
 	public Long getId() {
@@ -59,14 +57,6 @@ public class ConsentTierDetail {
 		this.consentStmtCode = consentStmtCode;
 	}
 
-	public String getNewConsentStmtCode() {
-		return newConsentStmtCode;
-	}
-
-	public void setNewConsentStmtCode(String newConsentStmtCode) {
-		this.newConsentStmtCode = newConsentStmtCode;
-	}
-
 	public String getStatement() {
 		return statement;
 	}
@@ -82,7 +72,6 @@ public class ConsentTierDetail {
 		
 		ConsentTierDetail detail = new ConsentTierDetail();
 		detail.setId(ct.getId());
-		detail.setCpId(ct.getCollectionProtocol().getId());
 		detail.setConsentId(ct.getConsentStmt().getId());
 		detail.setConsentStmtCode(ct.getConsentStmt().getCode());
 		detail.setStatement(ct.getConsentStmt().getStatement());
@@ -101,7 +90,6 @@ public class ConsentTierDetail {
 	public ConsentTier toConsentTier(ConsentStatement stmt) {
 		ConsentTier ct = new ConsentTier();
 		ct.setId(id);
-		ct.setStatement(stmt.getStatement());
 		ct.setConsentStmt(stmt);
 		return ct;
 	}

@@ -524,10 +524,14 @@ public class CollectionProtocolServiceImpl implements CollectionProtocolService,
 	
 	@Override
 	@PlusTransactional
-	public ResponseEvent<List<ConsentTierDetail>> getConsentTiers(RequestEvent<EntityQueryCriteria> req) {
+	public ResponseEvent<List<ConsentTierDetail>> getConsentTiers(RequestEvent<Long> req) {
+		Long cpId = req.getPayload();
+
 		try {
-			EntityQueryCriteria crit = req.getPayload();
-			CollectionProtocol cp = getCollectionProtocol(crit.getId(), crit.getName(), null);
+			CollectionProtocol cp = daoFactory.getCollectionProtocolDao().getById(cpId);
+			if (cp == null) {
+				return ResponseEvent.userError(CpErrorCode.NOT_FOUND);
+			}
 			
 			AccessCtrlMgr.getInstance().ensureReadCpRights(cp);
 			return ResponseEvent.response(ConsentTierDetail.from(cp.getConsentTier()));
@@ -566,7 +570,7 @@ public class CollectionProtocolServiceImpl implements CollectionProtocolService,
 					
 				case UPDATE:
 					ensureUniqueConsentStatement(input, cp);
-					stmt = getStatement(null, input.getNewConsentStmtCode());
+					stmt = getStatement(input.getConsentId(), input.getConsentStmtCode());
 					resp = cp.updateConsentTier(input.toConsentTier(stmt));
 					break;
 					
@@ -1521,7 +1525,6 @@ public class CollectionProtocolServiceImpl implements CollectionProtocolService,
 	private void ensureUniqueConsentStatement(ConsentTierDetail consentTierDetail, CollectionProtocol cp) {
 		for (ConsentTier consentTier : cp.getConsentTier()) {
 			if ((consentTier.getConsentStmt().getCode().equals(consentTierDetail.getConsentStmtCode()) || 
-				consentTier.getConsentStmt().getCode().equals(consentTierDetail.getNewConsentStmtCode()) ||
 				consentTier.getConsentStmt().getId() == consentTierDetail.getConsentId()) && 
 				consentTier.getId() != consentTierDetail.getId()) {
 				throw OpenSpecimenException.userError(CpErrorCode.DUP_CONSENT, consentTier.getConsentStmt().getCode(), cp.getShortTitle());

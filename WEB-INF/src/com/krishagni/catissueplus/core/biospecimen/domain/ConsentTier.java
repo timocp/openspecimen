@@ -49,7 +49,6 @@ public class ConsentTier extends BaseEntity {
 		this.activityStatus = activityStatus;
 	}
 	
-	@NotAudited
 	public ConsentStatement getConsentStmt() {
 		return consentStmt;
 	}

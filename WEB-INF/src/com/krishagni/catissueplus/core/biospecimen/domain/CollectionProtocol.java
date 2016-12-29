@@ -581,10 +581,7 @@ public class CollectionProtocol extends BaseExtensionEntity {
 			throw OpenSpecimenException.userError(CpErrorCode.CONSENT_TIER_NOT_FOUND);
 		}
 		
-		existing.setStatement(ct.getConsentStmt().getStatement());
 		existing.setConsentStmt(ct.getConsentStmt());
-		
-		ct.setCollectionProtocol(this);
 		return ct;		
 	}
 	

@@ -62,7 +62,7 @@
       referencedTableName="OS_CONSENT_STATEMENTS" referencedColumnNames="IDENTIFIER"/>
   </changeSet>
 
-  <changeSet author="mdnasim" id="Added consent statement id column in catissue_consent_tier table">
+  <changeSet author="mdnasim" id="Added consent statement identifier in cp consents table">
     <addColumn tableName="CATISSUE_CONSENT_TIER">
       <column name="CONSENT_STMT_ID" type="${int.type}"/>
     </addColumn>

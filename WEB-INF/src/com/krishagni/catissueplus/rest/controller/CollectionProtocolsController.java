@@ -329,7 +329,7 @@ public class CollectionProtocolsController {
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
 	public List<ConsentTierDetail> getConsentTiers(@PathVariable("id") Long cpId) {
-		ResponseEvent<List<ConsentTierDetail>> resp = cpSvc.getConsentTiers(getRequest(new EntityQueryCriteria(cpId)));
+		ResponseEvent<List<ConsentTierDetail>> resp = cpSvc.getConsentTiers(getRequest(cpId));
 		resp.throwErrorIfUnsuccessful();		
 		return resp.getPayload();
 	}

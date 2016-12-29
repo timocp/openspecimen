@@ -63,7 +63,7 @@ angular.module('os.biospecimen.cp.consents', ['os.biospecimen.models'])
       } else if (action == 'update') {
         return cp.newConsentTier({
           id: stmt.id,
-          newConsentStmtCode: stmt.displayValue
+          consentStmtCode: stmt.displayValue
         }).$saveOrUpdate().then(initConsentTier);
       } else if (action == 'remove') {
         var deferred = $q.defer();

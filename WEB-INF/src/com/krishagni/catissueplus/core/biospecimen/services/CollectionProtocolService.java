@@ -72,7 +72,7 @@ public interface CollectionProtocolService {
 	//
 	// Consent Tier APIs
 	//
-	public ResponseEvent<List<ConsentTierDetail>> getConsentTiers(RequestEvent<EntityQueryCriteria> req);
+	public ResponseEvent<List<ConsentTierDetail>> getConsentTiers(RequestEvent<Long> req);
 
 	public ResponseEvent<ConsentTierDetail> updateConsentTier(RequestEvent<ConsentTierOp> req);
 
