@@ -306,7 +306,7 @@ public class CollectionProtocolRegistration extends BaseEntity {
 			.collect(Collectors.toMap(ConsentTierResponse::getStatement, resp -> resp));
 
 		for(ConsentTierResponse newResp : consentResponses) {
-			ConsentTierResponse existingResp = existingResps.remove(newResp.getConsentTier().getStatement());
+			ConsentTierResponse existingResp = existingResps.remove(newResp.getConsentTier().getStatement().getStatement());
 			if (existingResp == null) {
 				getConsentResponses().add(newResp);
 			} else {

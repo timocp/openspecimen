@@ -107,7 +107,7 @@ public class ConsentResponsesFactoryImpl implements ConsentResponsesFactory {
 			ConsentTierResponse response = createConsentTierResponse(
 					responseDetail, cpr, responsesMap.get(responseDetail.getStatement()), ose);
 			if (response != null) {
-				responsesMap.put(response.getConsentTier().getStatement(), response);
+				responsesMap.put(response.getConsentTier().getStatement().getStatement(), response);
 			}
 		}
 
@@ -129,7 +129,7 @@ public class ConsentResponsesFactoryImpl implements ConsentResponsesFactory {
 			response.setCpr(cpr);
 
 			for (ConsentTier consentTier : cpr.getCollectionProtocol().getConsentTier()) {
-				if (consentTier.getStatement().equals(detail.getStatement())) {
+				if (consentTier.getStatement().getStatement().equals(detail.getStatement())) {
 					response.setConsentTier(consentTier);
 					break;
 				}

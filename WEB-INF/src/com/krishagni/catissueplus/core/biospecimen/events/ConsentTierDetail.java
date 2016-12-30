@@ -3,12 +3,10 @@ package com.krishagni.catissueplus.core.biospecimen.events;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
-import com.krishagni.catissueplus.core.biospecimen.domain.CollectionProtocol;
 import com.krishagni.catissueplus.core.biospecimen.domain.ConsentStatement;
 import com.krishagni.catissueplus.core.biospecimen.domain.ConsentTier;
 
@@ -72,9 +70,9 @@ public class ConsentTierDetail {
 		
 		ConsentTierDetail detail = new ConsentTierDetail();
 		detail.setId(ct.getId());
-		detail.setConsentId(ct.getConsentStmt().getId());
-		detail.setConsentStmtCode(ct.getConsentStmt().getCode());
-		detail.setStatement(ct.getConsentStmt().getStatement());
+		detail.setConsentId(ct.getStatement().getId());
+		detail.setConsentStmtCode(ct.getStatement().getCode());
+		detail.setStatement(ct.getStatement().getStatement());
 		return detail;
 	}
 	
@@ -90,7 +88,7 @@ public class ConsentTierDetail {
 	public ConsentTier toConsentTier(ConsentStatement stmt) {
 		ConsentTier ct = new ConsentTier();
 		ct.setId(id);
-		ct.setConsentStmt(stmt);
+		ct.setStatement(stmt);
 		return ct;
 	}
 }

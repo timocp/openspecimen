@@ -13,24 +13,14 @@ import com.krishagni.catissueplus.core.common.events.DependentEntityDetail;
 @Configurable
 @Audited
 public class ConsentTier extends BaseEntity {
-	private String statement;
-	
 	private CollectionProtocol collectionProtocol;
 	
-	private String activityStatus;
+	private ConsentStatement statement;
 	
-	private ConsentStatement consentStmt;
+	private String activityStatus;
 
 	@Autowired 
 	private DaoFactory daoFactory;
-		
-	public String getStatement() {
-		return statement;
-	}
-
-	public void setStatement(String statement) {
-		this.statement = statement;
-	}
 
 	public CollectionProtocol getCollectionProtocol() {
 		return collectionProtocol;
@@ -40,20 +30,20 @@ public class ConsentTier extends BaseEntity {
 		this.collectionProtocol = collectionProtocol;
 	}
 	
+	public ConsentStatement getStatement() {
+		return statement;
+	}
+
+	public void setStatement(ConsentStatement statement) {
+		this.statement = statement;
+	}
+
 	public String getActivityStatus() {
 		return activityStatus;
 	}
 
 	public void setActivityStatus(String activityStatus) {
 		this.activityStatus = activityStatus;
-	}
-	
-	public ConsentStatement getConsentStmt() {
-		return consentStmt;
-	}
-
-	public void setConsentStmt(ConsentStatement consentStmt) {
-		this.consentStmt = consentStmt;
 	}
 
 	public List<DependentEntityDetail> getDependentEntities() {

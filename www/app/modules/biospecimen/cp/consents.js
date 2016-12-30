@@ -73,6 +73,7 @@ angular.module('os.biospecimen.cp.consents', ['os.biospecimen.models'])
           onDeleteFail: function() { deferred.reject(); }
         }
 
+        stmt.cpShortTitle = cp.shortTitle;
         DeleteUtil.delete(stmt, opts);
         return deferred.promise;
       }

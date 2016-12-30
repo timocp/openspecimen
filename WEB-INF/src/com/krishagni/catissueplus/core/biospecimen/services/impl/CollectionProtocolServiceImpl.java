@@ -1523,10 +1523,10 @@ public class CollectionProtocolServiceImpl implements CollectionProtocolService,
 
 	private void ensureUniqueConsentStatement(ConsentTierDetail consentTierDetail, CollectionProtocol cp) {
 		for (ConsentTier consentTier : cp.getConsentTier()) {
-			if ((consentTier.getConsentStmt().getCode().equals(consentTierDetail.getConsentStmtCode()) || 
-				consentTier.getConsentStmt().getId() == consentTierDetail.getConsentId()) && 
+			if ((consentTier.getStatement().getCode().equals(consentTierDetail.getConsentStmtCode()) || 
+				consentTier.getStatement().getId() == consentTierDetail.getConsentId()) && 
 				consentTier.getId() != consentTierDetail.getId()) {
-				throw OpenSpecimenException.userError(CpErrorCode.DUP_CONSENT, consentTier.getConsentStmt().getCode(), cp.getShortTitle());
+				throw OpenSpecimenException.userError(CpErrorCode.DUP_CONSENT, consentTier.getStatement().getCode(), cp.getShortTitle());
 			}
 		}
 	}
