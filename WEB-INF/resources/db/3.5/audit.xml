@@ -31,7 +31,7 @@
     </createTable>
   </changeSet>
 
-  <changeSet author="mdnasim" id="Audit and track changes to consent statement of cp consent tier">
+  <changeSet author="mdnasim" id="Audit and track changes to CP consent tier statements">
     <addColumn tableName="CATISSUE_CONSENT_TIER_AUD">
       <column name="CONSENT_STMT_ID" type="${int.type}"/>
       <column name="consentStmt_MOD" type="${bit.type}"/>

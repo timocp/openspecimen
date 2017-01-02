@@ -3,6 +3,7 @@ package com.krishagni.catissueplus.core.biospecimen.events;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
@@ -17,9 +18,9 @@ public class ConsentTierDetail {
 	
 	private Long cpId;
 	
-	private Long consentId;
+	private Long statementId;
 
-	private String consentStmtCode;
+	private String statementCode;
 
 	private String statement;
 
@@ -39,20 +40,20 @@ public class ConsentTierDetail {
 		this.cpId = cpId;
 	}
 
-	public Long getConsentId() {
-		return consentId;
+	public Long getStatementId() {
+		return statementId;
 	}
 
-	public void setConsentId(Long consentId) {
-		this.consentId = consentId;
+	public void setStatementId(Long statementId) {
+		this.statementId = statementId;
 	}
 
-	public String getConsentStmtCode() {
-		return consentStmtCode;
+	public String getStatementCode() {
+		return statementCode;
 	}
 
-	public void setConsentStmtCode(String consentStmtCode) {
-		this.consentStmtCode = consentStmtCode;
+	public void setStatementCode(String statementCode) {
+		this.statementCode = statementCode;
 	}
 
 	public String getStatement() {
@@ -70,25 +71,13 @@ public class ConsentTierDetail {
 		
 		ConsentTierDetail detail = new ConsentTierDetail();
 		detail.setId(ct.getId());
-		detail.setConsentId(ct.getStatement().getId());
-		detail.setConsentStmtCode(ct.getStatement().getCode());
+		detail.setStatementId(ct.getStatement().getId());
+		detail.setStatementCode(ct.getStatement().getCode());
 		detail.setStatement(ct.getStatement().getStatement());
 		return detail;
 	}
 	
 	public static List<ConsentTierDetail> from(Collection<ConsentTier> cts) {
-		List<ConsentTierDetail> tiers = new ArrayList<ConsentTierDetail>();
-		for (ConsentTier ct : cts) {
-			tiers.add(ConsentTierDetail.from(ct));
-		}
-		
-		return tiers;
-	}
-
-	public ConsentTier toConsentTier(ConsentStatement stmt) {
-		ConsentTier ct = new ConsentTier();
-		ct.setId(id);
-		ct.setStatement(stmt);
-		return ct;
+		return cts.stream().map(ConsentTierDetail::from).collect(Collectors.toList());
 	}
 }

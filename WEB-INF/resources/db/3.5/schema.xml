@@ -62,42 +62,27 @@
       referencedTableName="OS_CONSENT_STATEMENTS" referencedColumnNames="IDENTIFIER"/>
   </changeSet>
 
-  <changeSet author="mdnasim" id="Added consent statement identifier in cp consents table">
+  <changeSet author="mdnasim" id="CP consent tier statement">
     <addColumn tableName="CATISSUE_CONSENT_TIER">
       <column name="CONSENT_STMT_ID" type="${int.type}"/>
     </addColumn>
   </changeSet>
 
-  <changeSet author="mdnasim" id="FK on consent ID of CP consent tiers">
+  <changeSet author="mdnasim" id="FK on CP consent tier statement">
     <addForeignKeyConstraint
       constraintName="FK_CP_CONSENT_TIERS_CONSENT_ID"
       baseTableName="CATISSUE_CONSENT_TIER" baseColumnNames="CONSENT_STMT_ID"
       referencedTableName="OS_CONSENT_STATEMENTS" referencedColumnNames="IDENTIFIER"/>
   </changeSet>
 
-  <changeSet author="mdnasim" id="migrate consent statement into consent statement table" dbms="oracle">
+  <changeSet author="mdnasim" id="Move existing CP consent tier statement text to coded consent statement table" dbms="oracle">
     <sql>
       insert into os_consent_statements
         (identifier, code, statement, activity_status)
-        select
-          OS_CONSENT_STMTS_SEQ.nextVal,
-          concat('C', row_number() over (partition by t0.activity_status order by t0.identifier)),
-          t0.statement, 'Active'
-        from (
-          select distinct statement, identifier, activity_status from catissue_consent_tier where activity_status = 'Active'
-        ) t0
-    </sql>
-  </changeSet>
-
-  <changeSet author="mdnasim" id="migrate consent statement into consent statement table" dbms="mysql">
-    <sql>
-      set @row := 0;
-
-      insert into os_consent_statements
-        (code, statement, activity_status)
-        select
-          concat('C', @row := @row + 1), t0.statement, 'Active'
-        from (
+      select
+        os_consent_stmts_seq.nextval, concat('C', os_consent_stmts_seq.currval), t0.statement, 'Active'
+      from
+        (
           select
             distinct statement
           from
@@ -108,7 +93,27 @@
     </sql>
   </changeSet>
 
-  <changeSet author="mdnasim" id="update consent statement identifier of consent tier">
+  <changeSet author="mdnasim" id="Move existing CP consent tier statement text to coded consent statement table" dbms="mysql">
+    <sql>
+      set @row := 0;
+
+      insert into os_consent_statements
+        (code, statement, activity_status)
+      select
+        concat('C', @row := @row + 1), t0.statement, 'Active'
+      from
+        (
+          select
+            distinct statement
+          from
+            catissue_consent_tier
+          where
+            activity_status = 'Active'
+        ) t0
+    </sql>
+  </changeSet>
+
+  <changeSet author="mdnasim" id="Update consent tier statement ID">
     <sql>
       update
         catissue_consent_tier tier
@@ -126,24 +131,21 @@
     </sql>
   </changeSet>
 
-  <changeSet author="mdnasim" id="Drop statement which is replaced by consent statement column">
+  <changeSet author="mdnasim" id="Drop CP consent tier text statement column">
     <dropColumn tableName="CATISSUE_CONSENT_TIER" columnName="STATEMENT"/>
   </changeSet>
 
-  <changeSet author="mdnasim" id="Updated consent tier view">
+  <changeSet author="mdnasim" id="Updated consent tier view" runOnChange="true">
     <sql>
       create or replace view consent_tier_view as (
         select
-          cnsstmt.IDENTIFIER AS IDENTIFIER,
-          cnsrsp.COLL_PROT_REG_ID AS CPR_ID,
-          stmt.STATEMENT AS STATEMENT,
-          cnsrsp.RESPONSE AS RESPONSE
+          tier.identifier as identifier, resp.coll_prot_reg_id as cpr_id, stmt.statement as statement, resp.response as response
         from
-          catissue_consent_tier cnsstmt
-          join catissue_consent_tier_response cnsrsp on cnsstmt.IDENTIFIER = cnsrsp.CONSENT_TIER_ID
-          join os_consent_statements stmt on stmt.IDENTIFIER =  cnsstmt.CONSENT_STMT_ID
+          catissue_consent_tier tier
+          inner join catissue_consent_tier_response resp on resp.consent_tier_id = tier.identifier
+          inner join os_consent_statements stmt on stmt.identifier =  tier.consent_stmt_id
         where
-          cnsrsp.COLL_PROT_REG_ID is not null
+          resp.coll_prot_reg_id is not null
       )
     </sql>
   </changeSet>

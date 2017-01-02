@@ -4,10 +4,7 @@
     "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping auto-import="false">
-  <class
-    name="com.krishagni.catissueplus.core.biospecimen.domain.ConsentTier"
-    table="CATISSUE_CONSENT_TIER"
-    lazy="false">
+  <class name="com.krishagni.catissueplus.core.biospecimen.domain.ConsentTier" table="CATISSUE_CONSENT_TIER" lazy="false">
     
     <id name="id" column="IDENTIFIER">
       <generator class="native">
@@ -17,15 +14,9 @@
 
     <property name="activityStatus" column="ACTIVITY_STATUS"/>
 
-    <many-to-one
-      name="collectionProtocol"
-      class="com.krishagni.catissueplus.core.biospecimen.domain.CollectionProtocol"
-      column="COLL_PROTOCOL_ID"/>
+    <many-to-one name="collectionProtocol" column="COLL_PROTOCOL_ID"/>
       
-    <many-to-one
-      name="statement"
-      class="com.krishagni.catissueplus.core.biospecimen.domain.ConsentStatement"
-      column="CONSENT_STMT_ID"/>
+    <many-to-one name="statement" column="CONSENT_STMT_ID"/>
       
     <filter name="activeEntity"/>	
   </class>

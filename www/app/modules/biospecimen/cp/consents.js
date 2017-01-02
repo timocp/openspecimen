@@ -22,7 +22,7 @@ angular.module('os.biospecimen.cp.consents', ['os.biospecimen.models'])
     }
 
     function initConsentTier(consentTier) {
-      return addDisplayValue(consentTier, consentTier.consentStmtCode, consentTier.statement);
+      return addDisplayValue(consentTier, consentTier.statementCode, consentTier.statement);
     }
 
     function loadConsentStmts(searchString) {
@@ -59,12 +59,9 @@ angular.module('os.biospecimen.cp.consents', ['os.biospecimen.models'])
 
     $scope.listChanged = function(action, stmt) {
       if (action == 'add') {
-        return cp.newConsentTier({consentStmtCode: stmt.itemKey}).$saveOrUpdate().then(initConsentTier);
+        return cp.newConsentTier({statementCode: stmt.itemKey}).$saveOrUpdate().then(initConsentTier);
       } else if (action == 'update') {
-        return cp.newConsentTier({
-          id: stmt.id,
-          consentStmtCode: stmt.displayValue
-        }).$saveOrUpdate().then(initConsentTier);
+        return cp.newConsentTier({id: stmt.id, statementCode: stmt.displayValue}).$saveOrUpdate().then(initConsentTier);
       } else if (action == 'remove') {
         var deferred = $q.defer();
         var opts = {
@@ -90,6 +87,4 @@ angular.module('os.biospecimen.cp.consents', ['os.biospecimen.models'])
     }
 
     init();
-
-
   });

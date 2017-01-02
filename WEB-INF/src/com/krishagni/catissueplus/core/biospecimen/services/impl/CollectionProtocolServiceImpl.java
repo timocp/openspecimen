@@ -563,14 +563,16 @@ public class CollectionProtocolServiceImpl implements CollectionProtocolService,
 			switch (opDetail.getOp()) {
 				case ADD:
 					ensureUniqueConsentStatement(input, cp);
-					stmt = getStatement(input.getConsentId(), input.getConsentStmtCode());
-					resp = cp.addConsentTier(input.toConsentTier(stmt));
+					// TODO: should be able to find by ID / code / statement
+					stmt = getStatement(input.getStatementId(), input.getStatementCode());
+					resp = cp.addConsentTier(getConsentTierObj(input.getId(), stmt));
 					break;
 					
 				case UPDATE:
 					ensureUniqueConsentStatement(input, cp);
-					stmt = getStatement(input.getConsentId(), input.getConsentStmtCode());
-					resp = cp.updateConsentTier(input.toConsentTier(stmt));
+					// TODO: should be able to find by ID / code / statement
+					stmt = getStatement(input.getStatementId(), input.getStatementCode());
+					resp = cp.updateConsentTier(getConsentTierObj(input.getId(), stmt));
 					break;
 					
 				case REMOVE:
@@ -1523,14 +1525,22 @@ public class CollectionProtocolServiceImpl implements CollectionProtocolService,
 
 	private void ensureUniqueConsentStatement(ConsentTierDetail consentTierDetail, CollectionProtocol cp) {
 		for (ConsentTier consentTier : cp.getConsentTier()) {
-			if ((consentTier.getStatement().getCode().equals(consentTierDetail.getConsentStmtCode()) || 
-				consentTier.getStatement().getId() == consentTierDetail.getConsentId()) && 
-				consentTier.getId() != consentTierDetail.getId()) {
+			if ((consentTier.getStatement().getId().equals(consentTierDetail.getStatementId()) ||
+				 consentTier.getStatement().getCode().equals(consentTierDetail.getStatementCode()) ||
+				 consentTier.getStatement().getStatement().equals(consentTierDetail.getStatement())) &&
+				!consentTier.getId().equals(consentTierDetail.getId())) {
 				throw OpenSpecimenException.userError(CpErrorCode.DUP_CONSENT, consentTier.getStatement().getCode(), cp.getShortTitle());
 			}
 		}
 	}
-	
+
+	private ConsentTier getConsentTierObj(Long id, ConsentStatement stmt) {
+		ConsentTier tier = new ConsentTier();
+		tier.setId(id);
+		tier.setStatement(stmt);
+		return tier;
+	}
+
 	private void ensureSpecimensNotCollected(SpecimenRequirement sr) {
 		int count = daoFactory.getSpecimenRequirementDao().getSpecimensCount(sr.getId());
 		if (count > 0) {
