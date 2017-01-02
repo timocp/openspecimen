@@ -46,6 +46,13 @@ public class ConsentStatementDaoImpl extends AbstractDao<ConsentStatement> imple
 			.uniqueResult();
 	}
 
+	@Override
+	public ConsentStatement getByStatement(String statement) {
+		return (ConsentStatement)getCurrentSession().getNamedQuery(GET_BY_STATEMENT)
+			.setString("statement", statement)
+			.uniqueResult();
+	}
+
 	private Criteria getStatementListCriteria(ConsentStatementListCriteria listCrit) {
 		Criteria query = getCurrentSession().createCriteria(ConsentStatement.class);
 		String searchString = listCrit.query();
@@ -79,5 +86,7 @@ public class ConsentStatementDaoImpl extends AbstractDao<ConsentStatement> imple
 	private static final String FQN = ConsentStatement.class.getName();
 	
 	private static final String GET_BY_CODE = FQN + ".getByCode";
+
+	private static final String GET_BY_STATEMENT = FQN + ".getByStatement";
 
 }

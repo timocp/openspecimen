@@ -126,6 +126,10 @@ public class ConsentStatementServiceImpl implements ConsentStatementService {
 		if (!isUniqueCode(existingStmt, newStmt)) {
 			ose.addError(ConsentStatementErrorCode.DUP_CODE, newStmt.getCode());
 		}
+
+		if (!isUniqueStatement(existingStmt, newStmt)) {
+			ose.addError(ConsentStatementErrorCode.DUP_STATEMENT, newStmt.getStatement());
+		}
 	}
 	
 	private boolean isUniqueCode(ConsentStatement existingStmt, ConsentStatement newStmt) {
@@ -136,6 +140,14 @@ public class ConsentStatementServiceImpl implements ConsentStatementService {
 		return daoFactory.getConsentStatementDao().getByCode(newStmt.getCode()) == null;
 	}
 	
+	private boolean isUniqueStatement(ConsentStatement existingStmt, ConsentStatement newStmt) {
+		if (existingStmt != null && existingStmt.getStatement().equals(newStmt.getStatement())) {
+			return true;
+		}
+
+		return daoFactory.getConsentStatementDao().getByStatement(newStmt.getStatement()) == null;
+	}
+
 	private ConsentStatement getStatement(Long id, String code) {
 		ConsentStatement result = null;
 		Object key = null;

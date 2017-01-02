@@ -25,5 +25,12 @@
       where
         stmt.code = :code
     </query>
+
+    <query name="getByStatement">
+      from
+        com.krishagni.catissueplus.core.biospecimen.domain.ConsentStatement stmt
+      where
+        stmt.statement = :statement
+    </query>
   </class>
 </hibernate-mapping>

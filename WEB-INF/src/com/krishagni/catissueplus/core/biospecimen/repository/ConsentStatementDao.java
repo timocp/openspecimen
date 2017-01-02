@@ -11,4 +11,6 @@ public interface ConsentStatementDao extends Dao<ConsentStatement> {
 	Long getStatementsCount(ConsentStatementListCriteria crit);
 	
 	ConsentStatement getByCode(String code);
+
+	ConsentStatement getByStatement(String statement);
 }
