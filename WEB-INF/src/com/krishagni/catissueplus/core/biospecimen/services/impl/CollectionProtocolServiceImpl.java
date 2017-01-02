@@ -563,15 +563,13 @@ public class CollectionProtocolServiceImpl implements CollectionProtocolService,
 			switch (opDetail.getOp()) {
 				case ADD:
 					ensureUniqueConsentStatement(input, cp);
-					// TODO: should be able to find by ID / code / statement
-					stmt = getStatement(input.getStatementId(), input.getStatementCode());
+					stmt = getStatement(input.getStatementId(), input.getStatementCode(), input.getStatement());
 					resp = cp.addConsentTier(getConsentTierObj(input.getId(), stmt));
 					break;
 					
 				case UPDATE:
 					ensureUniqueConsentStatement(input, cp);
-					// TODO: should be able to find by ID / code / statement
-					stmt = getStatement(input.getStatementId(), input.getStatementCode());
+					stmt = getStatement(input.getStatementId(), input.getStatementCode(), input.getStatement());
 					resp = cp.updateConsentTier(getConsentTierObj(input.getId(), stmt));
 					break;
 					
@@ -1909,7 +1907,7 @@ public class CollectionProtocolServiceImpl implements CollectionProtocolService,
 		cfg.setMaxResults(maxResults);
 	}
 
-	private ConsentStatement getStatement(Long id, String code) {
+	private ConsentStatement getStatement(Long id, String code, String statement) {
 		ConsentStatement stmt = null;
 		Object key = null;
 
@@ -1919,6 +1917,9 @@ public class CollectionProtocolServiceImpl implements CollectionProtocolService,
 		} else if (StringUtils.isNotBlank(code)) {
 			key = code;
 			stmt = daoFactory.getConsentStatementDao().getByCode(code);
+		} else if (StringUtils.isNoneBlank(statement)) {
+			key = statement;
+			stmt = daoFactory.getConsentStatementDao().getByStatement(statement);
 		}
 
 		if (key == null) {
