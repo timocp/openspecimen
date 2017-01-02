@@ -1215,6 +1215,7 @@
     "create": "Create",
     "update": "Update",
     "delete": "Delete",
+    "import": "Import",
     "add_resource": "Add Resource",
     "lock": "Lock",
     "unlock": "Unlock",

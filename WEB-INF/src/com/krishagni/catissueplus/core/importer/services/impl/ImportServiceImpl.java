@@ -534,6 +534,7 @@ public class ImportServiceImpl implements ImportService {
 			ObjectReader objReader = null;
 			CsvWriter csvWriter = null;
 			try {
+				ImporterContextHolder.getInstance().newContext();
 				ObjectSchema schema = schemaFactory.getSchema(job.getName(), job.getParams());
 				String filePath = getJobDir(job.getId()) + File.separator + "input.csv";
 				csvWriter = getOutputCsvWriter(job);
@@ -570,6 +571,7 @@ public class ImportServiceImpl implements ImportService {
 				csvWriter.writeNext(errorLine);
 				csvWriter.writeNext(new String[] { ExceptionUtils.getFullStackTrace(e) });
 			} finally {
+				ImporterContextHolder.getInstance().clearContext();
 				runningJobs.remove(job.getId());
 
 				IOUtils.closeQuietly(objReader);

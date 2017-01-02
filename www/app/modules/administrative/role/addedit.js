@@ -118,16 +118,26 @@ angular.module('os.administrative.role.addedit', ['os.administrative.models'])
     }
 
     $scope.setOperations = function(operation, operations) {
-      if (operation.name != 'Create') {
-        return;
+      if (operation.name == 'Create') {
+        //
+        // Auto select/unselect read and update rights when create rights is selected/unselected.
+        //
+        angular.forEach(operations, function(op) {
+          if (op.name == 'Read' || op.name == 'Update') {
+            op.selected = operation.selected;
+            op.disabled = operation.selected;
+          }
+        });
+      } else if (operation.name == 'Bulk Import' && operation.selected) {
+        //
+        // Auto select read, create, and update rights when import rights is selected.
+        //
+        angular.forEach(operations, function(op) {
+          if (op.name == 'Read' || op.name == 'Create' || op.name == 'Update') {
+            op.selected = true;
+          }
+        });
       }
-
-      angular.forEach(operations, function(op) {
-        if (op.name == 'Read' || op.name == 'Update') {
-          op.selected = operation.selected;
-          op.disabled = operation.selected;
-        }
-      });
     }
 
     init();

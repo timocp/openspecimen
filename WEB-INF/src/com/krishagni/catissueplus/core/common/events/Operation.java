@@ -13,7 +13,9 @@ public enum Operation {
 	
 	LOCK("Lock"),
 	
-	UNLOCK("Unlock");
+	UNLOCK("Unlock"),
+
+	BULK_IMPORT("Bulk Import");
 	
 	private final String name; 
 	
