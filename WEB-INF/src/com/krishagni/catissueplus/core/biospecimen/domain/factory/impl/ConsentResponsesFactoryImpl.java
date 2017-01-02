@@ -129,7 +129,8 @@ public class ConsentResponsesFactoryImpl implements ConsentResponsesFactory {
 			response.setCpr(cpr);
 
 			for (ConsentTier consentTier : cpr.getCollectionProtocol().getConsentTier()) {
-				if (consentTier.getStatement().getStatement().equals(detail.getStatement())) {
+				if (consentTier.getStatement().getCode().equals(detail.getCode()) ||
+					consentTier.getStatement().getStatement().equals(detail.getStatement())) {
 					response.setConsentTier(consentTier);
 					break;
 				}

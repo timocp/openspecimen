@@ -152,9 +152,11 @@ public class ConsentDetail extends AttributeModifiedSupport implements Mergeable
 		
 		for (ConsentTier consentTier : cpr.getCollectionProtocol().getConsentTier()) {
 			ConsentTierResponseDetail response = new ConsentTierResponseDetail();
+			response.setCode(consentTier.getStatement().getCode());
 			response.setStatement(consentTier.getStatement().getStatement());
 			for (ConsentTierResponse resp : cpr.getConsentResponses()) {
-				if (consentTier.getStatement().getStatement().equals(resp.getConsentTier().getStatement().getStatement())) {
+				if (consentTier.getStatement().getCode().equals(resp.getConsentTier().getStatement().getCode()) ||
+					consentTier.getStatement().getStatement().equals(resp.getConsentTier().getStatement().getStatement())) {
 					response.setResponse(resp.getResponse());
 					break;
 				}
