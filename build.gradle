@@ -69,6 +69,8 @@ description = "openspecimen"
 
 repositories {
   maven { url "http://repo.maven.apache.org/maven2" }
+  maven { url "https://github.com/krishagni/mvn-repo/raw/master/snapshots" }
+  maven { url "https://github.com/krishagni/mvn-repo/raw/master/releases" }
 }
 
 configurations {
@@ -91,7 +93,7 @@ dependencies {
   compile   "javax.persistence:persistence-api:1.0.2"
   aspects   "org.springframework:spring-aspects:3.2.13.RELEASE"
 
-  compile fileTree(dir: 'lib', include: ['DynamicExtensions.jar', 'krishagni-commons-1.0.0.jar', 'krishagni-importer-1.0.0.jar'])
+  compile fileTree(dir: 'lib', include: ['DynamicExtensions.jar'])
   
   providedCompile group: 'javax.servlet', name: 'javax.servlet-api', version:'3.0.1'
   
@@ -161,7 +163,7 @@ dependencies {
   compile group: 'com.itextpdf', name: 'itextpdf', version:'5.5.6'
   compile group: 'dom4j', name: 'dom4j', version: '1.6.1'
 
-  //SAML dependencies lib
+  // SAML dependencies lib
   compile group: 'org.springframework.security.extensions', name: 'spring-security-saml2-core', version:'1.0.0.RELEASE'
   compile group: 'org.opensaml', name: 'opensaml', version: '2.6.1'
   compile group: 'org.opensaml', name: 'openws', version: '1.5.4'
@@ -176,6 +178,10 @@ dependencies {
   compile group: 'joda-time', name: 'joda-time', version: '2.1'
   compile group: 'org.apache.velocity', name: 'velocity', version:'1.7'
   compile group: 'ca.juliusdavies', name: 'not-yet-commons-ssl', version: '0.3.9'
+
+  // Krishagni libraries
+  compile group: 'com.krishagni', name: 'krishagni-commons', version:'4.0.0-SNAPSHOT'
+  compile group: 'com.krishagni', name: 'krishagni-bulk-importer', version:'4.0.0-SNAPSHOT'
 
   runtime group: 'antlr', name: 'antlr', version: '2.7.7'
   runtime group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.12'
