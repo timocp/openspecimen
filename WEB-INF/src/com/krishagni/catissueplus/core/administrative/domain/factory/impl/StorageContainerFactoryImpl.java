@@ -10,6 +10,7 @@ import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.BooleanUtils;
 
 import com.krishagni.catissueplus.core.administrative.domain.ContainerType;
 import com.krishagni.catissueplus.core.administrative.domain.Site;
@@ -73,6 +74,7 @@ public class StorageContainerFactoryImpl implements StorageContainerFactory {
 		setActivityStatus(detail, existing, container, ose);
 		setComments(detail, existing, container, ose);
 		setStoreSpecimenEnabled(detail, existing, container, ose);
+		setAutomated(detail, existing, container, ose);
 		setCellDisplayProp(detail, existing, container, ose);
 		setAllowedSpecimenClasses(detail, existing, container, ose);
 		setAllowedSpecimenTypes(detail, existing, container, ose);
@@ -583,6 +585,18 @@ public class StorageContainerFactoryImpl implements StorageContainerFactory {
 			setStoreSpecimenEnabled(detail, container, ose);
 		} else {
 			container.setStoreSpecimenEnabled(existing.isStoreSpecimenEnabled());
+		}
+	}
+
+	private void setAutomated(StorageContainerDetail detail, StorageContainer container, OpenSpecimenException ose) {
+		container.setAutomated(BooleanUtils.isTrue(detail.getAutomated()));
+	}
+
+	private void setAutomated(StorageContainerDetail detail, StorageContainer existing, StorageContainer container, OpenSpecimenException ose) {
+		if (detail.isAttrModified("automated") || existing == null) {
+			setAutomated(detail, container, ose);
+		} else {
+			container.setAutomated(existing.isAutomated());
 		}
 	}
 

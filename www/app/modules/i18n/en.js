@@ -1078,6 +1078,7 @@
     "one": "One",
     "two": "Two",
     "dimensionless": "Dimensionless?",
+    "automated": "Automated?",
     "dimension": "Dimension",
     "capacity": "Approximate Capacity",
     "specimens": "specimens",

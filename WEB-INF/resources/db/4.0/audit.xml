@@ -46,4 +46,11 @@
       <column name="activityStatus_MOD" type="${bit.type}"/>
     </createTable>
   </changeSet>
+  
+  <changeSet author="ckhilosiya" id="Audit automated column in storage container">
+    <addColumn tableName="OS_STORAGE_CONTAINERS_AUD">
+      <column name="AUTOMATED" type="${boolean.type}"></column>
+      <column name="automated_MOD" type="${bit.type}"/>
+    </addColumn>
+  </changeSet>
 </databaseChangeLog>

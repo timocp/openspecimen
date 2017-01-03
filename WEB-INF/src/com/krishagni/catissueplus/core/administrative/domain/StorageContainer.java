@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 
@@ -89,6 +90,10 @@ public class StorageContainer extends BaseEntity {
 	private String comments;
 
 	private Integer capacity;
+
+	private Boolean automated;
+
+	private List<ContainerStoreList> storeList = new ArrayList<>();
 	
 	private Set<StorageContainer> childContainers = new LinkedHashSet<>();
 	
@@ -293,6 +298,22 @@ public class StorageContainer extends BaseEntity {
 
 	public void setCapacity(Integer capacity) {
 		this.capacity = capacity;
+	}
+
+	public Boolean isAutomated() {
+		return BooleanUtils.isTrue(automated);
+	}
+
+	public void setAutomated(Boolean automated) {
+		this.automated = automated;
+	}
+
+	public List<ContainerStoreList> getStoreList() {
+		return storeList;
+	}
+
+	public void setStoreList(List<ContainerStoreList> storeList) {
+		this.storeList = storeList;
 	}
 
 	public StorageContainerPosition getLastAssignedPos() {
@@ -892,6 +913,27 @@ public class StorageContainer extends BaseEntity {
 		}
 
 		freezer.setCapacity(capacity);
+	}
+
+	public void addToPickList(Set<Specimen> specimens) {
+		addToList(specimens, ContainerStoreList.Operation.PICK);
+	}
+
+	public void addToPutList(Set<Specimen> specimens) {
+		addToList(specimens, ContainerStoreList.Operation.PUT);
+	}
+
+	private void addToList(Set<Specimen> specimens, ContainerStoreList.Operation op) {
+		if (!isAutomated()) {
+			return;
+		}
+
+		ContainerStoreList store = new ContainerStoreList();
+		store.setContainer(this);
+		store.setSpecimens(specimens);
+		store.setOp(op);
+
+		storeList.add(store);
 	}
 
 	private void deleteWithoutCheck() {

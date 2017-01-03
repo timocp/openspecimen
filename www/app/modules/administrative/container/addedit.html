@@ -119,6 +119,23 @@
 
     <div class="form-group" ng-if="!container.id && ctx.mode == 'single'">
       <label class="col-xs-3 control-label">
+        <span translate="container.automated">Automated?</span>
+      </label>
+      <div class="col-xs-9">
+        <label class="radio-inline">
+          <input type="radio" name="automated" ng-model="container.automated" ng-value="true"
+            ng-click="setDimensionless()">
+          <span translate="common.yes">Yes</span>
+        </label>
+        <label class="radio-inline">
+          <input type="radio" name="automated" ng-model="container.automated" ng-value="false">
+          <span translate="common.no">No</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="form-group" ng-if="!container.id && ctx.mode == 'single' && !container.automated">
+      <label class="col-xs-3 control-label">
         <span translate="container.dimensionless">Dimensionless?</span>
       </label>
       <div class="col-xs-9">
@@ -134,7 +151,7 @@
       </div>
     </div>
 
-    <div class="form-group" ng-if="!container.$$dimensionless">
+    <div class="form-group" ng-if="!container.$$dimensionless && !container.automated">
       <label class="col-xs-3 control-label">
         <span translate="container.dimension">Dimension</span>
       </label>
@@ -166,7 +183,7 @@
       </div>
     </div>
 
-    <div class="form-group" ng-if="!container.$$dimensionless">
+    <div class="form-group" ng-if="!container.$$dimensionless && !container.automated">
       <label class="col-xs-3 control-label">
         <span translate="container.position_labeling">Position Labeling</span>
       </label>

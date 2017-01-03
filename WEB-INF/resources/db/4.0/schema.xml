@@ -105,4 +105,79 @@
       tableName="OS_KIT_SPECIMENS"
       columnNames="KIT_ID, SPECIMEN_ID"/>
   </changeSet>
+
+  <changeSet author="ckhilosiya" id="Add automated column in container">
+    <addColumn tableName="OS_STORAGE_CONTAINERS">
+      <column name="AUTOMATED" type="${boolean.type}" defaultValueBoolean="false">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+  </changeSet>
+  
+  <changeSet author="ckhilosiya" id="Container store list for automated freezer">
+    <createTable tableName="OS_CONT_STORE_LIST">
+      <column name="IDENTIFIER" type="${int.type}" autoIncrement="${autoIncrement}">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+
+      <column name="CONTAINER_ID" type="${int.type}">
+        <constraints nullable="false"/>
+      </column>
+
+      <column name="OPERATION" type="${text.type}(16)">
+        <constraints nullable="false"/>
+      </column>
+
+      <column name="STATUS" type="${text.type}(16)">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+
+  <changeSet author="ckhilosiya" id="Container store list sequence" dbms="oracle">
+    <createSequence
+      sequenceName="OS_CONT_STORE_LIST_SEQ"
+      startValue="1"
+      incrementBy="1"
+      ordered="true" />
+  </changeSet>
+
+  <changeSet author="ckhilosiya" id="FK on container belonging to store list">
+    <addForeignKeyConstraint
+      constraintName="FK_OS_CONT_STORE_LIST_CONT"
+      baseTableName="OS_CONT_STORE_LIST"
+      baseColumnNames="CONTAINER_ID"
+      referencedTableName="OS_STORAGE_CONTAINERS"
+      referencedColumnNames="IDENTIFIER" />
+  </changeSet>
+
+  <changeSet author="ckhilosiya" id="Specimens per container store list">
+    <createTable tableName="OS_CONT_STORE_LIST_SPECIMENS">
+      <column name="CONT_STORE_LIST_ID" type="${int.type}">
+        <constraints nullable="false"/>
+      </column>
+
+      <column name="SPECIMEN_ID" type="${int.type}">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+
+  <changeSet author="ckhilosiya" id="FK on store list">
+    <addForeignKeyConstraint
+      constraintName="FK_OS_STOR_LST_SPMN_STOR_LST"
+      baseTableName="OS_CONT_STORE_LIST_SPECIMENS"
+      baseColumnNames="CONT_STORE_LIST_ID"
+      referencedTableName="OS_CONT_STORE_LIST"
+      referencedColumnNames="IDENTIFIER" />
+  </changeSet>
+
+  <changeSet author="ckhilosiya" id="FK on specimen for container store list">
+    <addForeignKeyConstraint
+      constraintName="FK_OS_CONT_STOR_LIST_SPMN"
+      baseTableName="OS_CONT_STORE_LIST_SPECIMENS"
+      baseColumnNames="SPECIMEN_ID"
+      referencedTableName="CATISSUE_SPECIMEN"
+      referencedColumnNames="IDENTIFIER" />
+  </changeSet>
 </databaseChangeLog>

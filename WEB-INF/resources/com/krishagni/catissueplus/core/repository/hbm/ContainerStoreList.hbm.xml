@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+  "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+  "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping auto-import="false">
+  <class name="com.krishagni.catissueplus.core.administrative.domain.ContainerStoreList" table="OS_CONT_STORE_LIST">
+
+    <id name="id" column="IDENTIFIER">
+      <generator class="native">
+        <param name="sequence">OS_CONT_STORE_LIST_SEQ</param>
+      </generator>
+    </id>
+
+    <many-to-one name="container" column="CONTAINER_ID"/>
+
+    <property name="op" column="OPERATION"/>
+
+    <set name="specimens" table="OS_CONT_STORE_LIST_SPECIMENS">
+      <key column="CONT_STORE_LIST_ID"/>
+      <many-to-many class="com.krishagni.catissueplus.core.biospecimen.domain.Specimen" column="SPECIMEN_ID"/>
+    </set>
+
+    <property name="status" column="STATUS"/>
+  </class>
+</hibernate-mapping>

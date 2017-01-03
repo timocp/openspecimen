@@ -9,6 +9,7 @@ angular.module('os.administrative.container.addedit', ['os.administrative.models
     function init() {
       container.storageLocation = container.storageLocation || {};
       container.$$dimensionless = !!container.id && container.noOfRows == null && container.noOfColumns == null;
+      container.automated = !container.id ? false : container.automated;
 
       $scope.container = container;
 
