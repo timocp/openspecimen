@@ -19,7 +19,9 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
@@ -1522,13 +1524,20 @@ public class CollectionProtocolServiceImpl implements CollectionProtocolService,
 	}
 
 	private void ensureUniqueConsentStatement(ConsentTierDetail consentTierDetail, CollectionProtocol cp) {
-		for (ConsentTier consentTier : cp.getConsentTier()) {
-			if ((consentTier.getStatement().getId().equals(consentTierDetail.getStatementId()) ||
-				 consentTier.getStatement().getCode().equals(consentTierDetail.getStatementCode()) ||
-				 consentTier.getStatement().getStatement().equals(consentTierDetail.getStatement())) &&
-				!consentTier.getId().equals(consentTierDetail.getId())) {
-				throw OpenSpecimenException.userError(CpErrorCode.DUP_CONSENT, consentTier.getStatement().getCode(), cp.getShortTitle());
-			}
+		Predicate<ConsentTier> findFn = null;
+		if (consentTierDetail.getStatementId() != null) {
+			findFn = (t) -> t.getStatement().getId().equals(consentTierDetail.getStatementId());
+		} else if (StringUtils.isNotBlank(consentTierDetail.getStatementCode())) {
+			findFn = (t) -> t.getStatement().getCode().equals(consentTierDetail.getStatementCode());
+		} else if (StringUtils.isNotBlank(consentTierDetail.getStatement())) {
+			findFn = (t) -> t.getStatement().getStatement().equals(consentTierDetail.getStatement());
+		} else {
+			throw OpenSpecimenException.userError(ConsentStatementErrorCode.CODE_REQUIRED);
+		}
+
+		ConsentTier tier = findFn != null ? cp.getConsentTier().stream().filter(findFn).findFirst().orElse(null) : null;
+		if (tier != null && tier.getId().equals(consentTierDetail.getId())) {
+			throw OpenSpecimenException.userError(CpErrorCode.DUP_CONSENT, tier.getStatement().getCode(), cp.getShortTitle());
 		}
 	}
 

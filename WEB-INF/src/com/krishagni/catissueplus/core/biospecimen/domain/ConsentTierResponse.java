@@ -71,6 +71,10 @@ public class ConsentTierResponse {
 		return getConsentTier().getStatement().getStatement();
 	}
 
+	public String getStatementCode() {
+		return getConsentTier().getStatement().getCode();
+	}
+
 	public ConsentTierResponse copy() {
 		ConsentTierResponse copy = new ConsentTierResponse();
 		BeanUtils.copyProperties(this, copy);

@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.annotate.JsonIgnore;
@@ -149,14 +150,13 @@ public class ConsentDetail extends AttributeModifiedSupport implements Mergeable
 		if (cpr.getConsentWitness() != null) {
 			consent.setWitness(UserSummary.from(cpr.getConsentWitness()));
 		}
-		
+
 		for (ConsentTier consentTier : cpr.getCollectionProtocol().getConsentTier()) {
 			ConsentTierResponseDetail response = new ConsentTierResponseDetail();
 			response.setCode(consentTier.getStatement().getCode());
 			response.setStatement(consentTier.getStatement().getStatement());
 			for (ConsentTierResponse resp : cpr.getConsentResponses()) {
-				if (consentTier.getStatement().getCode().equals(resp.getConsentTier().getStatement().getCode()) ||
-					consentTier.getStatement().getStatement().equals(resp.getConsentTier().getStatement().getStatement())) {
+				if (consentTier.getStatement().getCode().equals(resp.getStatementCode())) {
 					response.setResponse(resp.getResponse());
 					break;
 				}
@@ -164,6 +164,7 @@ public class ConsentDetail extends AttributeModifiedSupport implements Mergeable
 			
 			consent.getConsentTierResponses().add(response);
 		}
+
 		return consent;
 	}
 

@@ -11,7 +11,7 @@ public enum ConsentStatementErrorCode implements ErrorCode {
 	
 	DUP_CODE,
 
-	DUP_STATEMENT;
+	DUP;
 	
 	@Override
 	public String code() {

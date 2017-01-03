@@ -84,7 +84,7 @@ public class ConsentStatementServiceImpl implements ConsentStatementService {
 			ConsentStatement stmt = consentStatementFactory.createStatement(req.getPayload());
 			
 			OpenSpecimenException ose = new OpenSpecimenException(ErrorType.USER_ERROR);
-			ensureUniqueConsentCode(null, stmt, ose);
+			ensureUniqueStatement(null, stmt, ose);
 			ose.checkAndThrow();
 
 			daoFactory.getConsentStatementDao().saveOrUpdate(stmt);
@@ -109,7 +109,7 @@ public class ConsentStatementServiceImpl implements ConsentStatementService {
 			ConsentStatement consent = consentStatementFactory.createStatement(input);
 			
 			OpenSpecimenException ose = new OpenSpecimenException(ErrorType.USER_ERROR);
-			ensureUniqueConsentCode(existing, consent, ose);
+			ensureUniqueStatement(existing, consent, ose);
 			ose.checkAndThrow();
 			
 			existing.update(consent);
@@ -122,13 +122,13 @@ public class ConsentStatementServiceImpl implements ConsentStatementService {
 		}
 	}
 	
-	private void ensureUniqueConsentCode(ConsentStatement existingStmt, ConsentStatement newStmt, OpenSpecimenException ose) {
+	private void ensureUniqueStatement(ConsentStatement existingStmt, ConsentStatement newStmt, OpenSpecimenException ose) {
 		if (!isUniqueCode(existingStmt, newStmt)) {
 			ose.addError(ConsentStatementErrorCode.DUP_CODE, newStmt.getCode());
 		}
 
 		if (!isUniqueStatement(existingStmt, newStmt)) {
-			ose.addError(ConsentStatementErrorCode.DUP_STATEMENT, newStmt.getStatement());
+			ose.addError(ConsentStatementErrorCode.DUP, newStmt.getStatement());
 		}
 	}
 	
