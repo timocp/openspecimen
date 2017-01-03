@@ -1536,7 +1536,7 @@ public class CollectionProtocolServiceImpl implements CollectionProtocolService,
 		}
 
 		ConsentTier tier = findFn != null ? cp.getConsentTier().stream().filter(findFn).findFirst().orElse(null) : null;
-		if (tier != null && tier.getId().equals(consentTierDetail.getId())) {
+		if (tier != null && !tier.getId().equals(consentTierDetail.getId())) {
 			throw OpenSpecimenException.userError(CpErrorCode.DUP_CONSENT, tier.getStatement().getCode(), cp.getShortTitle());
 		}
 	}
