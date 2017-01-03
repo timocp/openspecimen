@@ -4,9 +4,7 @@
     "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping auto-import="false">
-  <class
-    name="com.krishagni.catissueplus.core.importer.domain.ImportJob"
-    table="OS_BULK_IMPORT_JOBS">
+  <class name="com.krishagni.importer.domain.ImportJob" table="OS_BULK_IMPORT_JOBS">
 	
     <id name="id" column="IDENTIFIER">
       <generator class="native">
@@ -18,7 +16,7 @@
 
     <property name="type" column="TYPE" not-null="true">
       <type name="org.hibernate.type.EnumType">
-        <param name="enumClass">com.krishagni.catissueplus.core.importer.domain.ImportJob$Type</param>
+        <param name="enumClass">com.krishagni.importer.domain.ImportJob$Type</param>
         <param name="type">12</param>
       </type>
     </property>
@@ -29,7 +27,7 @@
  
     <property name="status" column="STATUS" not-null="true">
       <type name="org.hibernate.type.EnumType">
-        <param name="enumClass">com.krishagni.catissueplus.core.importer.domain.ImportJob$Status</param>
+        <param name="enumClass">com.krishagni.importer.domain.ImportJob$Status</param>
         <param name="type">12</param>
       </type>
     </property>
@@ -38,7 +36,9 @@
 
     <property name="failedRecords" column="FAILED_RECORDS"/>
 
-    <many-to-one name="createdBy" column="CREATED_BY"/>
+    <many-to-one name="createdBy"
+      class="com.krishagni.catissueplus.core.administrative.domain.User"
+      column="CREATED_BY"/>
 
     <property name="creationTime" column="CREATION_TIME"/>
 

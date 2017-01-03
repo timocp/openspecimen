@@ -13,9 +13,10 @@ import com.krishagni.catissueplus.core.common.errors.OpenSpecimenException;
 import com.krishagni.catissueplus.core.common.events.DependentEntityDetail;
 import com.krishagni.catissueplus.core.common.util.Status;
 import com.krishagni.catissueplus.core.common.util.Utility;
+import com.krishagni.commons.domain.IInstitute;
 
 @Audited
-public class Institute extends BaseEntity {
+public class Institute extends BaseEntity implements IInstitute {
 
 	private static final String ENTITY_NAME ="institute";
 	

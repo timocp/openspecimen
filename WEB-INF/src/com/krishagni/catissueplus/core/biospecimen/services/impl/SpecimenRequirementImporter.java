@@ -13,10 +13,10 @@ import com.krishagni.catissueplus.core.biospecimen.events.SpecimenRequirementDet
 import com.krishagni.catissueplus.core.biospecimen.services.CollectionProtocolService;
 import com.krishagni.catissueplus.core.common.events.RequestEvent;
 import com.krishagni.catissueplus.core.common.events.ResponseEvent;
-import com.krishagni.catissueplus.core.importer.events.ImportObjectDetail;
-import com.krishagni.catissueplus.core.importer.services.ObjectImporter;
+import com.krishagni.catissueplus.core.importer.services.AbstractObjectImporter;
+import com.krishagni.importer.events.ImportObjectDetail;
 
-public class SpecimenRequirementImporter implements ObjectImporter<SpecimenRequirementDetail, SpecimenRequirementDetail> {
+public class SpecimenRequirementImporter extends AbstractObjectImporter<SpecimenRequirementDetail, SpecimenRequirementDetail> {
 	private CollectionProtocolService cpSvc;
 
 	public void setCpSvc(CollectionProtocolService cpSvc) {

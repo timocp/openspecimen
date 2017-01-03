@@ -4,10 +4,10 @@ import com.krishagni.catissueplus.core.biospecimen.events.CollectionProtocolEven
 import com.krishagni.catissueplus.core.biospecimen.services.CollectionProtocolService;
 import com.krishagni.catissueplus.core.common.events.RequestEvent;
 import com.krishagni.catissueplus.core.common.events.ResponseEvent;
-import com.krishagni.catissueplus.core.importer.events.ImportObjectDetail;
-import com.krishagni.catissueplus.core.importer.services.ObjectImporter;
+import com.krishagni.catissueplus.core.importer.services.AbstractObjectImporter;
+import com.krishagni.importer.events.ImportObjectDetail;
 
-public class CpeImporter implements ObjectImporter<CollectionProtocolEventDetail, CollectionProtocolEventDetail> {
+public class CpeImporter extends AbstractObjectImporter<CollectionProtocolEventDetail, CollectionProtocolEventDetail> {
 	private CollectionProtocolService cpSvc;
 
 	public void setCpSvc(CollectionProtocolService cpSvc) {

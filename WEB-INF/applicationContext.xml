@@ -615,6 +615,11 @@
     <property name="messageSource" ref="messageSource"/>
   </bean>
 
+  <bean id="commonsTmplSvc" class="com.krishagni.commons.service.impl.TemplateServiceImpl">
+    <property name="velocityEngine" ref="velocityEngine"/>
+    <property name="messageSource" ref="messageSource"/>
+  </bean>
+
   <bean id="emailService" class="com.krishagni.catissueplus.core.common.service.impl.EmailServiceImpl">
     <property name="taskExecutor" ref="taskExecutor"/>
     <property name="templateService" ref="templateService"/>
@@ -721,12 +726,8 @@
   </bean>
 
   <!-- Move these to importer-beans.xml -->
-  <bean id="importJobDao" class="com.krishagni.catissueplus.core.importer.repository.impl.ImportJobDaoImpl">
-    <property name="sessionFactory" ref="sessionFactory"/>
-  </bean>
-
-  <bean id="objectSchemaFactory" class="com.krishagni.catissueplus.core.importer.services.impl.ObjectSchemaFactoryImpl">
-    <property name="templateService" ref="templateService"/>
+  <bean id="objectSchemaFactory" class="com.krishagni.importer.services.impl.ObjectSchemaFactoryImpl">
+    <property name="templateService" ref="commonsTmplSvc"/>
     <property name="schemaResources">
       <list>
         <value>com/krishagni/catissueplus/core/administrative/schema/institute.xml</value>
@@ -803,7 +804,7 @@
     </property>
   </bean>
 
-  <bean id="objectImporterFactory" class="com.krishagni.catissueplus.core.importer.services.impl.ObjectImporterFactoryImpl">
+  <bean id="objectImporterFactory" class="com.krishagni.importer.services.impl.ObjectImporterFactoryImpl">
     <property name="importersMap">
       <map>
         <entry key="institute">
@@ -959,14 +960,21 @@
     <property name="templateService" ref="templateService"/>
   </bean>
 
-  <bean id="importObjectsSvc" class="com.krishagni.catissueplus.core.importer.services.impl.ImportServiceImpl">
-    <property name="cfgSvc" ref="cfgSvc"/>
-    <property name="importJobDao" ref="importJobDao"/>
-    <property name="taskExecutor" ref="taskExecutor"/>
-    <property name="schemaFactory" ref="objectSchemaFactory"/>
-    <property name="importerFactory" ref="objectImporterFactory"/>
-    <property name="transactionManager" ref="transactionManager"/>
-    <property name="sessionFactory" ref="sessionFactory"/>
+  <bean id="importObjectsSvc" class="com.krishagni.catissueplus.core.importer.services.impl.ImportServiceWrapperImpl">
+    <property name="importSvc">
+      <bean class="com.krishagni.importer.services.impl.ImportServiceImpl">
+        <property name="importJobDao">
+          <bean class="com.krishagni.importer.repository.impl.ImportJobDaoImpl">
+            <property name="sessionFactory" ref="sessionFactory"/>
+          </bean>
+        </property>
+        <property name="taskExecutor" ref="taskExecutor"/>
+        <property name="schemaFactory" ref="objectSchemaFactory"/>
+        <property name="importerFactory" ref="objectImporterFactory"/>
+        <property name="transactionManager" ref="transactionManager"/>
+        <property name="sessionFactory" ref="sessionFactory"/>
+      </bean>
+    </property>
   </bean>
   
   <bean id="importDefaultQueries" class="com.krishagni.catissueplus.core.init.ImportDefaultQueries">

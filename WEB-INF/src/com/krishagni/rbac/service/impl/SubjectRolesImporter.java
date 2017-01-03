@@ -2,12 +2,12 @@ package com.krishagni.rbac.service.impl;
 
 import com.krishagni.catissueplus.core.common.events.RequestEvent;
 import com.krishagni.catissueplus.core.common.events.ResponseEvent;
-import com.krishagni.catissueplus.core.importer.events.ImportObjectDetail;
-import com.krishagni.catissueplus.core.importer.services.ObjectImporter;
+import com.krishagni.catissueplus.core.importer.services.AbstractObjectImporter;
+import com.krishagni.importer.events.ImportObjectDetail;
 import com.krishagni.rbac.events.SubjectRolesList;
 import com.krishagni.rbac.service.RbacService;
 
-public class SubjectRolesImporter implements ObjectImporter<SubjectRolesList, SubjectRolesList> {
+public class SubjectRolesImporter extends AbstractObjectImporter<SubjectRolesList, SubjectRolesList> {
 	
 	private RbacService rbacSvc;
 	

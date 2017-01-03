@@ -16,8 +16,8 @@ import com.krishagni.catissueplus.core.common.errors.OpenSpecimenException;
 import com.krishagni.catissueplus.core.common.service.TemplateService;
 import com.krishagni.catissueplus.core.de.domain.DeObject;
 import com.krishagni.catissueplus.core.de.domain.FormErrorCode;
-import com.krishagni.catissueplus.core.importer.domain.ObjectSchema;
-import com.krishagni.catissueplus.core.importer.domain.ObjectSchema.Record;
+import com.krishagni.importer.domain.ObjectSchema;
+import com.krishagni.importer.domain.ObjectSchema.Record;
 
 import edu.common.dynamicextensions.domain.nui.Container;
 

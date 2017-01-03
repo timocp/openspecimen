@@ -4,10 +4,10 @@ import com.krishagni.catissueplus.core.biospecimen.events.CollectionProtocolRegi
 import com.krishagni.catissueplus.core.biospecimen.services.CollectionProtocolRegistrationService;
 import com.krishagni.catissueplus.core.common.events.RequestEvent;
 import com.krishagni.catissueplus.core.common.events.ResponseEvent;
-import com.krishagni.catissueplus.core.importer.events.ImportObjectDetail;
-import com.krishagni.catissueplus.core.importer.services.ObjectImporter;
+import com.krishagni.catissueplus.core.importer.services.AbstractObjectImporter;
+import com.krishagni.importer.events.ImportObjectDetail;
 
-public class CprImporter implements ObjectImporter<CollectionProtocolRegistrationDetail, CollectionProtocolRegistrationDetail> {
+public class CprImporter extends AbstractObjectImporter<CollectionProtocolRegistrationDetail, CollectionProtocolRegistrationDetail> {
 	
 	private CollectionProtocolRegistrationService cprSvc;
 	

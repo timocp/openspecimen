@@ -29,8 +29,8 @@ import com.krishagni.catissueplus.core.de.events.FormDataDetail;
 import com.krishagni.catissueplus.core.de.events.FormRecordCriteria;
 import com.krishagni.catissueplus.core.de.repository.FormDao;
 import com.krishagni.catissueplus.core.de.services.FormService;
-import com.krishagni.catissueplus.core.importer.events.ImportObjectDetail;
-import com.krishagni.catissueplus.core.importer.services.ObjectImporter;
+import com.krishagni.catissueplus.core.importer.services.AbstractObjectImporter;
+import com.krishagni.importer.events.ImportObjectDetail;
 
 import edu.common.dynamicextensions.domain.nui.Container;
 import edu.common.dynamicextensions.domain.nui.Control;
@@ -39,7 +39,7 @@ import edu.common.dynamicextensions.domain.nui.SubFormControl;
 import edu.common.dynamicextensions.napi.FormData;
 import edu.common.dynamicextensions.nutility.FileUploadMgr;
 
-public class ExtensionsImporter implements ObjectImporter<Map<String, Object>, Map<String, Object>> {
+public class ExtensionsImporter extends AbstractObjectImporter<Map<String, Object>, Map<String, Object>> {
 	
 	private FormService formSvc;
 	

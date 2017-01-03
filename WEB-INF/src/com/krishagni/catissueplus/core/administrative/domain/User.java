@@ -29,10 +29,12 @@ import com.krishagni.catissueplus.core.common.events.DependentEntityDetail;
 import com.krishagni.catissueplus.core.common.util.ConfigUtil;
 import com.krishagni.catissueplus.core.common.util.Status;
 import com.krishagni.catissueplus.core.common.util.Utility;
+import com.krishagni.commons.domain.IInstitute;
+import com.krishagni.commons.domain.IUser;
 
 @Configurable
 @Audited
-public class User extends BaseEntity implements UserDetails {
+public class User extends BaseEntity implements UserDetails, IUser {
 	public enum Type {
 		SUPER,
 		INSTITUTE,
@@ -167,8 +169,8 @@ public class User extends BaseEntity implements UserDetails {
 		return institute;
 	}
 	
-	public void setInstitute(Institute institute) {
-		this.institute = institute;
+	public void setInstitute(IInstitute institute) {
+		this.institute = (Institute)institute;
 	}
 
 	@NotAudited

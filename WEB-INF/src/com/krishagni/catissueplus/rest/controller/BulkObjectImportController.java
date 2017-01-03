@@ -27,21 +27,21 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.krishagni.catissueplus.core.common.events.RequestEvent;
 import com.krishagni.catissueplus.core.common.events.ResponseEvent;
-import com.krishagni.catissueplus.core.importer.domain.ObjectSchema;
-import com.krishagni.catissueplus.core.importer.events.FileRecordsDetail;
-import com.krishagni.catissueplus.core.importer.events.ImportDetail;
-import com.krishagni.catissueplus.core.importer.events.ImportJobDetail;
-import com.krishagni.catissueplus.core.importer.events.ObjectSchemaCriteria;
-import com.krishagni.catissueplus.core.importer.repository.ListImportJobsCriteria;
-import com.krishagni.catissueplus.core.importer.services.ImportService;
-import com.krishagni.catissueplus.core.importer.services.ObjectReader;
+import com.krishagni.catissueplus.core.importer.services.ImportServiceWrapper;
+import com.krishagni.importer.domain.ObjectSchema;
+import com.krishagni.importer.events.FileRecordsDetail;
+import com.krishagni.importer.events.ImportDetail;
+import com.krishagni.importer.events.ImportJobDetail;
+import com.krishagni.importer.events.ObjectSchemaCriteria;
+import com.krishagni.importer.repository.ListImportJobsCriteria;
+import com.krishagni.importer.services.ObjectReader;
 
 @Controller
 @RequestMapping("/import-jobs")
 public class BulkObjectImportController {
 	
 	@Autowired
-	private ImportService importSvc;
+	private ImportServiceWrapper importSvc;
 
 	@RequestMapping(method = RequestMethod.GET, value="/input-file-template")
 	@ResponseStatus(HttpStatus.OK)

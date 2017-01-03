@@ -4,10 +4,10 @@ import com.krishagni.catissueplus.core.administrative.events.SiteDetail;
 import com.krishagni.catissueplus.core.administrative.services.SiteService;
 import com.krishagni.catissueplus.core.common.events.RequestEvent;
 import com.krishagni.catissueplus.core.common.events.ResponseEvent;
-import com.krishagni.catissueplus.core.importer.events.ImportObjectDetail;
-import com.krishagni.catissueplus.core.importer.services.ObjectImporter;
+import com.krishagni.catissueplus.core.importer.services.AbstractObjectImporter;
+import com.krishagni.importer.events.ImportObjectDetail;
 
-public class SiteImporter implements ObjectImporter<SiteDetail, SiteDetail> {
+public class SiteImporter extends AbstractObjectImporter<SiteDetail, SiteDetail> {
 	
 	private SiteService siteSvc;
 	

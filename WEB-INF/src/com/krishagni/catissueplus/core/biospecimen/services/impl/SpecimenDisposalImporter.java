@@ -7,15 +7,14 @@ import com.krishagni.catissueplus.core.biospecimen.domain.factory.SpecimenErrorC
 import com.krishagni.catissueplus.core.biospecimen.events.SpecimenDetail;
 import com.krishagni.catissueplus.core.biospecimen.events.SpecimenStatusDetail;
 import com.krishagni.catissueplus.core.biospecimen.services.SpecimenService;
-import com.krishagni.catissueplus.core.common.errors.ActivityStatusErrorCode;
 import com.krishagni.catissueplus.core.common.errors.OpenSpecimenException;
 import com.krishagni.catissueplus.core.common.events.RequestEvent;
 import com.krishagni.catissueplus.core.common.events.ResponseEvent;
 import com.krishagni.catissueplus.core.common.util.Status;
-import com.krishagni.catissueplus.core.importer.events.ImportObjectDetail;
-import com.krishagni.catissueplus.core.importer.services.ObjectImporter;
+import com.krishagni.catissueplus.core.importer.services.AbstractObjectImporter;
+import com.krishagni.importer.events.ImportObjectDetail;
 
-public class SpecimenDisposalImporter implements ObjectImporter<SpecimenStatusDetail, SpecimenDetail> {
+public class SpecimenDisposalImporter extends AbstractObjectImporter<SpecimenStatusDetail, SpecimenDetail> {
 
 	private SpecimenService specimenSvc;
 

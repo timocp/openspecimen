@@ -2,13 +2,12 @@ package com.krishagni.catissueplus.core.administrative.services.impl;
 
 import com.krishagni.catissueplus.core.administrative.events.DistributionOrderDetail;
 import com.krishagni.catissueplus.core.administrative.services.DistributionOrderService;
-import com.krishagni.catissueplus.core.common.PlusTransactional;
 import com.krishagni.catissueplus.core.common.events.RequestEvent;
 import com.krishagni.catissueplus.core.common.events.ResponseEvent;
-import com.krishagni.catissueplus.core.importer.events.ImportObjectDetail;
-import com.krishagni.catissueplus.core.importer.services.ObjectImporter;
+import com.krishagni.catissueplus.core.importer.services.AbstractObjectImporter;
+import com.krishagni.importer.events.ImportObjectDetail;
 
-public class DistributionOrderImporter implements ObjectImporter<DistributionOrderDetail, DistributionOrderDetail> {
+public class DistributionOrderImporter extends AbstractObjectImporter<DistributionOrderDetail, DistributionOrderDetail> {
 	private DistributionOrderService orderSvc;
 
 	public void setOrderSvc(DistributionOrderService orderSvc) {
@@ -16,7 +15,6 @@ public class DistributionOrderImporter implements ObjectImporter<DistributionOrd
 	}
 
 	@Override
-	@PlusTransactional
 	public ResponseEvent<DistributionOrderDetail> importObject(RequestEvent<ImportObjectDetail<DistributionOrderDetail>> req) {
 		try {
 			ImportObjectDetail<DistributionOrderDetail> detail = req.getPayload();

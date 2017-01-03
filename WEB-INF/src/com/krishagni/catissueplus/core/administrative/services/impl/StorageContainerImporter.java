@@ -4,10 +4,10 @@ import com.krishagni.catissueplus.core.administrative.events.StorageContainerDet
 import com.krishagni.catissueplus.core.administrative.services.StorageContainerService;
 import com.krishagni.catissueplus.core.common.events.RequestEvent;
 import com.krishagni.catissueplus.core.common.events.ResponseEvent;
-import com.krishagni.catissueplus.core.importer.events.ImportObjectDetail;
-import com.krishagni.catissueplus.core.importer.services.ObjectImporter;
+import com.krishagni.catissueplus.core.importer.services.AbstractObjectImporter;
+import com.krishagni.importer.events.ImportObjectDetail;
 
-public class StorageContainerImporter implements ObjectImporter<StorageContainerDetail, StorageContainerDetail> {
+public class StorageContainerImporter extends AbstractObjectImporter<StorageContainerDetail, StorageContainerDetail> {
 	
 	private StorageContainerService containerSvc;
 	

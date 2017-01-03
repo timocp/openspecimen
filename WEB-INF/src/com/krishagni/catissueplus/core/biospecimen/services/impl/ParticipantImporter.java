@@ -11,10 +11,10 @@ import com.krishagni.catissueplus.core.common.access.AccessCtrlMgr;
 import com.krishagni.catissueplus.core.common.errors.OpenSpecimenException;
 import com.krishagni.catissueplus.core.common.events.RequestEvent;
 import com.krishagni.catissueplus.core.common.events.ResponseEvent;
-import com.krishagni.catissueplus.core.importer.events.ImportObjectDetail;
-import com.krishagni.catissueplus.core.importer.services.ObjectImporter;
+import com.krishagni.catissueplus.core.importer.services.AbstractObjectImporter;
+import com.krishagni.importer.events.ImportObjectDetail;
 
-public class ParticipantImporter implements ObjectImporter<ParticipantDetail, ParticipantDetail> {
+public class ParticipantImporter extends AbstractObjectImporter<ParticipantDetail, ParticipantDetail> {
 	private DaoFactory daoFactory;
 	
 	private ParticipantService participantSvc;
@@ -32,7 +32,7 @@ public class ParticipantImporter implements ObjectImporter<ParticipantDetail, Pa
 		try {
 			AccessCtrlMgr.getInstance().ensureUserIsAdmin();
 
-			ImportObjectDetail<ParticipantDetail> detail = req.getPayload();		
+			ImportObjectDetail<ParticipantDetail> detail = req.getPayload();
 			RequestEvent<ParticipantDetail> partReq = new RequestEvent<ParticipantDetail>(detail.getObject());
 			
 			if (!detail.isCreate()) {

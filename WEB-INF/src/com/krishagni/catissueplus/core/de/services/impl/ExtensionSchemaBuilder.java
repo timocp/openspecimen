@@ -11,16 +11,15 @@ import com.krishagni.catissueplus.core.common.PlusTransactional;
 import com.krishagni.catissueplus.core.common.errors.OpenSpecimenException;
 import com.krishagni.catissueplus.core.de.domain.FormErrorCode;
 import com.krishagni.catissueplus.core.de.repository.FormDao;
-import com.krishagni.catissueplus.core.importer.domain.ObjectSchema;
-import com.krishagni.catissueplus.core.importer.domain.ObjectSchema.Field;
-import com.krishagni.catissueplus.core.importer.domain.ObjectSchema.Record;
-import com.krishagni.catissueplus.core.importer.services.ObjectSchemaBuilder;
+import com.krishagni.importer.domain.ObjectSchema;
+import com.krishagni.importer.domain.ObjectSchema.Field;
+import com.krishagni.importer.domain.ObjectSchema.Record;
+import com.krishagni.importer.services.ObjectSchemaBuilder;
 
 import edu.common.dynamicextensions.domain.nui.Container;
 import edu.common.dynamicextensions.domain.nui.Control;
 import edu.common.dynamicextensions.domain.nui.DataType;
 import edu.common.dynamicextensions.domain.nui.DatePicker;
-import edu.common.dynamicextensions.domain.nui.FileUploadControl;
 import edu.common.dynamicextensions.domain.nui.MultiSelectControl;
 import edu.common.dynamicextensions.domain.nui.SubFormControl;
 
@@ -53,9 +52,9 @@ public class ExtensionSchemaBuilder implements ObjectSchemaBuilder {
 	}
 	
 	private  ObjectSchema getObjectSchema(Container form, String entityType) {
-		Record record = new Record();  
+		Record record = new Record();
 		
-		List<Field> fields = new ArrayList<Field>();
+		List<Field> fields = new ArrayList<>();
 		fields.add(getField("recordId", "Record ID"));
 		
 		if (entityType.equals("Participant")) {

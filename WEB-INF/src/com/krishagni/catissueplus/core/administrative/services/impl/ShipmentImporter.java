@@ -4,13 +4,12 @@ package com.krishagni.catissueplus.core.administrative.services.impl;
 import com.krishagni.catissueplus.core.administrative.domain.Shipment.Status;
 import com.krishagni.catissueplus.core.administrative.events.ShipmentDetail;
 import com.krishagni.catissueplus.core.administrative.services.ShipmentService;
-import com.krishagni.catissueplus.core.common.PlusTransactional;
 import com.krishagni.catissueplus.core.common.events.RequestEvent;
 import com.krishagni.catissueplus.core.common.events.ResponseEvent;
-import com.krishagni.catissueplus.core.importer.events.ImportObjectDetail;
-import com.krishagni.catissueplus.core.importer.services.ObjectImporter;
+import com.krishagni.catissueplus.core.importer.services.AbstractObjectImporter;
+import com.krishagni.importer.events.ImportObjectDetail;
 
-public class ShipmentImporter implements ObjectImporter<ShipmentDetail, ShipmentDetail> {	
+public class ShipmentImporter extends AbstractObjectImporter<ShipmentDetail, ShipmentDetail> {
 	private ShipmentService shipmentSvc;
 
 	public void setShipmentSvc(ShipmentService shipmentSvc) {
@@ -18,12 +17,11 @@ public class ShipmentImporter implements ObjectImporter<ShipmentDetail, Shipment
 	}
 
 	@Override
-	@PlusTransactional
 	public ResponseEvent<ShipmentDetail> importObject(RequestEvent<ImportObjectDetail<ShipmentDetail>> req) {
 		try {
 			ImportObjectDetail<ShipmentDetail> detail = req.getPayload();
 			detail.getObject().setSendMail(false);
-			RequestEvent<ShipmentDetail> shipmentReq = new RequestEvent<ShipmentDetail>(detail.getObject());
+			RequestEvent<ShipmentDetail> shipmentReq = new RequestEvent<>(detail.getObject());
 			
 			if (detail.isCreate()) {
 				return createShipment(shipmentReq);
@@ -57,8 +55,6 @@ public class ShipmentImporter implements ObjectImporter<ShipmentDetail, Shipment
 	private ResponseEvent<ShipmentDetail> updateShipment(RequestEvent<ShipmentDetail> shipmentReq) {
 		ResponseEvent<ShipmentDetail> resp = shipmentSvc.updateShipment(shipmentReq);
 		resp.throwErrorIfUnsuccessful();
-		
 		return resp;
 	}
-	
 }

@@ -25,10 +25,10 @@ import com.krishagni.catissueplus.core.common.events.RequestEvent;
 import com.krishagni.catissueplus.core.common.events.ResponseEvent;
 import com.krishagni.catissueplus.core.common.util.AuthUtil;
 import com.krishagni.catissueplus.core.common.util.ConfigUtil;
-import com.krishagni.catissueplus.core.importer.domain.ImportJob;
-import com.krishagni.catissueplus.core.importer.events.ImportDetail;
-import com.krishagni.catissueplus.core.importer.events.ImportJobDetail;
-import com.krishagni.catissueplus.core.importer.services.ImportListener;
+import com.krishagni.importer.domain.ImportJob;
+import com.krishagni.importer.events.ImportDetail;
+import com.krishagni.importer.events.ImportJobDetail;
+import com.krishagni.importer.services.ImportListener;
 
 @Configurable
 public class ImportRecordsTask implements ScheduledTask {
@@ -43,7 +43,7 @@ public class ImportRecordsTask implements ScheduledTask {
 	private static File unprocessedImportDir;
 
 	@Autowired
-	private ImportServiceImpl importService;
+	private ImportServiceWrapperImpl importService;
 
 	@Autowired
 	private DaoFactory daoFactory;
@@ -53,9 +53,14 @@ public class ImportRecordsTask implements ScheduledTask {
 	@Override
 	@PlusTransactional
 	public void doJob(ScheduledJobRun jobRun) throws Exception {
-		logger.info("Woken up to bulk import records");
+		if (logger.isDebugEnabled()) {
+			logger.debug("Woken up to bulk import records");
+		}
+
 		if (!getScheduledImportDir().exists()) {
-			logger.info("Scheduled import directory does not exist. Therefore sleeping until next time");
+			if (logger.isDebugEnabled()) {
+				logger.debug("Scheduled import directory does not exist. Therefore sleeping until next time");
+			}
 			return;
 		}
 
@@ -172,14 +177,14 @@ public class ImportRecordsTask implements ScheduledTask {
 
 		detail.setListener(new ImportListener() {
 			@Override
-			public void success() {
-				logger.info("Finished importing records from file: " + filename);
+			public void success(ImportJob job, int totalRecs, int failedRecs) {
+				logger.info(String.format("Finished importing records %d (%d) from file %s", totalRecs, failedRecs, filename));
 				importFiles();
 			}
 
 			@Override
-			public void fail(Throwable t) {
-				logger.error("Failed to import all records from file: " + filename, t);
+			public void fail(ImportJob job, int totalRecs, int failedRecs) {
+				logger.error(String.format("Failed to import all records from file %s", filename));
 				importFiles();
 			}
 		});
